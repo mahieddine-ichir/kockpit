@@ -1,0 +1,3 @@
+org.kockpit.audit.obfuscation.impl.ObfuscationConfig
+org.kockpit.audit.obfuscation.impl.BuiltinObfuscatesConfig
+org.kockpit.audit.obfuscation.impl.BuiltinMaskersConfig

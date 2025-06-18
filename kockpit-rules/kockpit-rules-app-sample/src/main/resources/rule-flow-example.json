@@ -1,0 +1,53 @@
+{
+  "name": "myRule",
+  "description": "My Awesome rule",
+  "steps": [
+    {
+      "type": "action",
+      "name": "action_1",
+      "description": "Action 1"
+    },
+    {
+      "type": "action",
+      "name": "action_2",
+      "description": "Action 2"
+    },
+    {
+      "type": "predicate",
+      "name": "my_predicate",
+      "description": "Predicate 1",
+      "true": [
+        {
+          "type": "action",
+          "name": "my_action20",
+          "description": "Action 2-0"
+        },
+        {
+          "type": "action",
+          "name": "my_action21",
+          "description": "Action 2-1"
+        }
+      ],
+      "false": [
+        {
+          "type": "action",
+          "name": "my_action3",
+          "description": "Action 3"
+        },
+        {
+          "type": "predicate",
+          "name": "my_predicate2",
+          "description": "Predicate 2",
+          "true" : [
+            {
+              "type": "action",
+              "name": "my_action4",
+              "description": "Action 4"
+            }
+          ],
+          "false": []
+        }
+      ]
+    }
+  ]
+}

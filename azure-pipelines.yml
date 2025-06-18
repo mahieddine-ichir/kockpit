@@ -1,0 +1,52 @@
+pool:
+  vmImage: ubuntu-latest
+
+resources:
+  - repo: self
+
+variables:
+  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+  MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'da19fe5c-1f8d-4708-8055-b6b1874832cf'
+  publishJUnitResults: true
+
+stages:
+  - stage: Build
+    jobs:
+      - job: build
+        continueOnError: false
+        steps:
+          - task: MavenAuthenticate@0
+            displayName: 'Authenticate to Azure Artifacts feed'
+            inputs:
+              artifactsFeeds: 'snapshots,releases'
+
+          - task: Cache@2
+            inputs:
+              key: 'maven | "$(Agent.OS)" | **/pom.xml'
+              restoreKeys: |
+                maven | "$(Agent.OS)"
+                maven
+              path: $(MAVEN_CACHE_FOLDER)
+            displayName: Cache Maven local repo
+
+          - task: Maven@4
+            displayName: Maven Build
+            inputs:
+              mavenPomFile: 'pom.xml'
+              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.21'
+              jdkArchitectureOption: 'x64'
+              goals: 'deploy -Pstime'
+
+          - task: Maven@4
+            displayName: Quality Analysis
+            inputs:
+              mavenPomFile: 'pom.xml'
+              mavenOptions: '-Xmx3072m $(MAVEN_OPTS) -Dsonar.login=$(sonar.login) -Dsonar.host.url=$(sonar.url)'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.17'
+              jdkArchitectureOption: 'x64'
+              goals: 'sonar:sonar'

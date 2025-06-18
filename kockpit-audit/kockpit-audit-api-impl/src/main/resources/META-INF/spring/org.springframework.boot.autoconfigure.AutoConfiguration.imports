@@ -1,0 +1,2 @@
+org.kockpit.audit.AuditAutoConfiguration
+org.kockpit.audit.obfuscate.AuditObfuscateAutoConfiguration

@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /sampleapp
+
+kockpit:
+  sdk:
+    service:
+      audit:
+        ttl.default: 5
+        notification:
+          async: true
+
+logging.level:
+  com.azure: WARN
+  org.kockpit.audit.notification.eventhubs: TRACE
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+  cloud:
+    azure:
+      eventhubs:
+        namespace: eh-ns
+        event-hub-name: eh1
+        consumer:
+          consumer-group: $default
+        connection-string: Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;

@@ -1,0 +1,38 @@
+{
+  "name": "RuleAppSample",
+  "description": "",
+  "steps": [
+    {
+      "type": "action",
+      "name": "Get Database Data"
+    },
+    {
+      "type": "predicate",
+      "name": "my predicate 1",
+      "true": [
+        {
+          "type": "predicate",
+          "name": "my predicate 11",
+          "true": [
+            {
+              "type": "action",
+              "name": "action_of_predicate_true_11"
+            }
+          ],
+          "false": [
+            {
+              "type": "action",
+              "name": "action_of_predicate_false_11"
+            }
+          ]
+        }
+      ],
+      "false": [
+        {
+          "type": "action",
+          "name": "Do Action 2"
+        }
+      ]
+    }
+  ]
+}

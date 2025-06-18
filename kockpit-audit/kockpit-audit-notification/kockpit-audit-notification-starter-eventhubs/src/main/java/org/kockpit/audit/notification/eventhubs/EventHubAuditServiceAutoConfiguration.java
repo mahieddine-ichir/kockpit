@@ -1,0 +1,16 @@
+package org.kockpit.audit.notification.eventhubs;
+
+import com.azure.messaging.eventhubs.EventHubProducerClient;
+import org.kockpit.audit.api.AuditReportNotificationService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class EventHubAuditServiceAutoConfiguration {
+
+  @Bean
+  AuditReportNotificationService eventHubAuditReportNotificationService(
+          EventHubProducerClient producerClient) {
+    return new EventHubsAuditReportNotificationService(producerClient);
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "createOrUpdateProspect",
+  "description": "Create prospect rule",
+  "steps": [
+    {
+      "type": "action",
+      "name": "functionalValidations"
+    },
+    {
+      "type": "predicate",
+      "name": "prospectExist",
+      "true": [
+        {
+          "type": "action",
+          "name": "updateConsentements"
+        },
+        {
+          "type": "action",
+          "name": "updateSubscriptions"
+        }
+      ],
+      "false": [
+        {
+          "type": "action",
+          "name": "createProspect"
+        },
+        {
+          "type": "action",
+          "name": "updateConsentements"
+        },
+        {
+          "type": "action",
+          "name": "updateSubscriptions"
+        }
+      ]
+    }
+  ]
+}

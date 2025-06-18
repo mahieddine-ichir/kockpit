@@ -1,0 +1,21 @@
+package {{package}};
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * KEngine rule context.
+ */
+public class RuleContext {
+
+    private final Map<String, Object> context = new HashMap<>();
+
+    public RuleContext add(String key, Object arg0) {
+        this.context.put(key, arg0);
+        return this;
+    }
+
+    public Object get(String key) {
+        return this.context.get(key);
+    }
+}
