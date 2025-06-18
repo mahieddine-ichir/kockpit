@@ -1,9 +1,12 @@
 package org.kockpit.audit.stream.azure.search;
 
+import com.azure.core.annotation.HeaderCollection;
 import com.azure.search.documents.indexes.SearchableField;
 import com.azure.search.documents.indexes.SimpleField;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -44,5 +47,6 @@ public class SearchAuditReport {
 
     //private List<SearchIndexedKeyValue> indexedKeyValues;
 
-    //private List<SearchAudit> audits;
+    @SimpleField(isSortable = true, isFilterable = true)
+    private List<SearchAudit> audits;
 }

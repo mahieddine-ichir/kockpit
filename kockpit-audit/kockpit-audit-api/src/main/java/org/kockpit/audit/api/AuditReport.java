@@ -47,11 +47,6 @@ public class AuditReport {
     return audits;
   }
 
-  // TODO clean that => must separate audit accumulator and audit report message (final data)
-  public Map<String, Audit> auditsMap() {
-    return audits;
-  }
-
   public List<Audit> getAudits() {
     return new ArrayList<>(audits.values());
   }
