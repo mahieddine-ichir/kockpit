@@ -1,0 +1,29 @@
+{
+  "name": "stopComm",
+  "description": "",
+  "steps": [
+    {
+      "type": "action",
+      "name": "CompteClientGetById"
+    },
+    {
+      "type": "action",
+      "name": "setStopCommValue"
+    },
+    {
+      "type": "action",
+      "id": "Action_0gk6p2r",
+      "name": "disableAllConsentements"
+    },
+    {
+      "type": "action",
+      "id": "Action_0sekinj",
+      "name": "disableAllAbonnements"
+    },
+    {
+      "type": "action",
+      "id": "Action_1ozkjuj",
+      "name": "compteClientSave"
+    }
+  ]
+}

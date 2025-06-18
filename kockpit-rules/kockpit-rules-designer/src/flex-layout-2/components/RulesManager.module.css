@@ -1,0 +1,7 @@
+.deleteBtn {
+  visibility: hidden;
+}
+
+.ruleBtn:hover .deleteBtn {
+  visibility: visible;
+}

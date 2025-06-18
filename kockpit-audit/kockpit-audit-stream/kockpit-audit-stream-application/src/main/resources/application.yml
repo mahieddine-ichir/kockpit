@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        namespace: rcu-dev
+        event-hub-name: audit
+        consumer:
+          consumer-group: rcu-api
+        #connection-string: Endpoint=sb://rcu-dev.servicebus.windows.net/;SharedAccessKeyName=audits-sender;SharedAccessKey=h/pG3UC2Nr4stIKRoKThHpea7397V4cdF+AEhC5F6AQ=;EntityPath=audit
+        connection-string: Endpoint=sb://rcu-dev.servicebus.windows.net/;SharedAccessKeyName=Receiver;SharedAccessKey=a6/A24w8V0ZWiIHHT9W5BIYZjesz1NZKt+AEhLlYbLQ=
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+kockpit:
+  audit:
+    stream:
+      azure:
+        endpoint: https://rcu-dev.search.windows.net
+        index_name: audit

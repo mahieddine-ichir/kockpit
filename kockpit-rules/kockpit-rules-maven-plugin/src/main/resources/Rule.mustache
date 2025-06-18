@@ -1,0 +1,44 @@
+package {{package}};
+
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
+import com.kockpit.rules.*;
+import com.kockpit.rules.registry.seemless.RuleNodesBuilderSeamLessSupport;
+import com.kockpit.rules.seemless.Rule;
+import static com.kockpit.rules.seemless.ConditionalRuleNodeSeamLessBuilder.StaticBuilder.*;
+import lombok.*;
+import javax.annotation.processing.Generated;
+import {{import}}.*;
+
+/**
+ * Rule name: {{name}}
+{{#description}}
+ * Description: {{description}}
+{{/description}}
+ */
+@Rule
+@RequiredArgsConstructor
+@Generated(
+    value = "com.kockpit.rules.codegen.plugin.CodeGenMojo",
+    date = "{{generatedDate}}",
+    comments = "{{generatedComments}}"
+)
+public class {{className}} extends RuleNodesBuilderSeamLessSupport {
+
+{{#injections}}
+    private final {{className}} {{name}};
+
+    private final DocumentationDetails {{name}}Documentation =
+        new DefaultDocumentationDetails("{{name}}", "{{description}}");
+{{/injections}}
+
+    @Override
+    public RuleNode configure() {
+
+        return define("{{name}}", "{{description}}")
+{{#rendered}}
+            .{{{dsl}}}
+{{/rendered}}
+        .end();
+    }
+}

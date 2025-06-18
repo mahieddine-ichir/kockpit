@@ -1,0 +1,16 @@
+
+kockpit.sdk:
+  domain: default
+  env: local
+  appId: sample-app-basic
+
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        namespace: eh-ns
+        event-hub-name: eh1
+        consumer:
+          consumer-group: $default
+        connection-string: Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;
+

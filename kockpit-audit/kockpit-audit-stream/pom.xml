@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kockpit</groupId>
+        <artifactId>kockpit-audit</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kockpit-audit-stream</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>kockpit-audit-stream-api</module>
+        <module>kockpit-audit-stream-starter-eventhub</module>
+        <module>kockpit-audit-stream-starter-console</module>
+        <module>kockpit-audit-stream-starter-slf4j</module>
+        <module>kockpit-audit-stream-starter-azure-search</module>
+        <module>kockpit-audit-stream-application</module>
+        <module>kockpit-audit-stream-application-kafka</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

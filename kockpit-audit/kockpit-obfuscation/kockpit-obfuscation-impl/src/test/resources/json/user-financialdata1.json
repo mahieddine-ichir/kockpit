@@ -1,0 +1,10 @@
+{
+  "Name": "Default Account",
+  "iban": "FR76 3001 1526 5412 1548 1254 236",
+  "bank": "ING IS DEAD",
+  "properties": {
+    "others": {
+      "criticalData": "MY CB CARD ID !!!"
+    }
+  }
+}
