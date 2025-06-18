@@ -40,13 +40,3 @@ stages:
               jdkVersionOption: '1.21'
               jdkArchitectureOption: 'x64'
               goals: 'deploy -Pstime'
-
-          - task: Maven@4
-            displayName: Quality Analysis
-            inputs:
-              mavenPomFile: 'pom.xml'
-              mavenOptions: '-Xmx3072m $(MAVEN_OPTS) -Dsonar.login=$(sonar.login) -Dsonar.host.url=$(sonar.url)'
-              javaHomeOption: 'JDKVersion'
-              jdkVersionOption: '1.17'
-              jdkArchitectureOption: 'x64'
-              goals: 'sonar:sonar'
