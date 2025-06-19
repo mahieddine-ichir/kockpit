@@ -75,7 +75,7 @@ stages:
             displayName: Build and push an image to container registry kockpit-backend-azuresearch
             inputs:
               command: buildAndPush
-              repository: 'kockpit'
+              repository: 'kockpit-backend-azuresearch'
               dockerfile: 'kockpit-backends/kockpit-backend-azuresearch/Dockerfile'
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
@@ -85,7 +85,7 @@ stages:
             displayName: Build and push an image to container registry kockpit-audit-stream-application-kafka
             inputs:
               command: buildAndPush
-              repository: 'kockpit'
+              repository: 'kockpit-audit-stream-application-kafka'
               dockerfile: 'kockpit-audit/kockpit-audit-stream/kockpit-audit-stream-application-kafka/Dockerfile'
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
