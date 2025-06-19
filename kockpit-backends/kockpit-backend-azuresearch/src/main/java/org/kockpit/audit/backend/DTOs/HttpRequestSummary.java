@@ -1,4 +1,4 @@
-package org.kockpit.audit.backoffice.DTOs;
+package org.kockpit.audit.backend.DTOs;
 
 import java.time.Instant;
 
