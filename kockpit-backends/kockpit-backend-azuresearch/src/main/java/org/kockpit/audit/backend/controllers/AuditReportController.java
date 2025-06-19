@@ -5,12 +5,14 @@ import org.kockpit.audit.backend.DTOs.HttpRequestSummary;
 import org.kockpit.audit.backend.DataModel.HttpExchangeAudit;
 import org.kockpit.audit.backend.DataModel.SearchAuditReport;
 import org.kockpit.audit.backend.services.AuditReportService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/audit-reports")
 public class AuditReportController {
