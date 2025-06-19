@@ -7,7 +7,7 @@ resources:
 variables:
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
-  dockerRegistryServiceConnection: '22633c42-7472-4e4e-bd7b-cd9f13a87a4d'
+  dockerRegistryServiceConnection: 'dc378648-6636-4f5b-937e-0ae584b11c7d'
   tag: 'latest'
 
 stages:
