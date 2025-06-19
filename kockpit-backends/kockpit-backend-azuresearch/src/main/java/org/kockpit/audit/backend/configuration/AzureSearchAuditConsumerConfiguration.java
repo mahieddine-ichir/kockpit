@@ -1,4 +1,4 @@
-package org.kockpit.audit.backoffice.configuration;
+package org.kockpit.audit.backend.configuration;
 
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.search.documents.SearchClient;

@@ -1,10 +1,10 @@
-package org.kockpit.audit.backoffice.controllers;
+package org.kockpit.audit.backend.controllers;
 
-import org.kockpit.audit.backoffice.DTOs.AuditReportSummary;
-import org.kockpit.audit.backoffice.DTOs.HttpRequestSummary;
-import org.kockpit.audit.backoffice.DataModel.HttpExchangeAudit;
-import org.kockpit.audit.backoffice.DataModel.SearchAuditReport;
-import org.kockpit.audit.backoffice.services.AuditReportService;
+import org.kockpit.audit.backend.DTOs.AuditReportSummary;
+import org.kockpit.audit.backend.DTOs.HttpRequestSummary;
+import org.kockpit.audit.backend.DataModel.HttpExchangeAudit;
+import org.kockpit.audit.backend.DataModel.SearchAuditReport;
+import org.kockpit.audit.backend.services.AuditReportService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;

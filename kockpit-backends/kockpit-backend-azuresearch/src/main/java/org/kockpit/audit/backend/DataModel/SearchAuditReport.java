@@ -1,4 +1,4 @@
-package org.kockpit.audit.backoffice.DataModel;
+package org.kockpit.audit.backend.DataModel;
 
 import lombok.Getter;
 import lombok.Setter;

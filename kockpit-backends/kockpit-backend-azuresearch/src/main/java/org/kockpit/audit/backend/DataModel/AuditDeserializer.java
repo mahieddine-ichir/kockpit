@@ -1,4 +1,4 @@
-package org.kockpit.audit.backoffice.DataModel;
+package org.kockpit.audit.backend.DataModel;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;

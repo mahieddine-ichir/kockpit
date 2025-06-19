@@ -1,16 +1,16 @@
-package org.kockpit.audit.backoffice.services;
+package org.kockpit.audit.backend.services;
 
 import com.azure.search.documents.SearchClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.kockpit.audit.backoffice.DTOs.AuditReportSummary;
-import org.kockpit.audit.backoffice.DTOs.HttpRequestSummary;
-import org.kockpit.audit.backoffice.DataModel.HttpAuditedRequest;
-import org.kockpit.audit.backoffice.DataModel.HttpAuditedResponse;
-import org.kockpit.audit.backoffice.DataModel.HttpExchangeAudit;
-import org.kockpit.audit.backoffice.DataModel.SearchAuditReport;
+import org.kockpit.audit.backend.DTOs.AuditReportSummary;
+import org.kockpit.audit.backend.DTOs.HttpRequestSummary;
+import org.kockpit.audit.backend.DataModel.HttpAuditedRequest;
+import org.kockpit.audit.backend.DataModel.HttpAuditedResponse;
+import org.kockpit.audit.backend.DataModel.HttpExchangeAudit;
+import org.kockpit.audit.backend.DataModel.SearchAuditReport;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
