@@ -19,7 +19,8 @@
 	<modules>
 		<module>kockpit-audit</module>
 		<module>kockpit-rules</module>
-	</modules>
+		<module>kockpit-backends</module>
+    </modules>
 
 	<profiles>
 		<profile>
