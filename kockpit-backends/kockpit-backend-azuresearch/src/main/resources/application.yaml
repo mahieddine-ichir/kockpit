@@ -14,3 +14,9 @@ kockpit:
         index_name: audit-v2
         endpoint: https://rcu-dev.search.windows.net
         api_key: QMGjOgDQ9PMEnib9midTTGXqMaevUYev1jlh7cIqImAzSeCwB7pG
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
