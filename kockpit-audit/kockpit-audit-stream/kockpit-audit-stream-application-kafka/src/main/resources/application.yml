@@ -39,7 +39,7 @@ kockpit:
       azure:
         search:
           endpoint: https://rcu-dev.search.windows.net
-          index_name: audit
+          index_name: audit-v2
           api_key: JAlCjsGXNDCnncUtpl1RzqiDO4DRisg8LURymqWX8KAzSeCr0p1w
           scheduler_ms: 10000
           fields: requestId,

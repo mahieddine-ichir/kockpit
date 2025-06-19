@@ -1,0 +1,16 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /backend
+
+spring:
+  application:
+    name: kockpit-audit-backoffice
+
+kockpit:
+  audit:
+    azure:
+      search:
+        index_name: audit-v2
+        endpoint: https://rcu-dev.search.windows.net
+        api_key: QMGjOgDQ9PMEnib9midTTGXqMaevUYev1jlh7cIqImAzSeCwB7pG
