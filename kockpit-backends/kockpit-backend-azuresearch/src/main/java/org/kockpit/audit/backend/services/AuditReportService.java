@@ -1,6 +1,8 @@
 package org.kockpit.audit.backend.services;
 
+import com.azure.core.util.Context;
 import com.azure.search.documents.SearchClient;
+import com.azure.search.documents.models.SearchOptions;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +35,17 @@ public class AuditReportService {
     @Value("${kockpit.audit.azure.search.index_name}")
     private String indexName;
 
+    @Value("${kockpit.audit.azure.search.max_size:50}")
+    private Integer maxSize;
+
     @SneakyThrows
     public List<SearchAuditReport> getAll() {
-        return client.search(indexName).stream()
+        SearchOptions searchOptions = new SearchOptions();
+        searchOptions.setOrderBy("start desc");
+        searchOptions.setTop(maxSize);
+
+        return client.search(indexName, searchOptions, Context.NONE)
+                .stream()
                 .map(searchResult -> searchResult.getDocument(SearchAuditReport.class)).toList();
     }
 
