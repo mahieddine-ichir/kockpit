@@ -66,7 +66,7 @@ stages:
               mavenPomFile: 'pom.xml'
               mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
               javaHomeOption: 'JDKVersion'
-              jdkVersionOption: '1.17'
+              jdkVersionOption: '1.21'
               jdkArchitectureOption: 'x64'
               options: '-DskipTests'
               goals: 'package'
