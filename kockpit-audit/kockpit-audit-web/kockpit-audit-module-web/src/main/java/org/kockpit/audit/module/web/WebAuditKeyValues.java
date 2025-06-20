@@ -26,13 +26,11 @@ final class WebAuditKeyValues {
     indexedKeyValues.addAll(
         List.of(
             IndexedKeyValue.of("requestUri", webAuditEvent.getHttpAuditedRequest().getUri()),
-            IndexedKeyValue.of(
-                "origin", Optional.ofNullable(webAuditEvent.getOrigin()).orElse("")),
+            IndexedKeyValue.of("origin", Optional.ofNullable(webAuditEvent.getOrigin()).orElse("")),
             new IndexedKeyValue("httpStatus", String.valueOf(webAuditEvent.getHttpAuditedResponse().getStatus()),
-                webAuditEvent.getHttpAuditedResponse().getStatus(), null, null),
+                    webAuditEvent.getHttpAuditedResponse().getStatus(), null, null),
             IndexedKeyValue.of("httpMethod", webAuditEvent.getHttpAuditedRequest().getMethod()),
-            IndexedKeyValue.of(
-                "principal", webAuditEvent.getHttpAuditedRequest().getPrincipal())));
+            IndexedKeyValue.of("principal", webAuditEvent.getHttpAuditedRequest().getPrincipal())));
     indexedKeyValues.addAll(auditReport.getIndexedKeyValues());
     return indexedKeyValues;
   }

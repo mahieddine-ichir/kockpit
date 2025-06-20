@@ -36,12 +36,14 @@ class AuditReportMapperTest {
                 .enable(SerializationFeature.INDENT_OUTPUT);
 
         AuditReport auditReport = objectMapper.readValue(getClass().getResourceAsStream("/audit.json"), AuditReport.class);
+        Assertions.assertFalse(auditReport.getIndexedKeyValues().isEmpty());
+        auditReport.getIndexedKeyValues().iterator().next().setValueFloat(1.0f);
 
         SearchAuditReport map = mapper.map(auditReport);
-        log.info("Mapped Audit report {}", objectMapper
-                .writeValueAsString(map));
+        log.info("Mapped Audit report {}", objectMapper.writeValueAsString(map));
+
         Assertions.assertEquals("rcu-api", map.getAppId());
-
+        Assertions.assertFalse(map.getIndexedKeyValues().isEmpty());
+        Assertions.assertEquals(1.0d, map.getIndexedKeyValues().iterator().next().getValueFloat());
     }
-
 }

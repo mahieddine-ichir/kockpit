@@ -42,6 +42,11 @@ public class AzureSearchIndexer implements AuditConsumer {
         List<SearchField> fields = searchFields.stream().filter(searchField ->
                 searchIndex.getFields().stream().noneMatch(sf -> sf.getName().equals(searchField.getName()))
         ).toList();
+        fields.forEach(searchField -> {
+            log.info("field {}, of type {}", searchField.getName(), searchField.getType());
+            searchField.getFields().forEach(f -> log.info("(from {}) field {}, of type {}", searchField.getName(), f.getName(), f.getType()));
+        });
+
         searchIndex.getFields().addAll(fields);
 
         searchIndexClient.createOrUpdateIndex(searchIndex);

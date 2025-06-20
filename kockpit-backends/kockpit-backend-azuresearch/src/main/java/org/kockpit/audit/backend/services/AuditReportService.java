@@ -7,18 +7,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.kockpit.audit.backend.DTOs.AuditReportSummary;
-import org.kockpit.audit.backend.DTOs.HttpRequestSummary;
-import org.kockpit.audit.backend.DataModel.HttpAuditedRequest;
-import org.kockpit.audit.backend.DataModel.HttpAuditedResponse;
-import org.kockpit.audit.backend.DataModel.HttpExchangeAudit;
-import org.kockpit.audit.backend.DataModel.SearchAuditReport;
+import org.kockpit.audit.backend.model.*;
+import org.openapitools.api.ApiApiDelegate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class AuditReportService {
+public class AuditReportService implements ApiApiDelegate {
 
     private final SearchClient client;
 
@@ -38,8 +36,19 @@ public class AuditReportService {
     @Value("${kockpit.audit.azure.search.max_size:50}")
     private Integer maxSize;
 
-    @SneakyThrows
-    public List<SearchAuditReport> getAll() {
+    @Override
+    public ResponseEntity<Object> auditReportById(String id) {
+        Object document = client.getDocument(id, SearchAuditReport.class);
+        return ResponseEntity.ok(document);
+    }
+
+    @Override
+    public ResponseEntity<List<Object>> listAuditReports() {
+        List<Object> list = new ArrayList<>(getAll());
+        return ResponseEntity.ok(list);
+    }
+
+    private List<SearchAuditReport> getAll() {
         SearchOptions searchOptions = new SearchOptions();
         searchOptions.setOrderBy("start desc");
         searchOptions.setTop(maxSize);
@@ -47,10 +56,9 @@ public class AuditReportService {
         return client.search(indexName, searchOptions, Context.NONE)
                 .stream()
                 .map(searchResult -> searchResult.getDocument(SearchAuditReport.class)).toList();
-    }
+    };
 
-    @SneakyThrows
-    public SearchAuditReport getById(String id) {
+    private SearchAuditReport getById(String id) {
         return client.getDocument(id, SearchAuditReport.class);
     }
 
@@ -89,7 +97,6 @@ public class AuditReportService {
                     );
                 }).toList();
     }
-
 
     public HttpExchangeAudit getHttpRequestDetails(String id, String traceId) {
         var report = getById(id);

@@ -47,29 +47,29 @@ class AuditAutoConfiguration {
       List<AuditReportNotificationService> auditReportNotificationServices,
       @Value("${kockpit.sdk.service.audit.notification.async:true}") boolean async,
       @Value("${kockpit.sdk.service.audit.notification.buffer.size:1000}") int bufferSize,
+      @Value("${kockpit.sdk.service.audit.notification.buffer.size:300}") int bufferThreshold,
       @Value("${kockpit.sdk.service.audit.notification.buffer.partition-size:10}") int partitionSize,
-      @Value("${kockpit.sdk.service.audit.notification.buffer.block:false}") boolean blockIfFullBuffer) {
+      @Value("${kockpit.sdk.service.audit.notification.buffer.block:false}") boolean blockIfFullBuffer,
+      @Value("${kockpit.sdk.service.audit.notification.silent-error:true}") boolean silentErrorProcessing
+  ) {
     if (auditReportNotificationServices.isEmpty()) {
       throw new IllegalArgumentException(
           "No AuditReportNotificationService has been configured. "
               + "Please add one to the application context.");
     }
     return new NotificationAuditReportManager(
-        async,
-        auditReportNotificationServices,
-        bufferSize,
-        partitionSize,
-        blockIfFullBuffer,
-        auditPostProcessor);
+        auditReportNotificationServices, auditPostProcessor,
+        async, bufferSize, bufferThreshold, partitionSize, blockIfFullBuffer, silentErrorProcessing
+    );
   }
 
   @Bean
-  public WcpAuditorEvent wcpAuditorEvent() {
-    return new WcpAuditorEvent();
+  public KockpitAuditorEvent wcpAuditorEvent() {
+    return new KockpitAuditorEvent();
   }
 
   @Bean
-  public WcpAuditorKeyValue wcpAuditorKeyValue() {
-    return new WcpAuditorKeyValue();
+  public KockpitAuditorKeyValue wcpAuditorKeyValue() {
+    return new KockpitAuditorKeyValue();
   }
 }

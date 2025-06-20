@@ -1,4 +1,4 @@
-package org.kockpit.audit.backend.DataModel;
+package org.kockpit.audit.backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
