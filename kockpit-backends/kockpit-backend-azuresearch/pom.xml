@@ -101,6 +101,7 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
                             <generatorName>spring</generatorName>
+                            <apiPackage>org.kockpit.audit.backend</apiPackage>
                             <library>spring-boot</library>
                             <generateApis>true</generateApis>
                             <generateModelTests>false</generateModelTests>

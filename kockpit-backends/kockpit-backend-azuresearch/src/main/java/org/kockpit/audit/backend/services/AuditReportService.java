@@ -7,12 +7,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.kockpit.audit.backend.ApiApiDelegate;
 import org.kockpit.audit.backend.model.*;
-import org.openapitools.api.ApiApiDelegate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.time.Instant;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -55,13 +55,15 @@ public class AuditReportService implements ApiApiDelegate {
 
         return client.search(indexName, searchOptions, Context.NONE)
                 .stream()
-                .map(searchResult -> searchResult.getDocument(SearchAuditReport.class)).toList();
+                .map(searchResult -> searchResult.getDocument(SearchAuditReport.class))
+                .toList();
     };
 
     private SearchAuditReport getById(String id) {
         return client.getDocument(id, SearchAuditReport.class);
     }
 
+    /*
     public List<AuditReportSummary> getReportsSummaries() {
         return getAll().stream().map(report ->
                 new AuditReportSummary(
@@ -71,8 +73,23 @@ public class AuditReportService implements ApiApiDelegate {
                         Instant.ofEpochMilli(report.getStart()),
                         report.getAppId(),
                         report.getRequestId(),
-                        report.getTtl())
-                ).collect(Collectors.toList());
+                        report.getTtl(),
+                        status(report.getIndexedKeyValues())
+                )
+        ).toList();
+    }
+     */
+
+    private Integer status(List<SearchIndexedKeyValue> indexedKeyValues) {
+        if (CollectionUtils.isEmpty(indexedKeyValues)) {
+            return null;
+        } else {
+            return indexedKeyValues.stream()
+                    .filter(kv -> kv.getKey().equals("httpStatus"))
+                    .findFirst()
+                    .map(SearchIndexedKeyValue::getValueInteger)
+                    .orElse(null);
+        }
     }
 
     public List<HttpRequestSummary> getHttpRequests(String id) {

@@ -15,15 +15,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/audit-reports")
 @RequiredArgsConstructor
+/**
+ * @deprecated replace with OpenApi
+ */
 public class AuditReportController {
 
     private final AuditReportService service;
-
-    // return ID,domain, env of the audits (maybe I will use it in the right navbar)
-    @GetMapping
-    public List<AuditReportSummary> listSummaries() {
-        return service.getReportsSummaries();
-    }
 
     //Get all HTTP requests in the selected audit report (for table )
     @GetMapping("/{id}/requests")

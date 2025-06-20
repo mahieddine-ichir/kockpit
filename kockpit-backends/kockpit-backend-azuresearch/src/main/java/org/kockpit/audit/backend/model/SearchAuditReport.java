@@ -31,7 +31,7 @@ public class SearchAuditReport {
 
     private Integer ttl;
 
-    //private List<SearchIndexedKeyValue> indexedKeyValues;
+    private List<SearchIndexedKeyValue> indexedKeyValues;
 
     private List<SearchAudit> audits;
 }
