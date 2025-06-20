@@ -1,10 +1,10 @@
 package org.kockpit.audit;
 
+import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditKeyConstants;
 import org.kockpit.audit.api.AuditReport;
 import org.kockpit.audit.api.AuditorService;
 import org.kockpit.audit.api.IndexedKeyValue;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.util.CollectionUtils;
@@ -14,16 +14,12 @@ import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.UUID;
 
-import static org.kockpit.audit.WcpAuditorEvent.closeCurrentAuditEvents;
-import static org.kockpit.audit.WcpAuditorKeyValue.closeCurrentAuditIndexedKeyValues;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.ObjectUtils.allNotNull;
+import static org.kockpit.audit.KockpitAuditorEvent.closeCurrentAuditEvents;
+import static org.kockpit.audit.KockpitAuditorKeyValue.closeCurrentAuditIndexedKeyValues;
 
-/**
- * @deprecated this implementation class should not be exposed. Use {@link AuditorService} instead.
- */
-@Deprecated(since = "2.3.2", forRemoval = true)
 @Slf4j
 class KockpitAuditor implements AuditorService {
 

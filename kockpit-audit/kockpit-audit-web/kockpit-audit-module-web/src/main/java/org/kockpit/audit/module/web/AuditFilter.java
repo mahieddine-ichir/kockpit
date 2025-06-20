@@ -1,13 +1,13 @@
 package org.kockpit.audit.module.web;
 
-import org.kockpit.audit.api.AuditorEventService;
-import org.kockpit.audit.api.AuditorKeyValueService;
-import org.kockpit.audit.api.AuditorService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.api.AuditorEventService;
+import org.kockpit.audit.api.AuditorKeyValueService;
+import org.kockpit.audit.api.AuditorService;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -91,9 +91,7 @@ public class AuditFilter extends OncePerRequestFilter {
       ContentCachingRequestWrapper httpServletRequest, WebAuditReportData auditReport) {
     try {
       auditReport.getWebAuditEvent().setStartTime(System.currentTimeMillis());
-      for (RequestAuditor requestAuditor : requestAuditorList) {
-        requestAuditor.audit(httpServletRequest, auditReport);
-      }
+      requestAuditorList.forEach(requestAuditor -> requestAuditor.audit(httpServletRequest, auditReport));
     } catch (Exception e) {
       log.error("PreAudit failed : {}", e.getMessage(), e);
     }
@@ -103,9 +101,7 @@ public class AuditFilter extends OncePerRequestFilter {
       ContentCachingResponseWrapper httpServletResponse, WebAuditReportData auditReport) {
     try {
       auditReport.getWebAuditEvent().setEndTime(System.currentTimeMillis());
-      for (ResponseAuditor responseAuditor : responseAuditorList) {
-        responseAuditor.audit(httpServletResponse, auditReport);
-      }
+      responseAuditorList.forEach(responseAuditor -> responseAuditor.audit(httpServletResponse, auditReport));
     } catch (Exception e) {
       log.error("ExecutionAudit failed : {}", e.getMessage(), e);
     }

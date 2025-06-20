@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.kockpit.audit.stream.api.AuditReport;
+import org.kockpit.audit.stream.api.IndexedKeyValue;
 import org.mapstruct.Mapper;
 
 import java.time.Instant;
@@ -18,6 +19,8 @@ public interface AuditReportMapper {
             .registerModule(new JavaTimeModule());
 
     SearchAuditReport map(AuditReport auditReport);
+
+    SearchIndexedKeyValue map(IndexedKeyValue indexedKeyValue);
 
     default Long fromInstant(Instant instant) {
         if (instant == null) {

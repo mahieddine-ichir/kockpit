@@ -20,7 +20,7 @@ public final class SearchIndexedKeyValue {
   private Integer valueInteger;
 
   @SimpleField(isFilterable = true, isSortable = true)
-  private Float valueFloat;
+  private Double valueFloat;
 
   @SimpleField(isFilterable = true, isSortable = true)
   private Date valueDate;

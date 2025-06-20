@@ -10,7 +10,7 @@ import java.util.List;
 
 import static java.util.Collections.synchronizedList;
 
-class WcpAuditorEvent implements AuditorEventService {
+class KockpitAuditorEvent implements AuditorEventService {
 
   @Override
   public void addAuditEvents(String type, List<AuditEvent> auditEvents) {

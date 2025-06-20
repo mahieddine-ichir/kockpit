@@ -4,7 +4,7 @@ import org.kockpit.audit.api.*;
 
 import java.util.List;
 
-public class WcpAuditorKeyValue implements AuditorKeyValueService, AuditorTtlService {
+public class KockpitAuditorKeyValue implements AuditorKeyValueService, AuditorTtlService {
 
   @Override
   public void addIndexedKeyValues(List<IndexedKeyValue> indexedKeyValues) {

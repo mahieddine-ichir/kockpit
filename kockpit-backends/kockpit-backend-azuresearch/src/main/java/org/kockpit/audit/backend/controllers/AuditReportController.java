@@ -1,42 +1,28 @@
 package org.kockpit.audit.backend.controllers;
 
-import org.kockpit.audit.backend.DTOs.AuditReportSummary;
-import org.kockpit.audit.backend.DTOs.HttpRequestSummary;
-import org.kockpit.audit.backend.DataModel.HttpExchangeAudit;
-import org.kockpit.audit.backend.DataModel.SearchAuditReport;
+import lombok.RequiredArgsConstructor;
+import org.kockpit.audit.backend.model.AuditReportSummary;
+import org.kockpit.audit.backend.model.HttpExchangeAudit;
+import org.kockpit.audit.backend.model.HttpRequestSummary;
 import org.kockpit.audit.backend.services.AuditReportService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/audit-reports")
+@RequiredArgsConstructor
 public class AuditReportController {
+
     private final AuditReportService service;
 
-    public AuditReportController(AuditReportService service) {
-        this.service = service;
-    }
-
-    @GetMapping
-    public List<SearchAuditReport> getReports() {
-        return service.getAll();
-    }
-
     // return ID,domain, env of the audits (maybe I will use it in the right navbar)
-    @GetMapping("/full")
-    public List<AuditReportSummary> listSummaries() throws IOException {
+    @GetMapping
+    public List<AuditReportSummary> listSummaries() {
         return service.getReportsSummaries();
-    }
-
-    // Fetch full audit report for detail sidebar
-    @GetMapping("/{id}")
-    public SearchAuditReport getReport(@PathVariable String id) {
-        return service.getById(id);
     }
 
     //Get all HTTP requests in the selected audit report (for table )

@@ -1,6 +1,5 @@
 package org.kockpit.audit.stream.azure.search;
 
-import com.azure.core.annotation.HeaderCollection;
 import com.azure.search.documents.indexes.SearchableField;
 import com.azure.search.documents.indexes.SimpleField;
 import lombok.Getter;
@@ -45,7 +44,8 @@ public class SearchAuditReport {
     @SimpleField(isSortable = true, isFilterable = true)
     private Integer ttl;
 
-    //private List<SearchIndexedKeyValue> indexedKeyValues;
+    @SimpleField(isFilterable = true)
+    private List<SearchIndexedKeyValue> indexedKeyValues;
 
     @SimpleField(isSortable = true, isFilterable = true)
     private List<SearchAudit> audits;

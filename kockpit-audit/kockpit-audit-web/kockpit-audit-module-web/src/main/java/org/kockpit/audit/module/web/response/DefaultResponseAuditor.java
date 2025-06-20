@@ -1,10 +1,11 @@
 package org.kockpit.audit.module.web.response;
 
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.module.web.ResponseAuditor;
 import org.kockpit.audit.module.web.WebAuditEvent;
 import org.kockpit.audit.module.web.WebAuditReportData;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -15,13 +16,10 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 /** Resolve http method and set it to audit data. */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
+@RequiredArgsConstructor
 public class DefaultResponseAuditor implements ResponseAuditor {
 
   private final boolean filterAuthorizationHeader;
-
-  public DefaultResponseAuditor(boolean filterAuthorizationHeader) {
-    this.filterAuthorizationHeader = filterAuthorizationHeader;
-  }
 
   @Override
   public void audit(ContentCachingResponseWrapper response, WebAuditReportData auditReport) {

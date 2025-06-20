@@ -1,4 +1,4 @@
-package org.kockpit.audit.backend.DataModel;
+package org.kockpit.audit.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -29,7 +29,6 @@ public class AuditReport {
     private final Instant start;
     private Instant end;
     private Integer ttl;
-
 
     @Builder.Default
     private final List<IndexedKeyValue> indexedKeyValues = new ArrayList<>();

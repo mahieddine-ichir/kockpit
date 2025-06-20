@@ -1,0 +1,43 @@
+openapi: 3.0.0
+info:
+  description: Kockpit Backend API
+  title: Kockpit backend api
+  version: "1.0"
+servers:
+  - url: https://kockpit.org/backend
+paths:
+  /api/audit-reports:
+    get:
+      operationId: listAuditReports
+      tags:
+        - auditReports
+      description: list all audit reports
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  format: object
+  /api/audit-reports/{id}:
+    get:
+      operationId: auditReportById
+      tags:
+        - audit reports
+      description: details of an audit report
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+
