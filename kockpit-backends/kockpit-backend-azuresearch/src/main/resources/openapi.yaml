@@ -3,8 +3,6 @@ info:
   description: Kockpit Backend API
   title: Kockpit backend api
   version: "1.0"
-servers:
-  - url: https://kockpit.org/backend
 paths:
   /api/audit-reports:
     get:

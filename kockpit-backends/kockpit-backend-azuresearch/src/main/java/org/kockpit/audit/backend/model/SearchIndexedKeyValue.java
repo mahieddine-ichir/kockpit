@@ -1,12 +1,10 @@
 package org.kockpit.audit.backend.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 public final class SearchIndexedKeyValue {
 
   private String key;
@@ -15,7 +13,7 @@ public final class SearchIndexedKeyValue {
 
   private Integer valueInteger;
 
-  private Float valueFloat;
+  private Double valueFloat;
 
   private Date valueDate;
 }

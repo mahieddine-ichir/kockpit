@@ -9,7 +9,8 @@ public record AuditReportSummary(
         Instant start,
         String appId,
         String requestId,
-        Integer ttl) {
-
+        Integer ttl,
+        Integer status
+) {
 }
 
