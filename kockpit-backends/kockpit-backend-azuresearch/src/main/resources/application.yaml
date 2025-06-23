@@ -11,9 +11,9 @@ kockpit:
   audit:
     azure:
       search:
-        index_name: audit-v2
-        endpoint: https://rcu-dev.search.windows.net
-        api_key: QMGjOgDQ9PMEnib9midTTGXqMaevUYev1jlh7cIqImAzSeCwB7pG
+        index_name: ${AZURESEARCH_INDEX}
+        endpoint: ${AZURESEARCH_ENDPOINT}
+        api_key: ${AZURESEARCH_APIKEY}
 
 management:
   endpoint:

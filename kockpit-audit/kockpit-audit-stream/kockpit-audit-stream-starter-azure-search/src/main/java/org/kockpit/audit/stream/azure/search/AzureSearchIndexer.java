@@ -36,9 +36,9 @@ public class AzureSearchIndexer implements AuditConsumer {
 
     @PostConstruct
     void initIndex() {
+        //SearchIndex searchIndex = new SearchIndex(index);
         List<SearchField> searchFields = SearchIndexClient.buildSearchFields(SearchAuditReport.class, null);
         SearchIndex searchIndex = searchIndexClient.getIndex(index);
-
         List<SearchField> fields = searchFields.stream().filter(searchField ->
                 searchIndex.getFields().stream().noneMatch(sf -> sf.getName().equals(searchField.getName()))
         ).toList();

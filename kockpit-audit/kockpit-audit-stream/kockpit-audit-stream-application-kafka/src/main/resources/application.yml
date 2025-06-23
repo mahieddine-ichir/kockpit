@@ -6,24 +6,13 @@ spring:
     name: kockpit-audit-stream
   kafka:
     bootstrap-servers:
-      - rcu-dev.servicebus.windows.net:9093
+      - ${BOOTSTRAP_SERVERS}
     consumer:
       group-id: ${spring.application.name}
       properties:
         security.protocol: SASL_SSL
         sasl.mechanism: PLAIN
-        sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="Endpoint=sb://rcu-dev.servicebus.windows.net/;SharedAccessKeyName=Receiver;SharedAccessKey=a6/A24w8V0ZWiIHHT9W5BIYZjesz1NZKt+AEhLlYbLQ=";
-#
-#
-#  cloud:
-#    azure:
-#      eventhubs:
-#        namespace: rcu-dev
-#        event-hub-name: audit
-#        consumer:
-#          consumer-group: rcu-api
-#        #connection-string: Endpoint=sb://rcu-dev.servicebus.windows.net/;SharedAccessKeyName=audits-sender;SharedAccessKey=h/pG3UC2Nr4stIKRoKThHpea7397V4cdF+AEhC5F6AQ=;EntityPath=audit
-#        connection-string: Endpoint=sb://rcu-dev.servicebus.windows.net/;SharedAccessKeyName=Receiver;SharedAccessKey=a6/A24w8V0ZWiIHHT9W5BIYZjesz1NZKt+AEhLlYbLQ=
+        sasl.jaas.config: ${SASL_JASS_CONFIG}
 
 management:
   endpoint:
@@ -38,7 +27,7 @@ kockpit:
         topics: audit
       azure:
         search:
-          endpoint: https://rcu-dev.search.windows.net
-          index_name: audit-v2
-          api_key: JAlCjsGXNDCnncUtpl1RzqiDO4DRisg8LURymqWX8KAzSeCr0p1w
+          endpoint: ${AZURESEARCH_ENDPOINT}
+          index_name: ${AZURESEARCH_INDEX}
+          api_key: ${AZURESEARCH_APIKEY}
           scheduler_ms: 10000
