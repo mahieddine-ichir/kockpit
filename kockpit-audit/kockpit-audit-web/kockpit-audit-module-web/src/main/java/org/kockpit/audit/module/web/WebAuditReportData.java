@@ -15,8 +15,4 @@ public class WebAuditReportData {
     this.webAuditEvent = webAuditEvent;
     this.indexedKeyValues = indexedKeyValues;
   }
-
-  public void addIndexedKeyValue(IndexedKeyValue indexedKeyValue) {
-    this.indexedKeyValues.add(indexedKeyValue);
-  }
 }
