@@ -70,21 +70,23 @@ public class AuditFilter extends OncePerRequestFilter {
         new ContentCachingRequestWrapper(httpServletRequest);
     ContentCachingResponseWrapper responseWrapper =
         new ContentCachingResponseWrapper(httpServletResponse);
-    chain.doFilter(requestWrapper, responseWrapper);
-
-    WebAuditReportData auditReport =
-        new WebAuditReportData(WebAuditEvent.builder().build(), new ArrayList<>());
-    auditResponse(responseWrapper, auditReport);
     try {
-      responseWrapper.copyBodyToResponse();
-    } catch (Exception t) {
-      log.error("Error copying body to http response.", t);
-    }
-    auditRequest(requestWrapper, auditReport);
+      chain.doFilter(requestWrapper, responseWrapper);
+    } finally {
+      WebAuditReportData auditReport =
+              new WebAuditReportData(WebAuditEvent.builder().build(), new ArrayList<>());
+      auditResponse(responseWrapper, auditReport);
+      try {
+        responseWrapper.copyBodyToResponse();
+      } catch (Exception t) {
+        log.error("Error copying body to http response.", t);
+      }
+      auditRequest(requestWrapper, auditReport);
 
-    auditorEvents.addAuditEvents(WebAuditReportData.TYPE, List.of(auditReport.getWebAuditEvent()));
-    auditorKeyValues.addIndexedKeyValues(getWebKeyValues(auditReport));
-    auditorService.stopAuditAndNotify();
+      auditorEvents.addAuditEvents(WebAuditReportData.TYPE, List.of(auditReport.getWebAuditEvent()));
+      auditorKeyValues.addIndexedKeyValues(getWebKeyValues(auditReport));
+      auditorService.stopAuditAndNotify();
+    }
   }
 
   private void auditRequest(
