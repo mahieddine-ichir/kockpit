@@ -49,11 +49,11 @@ public class AuditReportService implements ApiApiDelegate {
     }
 
     private List<SearchAuditReport> getAll() {
-        SearchOptions searchOptions = new SearchOptions();
-        searchOptions.setOrderBy("start desc");
-        searchOptions.setTop(maxSize);
+        SearchOptions searchOptions = new SearchOptions()
+                .setOrderBy("start desc")
+                .setTop(maxSize);
 
-        return client.search(indexName, searchOptions, Context.NONE)
+        return client.search("*", searchOptions, Context.NONE)
                 .stream()
                 .map(searchResult -> searchResult.getDocument(SearchAuditReport.class))
                 .toList();
