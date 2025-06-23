@@ -10,9 +10,7 @@ spring:
     consumer:
       group-id: ${spring.application.name}
       properties:
-        security.protocol: SASL_SSL
-        sasl.mechanism: PLAIN
-        sasl.jaas.config: ${SASL_JASS_CONFIG}
+        security.protocol: plaintext
 
 management:
   endpoint:

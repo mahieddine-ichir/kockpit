@@ -36,7 +36,7 @@ public class AzureSearchIndexer implements AuditConsumer {
 
     @PostConstruct
     void initIndex() {
-        //SearchIndex searchIndex = new SearchIndex(index);
+        /*
         List<SearchField> searchFields = SearchIndexClient.buildSearchFields(SearchAuditReport.class, null);
         SearchIndex searchIndex = searchIndexClient.getIndex(index);
         List<SearchField> fields = searchFields.stream().filter(searchField ->
@@ -48,8 +48,8 @@ public class AzureSearchIndexer implements AuditConsumer {
         });
 
         searchIndex.getFields().addAll(fields);
-
         searchIndexClient.createOrUpdateIndex(searchIndex);
+         */
     }
 
     @Override
