@@ -4,6 +4,10 @@ pool:
 resources:
   - repo: self
 
+trigger:
+  - dev
+  - pro
+
 variables:
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
