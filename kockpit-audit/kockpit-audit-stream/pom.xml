@@ -17,6 +17,8 @@
         <module>kockpit-audit-stream-starter-console</module>
         <module>kockpit-audit-stream-starter-slf4j</module>
         <module>kockpit-audit-stream-starter-azure-search</module>
+        <module>kockpit-audit-stream-starter-opensearch</module>
+        <!-- Applications -->
         <module>kockpit-audit-stream-application</module>
         <module>kockpit-audit-stream-application-kafka</module>
     </modules>

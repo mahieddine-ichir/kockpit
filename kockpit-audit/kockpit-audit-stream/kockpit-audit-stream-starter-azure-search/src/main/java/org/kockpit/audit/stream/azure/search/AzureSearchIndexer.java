@@ -83,7 +83,7 @@ public class AzureSearchIndexer implements AuditConsumer {
         auditReports.clear();
 
         List<SearchAuditReport> searchReports = Arrays.stream(copy)
-                .map(auditReport -> auditReportMapper.map(auditReport))
+                .map(auditReportMapper::map)
                 .toList();
 
         IndexDocumentsBatch<SearchAuditReport> batch = new IndexDocumentsBatch<>();
