@@ -38,12 +38,12 @@ public class AuditReportService implements ApiApiDelegate {
     private Integer maxSize;
 
     @Override
-    public ResponseEntity<Page> listAudits() {
-        List<Object> list = new ArrayList<>(getAll());
-        Page page = new Page();
-        page.setItems(list);
-        page.setTotalCount(count());
-        return ResponseEntity.ok(page);
+    public ResponseEntity<Page> listAudits(Integer start, Integer size) {
+        return ResponseEntity.ok(Page.builder()
+                        .size(size.longValue())
+                        .totalCount(count())
+                        .items(new ArrayList<>(getAll(size, start)))
+                .build());
     }
 
     @Override
@@ -60,6 +60,7 @@ public class AuditReportService implements ApiApiDelegate {
 
         return ResponseEntity.ok(Page.builder()
                         .items(new ArrayList<>(list))
+                        .size(maxSize.longValue())
                         .totalCount(count())
                 .build());
     }
@@ -72,14 +73,15 @@ public class AuditReportService implements ApiApiDelegate {
 
     @Override
     public ResponseEntity<List<Object>> listAuditReports() {
-        List<Object> list = new ArrayList<>(getAll());
+        List<Object> list = new ArrayList<>(getAll(maxSize, 0));
         return ResponseEntity.ok(list);
     }
 
-    private List<SearchAuditReport> getAll() {
+    private List<SearchAuditReport> getAll(Integer size, Integer start) {
         SearchOptions searchOptions = new SearchOptions()
+                .setSkip(start)
                 .setOrderBy("start desc")
-                .setTop(maxSize);
+                .setTop(Math.min(maxSize, size));
 
         return client.search("*", searchOptions, Context.NONE)
                 .stream()
