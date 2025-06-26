@@ -10,6 +10,20 @@ paths:
       tags:
         - audits
       description: list audits
+      parameters:
+        - name: start
+          description: number of elements to skip
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          description: number of items to return
+          in: query
+          schema:
+            type: integer
+            default: 50
+
       responses:
         "200":
           description: Successful operation
@@ -85,6 +99,9 @@ components:
       type: object
       properties:
         total_count:
+          type: integer
+          format: int64
+        size:
           type: integer
           format: int64
         items:
