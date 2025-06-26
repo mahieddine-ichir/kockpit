@@ -4,7 +4,18 @@ info:
   title: Kockpit backend api
   version: "1.0"
 paths:
-  /api/audits:
+  /backend/api/configs/envs:
+    get:
+      operationId: list environments
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/config_envs"
+
+  /backend/api/audits:
     get:
       operationId: listAudits
       tags:
@@ -32,7 +43,27 @@ paths:
               schema:
                 $ref: "#/components/schemas/page"
 
-  /api/audits/{domain}/{env}:
+  /backend/api/audits/_search:
+    get:
+      operationId: searchAudits
+      tags:
+        - audits
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+      description: list audits
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/page"
+
+  /backend/api/audits/{domain}/{env}:
     get:
       operationId: listAuditsDomainEnv
       tags:
@@ -58,7 +89,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/page"
 
-  /api/audit-reports:
+  /backend/api/audit-reports:
     get:
       operationId: listAuditReports
       tags:
@@ -73,7 +104,51 @@ paths:
                 type: array
                 items:
                   format: object
-  /api/audit-reports/{id}:
+
+  /backend/api/audit-reports/{id}/requests:
+    get:
+      operationId: auditReportRequestsById
+      tags:
+        - audit reports requests
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /backend/api/audit-reports/{id}/requests/{traceId}:
+    get:
+      operationId: auditReportRequestsByIdAndTraceId
+      tags:
+        - audit reports requests
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: traceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /backend/api/audit-reports/{id}:
     get:
       operationId: auditReportById
       tags:
@@ -95,6 +170,16 @@ paths:
 
 components:
   schemas:
+    config_envs:
+      type: array
+      items:
+        format: object
+        properties:
+          domain:
+            type: string
+          env:
+            type: string
+
     page:
       type: object
       properties:

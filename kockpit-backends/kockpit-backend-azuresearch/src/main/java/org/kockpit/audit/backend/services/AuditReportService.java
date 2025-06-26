@@ -7,7 +7,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.kockpit.audit.backend.ApiApiDelegate;
+import org.kockpit.audit.backend.BackendApiDelegate;
+import org.kockpit.audit.backend.ConfigEnvsInner;
 import org.kockpit.audit.backend.Page;
 import org.kockpit.audit.backend.model.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class AuditReportService implements ApiApiDelegate {
+public class AuditReportService implements BackendApiDelegate {
 
     private final SearchClient client;
 
@@ -34,8 +35,39 @@ public class AuditReportService implements ApiApiDelegate {
     @Value("${kockpit.audit.azure.search.index_name}")
     private String indexName;
 
-    @Value("${kockpit.audit.azure.search.max_size:100}")
+    @Value("${kockpit.audit.azure.search.max_size:25}")
     private Integer maxSize;
+
+    @Override
+    public ResponseEntity<List<ConfigEnvsInner>> listEnvironments() {
+        SearchOptions searchOptions = new SearchOptions()
+                .setSelect("domain", "env");
+
+        List<ConfigEnvsInner> list = client.search("*", searchOptions, Context.NONE)
+                .stream()
+                .map(searchResult -> searchResult.getDocument(ConfigEnvsInner.class))
+                .toList();
+
+        return ResponseEntity.ok(list);
+    }
+
+    @Override
+    public ResponseEntity<Page> searchAudits(String query) {
+        SearchOptions searchOptions = new SearchOptions()
+                .setOrderBy("start desc")
+                .setTop(maxSize);
+
+        List<SearchAuditReport> list = client.search(query, searchOptions, Context.NONE)
+                .stream()
+                .map(searchResult -> searchResult.getDocument(SearchAuditReport.class))
+                .toList();
+
+        return ResponseEntity.ok(Page.builder()
+                .items(new ArrayList<>(list))
+                .size(maxSize.longValue())
+                .totalCount(count())
+                .build());
+    }
 
     @Override
     public ResponseEntity<Page> listAudits(Integer start, Integer size) {
@@ -145,9 +177,10 @@ public class AuditReportService implements ApiApiDelegate {
                 }).toList();
     }
 
-    public HttpExchangeAudit getHttpRequestDetails(String id, String traceId) {
+    @Override
+    public ResponseEntity<Object> auditReportRequestsByIdAndTraceId(String id, String traceId) {
         var report = getById(id);
-        return report.getAudits().stream()
+        HttpExchangeAudit httpExchangeAudit = report.getAudits().stream()
                 .filter(searchAudit -> searchAudit.getType().equals("builtin.web"))
                 .map(searchAudit -> {
                     String s = searchAudit.getEvents().get(0);
@@ -176,6 +209,8 @@ public class AuditReportService implements ApiApiDelegate {
                     build.setEndTime(report.getEnd());
                     return build;
                 }).findFirst().orElse(null);
+
+        return ResponseEntity.ok(httpExchangeAudit);
     }
 
     @SneakyThrows

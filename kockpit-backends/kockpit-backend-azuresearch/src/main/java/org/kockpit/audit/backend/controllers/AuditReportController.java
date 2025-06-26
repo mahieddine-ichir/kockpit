@@ -1,8 +1,6 @@
 package org.kockpit.audit.backend.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.kockpit.audit.backend.model.AuditReportSummary;
-import org.kockpit.audit.backend.model.HttpExchangeAudit;
 import org.kockpit.audit.backend.model.HttpRequestSummary;
 import org.kockpit.audit.backend.services.AuditReportService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,15 +25,4 @@ public class AuditReportController {
     public List<HttpRequestSummary> getHttpRequests(@PathVariable String id) {
         return service.getHttpRequests(id);
     }
-
-    //Get full detail of the selected HTTP request
-    @GetMapping("/{id}/requests/{traceId}")
-    public HttpExchangeAudit getHttpRequestDetails(
-            @PathVariable String id,
-            @PathVariable String traceId
-    ) {
-        return service.getHttpRequestDetails(id, traceId);
-    }
-
-
 }
