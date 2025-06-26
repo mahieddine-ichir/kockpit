@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.kockpit.audit.backend.ApiApiDelegate;
+import org.kockpit.audit.backend.Page;
 import org.kockpit.audit.backend.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -33,8 +34,35 @@ public class AuditReportService implements ApiApiDelegate {
     @Value("${kockpit.audit.azure.search.index_name}")
     private String indexName;
 
-    @Value("${kockpit.audit.azure.search.max_size:50}")
+    @Value("${kockpit.audit.azure.search.max_size:100}")
     private Integer maxSize;
+
+    @Override
+    public ResponseEntity<Page> listAudits() {
+        List<Object> list = new ArrayList<>(getAll());
+        Page page = new Page();
+        page.setItems(list);
+        page.setTotalCount(count());
+        return ResponseEntity.ok(page);
+    }
+
+    @Override
+    public ResponseEntity<Page> listAuditsDomainEnv(String domain, String env) {
+        SearchOptions searchOptions = new SearchOptions()
+                .setOrderBy("start desc")
+                .setSearchFields("domain:%s".formatted(domain), "env:%s".formatted(env))
+                .setTop(maxSize);
+
+        List<SearchAuditReport> list = client.search("*", searchOptions, Context.NONE)
+                .stream()
+                .map(searchResult -> searchResult.getDocument(SearchAuditReport.class))
+                .toList();
+
+        return ResponseEntity.ok(Page.builder()
+                        .items(new ArrayList<>(list))
+                        .totalCount(count())
+                .build());
+    }
 
     @Override
     public ResponseEntity<Object> auditReportById(String id) {
@@ -156,6 +184,13 @@ public class AuditReportService implements ApiApiDelegate {
 
     private HttpHeaders headers(Map<String, Object> input) {
         Map<String, List<String>> headers = (Map<String, List<String>>) input.get("headers");
+        if (CollectionUtils.isEmpty(headers)) {
+            return new HttpHeaders();
+        }
         return new HttpHeaders(new LinkedMultiValueMap<>(headers));
+    }
+
+    private Long count() {
+        return client.getDocumentCount();
     }
 }

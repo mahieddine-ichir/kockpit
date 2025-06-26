@@ -4,6 +4,46 @@ info:
   title: Kockpit backend api
   version: "1.0"
 paths:
+  /api/audits:
+    get:
+      operationId: listAudits
+      tags:
+        - audits
+      description: list audits
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/page"
+
+  /api/audits/{domain}/{env}:
+    get:
+      operationId: listAuditsDomainEnv
+      tags:
+        - audits
+      parameters:
+        - name: domain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: env
+          in: path
+          required: true
+          schema:
+            type: string
+
+      description: list audits, for env and domain
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/page"
+
   /api/audit-reports:
     get:
       operationId: listAuditReports
@@ -39,3 +79,15 @@ paths:
               schema:
                 type: object
 
+components:
+  schemas:
+    page:
+      type: object
+      properties:
+        total_count:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            format: object
