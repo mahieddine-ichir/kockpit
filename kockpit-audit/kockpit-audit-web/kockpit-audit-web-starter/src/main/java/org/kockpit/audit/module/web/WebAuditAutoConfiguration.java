@@ -62,7 +62,7 @@ public class WebAuditAutoConfiguration {
       name = "enabled",
       havingValue = "true")
   public ResponseAuditor headersResponseAuditor(
-      @Value("${wcp.sdk.service.audit.http.response.headers.names}")
+      @Value("${kockpit.sdk.service.audit.http.response.headers.names}")
           List<String> requestHeaderNames) {
     return new HeadersResponseAuditor(requestHeaderNames);
   }
@@ -82,14 +82,14 @@ public class WebAuditAutoConfiguration {
       List<SkipRequestAuditor> skipRequestAuditorList,
       List<RequestAuditor> requestAuditorList,
       List<ResponseAuditor> responseAuditorList,
-      AuditorService wcpAuditor,
+      AuditorService auditorService,
       AuditorEventService auditorEventService,
       AuditorKeyValueService auditorKeyValueService) {
     return new AuditFilter(
         skipRequestAuditorList,
         requestAuditorList,
         responseAuditorList,
-        wcpAuditor,
+        auditorService,
         auditorEventService,
         auditorKeyValueService);
   }

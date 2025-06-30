@@ -64,12 +64,12 @@ class AuditAutoConfiguration {
   }
 
   @Bean
-  public KockpitAuditorEvent wcpAuditorEvent() {
+  public KockpitAuditorEvent auditorEvent() {
     return new KockpitAuditorEvent();
   }
 
   @Bean
-  public KockpitAuditorKeyValue wcpAuditorKeyValue() {
+  public KockpitAuditorKeyValue auditorKeyValue() {
     return new KockpitAuditorKeyValue();
   }
 }

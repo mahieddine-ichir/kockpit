@@ -1,4 +1,4 @@
-package com.accor.wcp.obfuscation.spring;
+package org.kockpit.audit.obfuscation.spring;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

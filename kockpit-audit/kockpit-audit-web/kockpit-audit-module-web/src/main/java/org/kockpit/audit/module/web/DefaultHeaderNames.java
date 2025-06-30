@@ -10,5 +10,5 @@ import lombok.experimental.UtilityClass;
 @Deprecated(since = "2.4.1", forRemoval = true)
 class DefaultHeaderNames {
 
-  static final String WCP_ORIGIN = "X-WCP-Origin";
+  static final String KOCKPIT_ORIGIN = "X-KOCKPIT-Origin";
 }
