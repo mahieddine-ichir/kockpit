@@ -10,11 +10,6 @@
     </parent>
     <artifactId>kockpit-rules-app-sample</artifactId>
 
-    <properties>
-        <java.version>21</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -28,6 +23,11 @@
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-rules-starter</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -44,7 +44,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/rule-flow-example.json</inputSpec>
-                            <packageName>com.kockpit.samples.rules</packageName>
+                            <packageName>org.kockpit.samples.rules</packageName>
                         </configuration>
                     </execution>
                 </executions>

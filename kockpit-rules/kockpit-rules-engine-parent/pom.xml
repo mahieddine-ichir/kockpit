@@ -21,7 +21,7 @@
 		<module>kockpit-rules-registry</module>
 		<module>kockpit-rules-executor</module>
 		<module>kockpit-rules-starter</module>
-	</modules>
+    </modules>
 
 	<!--
 	<dependencyManagement>

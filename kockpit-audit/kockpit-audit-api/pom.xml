@@ -8,7 +8,6 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>kockpit-audit-api</artifactId>
-    <name>kockpit-audit-api</name>
 
     <dependencies>
         <dependency>

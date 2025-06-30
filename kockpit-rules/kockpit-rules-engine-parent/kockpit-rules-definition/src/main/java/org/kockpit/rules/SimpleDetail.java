@@ -1,0 +1,27 @@
+package org.kockpit.rules;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+public class SimpleDetail {
+
+  private String code;
+
+  private String name;
+
+  private String description;
+
+  public SimpleDetail(String code, String name) {
+    this.code = code;
+    this.name = name;
+  }
+
+  public SimpleDetail(String code, String name, String description) {
+    this.code = code;
+    this.name = name;
+    this.description = description;
+  }
+
+}

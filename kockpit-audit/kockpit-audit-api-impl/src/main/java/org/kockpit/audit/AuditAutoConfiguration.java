@@ -6,15 +6,15 @@ import org.kockpit.audit.api.AuditorService;
 import org.kockpit.audit.obfuscate.AuditObfuscationSettings;
 import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
 
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties({AuditObfuscationSettings.class, SdkApplicationProperties.class})
 @EnableScheduling
 class AuditAutoConfiguration {
