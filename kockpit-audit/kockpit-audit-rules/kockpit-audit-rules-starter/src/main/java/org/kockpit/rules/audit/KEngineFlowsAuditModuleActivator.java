@@ -18,13 +18,13 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 public class KEngineFlowsAuditModuleActivator implements AuditModuleActivator {
   private final RuleNodeRegistry ruleNodeRegistry;
-  // todo private final App2WCPConsoleCommunicationService app2WCPConsoleCommunicationService;
+  // todo private final AppConsoleCommunicationService appConsoleCommunicationService;
 
   @Override
   public void initialize() {
     KEngineFlowsReferentialDto referentialDto = serializeGlobalReferential();
-    // app2WCPConsoleCommunicationService.notify("audit", referentialDto);
-    log.warn("Should notif via commucation service App2WCPConsoleCommunicationService");
+    // appConsoleCommunicationService.notify("audit", referentialDto);
+    log.warn("Should notif via commucation service AppConsoleCommunicationService");
   }
 
   @Override

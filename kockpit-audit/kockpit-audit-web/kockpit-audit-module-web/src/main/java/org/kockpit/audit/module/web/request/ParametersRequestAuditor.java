@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ParametersRequestAuditor implements RequestAuditor {
 
-  @Value("${wcp.sdk.service.audit.web.http-parameters}")
+  @Value("${kockpit.sdk.service.audit.web.http-parameters}")
   private List<String> paramsNameToAudit;
 
   @Override

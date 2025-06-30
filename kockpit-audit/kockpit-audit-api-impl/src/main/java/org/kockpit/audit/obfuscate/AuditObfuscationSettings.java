@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ConfigurationProperties(prefix = "wcp.sdk.service.audit.obfuscation")
+@ConfigurationProperties(prefix = "kockpit.sdk.service.audit.obfuscation")
 public class AuditObfuscationSettings {
 
   List<ModuleObfuscationSettings> configs = new ArrayList<>();
