@@ -11,5 +11,16 @@
       "statusCode": 302,
       "redirect": "/.auth/login/aad"
     }
+  },
+  "auth": {
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "registration": {
+          "openIdIssuer": "https://login.microsoftonline.com/ebaeb74c-eeae-40f8-b755-10b0e2bf7528/v2.0",
+          "clientIdSettingName": "7e7a12f9-2088-45e1-b715-11440f8a7198",
+          "clientSecretSettingName": "5no8Q~kfVe153VCbuHbX.WIf0hHT-2wvLpUd5cx6"
+        }
+      }
+    }
   }
 }
