@@ -12,8 +12,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>kockpit-rules-maven-plugin</module>
 		<module>kockpit-rules-engine-parent</module>
+		<module>kockpit-rules-maven-plugin</module>
 		<module>kockpit-rules-app-sample</module>
 	</modules>
 </project>

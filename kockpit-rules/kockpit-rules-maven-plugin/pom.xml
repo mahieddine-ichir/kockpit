@@ -73,19 +73,6 @@
             <version>1.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-        <!-- for generated classes compilation -->
-        <!--
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-rules-registry</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>6.1.12</version>
-        </dependency>
-        -->
     </dependencies>
 
     <build>

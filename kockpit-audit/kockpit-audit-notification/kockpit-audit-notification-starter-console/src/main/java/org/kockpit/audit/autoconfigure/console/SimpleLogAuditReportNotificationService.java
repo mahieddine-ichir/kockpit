@@ -12,6 +12,8 @@ public class SimpleLogAuditReportNotificationService implements AuditReportNotif
   @Override
   public void notify(List<AuditJsonReport> auditReports) {
     auditReports.forEach(
-        auditReport -> log.info("Notify auditReport json: {}}", auditReport.getAuditJson()));
+        auditReport -> {
+                log.info("Notify auditReport json: {}", auditReport.getAuditJson());
+        });
   }
 }
