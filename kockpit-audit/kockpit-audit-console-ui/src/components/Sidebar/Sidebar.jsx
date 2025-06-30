@@ -7,6 +7,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
   const [userInfo, setUserInfo] = useState({});
   const redirectUri = window.location.pathname;
 
+  /*
   useEffect(() => {
       (async () => {
           setUserInfo(await getUserInfo());
@@ -19,6 +20,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         const { clientPrincipal } = payload;
         return clientPrincipal;
     }
+   */
 
   return (
     <div className={`bg-gray-800 text-white h-screen fixed flex flex-col transition-all duration-300 ${collapsed ? 'w-16' : 'w-64'}`}>
@@ -45,14 +47,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 
       <div className="flex-1 overflow-y-auto">
         <h3 className={`px-4 py-3 text-sm font-semibold text-gray-400 sticky top-0 bg-gray-800 z-10 ${collapsed ? 'hidden' : ''}`}>Navigation</h3>
-          <nav className="pb-4">
-              {userInfo ?
-                <a key="aad" href={`/.auth/login/aad?post_login_redirect_uri=${redirectUri}`}>
-                    Login
-                </a> : null
-              }
-          </nav>
-
         <nav className="pb-4">
           <div
             className={`flex items-center px-4 py-3 cursor-pointer transition-colors duration-200 mx-2 rounded text-gray-300 hover:bg-gray-700 hover:text-white ${collapsed ? 'justify-center px-0' : ''}`}
