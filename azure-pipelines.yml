@@ -95,15 +95,15 @@ stages:
               tags: |
                 $(tag)
 
-  - stage: Front
-    jobs:
-      - job: ui
-        steps:
-          - task: AzureStaticWebApp@0
-            inputs:
-              app_location: 'src'
-              api_location: 'api' # Api source code path relative to cwd
-              output_location: 'public' # Built app content directory relative to app_location - optional
-              cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
-              azure_static_web_apps_api_token: 'c3d336efd9a7efdda088488a91fea68f8fbe7cba9966609b0593c49c2165a11e06-a4fd4664-3315-438f-8d9d-5985f2c3574a00331290bef94a03'
+#  - stage: Front
+#    jobs:
+#      - job: ui
+#        steps:
+#          - task: AzureStaticWebApp@0
+#            inputs:
+#              app_location: 'src'
+#              api_location: 'api' # Api source code path relative to cwd
+#              output_location: 'public' # Built app content directory relative to app_location - optional
+#              cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
+#              azure_static_web_apps_api_token: 'c3d336efd9a7efdda088488a91fea68f8fbe7cba9966609b0593c49c2165a11e06-a4fd4664-3315-438f-8d9d-5985f2c3574a00331290bef94a03'
 
