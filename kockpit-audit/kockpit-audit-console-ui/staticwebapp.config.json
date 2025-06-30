@@ -9,7 +9,18 @@
   "responseOverrides": {
     "401": {
       "statusCode": 302,
-      "redirect": "/.auth/login/aad"
+      "redirect": "/.auth/login/azureActiveDirectory"
+    }
+  },
+  "auth": {
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "registration": {
+          "openIdIssuer": "https://login.microsoftonline.com/ebaeb74c-eeae-40f8-b755-10b0e2bf7528/v2.0",
+          "clientIdSettingName": "5105281a-220b-4678-9151-2a1952c90227",
+          "clientSecretSettingName": "c7cb1fe1-aca2-44c0-adad-d44a134c09e5"
+        }
+      }
     }
   }
 }
