@@ -3,7 +3,7 @@
   "routes": [
     {
       "route": "/*",
-      "allowedRoles": ["administrator"]
+      "allowedRoles": ["authenticated"]
     }
   ],
   "responseOverrides": {
