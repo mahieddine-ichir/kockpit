@@ -3,10 +3,12 @@ package org.kockpit.audit.backend.services;
 import com.azure.core.util.Context;
 import com.azure.search.documents.SearchClient;
 import com.azure.search.documents.models.SearchOptions;
+import com.azure.search.documents.util.SearchPagedIterable;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.backend.BackendApiDelegate;
 import org.kockpit.audit.backend.ConfigEnvsInner;
 import org.kockpit.audit.backend.Page;
@@ -26,6 +28,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuditReportService implements BackendApiDelegate {
 
     private final SearchClient client;
@@ -79,13 +82,20 @@ public class AuditReportService implements BackendApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Page> listAuditsDomainEnv(String domain, String env) {
+    public ResponseEntity<Page> listAuditsDomainEnv(String domain, String env, Integer start, Integer size) {
+        log.info("load for domain {}, env {}, page {} {}", domain, env, start, size);
         SearchOptions searchOptions = new SearchOptions()
                 .setOrderBy("start desc")
-                .setSearchFields("domain:%s".formatted(domain), "env:%s".formatted(env))
-                .setTop(maxSize);
+                .setSearchFields("env")
+                .setFilter("domain eq '" + domain + "'")
+                .setSkip(start)
+                .setIncludeTotalCount(true)
+                .setTop(Math.min(size, maxSize));
 
-        List<SearchAuditReport> list = client.search("*", searchOptions, Context.NONE)
+        SearchPagedIterable search = client.search(env, searchOptions, Context.NONE);
+        Long count = search.getTotalCount();
+
+        List<SearchAuditReport> list = search
                 .stream()
                 .map(searchResult -> searchResult.getDocument(SearchAuditReport.class))
                 .toList();
@@ -93,7 +103,7 @@ public class AuditReportService implements BackendApiDelegate {
         return ResponseEntity.ok(Page.builder()
                         .items(new ArrayList<>(list))
                         .size(maxSize.longValue())
-                        .totalCount(count())
+                        .totalCount(count)
                 .build());
     }
 

@@ -63,7 +63,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/page"
 
-  /backend/api/audits/{domain}/{env}:
+  /backend/api/{domain}/{env}/audits:
     get:
       operationId: listAuditsDomainEnv
       tags:
@@ -79,6 +79,18 @@ paths:
           required: true
           schema:
             type: string
+        - name: start
+          description: number of elements to skip
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          description: number of items to return
+          in: query
+          schema:
+            type: integer
+            default: 50
 
       description: list audits, for env and domain
       responses:
