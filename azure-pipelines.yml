@@ -13,7 +13,7 @@ variables:
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
   dockerRegistryServiceConnection: 'dc378648-6636-4f5b-937e-0ae584b11c7d'
   tag: 'latest'
-  AZURE_STATIC_WEB_APPS_API_TOKEN_ZEALOUS_FLOWER_0BEF94A03: 'c3d336efd9a7efdda088488a91fea68f8fbe7cba9966609b0593c49c2165a11e06-a4fd4664-3315-438f-8d9d-5985f2c3574a00331290bef94a03'
+  DEPLOYMENT_KEY: $(DEPLOYMENT_KEY_$(Build.SourceBranchName))
 
 stages:
 #  - stage: Build
@@ -102,7 +102,7 @@ stages:
         steps:
           - task: AzureStaticWebApp@0
             inputs:
-              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN_ZEALOUS_FLOWER_0BEF94A03)
+              azure_static_web_apps_api_token: $(DEPLOYMENT_KEY)
               cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
               app_location: '.'
               api_location: '' # Api source code path relative to cwd
