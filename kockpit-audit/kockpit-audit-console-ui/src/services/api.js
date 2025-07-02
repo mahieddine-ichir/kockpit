@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE = "https://rcu-apim-dev.azure-api.net/backend/api";
+//const API_BASE = "https://rcu-apim-dev.azure-api.net/backend/api";
+const API_BASE = "https://kockpit-apim-pro.azure-api.net/backend/api";
 //const API_BASE = 'http://localhost:8080/backend/api';
 
 export const fetchAuditReportsForDomainAndEnv = async (domain, env) => {
