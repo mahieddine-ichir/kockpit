@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {fetchAuditReportsForDomainAndEnv, fetchAuditReportsWithPaging, searchAudits} from '../services/api';
+import {fetchAuditReportsWithPaging, getConfig, searchAudits} from '../services/api';
 import Sidebar from '../components/Sidebar/Sidebar';
-import {ClipboardDocumentIcon, EyeIcon, CheckIcon} from '@heroicons/react/24/outline';
+import {CheckIcon, ClipboardDocumentIcon, EyeIcon} from '@heroicons/react/24/outline';
 import {AdjustmentsHorizontalIcon, MagnifyingGlassCircleIcon} from '@heroicons/react/20/solid';
 import {useNavigate, useSearchParams} from 'react-router-dom';
 import StatusBadge from '../components/RequestOverview/StatusBadge.jsx';
@@ -24,10 +24,32 @@ const ALL_COLUMNS = [
   { key: 'end', label: 'End' },
 ];
 
-const DEFAULT_COLUMNS = [
-  'appId', 'requestId', 'method', 'path', 'duration', 'start', 'status'
-];
+function getColumns() {
+  //const saved = null; // fixme localStorage.getItem('selected_columns');
+  /*if (saved !== null) {
+  */ // return JSON.parse(saved);
+//  } else {
 
+  let defaultConfig = getConfig()
+      .find(value => value.domain === 'default');
+  let audit = defaultConfig.services
+      .find(service => service.name === 'audit');
+
+  console.log(audit.config.columns);
+  return audit.config.columns;
+//  }
+}
+
+function getDomainEnvConfig() {
+  return getConfig()
+      .filter(value => value.domain !== 'default')
+      .map(value => {
+        return {
+          env: value.env,
+          domain: value.domain
+        };
+      });
+}
 
 function DomainEnv({options, filter, onchange}) {
   return (
@@ -52,19 +74,17 @@ function DomainEnv({options, filter, onchange}) {
 const RequestOverview = () => {
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showColumns, setShowColumns] = useState(
-      () => {
-        const saved = localStorage.getItem('selectedcolumns');
-        return saved ? JSON.parse(saved) : DEFAULT_COLUMNS;
-      }
-  );
+
+  const [showColumns, setShowColumns] = useState(() => {
+    return getColumns()
+  });
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [httpMethodFilter, setHttpMethodFilter] = useState('');
 
-  const [domainEnvFilter, setDomainEnvFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
@@ -73,13 +93,20 @@ const RequestOverview = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Domain Env management
+  // fixme get from backend
+  const [domainEnvFilter, setDomainEnvFilter] = useState('');
+  const [config, setConfig] = useState(getDomainEnvConfig());
+
+  const [selectedDomain, setSelectedDomain] = useState('');
+  const [selectedEnv, setSelectedEnv] = useState('');
+
   useEffect(() => {
     setSearch(searchParams.get('search') || '');
     setStatusFilter(searchParams.get('status') || '');
     setHttpMethodFilter(searchParams.get('httpMethod') || '');
     setDomainEnvFilter(searchParams.get('domainEnv') || '');
   }, []);
-
 
   const updateSearchParams = (params) => {
     const newParams = new URLSearchParams(searchParams);
@@ -93,7 +120,6 @@ const RequestOverview = () => {
     setSearchParams(newParams, { replace: true });
   };
 
-
   useEffect(() => {
     updateSearchParams({
       search,
@@ -104,8 +130,15 @@ const RequestOverview = () => {
   }, [search, statusFilter, httpMethodFilter, domainEnvFilter]);
 
   function loadAll() {
-    console.log("load All data");
-    fetchAuditReportsWithPaging(itemsPerPage, currentPage*itemsPerPage)
+    let domain = selectedDomain;
+    let env = selectedEnv;
+    if (selectedDomain.length === 0 || selectedEnv.length === 0) {
+      const defaultConfig = getDomainEnvConfig()[0];
+      domain = defaultConfig.domain;
+      env = defaultConfig.env;
+    }
+    console.log(`loading for ${domain} / ${env}`);
+    fetchAuditReportsWithPaging(domain, env, itemsPerPage, currentPage * itemsPerPage)
         .then((data) => {
           setAudits(data.items);
           setTotalCount(data.total_count);
@@ -113,35 +146,17 @@ const RequestOverview = () => {
           setLoading(false);
         });
   }
+
   useEffect(() => {
-    fetchAuditReportsWithPaging(itemsPerPage, currentPage*itemsPerPage)
-        .then((data) => {
-          setAudits(data.items);
-          setTotalCount(data.total_count);
-          setItemsPerPage(data.size);
-          setLoading(false);
-        });
+    loadAll();
   }, []);
 
+  /*
   useEffect(() => {
-    localStorage.setItem('selectedcolumns', JSON.stringify(showColumns));
+    localStorage.setItem('selected_columns', JSON.stringify(showColumns));
   }, [showColumns]);
+   */
 
-
-  function getDomainEnvOptions(audits) {
-    const options = [];
-    audits.forEach(audit => {
-      const domain = audit.domain || '';
-      const env = audit.env || '';
-      const domainenv = `${domain} / ${env}`;
-
-      if (!options.includes(domainenv)) {
-        options.push(domainenv);
-      }
-    });
-
-    return options.filter(option => option !== ' / ');
-  }
 
   const getUniqueValues = (key, fromIndexed) => {
     if (fromIndexed) {
@@ -187,6 +202,10 @@ const RequestOverview = () => {
     });
     setAudits(filtered);
   }, [statusFilter, httpMethodFilter, domainEnvFilter]);
+
+  useEffect(() => {
+    loadAll();
+  }, [selectedDomain, selectedEnv]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -238,11 +257,10 @@ const RequestOverview = () => {
 
   const statusOptions = getUniqueValues('httpStatus', true);
   const httpMethodOptions = getUniqueValues('httpMethod', true);
-  const domainEnvOptions = getDomainEnvOptions(audits);
 
   const fetchPage = (page, pageSize) => {
     setLoading(true);
-    fetchAuditReportsWithPaging(pageSize, pageSize * page).then((data) => {
+    fetchAuditReportsWithPaging(selectedDomain, selectedEnv, pageSize, pageSize * page).then((data) => {
       setAudits(data.items);
       setLoading(false);
     });
@@ -304,6 +322,19 @@ const RequestOverview = () => {
     );
   }
 
+  function domainEnvChanged(e) {
+    let value = e.target.value;
+    let domain = value.substring(0, value.indexOf("/")).trim();
+    let env = value.substring(value.indexOf("/")+1).trim();
+
+    if (domain !== selectedDomain) {
+      setSelectedDomain(domain);
+    }
+    if (env !== selectedEnv) {
+      setSelectedEnv(env);
+    }
+  }
+
   return (
       <div className="flex">
         <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
@@ -335,15 +366,15 @@ const RequestOverview = () => {
               <div className="flex flex-col min-w-[220px]">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Domain / Env</label>
                 <select
-                    value={domainEnvFilter}
-                    onChange={e => setDomainEnvFilter(e.target.value)}
+                    onChange = {domainEnvChanged}
                     className="w-full rounded-lg border border-gray-300 shadow focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition sm:text-sm bg-white px-3 py-2"
                     style={{ minHeight: '44px' }}
                 >
-                  <option value="">All</option>
-                  {domainEnvOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                  ))}
+                  {
+                    config.map(option => (
+                      <option>{option.domain} / {option.env}</option>
+                    ))
+                  }
                 </select>
               </div>
             </div>

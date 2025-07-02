@@ -1,12 +1,7 @@
 import axios from 'axios';
 
-const API_BASE = "https://rcu-apim-dev.azure-api.net/backend/api";
-//const API_BASE = 'http://localhost:8080/backend/api';
-
-export const fetchAuditReportsForDomainAndEnv = async (domain, env) => {
-  const response = await axios.get(`${API_BASE}/audits/${domain}/${env}`);
-  return response.data.items;
-};
+//const API_BASE = "https://rcu-apim-dev.azure-api.net/backend/api";
+const API_BASE = 'http://localhost:8080/backend/api';
 
 // deprecated use paging one
 export const fetchAuditReports = async () => {
@@ -20,9 +15,9 @@ export const searchAudits = async (query) => {
   return response.data;
 };
 
-// deprecated
-export const fetchAuditReportsWithPaging = async (size, start) => {
-  const response = await axios.get(`${API_BASE}/audits?size=${size}&start=${start}`);
+// fixme remove deprecated
+export const fetchAuditReportsWithPaging = async (domain, env, size, start) => {
+  const response = await axios.get(`${API_BASE}/${domain}/${env}/audits?size=${size}&start=${start}`);
   return response.data;
 };
 
@@ -41,3 +36,34 @@ export const fetchAuditDetails = async (id, traceId) => {
   const response = await axios.get(`${API_BASE}/audit-reports/${id}/requests/${traceId}`);
   return response.data;
 };
+
+export const getConfig = () => {
+  // fixme get from backend
+  return [
+    {
+      domain: 'default',
+      env: 'default',
+      services:
+          [
+            {
+              name: "audit",
+              config: {
+                columns: ['appId', 'requestId', 'method', 'path', 'duration', 'start', 'status']
+              }
+            }
+          ]
+    },
+    {
+      domain: 'rcu', env: 'dev'
+    },
+    {
+      domain: 'rcu', env: 'int'
+    },
+    {
+      domain: 'rcu', env: 'rec'
+    },
+    {
+      domain: 'rcu', env: 'oat'
+    }
+  ];
+}
