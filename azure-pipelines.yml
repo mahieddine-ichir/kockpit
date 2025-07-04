@@ -17,7 +17,6 @@ variables:
 
 stages:
   - stage: Build
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/pro')
     jobs:
       - job: build
         continueOnError: false
@@ -47,7 +46,6 @@ stages:
               goals: 'deploy -Pstime'
 
   - stage: Docker
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/pro')
     jobs:
       - job: image
         continueOnError: false
