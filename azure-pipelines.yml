@@ -13,7 +13,7 @@ variables:
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
   dockerRegistryServiceConnection: 'dc378648-6636-4f5b-937e-0ae584b11c7d'
   tag: 'latest'
-  DEPLOYMENT_KEY: $(DEPLOYMENT_KEY_$(Build.SourceBranchName))
+  DEPLOYMENT_KEY: '$(DEPLOYMENT_KEY_$(Build.SourceBranchName))'
 
 stages:
   - stage: Build
@@ -96,13 +96,27 @@ stages:
               tags: |
                 $(tag)
 
-  - stage: Front
+  - stage: Front dev
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
     jobs:
       - job: ui
         steps:
           - task: AzureStaticWebApp@0
             inputs:
-              azure_static_web_apps_api_token: $(DEPLOYMENT_KEY)
+              azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_dev)
+              cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
+              app_location: '.'
+              api_location: '' # Api source code path relative to cwd
+              output_location: 'dist' # Built app content directory relative to app_location - optional
+
+  - stage: Front pro
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/pro')
+    jobs:
+      - job: ui
+        steps:
+          - task: AzureStaticWebApp@0
+            inputs:
+              azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_pro)
               cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
               app_location: '.'
               api_location: '' # Api source code path relative to cwd
