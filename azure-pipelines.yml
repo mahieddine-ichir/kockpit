@@ -96,12 +96,13 @@ stages:
               tags: |
                 $(tag)
 
-  - stage: Front dev
+  - stage: Front
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
     jobs:
       - job: ui
         steps:
           - task: AzureStaticWebApp@0
+            displayName: 'Deploy front to DEV'
             inputs:
               azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_dev)
               cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
@@ -109,12 +110,13 @@ stages:
               api_location: '' # Api source code path relative to cwd
               output_location: 'dist' # Built app content directory relative to app_location - optional
 
-  - stage: Front pro
+  - stage: Front
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/pro')
     jobs:
       - job: ui
         steps:
           - task: AzureStaticWebApp@0
+            displayName: 'Deploy front to PRO'
             inputs:
               azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_pro)
               cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
