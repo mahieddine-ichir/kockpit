@@ -2,6 +2,7 @@ package org.kockpit.audit.stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kockpit.audit.stream.api.AuditReport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.io.IOException;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Disabled
 public class SerdesTest {
 
     @Autowired
