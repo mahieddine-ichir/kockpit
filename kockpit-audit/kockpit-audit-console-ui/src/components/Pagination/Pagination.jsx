@@ -9,6 +9,9 @@ const Pagination = ({
                     }) => {
 
     const selections = [10, 25, 50, 100];
+    const handleFirst = () => {
+        onPageChange(1, itemsPerPage);
+    }
     const handlePrevious = () => {
         if (currentPage > 1) {
             onPageChange(currentPage - 1, itemsPerPage);
@@ -32,7 +35,7 @@ const Pagination = ({
     const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
     return (
-        <div className="flex items-center justify-end space-x-4 w-full mb-2">
+        <div className="flex items-center justify-end space-x-2 w-full mb-1">
             <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-700">
                     Items per page
@@ -51,6 +54,17 @@ const Pagination = ({
                 </select>
             </div>
             <span className="text-sm text-gray-700 min-w-max">{startItem}-{endItem} of {totalItems}</span>
+            <button
+                onClick={handleFirst}
+                disabled={currentPage === 1}
+                className="p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+                aria-label="Previous page"
+            >
+                <svg className="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 19l-7-7 7-7" />
+                </svg>
+            </button>
             <button
                 onClick={handlePrevious}
                 disabled={currentPage === 1}

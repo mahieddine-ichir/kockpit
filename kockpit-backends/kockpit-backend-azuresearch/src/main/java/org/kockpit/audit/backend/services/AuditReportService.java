@@ -3,14 +3,14 @@ package org.kockpit.audit.backend.services;
 import com.azure.core.util.Context;
 import com.azure.search.documents.SearchClient;
 import com.azure.search.documents.models.SearchOptions;
+import com.azure.search.documents.util.SearchPagedIterable;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.kockpit.audit.backend.BackendApiDelegate;
-import org.kockpit.audit.backend.ConfigEnvsInner;
-import org.kockpit.audit.backend.Page;
-import org.kockpit.audit.backend.model.*;
+import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.backend.*;
+import org.kockpit.audit.backend.model.SearchAuditReport;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,18 +25,63 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuditReportService implements BackendApiDelegate {
 
     private final SearchClient client;
 
     private final ObjectMapper objectMapper;
 
-    @Value("${kockpit.audit.azure.search.index_name}")
-    private String indexName;
-
     @Value("${kockpit.audit.azure.search.max_size:25}")
     private Integer maxSize;
 
+    @Value("${kockpit.env}")
+    
+    @Override
+    public ResponseEntity<List<ConfigItem>> getConfig() {
+        // fixme
+        return ResponseEntity.ok(List.of(
+                ConfigItem.builder()
+                        .domain("rcu")
+                        .env("dev")
+                        .services(List.of(
+                                Service.builder()
+                                        .name("audit")
+                                        .config(ConfigAudit.builder()
+                                                .columns(List.of("appId", "requestId", "method", "path", "duration", "start", "status"))
+                                                .build())
+                                        .build()
+                                ))
+                        .build(),
+                ConfigItem.builder()
+                        .domain("rcu")
+                        .env("int")
+                        .services(List.of(
+                                Service.builder()
+                                        .name("audit")
+                                        .config(ConfigAudit.builder()
+                                                .columns(List.of("appId", "requestId", "method", "path", "duration", "start", "status"))
+                                                .build())
+                                        .build()
+                            ))
+                        .build(),
+                ConfigItem.builder()
+                        .domain("rcu")
+                        .env("rec")
+                        .services(List.of(
+                                Service.builder()
+                                        .name("audit")
+                                        .config(ConfigAudit.builder()
+                                                .columns(List.of("appId", "requestId", "method", "path", "duration", "start", "status"))
+                                                .build())
+                                        .build()
+                        ))
+                        .build()
+
+        ));
+    }
+
+    /*
     @Override
     public ResponseEntity<List<ConfigEnvsInner>> listEnvironments() {
         SearchOptions searchOptions = new SearchOptions()
@@ -50,53 +94,52 @@ public class AuditReportService implements BackendApiDelegate {
 
         return ResponseEntity.ok(list);
     }
+     */
 
     @Override
-    public ResponseEntity<Page> searchAudits(String query) {
-        SearchOptions searchOptions = new SearchOptions()
-                .setOrderBy("start desc")
-                .setTop(maxSize);
-
-        List<SearchAuditReport> list = client.search(query, searchOptions, Context.NONE)
+    public ResponseEntity<Page> searchAudits(String query, String domain, String env, Integer start, Integer size) {
+        SearchPagedIterable search = doSearch(query, domain, env, start, size);
+        List<SearchAuditReport> list = search
                 .stream()
                 .map(searchResult -> searchResult.getDocument(SearchAuditReport.class))
                 .toList();
 
         return ResponseEntity.ok(Page.builder()
                 .items(new ArrayList<>(list))
-                .size(maxSize.longValue())
-                .totalCount(count())
+                .size(size.longValue())
+                .totalCount(search.getTotalCount())
                 .build());
     }
 
     @Override
-    public ResponseEntity<Page> listAudits(Integer start, Integer size) {
-        return ResponseEntity.ok(Page.builder()
-                        .size(size.longValue())
-                        .totalCount(count())
-                        .items(new ArrayList<>(getAll(size, start)))
-                .build());
+    public ResponseEntity<Object> auditById(String id) {
+        Object document = client.getDocument(id, SearchAuditReport.class);
+        return ResponseEntity.ok(document);
     }
 
     @Override
-    public ResponseEntity<Page> listAuditsDomainEnv(String domain, String env) {
-        SearchOptions searchOptions = new SearchOptions()
-                .setOrderBy("start desc")
-                .setSearchFields("domain:%s".formatted(domain), "env:%s".formatted(env))
-                .setTop(maxSize);
+    public ResponseEntity<Object> auditByIdForEnvAndDomain(String id, String domain, String env) {
+        return auditById(id); // fixme keep for env and domain
+    }
 
-        List<SearchAuditReport> list = client.search("*", searchOptions, Context.NONE)
+    @Override
+    public ResponseEntity<Page> listAuditsDomainEnv(String domain, String env, Integer start, Integer size) {
+        log.info("load for domain {}, env {}, page {} {}", domain, env, start, size);
+        SearchPagedIterable search = doSearch("*", domain, env, start, size);
+        List<SearchAuditReport> list = search
                 .stream()
                 .map(searchResult -> searchResult.getDocument(SearchAuditReport.class))
                 .toList();
-
         return ResponseEntity.ok(Page.builder()
                         .items(new ArrayList<>(list))
-                        .size(maxSize.longValue())
-                        .totalCount(count())
+                        .size(size.longValue())
+                        .totalCount(search.getTotalCount())
                 .build());
     }
 
+
+
+/*
     @Override
     public ResponseEntity<Object> auditReportById(String id) {
         Object document = client.getDocument(id, SearchAuditReport.class);
@@ -119,11 +162,12 @@ public class AuditReportService implements BackendApiDelegate {
                 .stream()
                 .map(searchResult -> searchResult.getDocument(SearchAuditReport.class))
                 .toList();
-    };
+    }
 
     private SearchAuditReport getById(String id) {
         return client.getDocument(id, SearchAuditReport.class);
     }
+*/
 
     /*
     public List<AuditReportSummary> getReportsSummaries() {
@@ -140,7 +184,6 @@ public class AuditReportService implements BackendApiDelegate {
                 )
         ).toList();
     }
-     */
 
     private Integer status(List<SearchIndexedKeyValue> indexedKeyValues) {
         if (CollectionUtils.isEmpty(indexedKeyValues)) {
@@ -176,7 +219,9 @@ public class AuditReportService implements BackendApiDelegate {
                     );
                 }).toList();
     }
+     */
 
+    /*
     @Override
     public ResponseEntity<Object> auditReportRequestsByIdAndTraceId(String id, String traceId) {
         var report = getById(id);
@@ -212,7 +257,6 @@ public class AuditReportService implements BackendApiDelegate {
 
         return ResponseEntity.ok(httpExchangeAudit);
     }
-
     @SneakyThrows
     private Map<String, Object> toMap(String s) {
         TypeReference<HashMap<String,Object>> typeRef = new TypeReference<>() {};
@@ -226,8 +270,17 @@ public class AuditReportService implements BackendApiDelegate {
         }
         return new HttpHeaders(new LinkedMultiValueMap<>(headers));
     }
+*/
 
-    private Long count() {
-        return client.getDocumentCount();
+
+    private SearchPagedIterable doSearch(String query, String domain, String env, Integer start, Integer size) {
+        SearchOptions searchOptions = new SearchOptions()
+                .setOrderBy("start desc")
+                .setFilter("domain eq '" + domain + "' and env eq '" + env + "'")
+                .setSkip(start)
+                .setIncludeTotalCount(true)
+                .setTop(Math.min(size, maxSize));
+
+        return client.search(query, searchOptions, Context.NONE);
     }
 }
