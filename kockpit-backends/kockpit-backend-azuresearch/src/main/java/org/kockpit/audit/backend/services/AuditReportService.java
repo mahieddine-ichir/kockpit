@@ -25,10 +25,6 @@ public class AuditReportService implements BackendApiDelegate {
     @Value("${kockpit.audit.azure.search.max_size:25}")
     private Integer maxSize;
 
-    // fixme
-    @Value("${kockpit.env}")
-    private String kockpitEnv;
-    
     @Override
     public ResponseEntity<List<ConfigItem>> getConfig() {
         // fixme get by AppId
