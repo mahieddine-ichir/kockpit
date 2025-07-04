@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        namespace: kockpit-pro
+        event-hub-name: kockpit
+        consumer:
+          consumer-group: audit-stream
+        connection-string: Endpoint=sb://kockpit-pro.servicebus.windows.net/;SharedAccessKeyName=audit-sender;SharedAccessKey=REMOVED_SAS_KEY;EntityPath=kockpit
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+kockpit:
+  audit:
+    stream:
+      azure:
+        search:
+          index_name: audit-v2
+          endpoint: https://kockpit-pro.search.windows.net
+          api_key: REMOVED_SEARCH_KEY

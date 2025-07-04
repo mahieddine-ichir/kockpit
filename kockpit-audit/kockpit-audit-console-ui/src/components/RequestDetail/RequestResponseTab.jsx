@@ -1,7 +1,11 @@
 import React from 'react';
+import CopyButton from "../CopyButton.jsx";
 
 function renderHeadersTable(headers) {
-  if (!headers || typeof headers !== 'object') return <div className="text-gray-400">No headers</div>;
+  if (!headers) return <div className="text-gray-400">No headers</div>;
+  if (typeof headers === 'string') {
+    headers = JSON.parse(headers);
+  }
   const entries = Object.entries(headers);
   if (entries.length === 0) return <div className="text-gray-400">No headers</div>;
   return (
@@ -35,6 +39,27 @@ function prettyPrintBody(body) {
 }
 
 const RequestResponseTab = ({ request }) => {
+  let events = request['audits']?.find(audit => audit.type === 'builtin.web')?.events;
+  let httpAuditedRequest = events
+      .map(event => {
+        if (typeof event === "string") {
+          return JSON.parse(event);
+        } else {
+          return event;
+        }
+      })[0]['httpAuditedRequest']
+
+  let httpAuditedResponse = events
+      .map(event => {
+        if (typeof event === "string") {
+          return JSON.parse(event);
+        } else {
+          return event;
+        }
+      })[0]['httpAuditedResponse']
+
+  console.log(httpAuditedResponse);
+
   return (
     <div className="space-y-6">
       <div className="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -44,12 +69,13 @@ const RequestResponseTab = ({ request }) => {
         <div className="px-4 py-5 sm:p-6">
           <div className="mb-4">
             <h4 className="text-sm font-medium text-gray-500">Headers</h4>
-            {renderHeadersTable(request.httpAuditedRequest.headers)}
+            {renderHeadersTable(httpAuditedRequest?.headers)}
           </div>
           <div className="mb-4">
-            <h4 className="text-sm font-medium text-gray-500">Body</h4>
+            <h4 className="text-sm font-medium text-gray-500">Body <CopyButton value={httpAuditedRequest?.body}/>
+            </h4>
             <pre className="mt-1 text-sm text-gray-900 bg-gray-50 p-2 rounded overflow-x-auto">
-              {prettyPrintBody(request.httpAuditedRequest.body)}
+              {prettyPrintBody(httpAuditedRequest?.body)}
             </pre>
           </div>
         </div>
@@ -62,16 +88,16 @@ const RequestResponseTab = ({ request }) => {
         <div className="px-4 py-5 sm:p-6">
           <div className="mb-4">
             <h4 className="text-sm font-medium text-gray-500">Status</h4>
-            <div className="mt-1 text-sm text-gray-900">{request.httpAuditedResponse.status}</div>
+            <div className="mt-1 text-sm text-gray-900">{httpAuditedResponse?.status}</div>
           </div>
           <div className="mb-4">
             <h4 className="text-sm font-medium text-gray-500">Headers</h4>
-            {renderHeadersTable(request.httpAuditedResponse.headers)}
+            {renderHeadersTable(httpAuditedResponse?.headers)}
           </div>
           <div>
             <h4 className="text-sm font-medium text-gray-500">Payload</h4>
             <pre className="mt-1 text-sm text-gray-900 bg-gray-50 p-2 rounded overflow-x-auto">
-              {prettyPrintBody(request.httpAuditedResponse.payload)}
+              {prettyPrintBody(httpAuditedResponse?.payload)}
             </pre>
           </div>
         </div>
