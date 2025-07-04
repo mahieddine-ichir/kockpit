@@ -10,8 +10,8 @@ export const fetchAuditReports = async () => {
 };
 
 // deprecated use paging one
-export const searchAudits = async (query) => {
-  const response = await axios.get(`${API_BASE}/audits/_search?query=${query}`);
+export const searchAudits = async (query, domain, env, size, start) => {
+  const response = await axios.get(`${API_BASE}/${domain}/${env}/audits/_search?query=${query}&size=${size}&start=${start}`);
   return response.data;
 };
 
@@ -21,49 +21,19 @@ export const fetchAuditReportsWithPaging = async (domain, env, size, start) => {
   return response.data;
 };
 
-export const fetchAuditReportById = async (id) => {
-  const response = await axios.get(`${API_BASE}/audit-reports/${id}`);
+export const fetchAuditById = async (id, domain, env) => {
+  const response = await axios.get(`${API_BASE}/${domain}/${env}/audits/${id}`);
   return response.data;
 };
 
-export const fetchAuditRequests = async (id) => {
-  const response = await axios.get(`${API_BASE}/audit-reports/${id}/requests`);
+export const fetchAuditRequests = async (id, domain, env) => {
+  const response = await axios.get(`${API_BASE}/${domain}/${env}/audits/${id}/requests`);
   console.log('Audit Requests Response:', JSON.stringify(response.data, null, 2));
   return response.data;
 };
 
-export const fetchAuditDetails = async (id, traceId) => {
-  const response = await axios.get(`${API_BASE}/audit-reports/${id}/requests/${traceId}`);
+export const getConfig = async () => {
+  console.log('Fetching config');
+  const response = await axios.get(`${API_BASE}/config`);
   return response.data;
-};
-
-export const getConfig = () => {
-  // fixme get from backend
-  return [
-    {
-      domain: 'default',
-      env: 'default',
-      services:
-          [
-            {
-              name: "audit",
-              config: {
-                columns: ['appId', 'requestId', 'method', 'path', 'duration', 'start', 'status']
-              }
-            }
-          ]
-    },
-    {
-      domain: 'rcu', env: 'dev'
-    },
-    {
-      domain: 'rcu', env: 'int'
-    },
-    {
-      domain: 'rcu', env: 'rec'
-    },
-    {
-      domain: 'rcu', env: 'oat'
-    }
-  ];
 }
