@@ -4,24 +4,16 @@ import com.azure.core.util.Context;
 import com.azure.search.documents.SearchClient;
 import com.azure.search.documents.models.SearchOptions;
 import com.azure.search.documents.util.SearchPagedIterable;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.backend.*;
 import org.kockpit.audit.backend.model.SearchAuditReport;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -30,17 +22,30 @@ public class AuditReportService implements BackendApiDelegate {
 
     private final SearchClient client;
 
-    private final ObjectMapper objectMapper;
-
     @Value("${kockpit.audit.azure.search.max_size:25}")
     private Integer maxSize;
 
+    // fixme
     @Value("${kockpit.env}")
+    private String kockpitEnv;
     
     @Override
     public ResponseEntity<List<ConfigItem>> getConfig() {
-        // fixme
+        // fixme get by AppId
+        List<String> columns = List.of("appId", "requestId", "method", "path", "duration", "start", "status");
         return ResponseEntity.ok(List.of(
+                ConfigItem.builder()
+                        .domain("rcu")
+                        .env("pro")
+                        .services(List.of(
+                                Service.builder()
+                                        .name("audit")
+                                        .config(ConfigAudit.builder()
+                                                .columns(columns)
+                                                .build())
+                                        .build()
+                                ))
+                        .build(),
                 ConfigItem.builder()
                         .domain("rcu")
                         .env("dev")
@@ -48,7 +53,7 @@ public class AuditReportService implements BackendApiDelegate {
                                 Service.builder()
                                         .name("audit")
                                         .config(ConfigAudit.builder()
-                                                .columns(List.of("appId", "requestId", "method", "path", "duration", "start", "status"))
+                                                .columns(columns)
                                                 .build())
                                         .build()
                                 ))
@@ -60,7 +65,7 @@ public class AuditReportService implements BackendApiDelegate {
                                 Service.builder()
                                         .name("audit")
                                         .config(ConfigAudit.builder()
-                                                .columns(List.of("appId", "requestId", "method", "path", "duration", "start", "status"))
+                                                .columns(columns)
                                                 .build())
                                         .build()
                             ))
@@ -72,7 +77,7 @@ public class AuditReportService implements BackendApiDelegate {
                                 Service.builder()
                                         .name("audit")
                                         .config(ConfigAudit.builder()
-                                                .columns(List.of("appId", "requestId", "method", "path", "duration", "start", "status"))
+                                                .columns(columns)
                                                 .build())
                                         .build()
                         ))
