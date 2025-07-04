@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_BACKEND_API;
+const API_BASE = import.meta.env.VITE_API_BASE;
 console.log('API_BASE:', API_BASE);
 
 // deprecated use paging one

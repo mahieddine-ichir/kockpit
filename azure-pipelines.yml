@@ -111,6 +111,7 @@ stages:
               app_location: '.'
               api_location: '' # Api source code path relative to cwd
               output_location: 'dist' # Built app content directory relative to app_location - optional
+              app_build_command: 'npm run build -- --mode dev'
 
   - stage: FrontPro
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/pro')
@@ -125,4 +126,5 @@ stages:
               app_location: '.'
               api_location: '' # Api source code path relative to cwd
               output_location: 'dist' # Built app content directory relative to app_location - optional
+              app_build_command: 'npm run build'
 
