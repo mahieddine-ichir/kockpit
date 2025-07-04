@@ -96,7 +96,7 @@ stages:
               tags: |
                 $(tag)
 
-  - stage: Front
+  - stage: FrontDev
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
     jobs:
       - job: ui
@@ -110,7 +110,7 @@ stages:
               api_location: '' # Api source code path relative to cwd
               output_location: 'dist' # Built app content directory relative to app_location - optional
 
-  - stage: Front
+  - stage: FrontPro
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/pro')
     jobs:
       - job: ui
