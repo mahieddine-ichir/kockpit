@@ -1,9 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {fetchAuditReportsForDomainAndEnv, fetchAuditReportsWithPaging, searchAudits} from '../services/api';
-import Sidebar from '../components/Sidebar/Sidebar';
-import {ClipboardDocumentIcon, EyeIcon, CheckIcon} from '@heroicons/react/24/outline';
+import {fetchAuditReportsWithPaging, searchAudits} from '../services/api';
+import {CheckIcon, ClipboardDocumentIcon, EyeIcon} from '@heroicons/react/24/outline';
 import {AdjustmentsHorizontalIcon, MagnifyingGlassCircleIcon} from '@heroicons/react/20/solid';
-import {useNavigate, useSearchParams} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import StatusBadge from '../components/RequestOverview/StatusBadge.jsx';
 import TruncateWithTooltip from "../components/TruncateWithTooltip.jsx";
 import Pagination from '../components/Pagination/Pagination.jsx';
@@ -24,88 +23,37 @@ const ALL_COLUMNS = [
   { key: 'end', label: 'End' },
 ];
 
-const DEFAULT_COLUMNS = [
-  'appId', 'requestId', 'method', 'path', 'duration', 'start', 'status'
-];
+function RequestOverview({domain, env}) {
 
-
-function DomainEnv({options, filter, onchange}) {
-  return (
-      <div className="flex">
-        <div className="mb-4 flex items-center">
-          <label className="block text-sm font-medium text-gray-700 mr-2">Domain / Env:</label>
-          <select
-              value={filter}
-              onChange={e=> onchange(e.target.value)}
-              className="rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none sm:text-sm bg-white"
-          >
-            <option value="">All</option>
-            {options.map(option => (
-                <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-  )
-}
-
-const RequestOverview = () => {
-  const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showColumns, setShowColumns] = useState(
-      () => {
-        const saved = localStorage.getItem('selectedcolumns');
-        return saved ? JSON.parse(saved) : DEFAULT_COLUMNS;
-      }
-  );
+  const [audits, setAudits] = useState([]);
+  const [filteredAudits, setFilteredAudits] = useState([]);
+
+  const [showColumns, setShowColumns] = useState(["appId", "requestId", "method", "path", "duration", "start", "status"]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [httpMethodFilter, setHttpMethodFilter] = useState('');
 
-  const [domainEnvFilter, setDomainEnvFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
 
+  const [statusOptions, setStatusOptions] = useState([]);
+  const [httpMethodOptions, setHttpMethodOptions] = useState([]);
+
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    setSearch(searchParams.get('search') || '');
-    setStatusFilter(searchParams.get('status') || '');
-    setHttpMethodFilter(searchParams.get('httpMethod') || '');
-    setDomainEnvFilter(searchParams.get('domainEnv') || '');
-  }, []);
+    loadAll(domain, env);
+  }, [domain, env]);
 
+  console.log(`loading for ${domain} / ${env}`);
 
-  const updateSearchParams = (params) => {
-    const newParams = new URLSearchParams(searchParams);
-    Object.entries(params).forEach(([key, value]) => {
-      if (value) {
-        newParams.set(key, value);
-      } else {
-        newParams.delete(key);
-      }
-    });
-    setSearchParams(newParams, { replace: true });
-  };
-
-
-  useEffect(() => {
-    updateSearchParams({
-      search,
-      status: statusFilter,
-      httpMethod: httpMethodFilter,
-      domainEnv: domainEnvFilter,
-    });
-  }, [search, statusFilter, httpMethodFilter, domainEnvFilter]);
-
-  function loadAll() {
-    console.log("load All data");
-    fetchAuditReportsWithPaging(itemsPerPage, currentPage*itemsPerPage)
+  function loadAll(domain, env) {
+    console.log(`loading for ${domain} / ${env}`);
+    fetchAuditReportsWithPaging(domain, env, itemsPerPage, currentPage * itemsPerPage)
         .then((data) => {
           setAudits(data.items);
           setTotalCount(data.total_count);
@@ -113,80 +61,36 @@ const RequestOverview = () => {
           setLoading(false);
         });
   }
-  useEffect(() => {
-    fetchAuditReportsWithPaging(itemsPerPage, currentPage*itemsPerPage)
-        .then((data) => {
-          setAudits(data.items);
-          setTotalCount(data.total_count);
-          setItemsPerPage(data.size);
-          setLoading(false);
-        });
-  }, []);
 
   useEffect(() => {
-    localStorage.setItem('selectedcolumns', JSON.stringify(showColumns));
-  }, [showColumns]);
-
-
-  function getDomainEnvOptions(audits) {
-    const options = [];
-    audits.forEach(audit => {
-      const domain = audit.domain || '';
-      const env = audit.env || '';
-      const domainenv = `${domain} / ${env}`;
-
-      if (!options.includes(domainenv)) {
-        options.push(domainenv);
-      }
-    });
-
-    return options.filter(option => option !== ' / ');
-  }
+    setStatusOptions(getUniqueValues('httpStatus', true));
+    setHttpMethodOptions(getUniqueValues('httpMethod', true));
+    setFilteredAudits(audits);
+  }, [audits]);
 
   const getUniqueValues = (key, fromIndexed) => {
     if (fromIndexed) {
-      const values = audits.flatMap(audit => (audit.indexedKeyValues || []).filter(kv => kv.key === key).map(kv => kv.value));
+      const values = audits.flatMap(audit => (audit.indexedKeyValues || [])
+          .filter(kv => kv.key === key)
+          .map(kv => kv.value));
       return Array.from(new Set(values)).filter(Boolean);
     } else {
       return Array.from(new Set(audits.map(audit => audit[key]))).filter(Boolean);
     }
   };
 
-  function matchesSearch(audit, searchTerm) {
-    if (!searchTerm) return true;
-    const lower = searchTerm.toLowerCase();
-
-    for (const key in audit) {
-      if (typeof audit[key] === 'string' && audit[key].toLowerCase().includes(lower)) return true;
-      if (typeof audit[key] === 'number' && audit[key].toString().includes(lower)) return true;
-    }
-    if (audit.indexedKeyValues) {
-
-      for (const kv of audit.indexedKeyValues) {
-        if ((kv.key && kv.key.toLowerCase().includes(lower)) || (kv.value && kv.value.toLowerCase().includes(lower))) return true;
-      }
-    }
-    return false;
-  }
-
   useEffect(() => {
+    console.log(`statusFilter: ${statusFilter}, httpMethodFilter: ${httpMethodFilter}`);
     let filtered = audits.filter(audit => {
-      if (domainEnvFilter) {
-        const domain = audit.domain || '';
-        const env = audit.env || '';
-        const domainEnv = `${domain} / ${env}`;
-
-        if (domainEnv !== domainEnvFilter) {
-          return false;
-        }
-      }
-      if (!matchesSearch(audit, search)) return false;
-      if (statusFilter && getHttStatus(audit) !== statusFilter) return false;
-      if (httpMethodFilter && getMethod(audit) !== httpMethodFilter) return false;
-      return true;
+      return (
+          (!statusFilter || statusFilter === 'All' || getHttStatus(audit) === statusFilter)
+          &&
+          (!httpMethodFilter || httpMethodFilter === 'All' || getMethod(audit) === httpMethodFilter)
+      )
     });
-    setAudits(filtered);
-  }, [statusFilter, httpMethodFilter, domainEnvFilter]);
+    setFilteredAudits(filtered);
+    // setTotalCount(filtered.length);
+    }, [statusFilter, httpMethodFilter]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -236,16 +140,16 @@ const RequestOverview = () => {
     return fetchIndexedValue(audit, 'httpMethod');
   }
 
-  const statusOptions = getUniqueValues('httpStatus', true);
-  const httpMethodOptions = getUniqueValues('httpMethod', true);
-  const domainEnvOptions = getDomainEnvOptions(audits);
-
   const fetchPage = (page, pageSize) => {
     setLoading(true);
-    fetchAuditReportsWithPaging(pageSize, pageSize * page).then((data) => {
-      setAudits(data.items);
-      setLoading(false);
-    });
+    if (search) {
+      doSearchAudits();
+    } else {
+      fetchAuditReportsWithPaging(domain, env, pageSize, pageSize * page).then((data) => {
+        setAudits(data.items);
+        setLoading(false);
+      });
+    }
   };
 
   const handlePageChange = (page, size) => {
@@ -255,14 +159,12 @@ const RequestOverview = () => {
     fetchPage(page, size);
   };
 
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
-
   function doSearchAudits() {
     if (!search || search.trim().length <= 0) {
       return;
     }
     setLoading(true);
-    searchAudits(search).then(data => {
+    searchAudits(search, domain, env, itemsPerPage, itemsPerPage * currentPage).then(data => {
       setAudits(data.items);
       setTotalCount(data.total_count);
       setItemsPerPage(data.size);
@@ -305,12 +207,8 @@ const RequestOverview = () => {
   }
 
   return (
-      <div className="flex">
-        <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
-        <div className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
-          <h1 className="text-2xl font-bold mb-6">Audits</h1>
-
-
+      <div>
+          <h1 className="text-xl font-bold mb-6">Audits</h1>
           <div className="border border-gray-300 rounded-xl bg-gray-50 p-6 mb-8 shadow-sm">
             <div className="flex flex-col md:flex-row md:items-end gap-4 mb-4">
               <div className="flex-1 flex items-center">
@@ -331,20 +229,6 @@ const RequestOverview = () => {
                 >
                   <MagnifyingGlassCircleIcon className="h-5 w-5" />
                 </button>
-              </div>
-              <div className="flex flex-col min-w-[220px]">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Domain / Env</label>
-                <select
-                    value={domainEnvFilter}
-                    onChange={e => setDomainEnvFilter(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 shadow focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition sm:text-sm bg-white px-3 py-2"
-                    style={{ minHeight: '44px' }}
-                >
-                  <option value="">All</option>
-                  {domainEnvOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
               </div>
             </div>
             <div className="flex flex-col md:flex-row gap-4">
@@ -376,7 +260,6 @@ const RequestOverview = () => {
               </div>
             </div>
           </div>
-
           <div className="flex justify-end mb-1">
             <div className="relative py-2" ref={dropdownRef}>
               <button
@@ -408,7 +291,7 @@ const RequestOverview = () => {
           <div className="flex items-center justify-end mb-2">
             <Pagination
                 currentPage={currentPage}
-                totalPages={totalPages}
+                totalPages={Math.ceil(totalCount / itemsPerPage)}
                 onPageChange={handlePageChange}
                 itemsPerPage={itemsPerPage}
                 totalItems={totalCount}
@@ -425,7 +308,7 @@ const RequestOverview = () => {
               </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-              {audits.map(audit => (
+              {filteredAudits.map(audit => (
                   <tr key={audit.id} className="hover:bg-gray-50">
                     {ALL_COLUMNS.filter(col => showColumns.includes(col.key)).map(col => (
                         <td key={col.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -466,9 +349,8 @@ const RequestOverview = () => {
               </tbody>
             </table>
           </div>
-        </div>
       </div>
   );
-};
+}
 
 export default RequestOverview;
