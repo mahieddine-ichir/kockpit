@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-//const API_BASE = "https://rcu-apim-dev.azure-api.net/backend/api";
-const API_BASE = 'http://localhost:8080/backend/api';
+const API_BASE = import.meta.env.VITE_BACKEND_API;
+console.log('API_BASE:', API_BASE);
 
 // deprecated use paging one
 export const fetchAuditReports = async () => {
