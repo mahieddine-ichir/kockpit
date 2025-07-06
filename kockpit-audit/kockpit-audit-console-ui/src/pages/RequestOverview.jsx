@@ -215,6 +215,11 @@ function RequestOverview({domain, env}) {
                 <input
                     type="text"
                     value={search}
+                    onKeyUp={event => {
+                      if (event.key === 'Enter') {
+                        doSearchAudits();
+                      }
+                    }}
                     onChange={event => setSearch(event.target.value)}
                     placeholder="Search everything..."
                     className="w-full px-4 py-2 rounded-l-full border border-gray-300 shadow focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none text-base bg-white"
