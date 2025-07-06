@@ -8,6 +8,8 @@ import RequestDetail from "./pages/RequestDetail.jsx";
 
 function DomainEnv({domainEnvChanged, initDomainEnv}) {
     const [options, setOptions] = useState([]);
+    const [config, setConfig] = useState(null);
+
     useEffect(() => {
         getConfig().then(value => {
             let map = value.map(option => {
@@ -16,13 +18,18 @@ function DomainEnv({domainEnvChanged, initDomainEnv}) {
                 }
             });
             setOptions(map);
-            initDomainEnv(map);
+            setConfig(value);
+            initDomainEnv(map, value.filter(c => c.domain === map[0].domain && c.env === map[0].env));
         });
     }, []);
 
     function onChange(e) {
         let split = e.target.value.split('/');
-        domainEnvChanged(split[0].trim(), split[1].trim());
+        let domain = split[0].trim();
+        let env = split[1].trim();
+
+        let cfg = config.filter(c => c.domain === domain && c.env === env);
+        domainEnvChanged(domain, env, cfg);
     }
     return (
         <div className="flex flex-col min-w-[220px]">
@@ -47,19 +54,23 @@ function App() {
     const [collapsed, setCollapsed] = useState(false);
     const [domain, setDomain] = useState(null);
     const [env, setEnv] = useState(null);
+    const [config, setConfig] = useState(null);
 
-    function onDomainEnvChanged(domain, env) {
+    function onDomainEnvChanged(domain, env, config) {
         console.log(`Domain ${domain} / env ${env} selected.`);
         setDomain(domain);
         setEnv(env);
+        setConfig(config);
     }
 
-    function initDomainEnv(options) {
+    function initDomainEnv(options, config) {
         if (options.length === 0) {
             return;
         }
         setDomain(options[0].domain);
         setEnv(options[0].env);
+
+        setConfig(config);
     }
 
     return (
@@ -77,7 +88,7 @@ function App() {
                                 <div className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
                                 <Routes>
                                     <Route path='/audits' element={
-                                        (domain && env) ? <RequestOverview domain={domain} env={env}  /> : null
+                                        (domain && env) ? <RequestOverview domain={domain} env={env} config={config} /> : null
                                     }
                                     />
                                     <Route path="/audits/:id" element={<RequestDetail domain={domain} env={env} />} />
