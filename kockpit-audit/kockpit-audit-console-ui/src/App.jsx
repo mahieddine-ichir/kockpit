@@ -68,7 +68,7 @@ function App() {
                 <div className="screens-container">
                     <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
                     <div>
-                        <div className="flex justify-end p-2">
+                        <div className="flex justify-end pr-6 pt-6">
                             <DomainEnv domainEnvChanged={onDomainEnvChanged} initDomainEnv={initDomainEnv} />
                         </div>
 
