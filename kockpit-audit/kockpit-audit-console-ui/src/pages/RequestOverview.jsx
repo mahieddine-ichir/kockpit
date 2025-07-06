@@ -7,29 +7,12 @@ import StatusBadge from '../components/RequestOverview/StatusBadge.jsx';
 import TruncateWithTooltip from "../components/TruncateWithTooltip.jsx";
 import Pagination from '../components/Pagination/Pagination.jsx';
 
-const ALL_COLUMNS = [
-  { key: 'domain', label: 'Domain' },
-  { key: 'env', label: 'Env' },
-  { key: 'appId', label: 'App ID' },
-  { key: 'requestId', label: 'Request ID' },
-  { key: 'method', label: 'Method' },
-  { key: 'path', label: 'Path' },
-  { key: 'duration', label: 'Duration' },
-  { key: 'status', label: 'Status' },
-  { key: 'hostname', label: 'Hostname' },
-  { key: 'version', label: 'Version' },
-  { key: 'artifact', label: 'Artifact' },
-  { key: 'start', label: 'Start' },
-  { key: 'end', label: 'End' },
-];
-
-function RequestOverview({domain, env}) {
+function RequestOverview({domain, env, config}) {
 
   const [loading, setLoading] = useState(true);
   const [audits, setAudits] = useState([]);
   const [filteredAudits, setFilteredAudits] = useState([]);
 
-  const [showColumns, setShowColumns] = useState(["appId", "requestId", "method", "path", "duration", "start", "status"]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -42,6 +25,8 @@ function RequestOverview({domain, env}) {
   const [statusOptions, setStatusOptions] = useState([]);
   const [httpMethodOptions, setHttpMethodOptions] = useState([]);
 
+  const [columns, setColumns] = useState([]);
+
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
@@ -51,8 +36,31 @@ function RequestOverview({domain, env}) {
 
   console.log(`loading for ${domain} / ${env}`);
 
+  function formatLabel(col) {
+    let label = '';
+    for (let i=0; i<col.length; i++) {
+      if (col[i].match(/[A-Z]/) != null) {
+        label += ' ' + col[i];
+      } else {
+        label += col[i];
+      }
+    }
+    return label;
+  }
+
   function loadAll(domain, env) {
     console.log(`loading for ${domain} / ${env}`);
+    setColumns(
+      config[0]['services'].filter(s => s.name === 'audit')[0].config.columns
+        .map(col => {
+          let label = formatLabel(col);
+          return {
+            key: col,
+            label: label
+          }
+        })
+    );
+
     fetchAuditReportsWithPaging(domain, env, itemsPerPage, currentPage * itemsPerPage)
         .then((data) => {
           setAudits(data.items);
@@ -111,9 +119,9 @@ function RequestOverview({domain, env}) {
   };
 
   const handleColumnToggle = (key) => {
-    setShowColumns(cols =>
-        cols.includes(key) ? cols.filter(col => col !== key) : [...cols, key]
-    );
+    // setShowColumns(cols =>
+    //     cols.includes(key) ? cols.filter(col => col !== key) : [...cols, key]
+    // );
   };
 
   if (loading) return <div>Loading...</div>;
@@ -265,6 +273,7 @@ function RequestOverview({domain, env}) {
               </div>
             </div>
           </div>
+{/*
           <div className="flex justify-end mb-1">
             <div className="relative py-2" ref={dropdownRef}>
               <button
@@ -278,12 +287,12 @@ function RequestOverview({domain, env}) {
               {showDropdown && (
                   <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded shadow-lg z-20 p-3">
                     <div className="font-semibold mb-2 text-sm">Show Columns</div>
-                    {ALL_COLUMNS.map(col => (
+                    {columns.map(col => (
                         <label key={col.key} className="flex items-center space-x-2 mb-1">
                           <input
                               type="checkbox"
-                              checked={showColumns.includes(col.key)}
-                              onChange={() => handleColumnToggle(col.key)}
+                              checked={columns.includes(col.key)}
+                              //onChange={() => handleColumnToggle(col.key)}
                               className="form-checkbox"
                           />
                           <span>{col.label}</span>
@@ -293,6 +302,7 @@ function RequestOverview({domain, env}) {
               )}
             </div>
           </div>
+*/}
           <div className="flex items-center justify-end mb-2">
             <Pagination
                 currentPage={currentPage}
@@ -306,16 +316,19 @@ function RequestOverview({domain, env}) {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
               <tr>
-                {ALL_COLUMNS.filter(col => showColumns.includes(col.key)).map(col => (
+                {
+                  columns.map(col => (
                     <th key={col.key} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{col.label}</th>
-                ))}
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  ))
+                }
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
               </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
               {filteredAudits.map(audit => (
                   <tr key={audit.id} className="hover:bg-gray-50">
-                    {ALL_COLUMNS.filter(col => showColumns.includes(col.key)).map(col => (
+                    {
+                      columns.map(col => (
                         <td key={col.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {col.key === 'requestId' && audit[col.key] ? (
                               <span className="flex items-center">
