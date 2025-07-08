@@ -99,6 +99,7 @@ public class AuditReportService implements BackendApiDelegate {
 
     @Override
     public ResponseEntity<Page> searchAudits(String query, String domain, String env, Integer start, Integer size) {
+        log.trace("search for query {} on domain {}, env {}, page {} / {}", query, domain, env, start, size);
         SearchPagedIterable search = doSearch(query, domain, env, start, size);
         List<SearchAuditReport> list = search
                 .stream()
@@ -107,7 +108,7 @@ public class AuditReportService implements BackendApiDelegate {
 
         return ResponseEntity.ok(Page.builder()
                 .items(new ArrayList<>(list))
-                .size(size.longValue())
+                .size((long) list.size())
                 .totalCount(search.getTotalCount())
                 .build());
     }
@@ -125,7 +126,7 @@ public class AuditReportService implements BackendApiDelegate {
 
     @Override
     public ResponseEntity<Page> listAuditsDomainEnv(String domain, String env, Integer start, Integer size) {
-        log.info("load for domain {}, env {}, page {} {}", domain, env, start, size);
+        log.trace("load for domain {}, env {}, page {} {}", domain, env, start, size);
         SearchPagedIterable search = doSearch("*", domain, env, start, size);
         List<SearchAuditReport> list = search
                 .stream()
