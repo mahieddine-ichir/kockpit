@@ -32,7 +32,8 @@ const Pagination = ({
     };
 
     const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
-    const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+    console.log(`currentPage ${currentPage}, itemsPerPage ${itemsPerPage}, totalItems ${totalItems}`);
+    const endItem = Math.min((currentPage + 1) * itemsPerPage, totalItems);
 
     return (
         <div className="flex items-center justify-end space-x-2 w-full mb-1">
