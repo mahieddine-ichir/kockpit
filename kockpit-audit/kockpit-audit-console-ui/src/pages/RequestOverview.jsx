@@ -65,7 +65,6 @@ function RequestOverview({domain, env, config}) {
         .then((data) => {
           setAudits(data.items);
           setTotalCount(data.total_count);
-          setItemsPerPage(data.size);
           setLoading(false);
         });
   }
@@ -172,10 +171,9 @@ function RequestOverview({domain, env, config}) {
       return;
     }
     setLoading(true);
-    searchAudits(search, domain, env, itemsPerPage, itemsPerPage * currentPage).then(data => {
+    searchAudits(search, domain, env, itemsPerPage, itemsPerPage * (currentPage - 1)).then(data => {
       setAudits(data.items);
       setTotalCount(data.total_count);
-      setItemsPerPage(data.size);
       setLoading(false);
     });
   }
