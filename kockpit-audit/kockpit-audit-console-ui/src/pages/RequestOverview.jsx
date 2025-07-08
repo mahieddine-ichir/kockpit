@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {fetchAuditReportsWithPaging, searchAudits} from '../services/api';
 import {CheckIcon, ClipboardDocumentIcon, EyeIcon} from '@heroicons/react/24/outline';
-import {AdjustmentsHorizontalIcon, MagnifyingGlassCircleIcon} from '@heroicons/react/20/solid';
+import {MagnifyingGlassCircleIcon} from '@heroicons/react/20/solid';
 import {useNavigate} from 'react-router-dom';
 import StatusBadge from '../components/RequestOverview/StatusBadge.jsx';
 import TruncateWithTooltip from "../components/TruncateWithTooltip.jsx";
@@ -61,11 +61,10 @@ function RequestOverview({domain, env, config}) {
         })
     );
 
-    fetchAuditReportsWithPaging(domain, env, itemsPerPage, currentPage * itemsPerPage)
+    fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage-1) * itemsPerPage)
         .then((data) => {
           setAudits(data.items);
           setTotalCount(data.total_count);
-          setItemsPerPage(data.size);
           setLoading(false);
         });
   }
@@ -175,7 +174,6 @@ function RequestOverview({domain, env, config}) {
     searchAudits(search, domain, env, itemsPerPage, itemsPerPage * currentPage).then(data => {
       setAudits(data.items);
       setTotalCount(data.total_count);
-      setItemsPerPage(data.size);
       setLoading(false);
     });
   }
@@ -273,36 +271,6 @@ function RequestOverview({domain, env, config}) {
               </div>
             </div>
           </div>
-{/*
-          <div className="flex justify-end mb-1">
-            <div className="relative py-2" ref={dropdownRef}>
-              <button
-                  type="button"
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  onClick={() => setShowDropdown(v => !v)}
-                  aria-label="Customize columns"
-              >
-                <AdjustmentsHorizontalIcon className="h-3 w-3 text-gray-500" />
-              </button>
-              {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded shadow-lg z-20 p-3">
-                    <div className="font-semibold mb-2 text-sm">Show Columns</div>
-                    {columns.map(col => (
-                        <label key={col.key} className="flex items-center space-x-2 mb-1">
-                          <input
-                              type="checkbox"
-                              checked={columns.includes(col.key)}
-                              //onChange={() => handleColumnToggle(col.key)}
-                              className="form-checkbox"
-                          />
-                          <span>{col.label}</span>
-                        </label>
-                    ))}
-                  </div>
-              )}
-            </div>
-          </div>
-*/}
           <div className="flex items-center justify-end mb-2">
             <Pagination
                 currentPage={currentPage}
