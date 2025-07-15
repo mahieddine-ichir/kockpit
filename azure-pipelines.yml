@@ -49,7 +49,7 @@ stages:
     jobs:
       - job: image
         continueOnError: false
-        condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/main')))
+        condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/pro')))
         steps:
           # Maven build (skipTests to build Image)
           - task: MavenAuthenticate@0
