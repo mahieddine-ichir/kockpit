@@ -9,12 +9,10 @@ import lombok.SneakyThrows;
 import org.kockpit.audit.backend.ConfigApiDelegate;
 import org.kockpit.audit.backend.ConfigItem;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
 public class StorageAccountFilesRepository implements ConfigApiDelegate {
 
