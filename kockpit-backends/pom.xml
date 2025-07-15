@@ -11,7 +11,10 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>kockpit-backend-azuresearch</module>
+		<module>kockpit-backend-application</module>
+        <module>kockpit-backend-service-azure</module>
+		<module>kockpit-backend-service-api</module>
+        <module>kockpit-backend-service-inmemory</module>
     </modules>
 
 </project>
