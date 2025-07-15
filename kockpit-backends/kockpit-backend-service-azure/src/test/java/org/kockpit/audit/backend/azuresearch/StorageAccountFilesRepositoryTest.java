@@ -2,6 +2,7 @@ package org.kockpit.audit.backend.azuresearch;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @Import(StorageAccountFilesRepository.class)
+@Slf4j
 class StorageAccountFilesRepositoryTest {
 
     @Autowired
@@ -40,8 +42,8 @@ class StorageAccountFilesRepositoryTest {
         Mockito.when(blobContainerClient.getBlobClient("manifests/rcu-manifest.json"))
                 .thenReturn(blobClient);
 
-        List<ConfigItem> configs = storageAccountFilesRepository.findConfigs();
-        System.out.println(configs);
+        List<ConfigItem> configs = storageAccountFilesRepository.getConfig().getBody();
+        log.info("configs {}", configs);
 
         ConfigAudit config = configs.get(0).getServices().get(0).getConfig();
         Assertions.assertNotNull(config);

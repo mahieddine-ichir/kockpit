@@ -11,12 +11,10 @@ import org.kockpit.audit.backend.Page;
 import org.kockpit.audit.backend.model.SearchAuditReport;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
 @Slf4j
 public class AzureSearchRepository implements DomainApiDelegate {
