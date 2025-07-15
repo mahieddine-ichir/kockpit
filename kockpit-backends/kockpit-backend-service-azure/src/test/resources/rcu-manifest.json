@@ -1,0 +1,25 @@
+[
+  {
+    "domain": "rcu,",
+    "env": "dev",
+    "services": [
+      {
+        "name": "audit",
+        "config": {
+          "columns": [
+            "appId", "requestId", "method", "path", "duration", "start", "status"
+          ]
+        }
+      },
+      {
+        "name": "feature-flipping",
+        "config": {
+          "keys": [
+            {
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
