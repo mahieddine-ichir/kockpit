@@ -13,99 +13,116 @@ variables:
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
   dockerRegistryServiceConnection: 'dc378648-6636-4f5b-937e-0ae584b11c7d'
   tag: 'latest'
-  #AZURE_STATIC_WEB_APPS_API_TOKEN_ZEALOUS_FLOWER_0BEF94A03: 'c3d336efd9a7efdda088488a91fea68f8fbe7cba9966609b0593c49c2165a11e06-a4fd4664-3315-438f-8d9d-5985f2c3574a00331290bef94a03'
-  AZURE_STATIC_WEB_APPS_API_TOKEN_ZEALOUS_FLOWER_0BEF94A03: '1f03df75e082cd6a660044f24108530b342671a486303675b4e1da257f0e4aec01-ea44e84d-7839-4bd5-8dce-dfd7e1761b1800308020c3db4803'
+  DEPLOYMENT_KEY: '$(DEPLOYMENT_KEY_$(Build.SourceBranchName))'
 
 stages:
-#  - stage: Build
-#    jobs:
-#      - job: build
-#        continueOnError: false
-#        steps:
-#          - task: MavenAuthenticate@0
-#            displayName: 'Authenticate to Azure Artifacts feed'
-#            inputs:
-#              artifactsFeeds: 'snapshots,releases'
-#
-#          - task: Cache@2
-#            inputs:
-#              key: 'maven | "$(Agent.OS)" | **/pom.xml'
-#              restoreKeys: |
-#                maven | "$(Agent.OS)"
-#                maven
-#              path: $(MAVEN_CACHE_FOLDER)
-#            displayName: Cache Maven local repo
-#
-#          - task: Maven@4
-#            displayName: Maven Build
-#            inputs:
-#              mavenPomFile: 'pom.xml'
-#              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
-#              javaHomeOption: 'JDKVersion'
-#              jdkVersionOption: '1.21'
-#              jdkArchitectureOption: 'x64'
-#              goals: 'deploy -Pstime'
-#
-#  - stage: Docker
-#    jobs:
-#      - job: image
-#        continueOnError: false
-#        condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/main')))
-#        steps:
-#          # Maven build (skipTests to build Image)
-#          - task: MavenAuthenticate@0
-#            displayName: 'Authenticate to Azure Artifacts feed'
-#            inputs:
-#              artifactsFeeds: 'snapshots,releases'
-#
-#          - task: Cache@2
-#            inputs:
-#              key: 'maven | "$(Agent.OS)" | **/pom.xml'
-#              restoreKeys: |
-#                maven | "$(Agent.OS)"
-#                maven
-#              path: $(MAVEN_CACHE_FOLDER)
-#            displayName: Cache Maven local repo
-#
-#          - task: Maven@4
-#            inputs:
-#              mavenPomFile: 'pom.xml'
-#              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
-#              javaHomeOption: 'JDKVersion'
-#              jdkVersionOption: '1.21'
-#              jdkArchitectureOption: 'x64'
-#              options: '-DskipTests'
-#              goals: 'package'
-#
-#          - task: Docker@2
-#            displayName: Build and push an image to container registry kockpit-backend-azuresearch
-#            inputs:
-#              command: buildAndPush
-#              repository: 'kockpit-backend-azuresearch'
-#              dockerfile: 'kockpit-backends/kockpit-backend-azuresearch/Dockerfile'
-#              containerRegistry: $(dockerRegistryServiceConnection)
-#              tags: |
-#                $(tag)
-#
-#          - task: Docker@2
-#            displayName: Build and push an image to container registry kockpit-audit-stream-application-kafka
-#            inputs:
-#              command: buildAndPush
-#              repository: 'kockpit-audit-stream-application-kafka'
-#              dockerfile: 'kockpit-audit/kockpit-audit-stream/kockpit-audit-stream-application-kafka/Dockerfile'
-#              containerRegistry: $(dockerRegistryServiceConnection)
-#              tags: |
-#                $(tag)
+  - stage: Build
+    jobs:
+      - job: build
+        continueOnError: false
+        steps:
+          - task: MavenAuthenticate@0
+            displayName: 'Authenticate to Azure Artifacts feed'
+            inputs:
+              artifactsFeeds: 'snapshots,releases'
 
-  - stage: Front
+          - task: Cache@2
+            inputs:
+              key: 'maven | "$(Agent.OS)" | **/pom.xml'
+              restoreKeys: |
+                maven | "$(Agent.OS)"
+                maven
+              path: $(MAVEN_CACHE_FOLDER)
+            displayName: Cache Maven local repo
+
+          - task: Maven@4
+            displayName: Maven Build
+            inputs:
+              mavenPomFile: 'pom.xml'
+              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.21'
+              jdkArchitectureOption: 'x64'
+              goals: 'deploy -Pstime'
+
+  - stage: Docker
+    jobs:
+      - job: image
+        continueOnError: false
+        condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/main')))
+        steps:
+          # Maven build (skipTests to build Image)
+          - task: MavenAuthenticate@0
+            displayName: 'Authenticate to Azure Artifacts feed'
+            inputs:
+              artifactsFeeds: 'snapshots,releases'
+
+          - task: Cache@2
+            inputs:
+              key: 'maven | "$(Agent.OS)" | **/pom.xml'
+              restoreKeys: |
+                maven | "$(Agent.OS)"
+                maven
+              path: $(MAVEN_CACHE_FOLDER)
+            displayName: Cache Maven local repo
+
+          - task: Maven@4
+            inputs:
+              mavenPomFile: 'pom.xml'
+              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.21'
+              jdkArchitectureOption: 'x64'
+              options: '-DskipTests'
+              goals: 'package'
+
+          - task: Docker@2
+            displayName: Build and push an image to container registry kockpit-backend-azuresearch
+            inputs:
+              command: buildAndPush
+              repository: 'kockpit-backend-azuresearch'
+              dockerfile: 'kockpit-backends/kockpit-backend-azuresearch/Dockerfile'
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+
+          - task: Docker@2
+            displayName: Build and push an image to container registry kockpit-audit-stream-application-kafka
+            inputs:
+              command: buildAndPush
+              repository: 'kockpit-audit-stream-application-kafka'
+              dockerfile: 'kockpit-audit/kockpit-audit-stream/kockpit-audit-stream-application-kafka/Dockerfile'
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+
+  - stage: FrontDev
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
     jobs:
       - job: ui
         steps:
           - task: AzureStaticWebApp@0
+            displayName: 'Deploy front to DEV'
             inputs:
-              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN_ZEALOUS_FLOWER_0BEF94A03)
+              azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_dev)
               cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
               app_location: '.'
               api_location: '' # Api source code path relative to cwd
               output_location: 'dist' # Built app content directory relative to app_location - optional
+              app_build_command: 'npm run build -- --mode dev'
+
+  - stage: FrontPro
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/pro')
+    jobs:
+      - job: ui
+        steps:
+          - task: AzureStaticWebApp@0
+            displayName: 'Deploy front to PRO'
+            inputs:
+              azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_pro)
+              cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
+              app_location: '.'
+              api_location: '' # Api source code path relative to cwd
+              output_location: 'dist' # Built app content directory relative to app_location - optional
+              app_build_command: 'npm run build'
 
