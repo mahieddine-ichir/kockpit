@@ -3,6 +3,35 @@ import axios from 'axios';
 const API_BASE = import.meta.env.VITE_API_BASE;
 console.log('API_BASE:', API_BASE);
 
+
+
+const api = axios.create({
+  baseURL: API_BASE,
+  withCredentials: true
+});
+
+
+// Request interceptor
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Response interceptor
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
+      return Promise.reject(error);
+    }
+);
+
 // deprecated use paging one
 export const fetchAuditReports = async () => {
   const response = await axios.get(`${API_BASE}/audit-reports`);
