@@ -1,5 +1,5 @@
 import React from 'react';
-import CopyButton from "../components/CopyButton.jsx";
+import CopyButton from "../../components/CopyButton.jsx";
 
 function renderHeadersTable(headers) {
   if (!headers) return <div className="text-gray-400">No headers</div>;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import TruncateWithTooltip from "../components/TruncateWithTooltip.jsx";
+import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import {ChevronDownIcon, ChevronRightIcon} from "@heroicons/react/24/outline/index.js";
-import CopyButton from "../components/CopyButton.jsx";
+import CopyButton from "../../components/CopyButton.jsx";
 
 
 

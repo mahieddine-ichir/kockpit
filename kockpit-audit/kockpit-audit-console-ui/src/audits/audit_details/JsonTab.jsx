@@ -1,5 +1,5 @@
 import React from 'react';
-import CopyButton from "../components/CopyButton.jsx";
+import CopyButton from "../../components/CopyButton.jsx";
 
 const JsonTab = ({ request }) => {
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import BpmnViewer from '../BPMN/BpmnViewer.jsx';
-import { jsonToBpmn } from '../../utils/bpmnConverter.jsx';
+import BpmnViewer from './bpmn/BpmnViewer.jsx';
+import { jsonToBpmn } from './bpmn/bpmnConverter.jsx';
 
 const RulesTab = ({ request }) => {
     const [bpmnXml, setBpmnXml] = useState(null);
