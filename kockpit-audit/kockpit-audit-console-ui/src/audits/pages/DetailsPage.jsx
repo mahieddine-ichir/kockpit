@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
-import DetailTabs from '../audit_details/DetailTabs.jsx';
+import DetailTabs from '../tabs/DetailTabs.jsx';
 import {fetchAuditById} from '../../services/api.js';
 
 const DetailsPage = ({domain, env}) => {
