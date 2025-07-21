@@ -40,3 +40,4 @@ build/
 .idea
 
 **/src/**/application-local.yaml
+/kockpit-backends/kockpit-backend-azuresearch/src/main/resources/application-local-pro.yaml
