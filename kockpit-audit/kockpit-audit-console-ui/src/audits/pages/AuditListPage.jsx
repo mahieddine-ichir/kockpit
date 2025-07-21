@@ -3,9 +3,9 @@ import {fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
 import {ClipboardDocumentIcon, EyeIcon, CheckIcon} from '@heroicons/react/24/outline';
 import {AdjustmentsHorizontalIcon, MagnifyingGlassIcon} from '@heroicons/react/20/solid';
 import {useNavigate} from 'react-router-dom';
-import StatusBadge from '../components/StatusBadge.jsx';
-import TruncateWithTooltip from "../components/TruncateWithTooltip.jsx";
-import Pagination from '../components/Pagination.jsx';
+import StatusBadge from '../../components/StatusBadge.jsx';
+import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
+import Pagination from '../../components/Pagination.jsx';
 
 const ALL_COLUMNS = [
   { key: 'domain', label: 'Domain' },

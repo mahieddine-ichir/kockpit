@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import './index.css';
-import Sidebar from "./Sidebar/Sidebar.jsx";
+import Sidebar from "./sidebar/Sidebar.jsx";
 import AuditListPage from "./audits/pages/AuditListPage.jsx";
 import {getConfig} from "./services/api.js";
 import DetailsPage from "./audits/pages/DetailsPage.jsx";
-import { useAuth } from './Auth/AuthContext.jsx';
-import LoginPage from './Auth/LoginPage.jsx';
+import { useAuth } from './auth/AuthContext.jsx';
+import LoginPage from './auth/LoginPage.jsx';
 
 function DomainEnv({domainEnvChanged, initDomainEnv}) {
     const [options, setOptions] = useState([]);
