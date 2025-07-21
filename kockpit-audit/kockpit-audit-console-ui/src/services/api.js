@@ -3,13 +3,10 @@ import axios from 'axios';
 const API_BASE = import.meta.env.VITE_API_BASE;
 console.log('API_BASE:', API_BASE);
 
-
-
 const api = axios.create({
   baseURL: API_BASE,
   withCredentials: true
 });
-
 
 // Request interceptor
 api.interceptors.request.use((config) => {
@@ -31,12 +28,6 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 );
-
-// deprecated use paging one
-export const fetchAuditReports = async () => {
-  const response = await axios.get(`${API_BASE}/audit-reports`);
-  return response.data;
-};
 
 // deprecated use paging one
 export const searchAudits = async (query, domain, env, size, start) => {
