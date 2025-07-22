@@ -1,0 +1,6 @@
+AZURESEARCH_INDEX: audit-v2
+AZURESEARCH_ENDPOINT: https://kockpit-pro.search.windows.net
+AZURESEARCH_APIKEY: 2dOlEcmQDsTkTG08Xq5evsB8jvSOtnWoRzADme8LOEAzSeCbat1m
+logging:
+  level:
+    org.kockpit: TRACE
