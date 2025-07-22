@@ -81,7 +81,7 @@ stages:
             inputs:
               command: buildAndPush
               repository: 'kockpit-backend-azuresearch'
-              dockerfile: 'kockpit-backends/kockpit-backend-azuresearch/Dockerfile'
+              dockerfile: 'kockpit-backends/kockpit-backend-application/Dockerfile'
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
                 $(tag)
