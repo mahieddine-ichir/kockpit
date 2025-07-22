@@ -1,0 +1,26 @@
+[
+  {
+    "domain": "local",
+    "env": "local",
+    "services": [
+      {
+        "name": "audit",
+        "label": "Audits",
+        "config": {
+          "columns": ["id", "requestId", "start", "end", "appId"]
+        }
+      },
+      {
+        "name": "dyna-config",
+        "label": "Dyna Config",
+        "config": {
+          "keys": [
+            {
+              "name": "myProperty"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

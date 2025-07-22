@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import './index.css';
-import Sidebar from "./components/Sidebar/Sidebar.jsx";
-import RequestOverview from "./pages/RequestOverview.jsx";
+import Sidebar from "./sidebar/Sidebar.jsx";
+import AuditListPage from "./audits/pages/AuditListPage.jsx";
 import {getConfig} from "./services/api.js";
-import RequestDetail from "./pages/RequestDetail.jsx";
+import DetailsPage from "./audits/pages/DetailsPage.jsx";
+import { useAuth } from './auth/AuthContext.jsx';
+import LoginPage from './auth/LoginPage.jsx';
 
 function DomainEnv({domainEnvChanged, initDomainEnv}) {
     const [options, setOptions] = useState([]);
-    const [config, setConfig] = useState(null);
-
     useEffect(() => {
         getConfig().then(value => {
             let map = value.map(option => {
@@ -18,18 +18,13 @@ function DomainEnv({domainEnvChanged, initDomainEnv}) {
                 }
             });
             setOptions(map);
-            setConfig(value);
-            initDomainEnv(map, value.filter(c => c.domain === map[0].domain && c.env === map[0].env));
+            initDomainEnv(map);
         });
     }, []);
 
     function onChange(e) {
         let split = e.target.value.split('/');
-        let domain = split[0].trim();
-        let env = split[1].trim();
-
-        let cfg = config.filter(c => c.domain === domain && c.env === env);
-        domainEnvChanged(domain, env, cfg);
+        domainEnvChanged(split[0].trim(), split[1].trim());
     }
     return (
         <div className="flex flex-col min-w-[220px]">
@@ -50,27 +45,36 @@ function DomainEnv({domainEnvChanged, initDomainEnv}) {
 }
 
 function App() {
-    //const [logged, setLogged] = useState(true);
+    const { user, loading } = useAuth();
     const [collapsed, setCollapsed] = useState(false);
     const [domain, setDomain] = useState(null);
     const [env, setEnv] = useState(null);
-    const [config, setConfig] = useState(null);
 
-    function onDomainEnvChanged(domain, env, config) {
+    if (loading) return <div>Loading...</div>;
+
+    function onDomainEnvChanged(domain, env) {
         console.log(`Domain ${domain} / env ${env} selected.`);
         setDomain(domain);
         setEnv(env);
-        setConfig(config);
     }
 
-    function initDomainEnv(options, config) {
+    function initDomainEnv(options) {
         if (options.length === 0) {
             return;
         }
         setDomain(options[0].domain);
         setEnv(options[0].env);
+    }
 
-        setConfig(config);
+    if (!user) {
+        return (
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="*" element={<Navigate to="/login" replace />} />
+                </Routes>
+            </BrowserRouter>
+        );
     }
 
     return (
@@ -79,21 +83,19 @@ function App() {
                 <div className="screens-container">
                     <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
                     <div>
-                        <div className="flex justify-end pr-6 pt-6">
+                        <div className="flex justify-end p-2">
                             <DomainEnv domainEnvChanged={onDomainEnvChanged} initDomainEnv={initDomainEnv} />
                         </div>
-
                         <div className='screens-section-container'>
                             <div className="flex">
                                 <div className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
-                                <Routes>
-                                    <Route path='/audits' element={
-                                        (domain && env) ? <RequestOverview domain={domain} env={env} config={config} /> : null
-                                    }
-                                    />
-                                    <Route path="/audits/:id" element={<RequestDetail domain={domain} env={env} />} />
-                                    <Route path="*" element={<Navigate to="/audits" replace={true} />} />
-                                </Routes>
+                                    <Routes>
+                                        <Route path='/audits' element={
+                                            (domain && env) ? <AuditListPage domain={domain} env={env} /> : null
+                                        } />
+                                        <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env} />} />
+                                        <Route path="*" element={<Navigate to="/audits" replace={true} />} />
+                                    </Routes>
                                 </div>
                             </div>
                         </div>
@@ -105,13 +107,14 @@ function App() {
 }
 
 
+
 /*
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/audits" element={<RequestOverview />} />
-        <Route path="/audits/:id" element={<RequestDetail />} />
+        <Route path="/audits" element={<AuditListPage />} />
+        <Route path="/audits/:id" element={<DetailsPage />} />
         <Route path="*" element={<Navigate to="/audits" replace={true} />} />
       </Routes>
     </Router>
