@@ -15,6 +15,7 @@
         <module>kockpit-backend-service-azure</module>
 		<module>kockpit-backend-service-api</module>
         <module>kockpit-backend-service-inmemory</module>
+        <module>kockpit-backend-authentication-basic</module>
     </modules>
 
 </project>

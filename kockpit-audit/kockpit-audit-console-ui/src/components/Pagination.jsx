@@ -33,13 +33,13 @@ const Pagination = ({
 
     const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
     console.log(`currentPage ${currentPage}, itemsPerPage ${itemsPerPage}, totalItems ${totalItems}`);
-    const endItem = Math.min((currentPage + 1) * itemsPerPage, totalItems);
+    const endItem = Math.min((currentPage) * itemsPerPage, totalItems);
 
     return (
         <div className="flex items-center justify-end space-x-2 w-full mb-1">
             <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-700">
-                    Items per page
+                    Showing
                 </span>
                 <select
                     onChange={handleItemsPerPageInput}
@@ -54,7 +54,9 @@ const Pagination = ({
                     }
                 </select>
             </div>
-            <span className="text-sm text-gray-700 min-w-max">{startItem}-{endItem} of {totalItems}</span>
+            <span className="text-sm text-gray-700 min-w-max">{startItem} - {endItem} of {' '}
+                <span className="font-semibold text-blue-700">{totalItems}</span>
+            </span>
             <button
                 onClick={handleFirst}
                 disabled={currentPage === 1}
