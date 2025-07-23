@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
-import {ClipboardDocumentIcon, EyeIcon, CheckIcon} from '@heroicons/react/24/outline';
+import {CheckIcon, ClipboardDocumentIcon, EyeIcon} from '@heroicons/react/24/outline';
 import {AdjustmentsHorizontalIcon, MagnifyingGlassIcon} from '@heroicons/react/20/solid';
 import {useNavigate} from 'react-router-dom';
 import StatusBadge from '../../components/StatusBadge.jsx';
@@ -29,7 +29,6 @@ function AuditListPage({ domain, env }) {
   const [showColumns, setShowColumns] = useState([
     'appId', 'requestId', 'method', 'path', 'duration', 'start', 'status',
   ]);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [httpMethodFilter, setHttpMethodFilter] = useState('');
@@ -38,23 +37,27 @@ function AuditListPage({ domain, env }) {
   const [totalCount, setTotalCount] = useState(0);
   const [statusOptions, setStatusOptions] = useState([]);
   const [httpMethodOptions, setHttpMethodOptions] = useState([]);
-  const [showKengineOnly, setShowKengineOnly] = useState(false);
-  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("use effect1");
     loadAll(domain, env);
   }, [domain, env, currentPage, itemsPerPage]);
 
   function loadAll(domain, env) {
+    console.log("loadAll")
     setLoading(true);
-    fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
-        .then((data) => {
-          setAudits(data.items);
-          setTotalCount(data.total_count);
-          setItemsPerPage(data.size);
-          setLoading(false);
-        });
+    if (search) {
+      doSearchAudits();
+    } else {
+      fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
+          .then((data) => {
+            setAudits(data.items);
+            setTotalCount(data.total_count);
+//          setItemsPerPage(data.size);
+            setLoading(false);
+          });
+    }
   }
 
   useEffect(() => {
@@ -73,28 +76,8 @@ function AuditListPage({ domain, env }) {
     }
   };
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    }
-    if (showDropdown) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showDropdown]);
-
   const handleViewDetails = (audit) => {
     navigate(`/audits/${audit.id}`);
-  };
-
-  const handleColumnToggle = (key) => {
-    setShowColumns(cols =>
-        cols.includes(key) ? cols.filter(col => col !== key) : [...cols, key]
-    );
   };
 
   if (loading) return <div>Loading...</div>;
@@ -127,17 +110,21 @@ function AuditListPage({ domain, env }) {
   }
 
   const fetchPage = (page, pageSize) => {
+    console.info("fetchPage");
     setLoading(true);
-    fetchAuditReportsWithPaging(domain, env, pageSize, (page - 1) * pageSize).then((data) => {
-      setAudits(data.items);
-      setLoading(false);
-    });
+    if (search) {
+      doSearchAudits();
+    } else {
+      fetchAuditReportsWithPaging(domain, env, pageSize, (page - 1) * pageSize).then((data) => {
+        setAudits(data.items);
+        setLoading(false);
+      });
+    }
   };
 
   const handlePageChange = (page, size) => {
     setItemsPerPage(size);
     setCurrentPage(page);
-    fetchPage(page, size);
   };
 
   function doSearchAudits() {
@@ -146,7 +133,7 @@ function AuditListPage({ domain, env }) {
     searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
       setAudits(data.items);
       setTotalCount(data.total_count);
-      setItemsPerPage(data.size);
+      //setItemsPerPage(data.size);
       setLoading(false);
     });
   }
@@ -182,16 +169,9 @@ function AuditListPage({ domain, env }) {
     );
   }
 
-  const filteredAudits = showKengineOnly
-      ? audits.filter(audit =>
-          Array.isArray(audit.audits) &&
-          audit.audits.some(a => a.type === 'kengine.flows')
-      )
-      : audits;
-
   return (
-      <div className="px-4 py-8 sm:px-8 lg:px-16 bg-slate-50 min-h-screen">
-        <div className="flex items-center mb-10">
+      <div className="px-2 py-2 sm:px-2 lg:px-2 bg-slate-50 min-h-screen">
+        <div className="flex items-center mb-5">
           <div className="h-10 w-1 rounded bg-blue-600 mr-4" />
           <div>
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Audits</h1>
@@ -244,52 +224,10 @@ function AuditListPage({ domain, env }) {
                     <option key={opt} value={opt}>{opt}</option>
                 ))}
               </select>
-              <button
-                  onClick={() => setShowKengineOnly(!showKengineOnly)}
-                  className={`ml-2 px-3 py-2 rounded-md text-sm font-medium border transition-colors duration-150 ${
-                      showKengineOnly
-                          ? 'bg-blue-50 text-blue-700 border-blue-200'
-                          : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
-                  }`}
-              >
-                {showKengineOnly ? 'All Logs' : 'kengine Only'}
-              </button>
             </div>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-          <div className="text-sm text-slate-600">
-            Showing <span className="font-semibold text-blue-700">{filteredAudits.length}</span> of{' '}
-            <span className="font-semibold text-blue-700">{totalCount}</span> results
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="relative" ref={dropdownRef}>
-              <button
-                  onClick={() => setShowDropdown(!showDropdown)}
-                  className="flex items-center space-x-1 px-3 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100"
-              >
-                <AdjustmentsHorizontalIcon className="h-4 w-4" />
-                <span>Columns</span>
-              </button>
-              {showDropdown && (
-                  <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 p-3">
-                    <p className="text-sm font-medium text-slate-700 mb-2">Visible Columns</p>
-                    <div className="space-y-2">
-                      {ALL_COLUMNS.map(col => (
-                          <label key={col.key} className="flex items-center space-x-2">
-                            <input
-                                type="checkbox"
-                                checked={showColumns.includes(col.key)}
-                                onChange={() => handleColumnToggle(col.key)}
-                                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                            />
-                            <span className="text-sm text-slate-700">{col.label}</span>
-                          </label>
-                      ))}
-                    </div>
-                  </div>
-              )}
-            </div>
             <Pagination
                 currentPage={currentPage}
                 totalPages={Math.ceil(totalCount / itemsPerPage)}
@@ -297,7 +235,6 @@ function AuditListPage({ domain, env }) {
                 itemsPerPage={itemsPerPage}
                 totalItems={totalCount}
             />
-          </div>
         </div>
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
           <table className="min-w-full divide-y divide-slate-200">
@@ -318,7 +255,7 @@ function AuditListPage({ domain, env }) {
             </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-            {filteredAudits.map(audit => (
+            {audits.map(audit => (
                 <tr key={audit.id} className="hover:bg-blue-50/60 transition-colors">
                   {ALL_COLUMNS.filter(col => showColumns.includes(col.key)).map(col => (
                       <td key={col.key} className="whitespace-nowrap px-6 py-4 text-sm">
