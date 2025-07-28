@@ -1,10 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ChevronDoubleLeftIcon,
-  ChevronDoubleRightIcon,
-  DocumentTextIcon,
-  UserIcon
+    Bars3Icon,
+    ChevronDoubleLeftIcon,
+    ChevronDoubleRightIcon,
+    DocumentTextIcon,
+    ChartBarIcon,
+    CogIcon,
+    UserIcon,
+    ShieldCheckIcon
 } from '@heroicons/react/24/outline';
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
@@ -35,18 +39,25 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-4">
-          <h3 className={`px-6 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider sticky top-0 bg-slate-800/90 z-10 ${collapsed ? 'hidden' : ''}`}>Navigation</h3>
-          <nav className="space-y-1 px-2">
-            <NavItem
-                icon={<DocumentTextIcon className="h-5 w-5" />}
-                label="Audits"
-                collapsed={collapsed}
-                onClick={() => navigate('/')}
-                active
-            />
-          </nav>
-        </div>
+          <div className="flex-1 overflow-y-auto py-4">
+              <h3 className={`px-6 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider sticky top-0 bg-slate-800/90 z-10 ${collapsed ? 'hidden' : ''}`}>Navigation</h3>
+              <nav className="space-y-1 px-2">
+                  <NavItem
+                      icon={<DocumentTextIcon className="h-5 w-5" />}
+                      label="Audits"
+                      collapsed={collapsed}
+                      onClick={() => navigate('/')}
+                      active={location.pathname === '/'}
+                  />
+                  <NavItem
+                      icon={<CogIcon className="h-5 w-5" />}
+                      label="Config"
+                      collapsed={collapsed}
+                      onClick={() => navigate('/config')}
+                      active={location.pathname === '/config'}
+                  />
+              </nav>
+          </div>
 
         <div className="border-t border-slate-700 p-4 bg-slate-800/70">
           {collapsed ? (
