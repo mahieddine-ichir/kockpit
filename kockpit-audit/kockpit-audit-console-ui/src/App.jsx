@@ -7,8 +7,10 @@ import {getConfig} from "./services/api.js";
 import DetailsPage from "./audits/pages/DetailsPage.jsx";
 import { useAuth } from './auth/AuthContext.jsx';
 import LoginPage from './auth/LoginPage.jsx';
+import ConfigPage from './Config/ConfigPage.jsx';
 
-function DomainEnv({domainEnvChanged, initDomainEnv}) {
+
+function DomainEnv({domainEnvChanged, initDomainEnv, setConfig}) {
     const [options, setOptions] = useState([]);
     useEffect(() => {
         getConfig().then(value => {
@@ -49,13 +51,19 @@ function App() {
     const [collapsed, setCollapsed] = useState(false);
     const [domain, setDomain] = useState(null);
     const [env, setEnv] = useState(null);
-
+    const [config, setConfig] = useState(null);
     if (loading) return <div>Loading...</div>;
 
     function onDomainEnvChanged(domain, env) {
         console.log(`Domain ${domain} / env ${env} selected.`);
         setDomain(domain);
         setEnv(env);
+        getConfig().then(configs => {
+            const specificConfig = configs.find(c =>
+                c.domain === domain && c.env === env
+            );
+            setConfig(specificConfig);
+        });
     }
 
     function initDomainEnv(options) {
@@ -64,6 +72,12 @@ function App() {
         }
         setDomain(options[0].domain);
         setEnv(options[0].env);
+        getConfig().then(configs => {
+            const initialConfig = configs.find(c =>
+                c.domain === options[0].domain && c.env === options[0].env
+            );
+            setConfig(initialConfig);
+        });
     }
 
     if (!user) {
@@ -84,16 +98,17 @@ function App() {
                     <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
                     <div>
                         <div className="flex justify-end p-2">
-                            <DomainEnv domainEnvChanged={onDomainEnvChanged} initDomainEnv={initDomainEnv} />
+                            <DomainEnv domainEnvChanged={onDomainEnvChanged} initDomainEnv={initDomainEnv} setConfig={setConfig}  />
                         </div>
                         <div className='screens-section-container'>
                             <div className="flex">
                                 <div className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
                                     <Routes>
                                         <Route path='/audits' element={
-                                            (domain && env) ? <AuditListPage domain={domain} env={env} /> : null
+                                            (domain && env && config) ? <AuditListPage domain={domain} env={env} config={config}/> : null
                                         } />
                                         <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env} />} />
+                                        <Route path="/config" element={<ConfigPage />} />
                                         <Route path="*" element={<Navigate to="/audits" replace={true} />} />
                                     </Routes>
                                 </div>
@@ -113,8 +128,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/audits" element={<AuditListPage />} />
-        <Route path="/audits/:id" element={<DetailsPage />} />
+        <Route path="/audits" element={<RequestOverview />} />
+        <Route path="/audits/:id" element={<RequestDetail />} />
         <Route path="*" element={<Navigate to="/audits" replace={true} />} />
       </Routes>
     </Router>

@@ -7,7 +7,7 @@
         "name": "audit",
         "label": "Audits",
         "config": {
-          "columns": ["id", "requestId", "start", "end", "appId"]
+          "columns": ["id", "requestId", "start", "end", "appId", "method"]
         }
       },
       {
