@@ -43,6 +43,11 @@
             <artifactId>kockpit-backend-service-azure</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-backend-authentication-basic</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
         <!--
         <dependency>
             <groupId>org.kockpit</groupId>

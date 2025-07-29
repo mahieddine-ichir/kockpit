@@ -14,8 +14,7 @@ import {
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const currentUser = {
-    name: "XXXXXXXX",
-    email: "amira@gmail.com",
+    name: JSON.parse(localStorage.getItem("token")).username || ''
   };
 
   return (
@@ -73,7 +72,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-base font-semibold text-white truncate">{currentUser.name}</p>
-                  <span className="inline-block mt-0.5 px-2 py-0.5 text-xs font-medium rounded bg-blue-600/20 text-blue-300 border border-blue-500/30">{currentUser.email}</span>
                 </div>
               </div>
           )}

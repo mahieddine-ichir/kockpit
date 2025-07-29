@@ -29,6 +29,7 @@ function DomainEnv({domainEnvChanged, initDomainEnv, setConfig}) {
         domainEnvChanged(split[0].trim(), split[1].trim());
     }
     return (
+        <div className="px-2 py-2 sm:px-2 lg:px-2">
         <div className="flex flex-col min-w-[220px]">
             <label className="block text-sm font-medium text-gray-700 mb-1">Domain / Env</label>
             <select
@@ -42,6 +43,7 @@ function DomainEnv({domainEnvChanged, initDomainEnv, setConfig}) {
                     ))
                 }
             </select>
+        </div>
         </div>
     )
 }
