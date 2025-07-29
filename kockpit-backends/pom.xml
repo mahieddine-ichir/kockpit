@@ -11,11 +11,11 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>kockpit-backend-application</module>
-        <module>kockpit-backend-service-azure</module>
 		<module>kockpit-backend-service-api</module>
+        <module>kockpit-backend-service-azure</module>
         <module>kockpit-backend-service-inmemory</module>
         <module>kockpit-backend-authentication-basic</module>
+		<module>kockpit-backend-application</module>
     </modules>
 
 </project>
