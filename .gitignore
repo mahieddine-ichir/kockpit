@@ -40,3 +40,5 @@ build/
 .idea
 
 **/src/**/application-local.yaml
+**/src/**/application-dev.yaml
+**/src/**/application-pro.yaml
