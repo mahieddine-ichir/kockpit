@@ -38,17 +38,15 @@ const Pagination = ({
     return (
         <div className="flex items-center justify-end space-x-2 w-full mb-1">
             <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-700">
-                    Showing
-                </span>
                 <select
+                    defaultValue={itemsPerPage}
                     onChange={handleItemsPerPageInput}
                     className="rounded border border-gray-300 px-2 py-1 text-sm bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none w-20"
                 >
                     {
                         selections.map(value => {
                             return (
-                                <option selected={value === itemsPerPage}>{value}</option>
+                                <option key={value}>{value}</option>
                             )
                         })
                     }

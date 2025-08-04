@@ -1,14 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
-import {ClipboardDocumentIcon, EyeIcon, CheckIcon, ChartPieIcon, ListBulletIcon} from '@heroicons/react/24/outline';
+import {EyeIcon} from '@heroicons/react/24/outline';
 import {AdjustmentsHorizontalIcon, MagnifyingGlassIcon} from '@heroicons/react/20/solid';
-import {useNavigate, useSearchParams} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import StatusBadge from '../../components/StatusBadge.jsx';
 import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import Pagination from '../../components/Pagination.jsx';
-import Dashboard from './Dashboard.jsx'
-import { getHttStatus, getMethod, getPath, dateFormat} from '../tabs/auditUtils.js'
-
+import CopyButton from "../../components/CopyButton.jsx";
 
 function formatLabel(col) {
   let label = '';
@@ -22,110 +20,159 @@ function formatLabel(col) {
   return label.trim();
 }
 
-function DomainEnv({options, filter, onchange}) {
-  return (
-      <div className="flex">
-        <div className="mb-4 flex items-center">
-          <label className="block text-sm font-medium text-gray-700 mr-2">Domain / Env:</label>
-          <select
-              value={filter}
-              onChange={e=> onchange(e.target.value)}
-              className="rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none sm:text-sm bg-white"
+function fetchIndexedValue(audit, key) {
+  if (audit['indexedKeyValues']) {
+    const found = audit['indexedKeyValues'].find(kv => kv.key === key);
+    return found ? found.value : undefined;
+  }
+}
+
+function getHttStatus(audit) {
+  return fetchIndexedValue(audit, 'httpStatus');
+}
+
+function duration(audit) {
+  return audit.end - audit.start;
+}
+
+function dateFormat(start) {
+  return new Date(start).toLocaleString();
+}
+
+function getPath(audit) {
+  return fetchIndexedValue(audit, 'requestUri');
+}
+
+function getMethod(audit) {
+  return fetchIndexedValue(audit, 'httpMethod');
+}
+
+const HeaderLine = ({columns}) => {
+  return (<tr>
+    {columns.map(col => {
+      return (
+          <th
+            key={col.key}
+            scope="col"
+            className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
           >
-            <option value="">All</option>
-            {options.map(option => (
-                <option key={`${option.domain}-${option.env}`}>{option.domain} / {option.env}</option>
-            ))}
-          </select>
-        </div>
-      </div>
+          {col.label}
+      </th>
+      )
+    })}
+    <th scope="col" className="relative px-6 py-3">
+      <span className="sr-only">Actions</span>
+    </th>
+  </tr>)
+}
+
+const AuditLine = ({columns, audit, onClick}) => {
+  return (
+  <tr key={audit.id} className="hover:bg-blue-50/60 transition-colors">
+    {columns.map(col => {
+      return <td key={col.key} className="whitespace-nowrap px-6 py-4 text-sm">
+      {col.key === 'requestId' && audit[col.key] ? (
+          <div className="flex items-center">
+            <TruncateWithTooltip text={audit[col.key]} maxLength={12}/>
+            <CopyButton value={audit[col.key]}/>
+          </div>
+      ) : col.key === 'path' ? (
+          <div className="flex items-center">
+            <TruncateWithTooltip text={getPath(audit)} maxLength={30}/>
+            <CopyButton value={getPath(audit)}/>
+          </div>
+      ) : col.key === 'status' ? (
+          <StatusBadge status={getHttStatus(audit)}/>
+      ) : col.key === 'method' ? (
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+              getMethod(audit) === 'GET'
+                  ? 'bg-green-100 text-green-800'
+                  : getMethod(audit) === 'POST'
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'bg-purple-100 text-purple-800'
+          }`}>
+                              {getMethod(audit)}
+                            </span>
+      ) : col.key === 'duration' ? (
+          <span className="font-mono">{duration(audit)}ms</span>
+      ) : col.key === 'start' ? (
+          <span className="text-slate-600">{dateFormat(audit.start)}</span>
+      ) : (
+          <span className="text-slate-800">{audit[col.key]}</span>
+      )}
+    </td>
+    })}
+    <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+      <button
+          onClick={() => onClick(audit)}
+          className="text-blue-600 hover:text-blue-800 flex items-center space-x-1 font-semibold"
+      >
+        <EyeIcon className="h-4 w-4"/>
+        <span>View</span>
+      </button>
+    </td>
+  </tr>
   )
+}
+
+const HttpStatus = ({statusFilter, setStatusFilter}) => {
+  const options = ["200", "201", "204", "404", "401", "403", "500"];
+  return (<select
+      value={statusFilter}
+      onChange={(e) => setStatusFilter(e)}
+      className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+  >
+    <option value="">All Statuses</option>
+    {options.map(opt => (
+        <option key={opt} value={opt}>{opt}</option>
+    ))}
+  </select>)
+}
+
+const HttpMethod = ({httpMethodFilter, setHttpMethodFilter}) => {
+  const options = ["GET", "POST",  "PUT", "DELETE", "PATCH"];
+  return (<select
+      value={httpMethodFilter}
+      onChange={(e) => setHttpMethodFilter(e)}
+      className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+  >
+    <option value="">All Methods</option>
+    {options.map(opt => (
+        <option key={opt} value={opt}>{opt}</option>
+    ))}
+  </select>)
 }
 
 const AuditListPage = ({ domain, env, config }) => {
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showColumns, setShowColumns] = useState(() => {
-    const saved = localStorage.getItem('selectedcolumns');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Error parsing saved columns', e);
-      }
-    }
-    if (config) {
-      const auditService = config.services.find(s => s.name === 'audit');
-      if (auditService) {
-        return auditService.config.columns;
-      }
-    }
-    return [];
-  });
-  const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [httpMethodFilter, setHttpMethodFilter] = useState('');
-  const [columns, setColumns] = useState([]);
-
-  const [domainEnvFilter, setDomainEnvFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
-  // const [allColumns, setAllColumns] = useState([]);
-  // const [defaultColumns, setDefaultColumns] = useState([]);
-  const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [showKengineOnly, setShowKengineOnly] = useState(false);
-  const [activeTab, setActiveTab] = useState('dashboard');
-
-
-  useEffect(() => {
-    if (config && config.services) {
-      const auditService = config.services.find(s => s.name === 'audit');
-      if (
-          auditService &&
-          auditService.config &&
-          Array.isArray(auditService.config.columns) &&
-          auditService.config.columns.length > 0
-      ) {
-        const cols = auditService.config.columns.map(col => ({
-          key: col,
-          label: formatLabel(col)
-        }));
-        setColumns(cols);
-        setShowColumns(auditService.config.columns);
-        return;
-      }
-    }
-    const fallbackCols = [
-      { key: 'domain', label: 'Domain' },
-      { key: 'env', label: 'Env' },
-      { key: 'appId', label: 'App ID' },
-      { key: 'requestId', label: 'Request ID' },
-      { key: 'method', label: 'Method' },
-      { key: 'path', label: 'Path' },
-      { key: 'duration', label: 'Duration' },
-      { key: 'status', label: 'Status' },
-      { key: 'hostname', label: 'Hostname' },
-      { key: 'version', label: 'Version' },
-      { key: 'artifact', label: 'Artifact' },
-      { key: 'start', label: 'Start' },
-      { key: 'end', label: 'End' },
-    ];
-    setColumns(fallbackCols);
-    setShowColumns(fallbackCols.map(c => c.key));
-  }, [config]);
+  let columns = [];
+  let label = '';
+  if (config['services']) {
+    let thisConfig = config['services'].find(service => service.name === 'audit');
+    label = thisConfig.label;
+    columns = thisConfig.config.columns
+        .map(column => {
+          return {
+            key: column,
+            label: formatLabel(column)
+          }
+        });
+  }
 
   useEffect(() => {
-    console.log("use effect1");
     loadAll(domain, env);
   }, [domain, env, currentPage, itemsPerPage]);
 
   function loadAll(domain, env) {
-    console.log("loadAll")
     setLoading(true);
     if (search) {
       doSearchAudits();
@@ -134,27 +181,10 @@ const AuditListPage = ({ domain, env, config }) => {
           .then((data) => {
             setAudits(data.items);
             setTotalCount(data.total_count);
-//          setItemsPerPage(data.size);
             setLoading(false);
           });
     }
   }
-
-  useEffect(() => {
-    setStatusOptions(getUniqueValues('httpStatus', true));
-    setHttpMethodOptions(getUniqueValues('httpMethod', true));
-  }, [audits]);
-
-  const getUniqueValues = (key, fromIndexed) => {
-    if (fromIndexed) {
-      const values = audits.flatMap(audit => (audit.indexedKeyValues || [])
-          .filter(kv => kv.key === key)
-          .map(kv => kv.value));
-      return Array.from(new Set(values)).filter(Boolean);
-    } else {
-      return Array.from(new Set(audits.map(audit => audit[key]))).filter(Boolean);
-    }
-  };
 
   const handleViewDetails = (audit) => {
     navigate(`/audits/${audit.id}`);
@@ -162,33 +192,7 @@ const AuditListPage = ({ domain, env, config }) => {
 
   if (loading) return <div>Loading...</div>;
 
-  function fetchIndexedValue(audit, key) {
-    if (audit.indexedKeyValues) {
-      const found = audit.indexedKeyValues.find(kv => kv.key === key);
-      return found ? found.value : undefined;
-    }
-  }
-
-  function getHttStatus(audit) {
-    return fetchIndexedValue(audit, 'httpStatus');
-  }
-
-  function duration(audit) {
-    return audit.end - audit.start;
-  }
-
-  function dateFormat(start) {
-    return new Date(start).toLocaleString();
-  }
-
-  function getPath(audit) {
-    return fetchIndexedValue(audit, 'requestUri');
-  }
-
-  function getMethod(audit) {
-    return fetchIndexedValue(audit, 'httpMethod');
-  }
-
+  /*
   const fetchPage = (page, pageSize) => {
     console.info("fetchPage");
     setLoading(true);
@@ -201,10 +205,12 @@ const AuditListPage = ({ domain, env, config }) => {
       });
     }
   };
+   */
 
   const handlePageChange = (page, size) => {
     setItemsPerPage(size);
     setCurrentPage(page);
+//    fetchPage(page, size);
   };
 
   function doSearchAudits() {
@@ -218,35 +224,10 @@ const AuditListPage = ({ domain, env, config }) => {
     });
   }
 
-  function CopyButton({ value, className = '' }) {
-    const [copied, setCopied] = useState(false);
-    const handleCopy = async () => {
-      if (!value) return;
-      try {
-        await navigator.clipboard.writeText(value);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1200);
-      } catch (err) {
-        console.error('Failed to copy:', err);
-      }
-    };
-    if (!value) return null;
-    return (
-        <button
-            type="button"
-            onClick={handleCopy}
-            className={`ml-2 p-1 rounded-md hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300 ${className}`}
-            title="Copy to clipboard"
-            aria-label="Copy to clipboard"
-            disabled={copied}
-        >
-          {copied ? (
-              <CheckIcon className="h-4 w-4 text-green-500" />
-          ) : (
-              <ClipboardDocumentIcon className="h-4 w-4 text-gray-500 hover:text-gray-700" />
-          )}
-        </button>
-    );
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      doSearchAudits();
+    }
   }
 
   return (
@@ -255,7 +236,7 @@ const AuditListPage = ({ domain, env, config }) => {
           <div className="h-10 w-1 rounded bg-blue-600 mr-4" />
           <div>
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Audits</h1>
-            <p className="mt-1 text-base text-slate-500">Track and analyze system activities</p>
+            <p className="mt-1 text-base text-slate-500">{label}</p>
           </div>
         </div>
         <div className="mb-8">
@@ -269,7 +250,8 @@ const AuditListPage = ({ domain, env, config }) => {
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search everything..."
+                    onKeyUp={handleKeyPress}
+                    placeholder="Search ..."
                     className="block w-full pl-10 pr-24 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base transition-all shadow-sm"
                 />
                 <button
@@ -284,26 +266,8 @@ const AuditListPage = ({ domain, env, config }) => {
             <span className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 rounded-md text-xs font-medium mr-2">
               <AdjustmentsHorizontalIcon className="h-4 w-4 mr-1" /> Filters
             </span>
-              <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
-              >
-                <option value="">All Statuses</option>
-                {statusOptions.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-              <select
-                  value={httpMethodFilter}
-                  onChange={(e) => setHttpMethodFilter(e.target.value)}
-                  className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
-              >
-                <option value="">All Methods</option>
-                {httpMethodOptions.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
+              <HttpStatus statusFilter={statusFilter} setStatusFilter={e => setStatusFilter(e.target.value)} />
+              <HttpMethod httpMethodFilter={httpMethodFilter} setHttpMethodFilter={e => setHttpMethodFilter(e.target.value)} />
             </div>
           </div>
         </div>
@@ -319,72 +283,20 @@ const AuditListPage = ({ domain, env, config }) => {
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
           <table className="min-w-full divide-y divide-slate-200">
             <thead className="bg-slate-50">
-            <tr>
-              {ALL_COLUMNS.filter(col => showColumns.includes(col.key)).map(col => (
-                  <th
-                      key={col.key}
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
-                  >
-                    {col.label}
-                  </th>
-              ))}
-              <th scope="col" className="relative px-6 py-3">
-                <span className="sr-only">Actions</span>
-              </th>
-            </tr>
+              <HeaderLine columns={columns}/>
             </thead>
             <tbody className="divide-y divide-slate-100">
-            {audits.map(audit => (
-                <tr key={audit.id} className="hover:bg-blue-50/60 transition-colors">
-                  {ALL_COLUMNS.filter(col => showColumns.includes(col.key)).map(col => (
-                      <td key={col.key} className="whitespace-nowrap px-6 py-4 text-sm">
-                        {col.key === 'requestId' && audit[col.key] ? (
-                            <div className="flex items-center">
-                              <TruncateWithTooltip text={audit[col.key]} maxLength={12} />
-                              <CopyButton value={audit[col.key]} />
-                            </div>
-                        ) : col.key === 'path' ? (
-                            <div className="flex items-center">
-                              <TruncateWithTooltip text={getPath(audit)} maxLength={30} />
-                              <CopyButton value={getPath(audit)} />
-                            </div>
-                        ) : col.key === 'status' ? (
-                            <StatusBadge status={getHttStatus(audit)} />
-                        ) : col.key === 'method' ? (
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                getMethod(audit) === 'GET'
-                                    ? 'bg-green-100 text-green-800'
-                                    : getMethod(audit) === 'POST'
-                                        ? 'bg-blue-100 text-blue-800'
-                                        : 'bg-purple-100 text-purple-800'
-                            }`}>
-                        {getMethod(audit)}
-                      </span>
-                        ) : col.key === 'duration' ? (
-                            <span className="font-mono">{duration(audit)}ms</span>
-                        ) : col.key === 'start' ? (
-                            <span className="text-slate-600">{dateFormat(audit.start)}</span>
-                        ) : (
-                            <span className="text-slate-800">{audit[col.key]}</span>
-                        )}
-                      </td>
-                  ))}
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                    <button
-                        onClick={() => handleViewDetails(audit)}
-                        className="text-blue-600 hover:text-blue-800 flex items-center space-x-1 font-semibold"
-                    >
-                      <EyeIcon className="h-4 w-4" />
-                      <span>View</span>
-                    </button>
-                  </td>
-                </tr>
-            ))}
+            {
+              audits
+                  .filter(audit => statusFilter ? getHttStatus(audit) === statusFilter : audit)
+                  .filter(audit => httpMethodFilter ? getMethod(audit) === httpMethodFilter : audit)
+                  .map(audit => (
+                      <AuditLine audit={audit} columns={columns} key={audit.id} onClick={handleViewDetails} />
+                  ))
+            }
             </tbody>
           </table>
         </div>
-        {/* paginnation */}
         <div className="mt-8 flex justify-end">
           <Pagination
               currentPage={currentPage}

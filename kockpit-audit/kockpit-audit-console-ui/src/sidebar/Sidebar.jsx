@@ -1,14 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {
-    Bars3Icon,
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
-    DocumentTextIcon,
-    ChartBarIcon,
     CogIcon,
-    UserIcon,
-    ShieldCheckIcon
+    DocumentTextIcon,
+    UserIcon
 } from '@heroicons/react/24/outline';
 
 const Sidebar = ({ collapsed, setCollapsed }) => {

@@ -11,8 +11,8 @@ const LoginPage = () => {
     const [error, setError] = useState('');
 
     function handleLogin() {
+        console.log("authenticating ... ")
         authenticate(username, password).then(value => {
-            //console.log(`Authenticated ${JSON.parse(value)}`);
             localStorage.setItem('creds', btoa(`${username}:${password}`));
             login(value);
             navigate('/audits');
