@@ -26,7 +26,6 @@ function App() {
     }
 
     function onConfigLoaded(configs) {
-        console.log(`configs ${JSON.stringify(configs)}`);
         setConfigs(configs);
         setConfig(configs[0]);
 
@@ -54,7 +53,7 @@ function App() {
                 <div className="screens-container">
                     {
                         user?
-                            <Sidebar collapsed={collapsed} setCollapsed={setCollapsed}/>
+                            <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} config={config} />
                             : null
                     }
                     <div>
