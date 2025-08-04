@@ -32,7 +32,6 @@ const Pagination = ({
     };
 
     const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
-    console.log(`currentPage ${currentPage}, itemsPerPage ${itemsPerPage}, totalItems ${totalItems}`);
     const endItem = Math.min((currentPage) * itemsPerPage, totalItems);
 
     return (
