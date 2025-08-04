@@ -10,36 +10,6 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
-/*
-const api = axios.create({
-  baseURL: API_BASE,
-  withCredentials: true
-});
-
-// Request interceptor
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  console.log(`using token ${token}, request ${config.request.baseURL}`);
-  if (token) {
-    //config.headers.Authorization = `Bearer ${token}`;
-    config.headers.Authorization = `Basic ${token}`;
-  }
-  return config;
-});
-
-// Response interceptor
-api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-      }
-      return Promise.reject(error);
-    }
-);
- */
-
 export const authenticate = async (username, password) => {
   console.log(`Authenticating user ${username} on ${API_BASE}/me`);
   const response = await axios.get(`${API_BASE}/me`, {
@@ -69,7 +39,7 @@ export const fetchAuditById = async (id, domain, env) => {
 };
 
 export const getConfig = async () => {
-  console.log('Fetching config');
+  console.log(`Fetching config from ${API_BASE}/config`);
   const response = await axios.get(`${API_BASE}/config`);
   return response.data;
 }
