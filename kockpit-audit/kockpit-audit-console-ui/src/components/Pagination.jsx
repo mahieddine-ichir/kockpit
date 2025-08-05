@@ -33,28 +33,28 @@ const Pagination = ({
 
     const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
     console.log(`currentPage ${currentPage}, itemsPerPage ${itemsPerPage}, totalItems ${totalItems}`);
-    const endItem = Math.min((currentPage + 1) * itemsPerPage, totalItems);
+    const endItem = Math.min((currentPage) * itemsPerPage, totalItems);
 
     return (
         <div className="flex items-center justify-end space-x-2 w-full mb-1">
             <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-700">
-                    Items per page
-                </span>
                 <select
+                    defaultValue={itemsPerPage}
                     onChange={handleItemsPerPageInput}
                     className="rounded border border-gray-300 px-2 py-1 text-sm bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none w-20"
                 >
                     {
                         selections.map(value => {
                             return (
-                                <option selected={value === itemsPerPage}>{value}</option>
+                                <option key={value}>{value}</option>
                             )
                         })
                     }
                 </select>
             </div>
-            <span className="text-sm text-gray-700 min-w-max">{startItem}-{endItem} of {totalItems}</span>
+            <span className="text-sm text-gray-700 min-w-max">{startItem} - {endItem} of {' '}
+                <span className="font-semibold text-blue-700">{totalItems}</span>
+            </span>
             <button
                 onClick={handleFirst}
                 disabled={currentPage === 1}

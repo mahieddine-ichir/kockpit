@@ -41,15 +41,14 @@ public class AzureSearchRepository implements DomainApiDelegate {
 
     @Override
     public ResponseEntity<Page> searchAudits(String query, String domain, String env, Integer start, Integer size) {
+        log.debug("Search audits {} for query {} and domain {} and env {} and start {} and size {}", query, domain, env, query, start, size);
         SearchPagedIterable search = doSearch(query, domain, env, start, size);
         List<SearchAuditReport> list = search
                 .stream()
                 .map(searchResult -> searchResult.getDocument(SearchAuditReport.class))
                 .toList();
 
-        log.info("Found {} audits for query {} and domain {} and env {}", list.size(), query, domain, env);
-        list.forEach(audit -> log.debug("Found audit report: {}", audit));
-
+        log.debug("Found {} audits for query {} and domain {} and env {}", list.size(), query, domain, env);
         return ResponseEntity.ok(Page.builder()
                 .items(new ArrayList<>(list))
                 .size((long) list.size())
@@ -81,7 +80,7 @@ public class AzureSearchRepository implements DomainApiDelegate {
                 .toList();
         return ResponseEntity.ok(Page.builder()
                         .items(new ArrayList<>(list))
-                        .size(size.longValue())
+                        .size(Math.min(size, search.getTotalCount()))
                         .totalCount(search.getTotalCount())
                 .build());
     }
