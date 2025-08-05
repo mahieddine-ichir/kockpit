@@ -64,7 +64,7 @@ const DetailTabs = ({ request }) => {
   };
 
   return (
-      <div className="bg-white rounded-xl shadow-md border-l-4 border-blue-600/60 p-0">
+      <div>
         <div className="border-b border-slate-100 px-6 pt-4">
           <nav className="flex gap-2">
             {COMPONENTS.map(({ key, title }) => (
@@ -87,7 +87,7 @@ const DetailTabs = ({ request }) => {
           {renderTabContent()}
         </div>
       </div>
-  );
+  )
 };
 
 export default DetailTabs;

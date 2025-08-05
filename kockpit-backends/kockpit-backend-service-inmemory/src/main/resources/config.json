@@ -5,9 +5,9 @@
     "services": [
       {
         "name": "audit",
-        "label": "Audits",
+        "label": "Track and analyze system activities",
         "config": {
-          "columns": ["id", "requestId", "start", "end", "appId", "method"]
+          "columns": ["appId", "requestId", "method", "path", "duration", "start", "status"]
         }
       },
       {
