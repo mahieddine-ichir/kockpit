@@ -16,6 +16,7 @@ const ConfigPage = () => {
             .catch(err => {
                 setError('Failed to fetch config');
                 setLoading(false);
+                console.error('Error fetching config:', err.message)
             });
     }, []);
 
