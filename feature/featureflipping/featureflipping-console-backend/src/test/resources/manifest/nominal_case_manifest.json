@@ -1,0 +1,62 @@
+{
+  "domain": "wcp",
+  "env": "local",
+  "applications": [
+    {
+      "id": "wcpsamples",
+      "label": "Samples",
+      "services": {
+        "featureflipping": [
+          {
+            "label": "Samples",
+            "properties": [
+              {
+                "description": "Feature Flipping - Always Active key",
+                "key": "ff.key.always-active",
+                "expiration": null
+              },
+              {
+                "description": "Feature Flipping - Feature1",
+                "key": "ff.key.feature1",
+                "expiration": null
+              },
+              {
+                "description": "Feature Flipping - Expired key",
+                "key": "ff.key.expired",
+                "expiration": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "another-wcpsamples",
+      "label": "Samples",
+      "services": {
+        "featureflipping": [
+          {
+            "label": "Samples 2",
+            "properties": [
+              {
+                "description": "Feature Flipping - Always Active key",
+                "key": "ff.key.always-active",
+                "expiration": null
+              },
+              {
+                "description": "Feature Flipping - Feature1",
+                "key": "ff.key.feature1",
+                "expiration": null
+              },
+              {
+                "description": "Feature Flipping - Expired key",
+                "key": "ff.key.expired",
+                "expiration": null
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

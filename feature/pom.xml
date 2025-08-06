@@ -21,6 +21,7 @@
         <module>dynacache</module>
         <module>dlqmanager</module>
         <module>darkcanary</module>
+        <module>featureflipping</module>
     </modules>
 </project>
 

@@ -1,0 +1,14 @@
+package com.accor.wcp.console.services.featureflipping.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+@Data
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ResponseIssuedCommandDto extends IssuedCommandDto {
+  private String message;
+}
