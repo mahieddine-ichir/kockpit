@@ -18,6 +18,7 @@
         <module>kengine</module>
         <module>audit</module>
         <module>dynaconfig</module>
+        <module>dynacache</module>
     </modules>
 </project>
 

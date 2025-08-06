@@ -1,0 +1,33 @@
+{
+  "domain": "wcxss",
+  "env": "local",
+  "groups": [
+    "XSS"
+  ],
+  "applications": [
+    {
+      "id": "wcxss-insurance-quotation-v1",
+      "label": "Insurance Quotation",
+      "services": {
+        "cache": [
+          {
+            "name": "hotelsInfo",
+            "label": "Cache XSS Hotels v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-insurance-quotation-v2",
+      "label": "Insurance Quotation V2",
+      "services": {
+        "cache": [
+          {
+            "name": "hotelsInfo",
+            "label": "Cache XSS Hotels v2"
+          }
+        ]
+      }
+    }
+  ]
+}
