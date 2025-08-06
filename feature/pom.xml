@@ -17,6 +17,7 @@
         <module>obfuscation</module>
         <module>kengine</module>
         <module>audit</module>
+        <module>dynaconfig</module>
     </modules>
 </project>
 

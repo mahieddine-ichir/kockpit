@@ -1,0 +1,58 @@
+{
+  "domain": "wcp",
+  "env": "local",
+  "applications": [
+    {
+      "id": "wcpsamples",
+      "label": "Samples",
+      "services": {
+        "dynaconfig": [
+          {
+            "name": ["INVALID_VALUE"],
+            "label": "WCP Samples",
+            "properties": [
+              {
+                "name": "ff.backend.new2022",
+                "label": "FF Backend New",
+                "description": "Feature Flipping to use new Backend 2022",
+                "type": "boolean"
+              },
+              {
+                "name": "sample.resttemplate.timeout",
+                "label": "RestTemplate Timeout",
+                "description": "Sample to POC RestTemplate timeout update",
+                "type": "int"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "another-wcpsamples",
+      "label": "Samples",
+      "services": {
+        "dynaconfig": [
+          {
+            "name": "another-wcpsamples",
+            "label": "WCP Samples",
+            "properties": [
+              {
+                "name": "ff.backend.new2022",
+                "label": "FF Backend New",
+                "description": "Feature Flipping to use new Backend 2022",
+                "type": "boolean"
+              },
+              {
+                "name": "sample.resttemplate.timeout",
+                "label": "RestTemplate Timeout",
+                "description": "Sample to POC RestTemplate timeout update",
+                "type": "int"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
