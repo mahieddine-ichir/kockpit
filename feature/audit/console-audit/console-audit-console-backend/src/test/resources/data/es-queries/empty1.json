@@ -1,0 +1,32 @@
+{
+  "bool" : {
+    "must" : [
+      {
+        "bool" : {
+          "should" : [
+            {
+              "term" : {
+                "appId" : {
+                  "value" : "app1",
+                  "boost" : 1.0
+                }
+              }
+            },
+            {
+              "term" : {
+                "appId" : {
+                  "value" : "app2",
+                  "boost" : 1.0
+                }
+              }
+            }
+          ],
+          "adjust_pure_negative" : true,
+          "boost" : 1.0
+        }
+      }
+    ],
+    "adjust_pure_negative" : true,
+    "boost" : 1.0
+  }
+}

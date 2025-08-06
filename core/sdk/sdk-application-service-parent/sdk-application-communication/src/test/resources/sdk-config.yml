@@ -1,0 +1,30 @@
+name: SDK-Sample-Configuration
+description: This configuration file manages SDK environments properties
+environments:
+  dev:
+    aws-account-id: 123456789
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::123456123456:role/SdkApplicationClientKinesisAssumeRole
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-dev
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-dev
+    wcp2app-bucket: wcp-sdk-bucket-communication-wcp2app-dev
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000
+  oat:
+    aws-account-id: 223456789
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::123456123456:role/SdkApplicationClientKinesisAssumeRole
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-dev
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-dev
+    wcp2app-bucket: wcp-sdk-bucket-communication-wcp2app-dev
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000
+  pro:
+    aws-account-id: 923456789
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::123456123456:role/SdkApplicationClientKinesisAssumeRole
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-dev
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-dev
+    wcp2app-bucket: wcp-sdk-bucket-communication-wcp2app-dev
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000

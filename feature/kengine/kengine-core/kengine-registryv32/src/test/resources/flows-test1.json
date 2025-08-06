@@ -1,0 +1,113 @@
+[
+  {
+    "name": "flow 1",
+    "referentials": [
+      {
+        "predicates": [],
+        "actions": [
+          {
+            "name": "action 1",
+            "description": ""
+          }
+        ],
+        "ok": null,
+        "ko": null,
+        "details": {
+          "name": "rule 1",
+          "description": ""
+        }
+      },
+      {
+        "predicates": [
+          {
+            "name": "pred 1",
+            "description": ""
+          }
+        ],
+        "actions": [],
+        "ok": {
+          "predicates": [
+            {
+              "name": "pred 1",
+              "description": ""
+            }
+          ],
+          "actions": [],
+          "ok": {
+            "predicates": [],
+            "actions": [
+              {
+                "name": "act ",
+                "description": ""
+              }
+            ],
+            "ok": null,
+            "ko": null,
+            "details": {
+              "name": "act ",
+              "description": ""
+            }
+          },
+          "ko": {
+            "predicates": [],
+            "actions": [
+              {
+                "name": "act ",
+                "description": ""
+              }
+            ],
+            "ok": null,
+            "ko": null,
+            "details": {
+              "name": "act ",
+              "description": ""
+            }
+          },
+          "details": {
+            "name": "pred 1",
+            "description": ""
+          }
+        },
+        "ko": {
+          "predicates": [],
+          "actions": [
+            {
+              "name": "act 1",
+              "description": ""
+            }
+          ],
+          "ok": null,
+          "ko": null,
+          "details": {
+            "name": "act 1",
+            "description": ""
+          }
+        },
+        "details": {
+          "name": "rule 2",
+          "description": ""
+        }
+      }
+    ]
+  },
+  {
+    "name": "flow 2",
+    "referentials": [
+      {
+        "predicates": [],
+        "actions": [
+          {
+            "name": "action ",
+            "description": ""
+          }
+        ],
+        "ok": null,
+        "ko": null,
+        "details": {
+          "name": "rule f2",
+          "description": ""
+        }
+      }
+    ]
+  }
+]

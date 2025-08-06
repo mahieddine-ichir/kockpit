@@ -1,0 +1,58 @@
+package com.accor.wcp.audit;
+
+import static com.accor.wcp.audit.AuditReportVersion.V2_6;
+import static java.util.Collections.synchronizedList;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Setter;
+
+@Builder
+@Data
+@Setter
+public class AuditReport {
+  @Builder.Default private final AuditReportVersion auditReportVersion = V2_6;
+  private final String id;
+  private final String domain;
+  private final String env;
+  private final String requestId;
+  private String appId;
+  private final String hostname;
+  private final String version;
+  private final String artifact;
+  private final Instant start;
+  private Instant end;
+  private Integer ttl;
+  private final List<IndexedKeyValue> indexedKeyValues = synchronizedList(new ArrayList<>());
+  private final List<AuditIndexedKeyValuesComputeFunction> indexedKeyValuesComputeFunctions =
+      synchronizedList(new ArrayList<>());
+  private final Map<String, Audit> audits = new ConcurrentHashMap<>();
+
+  @Data
+  @Deprecated
+  public abstract static class AuditJsonReport {
+    private final AuditReport auditReport;
+    @Deprecated private final List<Function<String, String>> auditReportPostProcess;
+
+    public abstract String getAuditJson();
+  }
+
+  Map<String, Audit> getAuditsMap() {
+    return audits;
+  }
+
+  // TODO clean that => must separate audit accumulator and audit report message (final data)
+  public Map<String, Audit> auditsMap() {
+    return audits;
+  }
+
+  public List<Audit> getAudits() {
+    return new ArrayList<>(audits.values());
+  }
+}

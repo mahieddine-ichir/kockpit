@@ -1,0 +1,66 @@
+name: Accor-Console-SDKConfiguration
+description: This configuration file manages SDK environments properties for Accor
+environments:
+  none:
+    aws-account-id: 0
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::0:role/SdkApplicationClientKinesisAssumeRole
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-mock
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-mock
+    wcp2app-bucket: wcp-sdk-bucket-wcp2app-local
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000
+  mock:
+    aws-account-id: 0
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::0:role/SdkApplicationClientKinesisAssumeRole
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-mock
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-mock
+    wcp2app-bucket: wcp-sdk-bucket-wcp2app-local
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000
+  local:
+    aws-account-id: 000000000000
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::000000000000:role/SdkApplicationClientKinesisAssumeRole
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-local
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-local
+    wcp2app-bucket: wcp-sdk-bucket-wcp2app-local
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000
+  dev:
+    aws-account-id: 531583874639
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::531583874639:role/SdkApplicationClientKinesisAssumeRole
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-dev
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-dev
+    wcp2app-bucket: wcp-sdk-bucket-communication-wcp2app-dev
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000
+  bch:
+    aws-account-id: 531583874639
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::531583874639:role/SdkApplicationClientKinesisAssumeRole-bch
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-bch
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-bch
+    wcp2app-bucket: wcp-sdk-bucket-communication-wcp2app-bch
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000
+  oat:
+    aws-account-id: 500304488521
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::500304488521:role/SdkApplicationClientKinesisAssumeRole
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-oat
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-oat
+    wcp2app-bucket: wcp-sdk-bucket-communication-wcp2app-oat
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000
+  pro:
+    aws-account-id: 531436091006
+    aws-region: eu-west-1
+    aws-role-name: arn:aws:iam::531436091006:role/SdkApplicationClientKinesisAssumeRole
+    heartbeat-stream: wcp-sdk-stream-communication-heartbit-pro
+    app2wcp-stream-name: wcp-sdk-stream-communication-app2wcp-pro
+    wcp2app-bucket: wcp-sdk-bucket-communication-wcp2app-pro
+    notification-polling-interval-ms: 5000
+    heartbeat-interval-ms: 10000

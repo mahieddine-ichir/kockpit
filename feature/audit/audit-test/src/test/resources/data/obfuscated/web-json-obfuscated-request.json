@@ -1,0 +1,238 @@
+{
+  "order": {
+    "id": "ORD-ID",
+    "accorReference": "ACCREF-1",
+    "basketId": "BSKT-ID",
+    "language": "en",
+    "creationDatetime": "2021-01-01T11:30:25.521Z",
+    "modificationDatetime": "2021-01-01T11:30:25.521Z",
+    "version": 1,
+    "modelVersion": 1,
+    "items": [
+      {
+        "id": "ORDITM-ID-1",
+        "basketItemId": "BSKTITEM-ID-ITM1",
+        "booking": {
+          "status": "AWAITING_BOOKING"
+        },
+        "resourceReservation": {
+          "status": "NO_PRERESERVATION"
+        }
+      }
+    ],
+    "payment": {
+      "status": "PAYMENT_DONE",
+      "paymentTransactionId": "PAYMTTRANSAC-ID-1",
+      "result": {
+        "walletUsed": false
+      }
+    },
+    "basket": {
+      "id": "BSKT-ID",
+      "language": "en",
+      "creationDatetime": "2021-01-01T11:30:25.521Z",
+      "modificationDatetime": "2021-01-01T11:30:25.521Z",
+      "version": 1,
+      "modelVersion": 1,
+      "items": [
+        {
+          "id": "BSKTITEM-ID-ITM1",
+          "offerType": "HOTEL_STAY",
+          "offerId": "OFFERID-ITM1",
+          "comment": "COMMENT-ITM1",
+          "purposeOfStay": "LEISURE",
+          "guests": [
+            {
+              "firstName": "GU*******************",
+              "lastName": "GU******************",
+              "age": 20
+            },
+            {
+              "firstName": "GUEST2_FIRSTNAME-ITM1",
+              "lastName": "GU******************",
+              "age": 10
+            },
+            {
+              "firstName": "GU*******************",
+              "lastName": "GU******************",
+              "age": 19
+            },
+            {
+              "firstName": "GUEST4_FIRSTNAME-ITM1",
+              "lastName": "GU******************",
+              "age": 14
+            }
+          ],
+          "mainBeneficiary": {
+            "email": "M*******************@m*******",
+            "firstName": "MA**********************",
+            "lastName": "MA*********************",
+            "phone": {
+              "number": "0612******",
+              "prefix": "33"
+            }
+          },
+          "offer": {
+            "type": "HOTEL_STAY",
+            "id": "OFFERID-ITM1",
+            "providerSystem": "TARS",
+            "language": "en",
+            "creationDatetime": "2021-01-01T11:30:25.521Z",
+            "modificationDatetime": "2021-01-01T11:30:25.521Z",
+            "version": 1,
+            "modelVersion": 1,
+            "pricing": {
+              "type": "HOTEL_STAY",
+              "currency": "EUR",
+              "priceToDisplay": 100,
+              "priceToPay": 108,
+              "priceAfterTax": 110,
+              "strokedPriceToDisplay": 140,
+              "status": "PAYING",
+              "childSupplement": false,
+              "averagePerNight": {
+                "currency": "EUR",
+                "amount": {
+                  "afterTax": 55,
+                  "hotelKeeper": 50
+                }
+              },
+              "totalStay": {
+                "currency": "EUR",
+                "amount": {
+                  "afterTax": 110,
+                  "hotelKeeper": 100,
+                  "payOnline": 108,
+                  "payAtTheHotel": 2,
+                  "vat": {
+                    "amount": {
+                      "excluded": 0,
+                      "included": 17.08,
+                      "detail": [
+                        {
+                          "id": "TOTALSTAYVATTAX1-ID-ITM1",
+                          "period": {
+                            "start": "2024-05-01",
+                            "end": "2024-05-02"
+                          },
+                          "label": "TOTALSTAYVATTAX1-LABEL-ITM1",
+                          "onlinePayable": true,
+                          "refundable": true,
+                          "included": true,
+                          "frequency": "PER_STAY",
+                          "unit": "PER_PRODUCT",
+                          "amount": 17.08,
+                          "percent": 20.6
+                        }
+                      ]
+                    }
+                  },
+                  "fees": {
+                    "amount": {
+                      "excluded": 0,
+                      "included": 0,
+                      "detail": []
+                    }
+                  },
+                  "otherTax": {
+                    "amount": {
+                      "excluded": 10,
+                      "included": 0,
+                      "detail": [
+                        {
+                          "id": "TOTALSTAYOTHERTAX1-ID-ITM1",
+                          "period": {
+                            "start": "2024-05-01",
+                            "end": "2024-05-02"
+                          },
+                          "label": "TOTALSTAYOTHERTAX1-LABEL-ITM1",
+                          "onlinePayable": true,
+                          "refundable": true,
+                          "included": false,
+                          "frequency": "PER_STAY",
+                          "unit": "PER_PRODUCT",
+                          "amount": 8
+                        },
+                        "*",
+                        "*",
+                        "*",
+                        {
+                          "id": "TOTALSTAYOTHERTAX5-ID-ITM1",
+                          "period": {
+                            "start": "2024-05-01",
+                            "end": "2024-05-02"
+                          },
+                          "label": "TOTALSTAYOTHERTAX5-LABEL-ITM1",
+                          "onlinePayable": false,
+                          "refundable": false,
+                          "included": false,
+                          "frequency": "PER_STAY",
+                          "unit": "PER_PRODUCT",
+                          "amount": 2
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "mealPlan": "EP",
+            "mealPlanDescription": "Room only",
+            "remaining": 3,
+            "paymentDescription": "Payment at the hotel",
+            "prepay": false,
+            "burnPointAvailable": false,
+            "badges": [],
+            "context": {
+              "hotelId": 2192,
+              "dateIn": "2023-06-13",
+              "nights": 2,
+              "adults": 1,
+              "childrenAges": [],
+              "clientId": "CLIENTID-ITM1"
+            },
+            "room": {
+              "id": "ROOM-ITM1",
+              "label": "ROOMLABEL-ITM1",
+              "description": "ROOMDESC-ITM1"
+            },
+            "rate": {
+              "id": "RATE-ITM1",
+              "label": "RATELABEL-ITM1",
+              "description": "RATEDESC-ITM1"
+            },
+            "effectiveOccupancy": {
+              "adults": 1,
+              "childrenAges": [],
+              "childrenAgesAsAdult": []
+            },
+            "flexibility": {
+              "code": "FLEX",
+              "label": "Flexible offer",
+              "limitDate": "2024-05-01T12:00:00+02:00",
+              "penalty": {
+                "night": 0,
+                "percent": 0,
+                "amount": {
+                  "amount": 0,
+                  "currency": "EUR"
+                }
+              }
+            },
+            "providerSystemInfo": {
+              "providerSystem": "TARS",
+              "cro": "INT",
+              "subCro": "INT",
+              "offerCode": "COG5",
+              "productCode": "DBBBW"
+            },
+            "categories": []
+          }
+        }
+      ]
+    }
+  },
+  "orderItemIds": [
+    "ORDITM-ID-1"
+  ]
+}

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+      <groupId>org.kockpit</groupId>
+      <artifactId>kockpit-feature-audit</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>audit-test</artifactId>
+  <name>Welcome Connect Audit - Notification AutoConfigure</name>
+
+  <dependencies>
+
+    <!-- SDK  -->
+    <dependency>
+      <groupId>org.kockpit</groupId>
+      <artifactId>sdk-application-starter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kockpit</groupId>
+      <artifactId>sdk-config-accor</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kockpit</groupId>
+      <artifactId>sdk-application</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+
+    <!-- SPRING   -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+
+    <!-- BOM    -->
+    <dependency>
+      <groupId>org.kockpit</groupId>
+      <artifactId>kengine-web</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+
+    <!-- AUDIT   -->
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>audit-module-autoconfigure-web</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kockpit</groupId>
+      <artifactId>audit-module-autoconfigure-httpexchange</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kockpit</groupId>
+      <artifactId>audit-module-autoconfigure-aws</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kockpit</groupId>
+      <artifactId>audit-module-autoconfigure-kengine</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kockpit</groupId>
+      <artifactId>audit-notification-autoconfigure-service</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- OBFUSCATION   -->
+    <dependency>
+      <groupId>org.kockpit</groupId>
+      <artifactId>obfuscation-autoconfigure</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- TEST   -->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20240303</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>

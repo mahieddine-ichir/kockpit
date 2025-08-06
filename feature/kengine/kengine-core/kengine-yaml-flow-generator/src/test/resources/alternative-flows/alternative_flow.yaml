@@ -1,0 +1,9 @@
+flow: FLOW_ALTERNATIVE_YAML
+description: This flow is generated from an alternative yaml format
+rule: BR_ALTERNATIVE_YAML
+actions:
+  - PRE_IS_OK
+predicates:
+  - ACT_DO_IF_OK
+callbacks:
+  - ACT_DO_IF_NOK

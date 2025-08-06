@@ -1,0 +1,461 @@
+{
+  "bookingRequests": [
+    {
+      "hotelCode": "1249",
+      "reservationType": "INDIVIDUELLE",
+      "reservationStatus": "PRISE_RESA",
+      "resaAmounts": [
+        {
+          "amount": {
+            "currency": "EUR",
+            "value": 0.0
+          },
+          "typeAmount": "FEES"
+        },
+        {
+          "amount": {
+            "currency": "EUR",
+            "value": 195.75
+          },
+          "typeAmount": "TTCBRU"
+        },
+        {
+          "amount": {
+            "currency": "EUR",
+            "value": 195.75
+          },
+          "typeAmount": "TTC"
+        },
+        {
+          "amount": {
+            "currency": "EUR",
+            "value": 193.5
+          },
+          "typeAmount": "HT"
+        },
+        {
+          "amount": {
+            "currency": "EUR",
+            "value": 195.0
+          },
+          "typeAmount": "TARS"
+        },
+        {
+          "amount": {
+            "currency": "EUR",
+            "value": 195.0
+          },
+          "typeAmount": "TARTVA"
+        },
+        {
+          "amount": {
+            "currency": "EUR",
+            "value": 193.5
+          },
+          "typeAmount": "HTBRU"
+        }
+      ],
+      "resaDiscountRefAmounts": [],
+      "hotes": [
+        {
+          "numFamille": 0,
+          "ordreHote": 0,
+          "codeCivi": "MR",
+          "nomHote": "*****r",
+          "prenomHote": "***ry",
+          "ageEnfant": 0,
+          "guestIdConfirmed": false
+        },
+        {
+          "numFamille": 0,
+          "ordreHote": 1,
+          "codeCivi": "CHI",
+          "nomHote": "******r",
+          "prenomHote": "******ne",
+          "ageEnfant": 4
+        }
+      ],
+      "beneficiaire": {
+        "natureClient": "B",
+        "codeTypeClient": "INDI",
+        "nom1": "**gue",
+        "nom2": "Severus",
+        "nom3": "MR",
+        "adresse": {
+          "codePostal": "",
+          "ville": "",
+          "codeEtat": "",
+          "codePays": "FR",
+          "email": "s************@p***********",
+          "adresse1": "",
+          "adresse2": "",
+          "adresse3": "",
+          "adresse4": "",
+          "telephone": {
+            "number": "*******2211",
+            "indicatif": "33",
+            "type": 0
+          }
+        }
+      },
+      "reservataire": {
+        "natureClient": "C",
+        "codeTypeClient": "INDI",
+        "nom1": "*",
+        "nom2": "Harry",
+        "nom3": "MR",
+        "adresse": {
+          "codePostal": "",
+          "ville": "",
+          "codeEtat": "",
+          "codePays": "FR",
+          "email": "h***********@p***********",
+          "adresse1": "",
+          "adresse2": "",
+          "adresse3": "",
+          "adresse4": "",
+          "telephone": {
+            "number": "*****6699",
+            "indicatif": "33",
+            "type": 0
+          }
+        },
+        "nom1NL": "",
+        "nom2NL": ""
+      },
+      "facturation": {
+        "nom1": "P*****",
+        "nom2": "Ha***",
+        "codeCivilite": "MR",
+        "adresse": {
+          "codePostal": "",
+          "ville": "",
+          "codeEtat": "",
+          "codePays": "FR",
+          "email": "h***********@p***********",
+          "adresse1": "",
+          "adresse2": "",
+          "adresse3": "",
+          "adresse4": "",
+          "telephone": {
+            "number": "6115*****",
+            "indicatif": "33",
+            "type": 0
+          }
+        }
+      },
+      "origin": {
+        "cro": "INT",
+        "subCro": "INT"
+      },
+      "offres": [
+        {
+          "periode": {
+            "dateIn": 1684540800000,
+            "dateOut": 1684627200000,
+            "dureeSejour": 1
+          },
+          "produits": [
+            {
+              "idSegment": 0,
+              "codeProduit": "TWC",
+              "typeProduit": "A",
+              "codeTypeFamilleProduit": "\u0000",
+              "codeUnite": "P",
+              "flagType": "A",
+              "prix": 195.0,
+              "statusPrix": "N",
+              "codeMealPlan": "EP",
+              "prixHT": 193.5,
+              "typeCodeReservation": "RA",
+              "typeCodeTarsKey": "RA",
+              "codeTarsKey": "RACWEB",
+              "typeTarsKeyPrimaire": "RA",
+              "codeTarif": "RAC",
+              "codeReservation": "RACWEB",
+              "qteProduit": 1,
+              "dateJour": 1684540800000,
+              "tarskeyPrimaire": "RACWEB",
+              "nbAdultes": 2,
+              "nbEnfants": 1,
+              "resaProdAmounts": [
+                {
+                  "amount": {
+                    "currency": "EUR",
+                    "value": 195.75
+                  },
+                  "typeAmount": "PREPAB"
+                },
+                {
+                  "amount": {
+                    "currency": "EUR",
+                    "value": 193.5
+                  },
+                  "typeAmount": "HT"
+                },
+                {
+                  "amount": {
+                    "currency": "EUR",
+                    "value": 195.0
+                  },
+                  "typeAmount": "TARTVA"
+                },
+                {
+                  "amount": {
+                    "currency": "EUR",
+                    "value": 193.5
+                  },
+                  "typeAmount": "HTBRU"
+                }
+              ],
+              "taxes": [
+                {
+                  "code": "TCITYN",
+                  "libelle": "City and local tax",
+                  "productCode": "TCITYN",
+                  "prepaid": true,
+                  "tva": false,
+                  "included": false,
+                  "remboursable": false,
+                  "value": 0.75,
+                  "amount": {
+                    "currency": "EUR",
+                    "value": 0.75
+                  },
+                  "currency": "EUR",
+                  "status": "C",
+                  "type": "NUIT_PRODUIT",
+                  "codeModeTaxe": "TXES01",
+                  "codeFamille": "CTA"
+                },
+                {
+                  "code": "VAT",
+                  "libelle": "VAT GB",
+                  "productCode": "VAT",
+                  "prepaid": true,
+                  "tva": true,
+                  "included": true,
+                  "remboursable": false,
+                  "value": 1.5,
+                  "amount": {
+                    "currency": "EUR",
+                    "value": 1.5
+                  },
+                  "currency": "EUR",
+                  "status": "C",
+                  "type": "NUIT_PRODUIT",
+                  "codeModeTaxe": "TXES01",
+                  "codeFamille": "VAT"
+                }
+              ],
+              "ordreProduit": 0,
+              "tarsAmount": {
+                "currency": "EUR",
+                "value": 195.0
+              },
+              "remunAmount": {
+                "currency": "EUR",
+                "value": 0.0
+              },
+              "htBrutAmount": {
+                "currency": "EUR",
+                "value": 193.5
+              },
+              "htDiscountAmount": {
+                "currency": "EUR",
+                "value": 193.5
+              },
+              "lengthOfStay": 1,
+              "currency": "EUR",
+              "flagPackage": false,
+              "flagContrat": false,
+              "garanti": true,
+              "resaProdDiscountRefAmounts": []
+            }
+          ]
+        }
+      ],
+      "periode": {
+        "dateIn": 1684540800000,
+        "dateOut": 1684627200000,
+        "dureeSejour": 1
+      },
+      "garantie": {
+        "typeGarantie": "C",
+        "codeGarantie": "VI",
+        "numCarteGarantie": "411*************",
+        "dateExpirGarantie": "032028",
+        "nomPorteurGarantie": "Po****"
+      },
+      "codelangue": "fr",
+      "flagAffLois": "LOISIRS",
+      "interlocuteur": "https://all.accor.com",
+      "resaObsHotel": "",
+      "numLieu": 0,
+      "longStay": false,
+      "nbAdultesTOT": 2,
+      "nbEnfantsTOT": 1,
+      "codeTypeReservation": "RA",
+      "codeReservation": "RACWEB",
+      "nbRoom": 1,
+      "referer": "https://all.accor.com",
+      "ipAddress": "127.0.0.1",
+      "produits": [
+        {
+          "idSegment": 0,
+          "codeProduit": "TWC",
+          "codeTypeFamilleProduit": "\u0000",
+          "qteProduit": 0,
+          "nbAdultes": 2,
+          "nbEnfants": 0,
+          "resaProdAmounts": [
+            {
+              "amount": {
+                "currency": "EUR",
+                "value": 0.0
+              },
+              "typeAmount": "FEES"
+            },
+            {
+              "amount": {
+                "currency": "EUR",
+                "value": 195.75
+              },
+              "typeAmount": "TTCBRU"
+            },
+            {
+              "amount": {
+                "currency": "EUR",
+                "value": 195.75
+              },
+              "typeAmount": "TTC"
+            },
+            {
+              "amount": {
+                "currency": "EUR",
+                "value": 193.5
+              },
+              "typeAmount": "HT"
+            },
+            {
+              "amount": {
+                "currency": "EUR",
+                "value": 195.0
+              },
+              "typeAmount": "TARS"
+            },
+            {
+              "amount": {
+                "currency": "EUR",
+                "value": 195.0
+              },
+              "typeAmount": "TARTVA"
+            },
+            {
+              "amount": {
+                "currency": "EUR",
+                "value": 193.5
+              },
+              "typeAmount": "HTBRU"
+            }
+          ],
+          "taxes": [
+            {
+              "code": "VAT",
+              "libelle": "VAT GB",
+              "productCode": "VAT",
+              "prepaid": true,
+              "tva": true,
+              "included": true,
+              "remboursable": false,
+              "value": 1.5,
+              "amount": {
+                "currency": "EUR",
+                "value": 1.5
+              },
+              "currency": "EUR",
+              "status": "C",
+              "type": "NUIT_PRODUIT",
+              "codeModeTaxe": "TXES01",
+              "codeFamille": "VAT"
+            },
+            {
+              "code": "TCITYN",
+              "libelle": "City and local tax",
+              "productCode": "TCITYN",
+              "prepaid": true,
+              "tva": false,
+              "included": false,
+              "remboursable": false,
+              "value": 0.75,
+              "amount": {
+                "currency": "EUR",
+                "value": 0.75
+              },
+              "currency": "EUR",
+              "status": "C",
+              "type": "NUIT_PRODUIT",
+              "codeModeTaxe": "TXES01",
+              "codeFamille": "CTA"
+            }
+          ],
+          "ordreProduit": 0,
+          "lengthOfStay": 0,
+          "flagPackage": false,
+          "flagContrat": false,
+          "garanti": true,
+          "resaProdDiscountRefAmounts": []
+        }
+      ],
+      "nbPoint": 0,
+      "welcomeRequestInfos": {
+        "police": {
+          "nationalite": "FR"
+        },
+        "arrival": {
+          "premierSejour": false
+        },
+        "resaWelcomes": [
+          {
+            "typeWelcome": "CHECKIN",
+            "statutWelcome": "NO"
+          },
+          {
+            "typeWelcome": "SMS",
+            "statutWelcome": "NO"
+          }
+        ]
+      },
+      "contextResa": "WEB",
+      "apsIds": [],
+      "aliasNeeded": false,
+      "marchePOS": "home",
+      "codePaysPOS": "99",
+      "codeLanguePOS": "fr",
+      "device": {
+        "type": "desktop",
+        "lastConnectionDate": 1683194988140,
+        "applicationData": [
+          {
+            "name": "https://all.accor.com",
+            "canal": "WEB",
+            "userAgent": "PostmanRuntime/7.26.8",
+            "brand": "ACCOR",
+            "hasActiveNotifications": false,
+            "lastConnectionDate": 1683194988140
+          }
+        ]
+      },
+      "jSessionId": "F6B5F811AA9ADA6FB5FEB89DEBEB524F5FC496A88D7EB0AD5763",
+      "wdrAvailable": false,
+      "walletUsed": false,
+      "huazhu": false,
+      "partnerCards": [],
+      "partnerIds": [],
+      "flagsMap": {},
+      "exclusionDelay": 0,
+      "techId": "1",
+      "certificates": []
+    }
+  ]
+}

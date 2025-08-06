@@ -1,0 +1,105 @@
+[
+  {
+    "id": "hello",
+    "referentials": [
+      {
+        "predicates": [],
+        "actions": [
+          {
+            "name": "action 1",
+            "description": "",
+            "spel": "@loadAction.loadCar(#root)"
+          },
+          {
+            "name": "showCar",
+            "description": "",
+            "spel": "@carAction.show(car)"
+          }
+        ],
+        "ok": null,
+        "ko": null,
+        "details": {
+          "name": "rule 1",
+          "description": ""
+        }
+      },
+      {
+        "predicates": [
+          {
+            "name": "pred 1",
+            "description": ""
+          }
+        ],
+        "actions": [],
+        "ok": {
+          "predicates": [
+            {
+              "name": "pred 1",
+              "description": ""
+            }
+          ],
+          "actions": [],
+          "ok": {
+            "predicates": [],
+            "actions": [
+              {
+                "name": "updateCar",
+                "description": "",
+                "spel": "@carAction.update(car)"
+              },
+              {
+                "name": "showCar",
+                "description": "",
+                "spel": "@carAction.show(car)"
+              }
+            ],
+            "ok": null,
+            "ko": null,
+            "details": {
+              "name": "act ",
+              "description": ""
+            }
+          },
+          "ko": {
+            "predicates": [],
+            "actions": [
+              {
+                "name": "act ",
+                "description": ""
+              }
+            ],
+            "ok": null,
+            "ko": null,
+            "details": {
+              "name": "act ",
+              "description": ""
+            }
+          },
+          "details": {
+            "name": "pred 1",
+            "description": ""
+          }
+        },
+        "ko": {
+          "predicates": [],
+          "actions": [
+            {
+              "name": "act 1",
+              "description": ""
+            }
+          ],
+          "ok": null,
+          "ko": null,
+          "details": {
+            "name": "act 1",
+            "description": ""
+          }
+        },
+        "details": {
+          "name": "rule 2",
+          "description": ""
+        }
+      }
+    ]
+  }
+]

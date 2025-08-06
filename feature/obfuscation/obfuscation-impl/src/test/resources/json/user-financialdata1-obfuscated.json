@@ -1,0 +1,10 @@
+{
+  "Name": "Default Account",
+  "iban": "*",
+  "bank": "*",
+  "properties": {
+    "others": {
+      "criticalData": "*"
+    }
+  }
+}

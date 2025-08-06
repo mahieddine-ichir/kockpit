@@ -1,0 +1,2 @@
+com.accor.wcp.audit.AuditAutoConfiguration
+com.accor.wcp.audit.obfuscate.AuditObfuscateAutoConfiguration

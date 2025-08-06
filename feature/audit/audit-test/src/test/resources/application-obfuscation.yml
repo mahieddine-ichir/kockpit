@@ -1,0 +1,89 @@
+wcp.sdk.service.audit.obfuscation.configs:
+
+  - id: builtin.web
+    filters:
+      - path: httpAuditedRequest.uri
+        expression: (.*)/audit/obfuscate/web/json(.*)
+    properties:
+      "[httpAuditedRequest.headers]":
+        map-keys:
+          - path: api-key
+            mask: keepLast2
+      "[httpAuditedRequest.params]":
+        map-keys:
+          - path: key1
+            mask: default
+      "[httpAuditedResponse.body]":
+        contentType: application/json
+        payloadPaths:
+          - path: $..lastName
+            mask: keepLast2
+          - path: $..firstName
+            mask: keepLast2
+          - path: $..email
+            mask: email
+          - path: $..phone.number
+            mask: keepLast4
+          - path: $..pricing
+            mask: DEFAULT
+      "[httpAuditedRequest.body]":
+        contentType: application/json
+        payloadPaths:
+          - path: $..guests[*].lastName
+            mask: keepFirst2
+          - path: $.order.basket.items[*].guests[?(@.age>18)].firstName
+            mask: keepFirst2
+          - path: $..mainBeneficiary.firstName
+            mask: keepFirst2
+          - path: $..mainBeneficiary.lastName
+            mask: keepFirst2
+          - path: $..mainBeneficiary.phone.number
+            mask: keepFirst4
+          - path: $..email
+            mask: email
+          - path: $..otherTax.amount.detail[1:4]
+            mask: default
+
+  - id: builtin.web
+    filters:
+      - path: httpAuditedRequest.uri
+        expression: (.*)/audit/obfuscate/web/xml(.*)
+    properties:
+      "[httpAuditedRequest.headers]":
+        map-keys:
+          - path: api-key
+            mask: keepLast3
+      "[httpAuditedResponse.body]":
+        contentType: application/xml
+        payloadPaths:
+          - path: //nom
+            mask: keepLast1
+          - path: //nomNL
+            mask: keepLast1
+          - path: //number
+            mask: keepLast3
+          - path: //adresse1
+            mask: default
+          - path: //email
+            mask: email
+          - path: //offres
+            mask: DEFAULT
+      "[httpAuditedRequest.body]":
+        contentType: application/xml
+        payloadPaths:
+          - path: //beneficiaire/nom[@name]
+            mask: keepFirst1
+          - path: //beneficiaire/nomNL[position()<3]
+            mask: keepFirst1
+          #          - path: //nom[@name='firstName2']
+          #            mask: name
+          #          - path: //facturation/nomNL[@name='lastName2']
+          #            mask: name
+          - path: //numCarteGarantie
+            mask: default
+          - path: //beneficiaire/adresse/telephone/number
+            mask: keepFirst3
+          - path: //resaAmounts/amount[value>100]/currency
+            mask: default
+          - path: //offres/*
+            mask: default
