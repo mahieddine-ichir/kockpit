@@ -1,0 +1,92 @@
+mat-card {
+  margin: 20px;
+  background-color: white;
+}
+
+::ng-deep .attributes-wrapper .mat-form-field-wrapper {
+  padding-bottom: 10px;
+}
+
+::ng-deep .existing-attributes .mat-form-field-wrapper {
+  padding-bottom: 5px;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(0, 0, 0, 0.12);
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-flex {
+  background-color: rgb(240 240 240 / 85%);
+}
+
+.button-send {
+  margin: 15px 5px 15px 0px;
+}
+
+.attributes-wrapper label {
+  position: absolute;
+  margin-top: -25px;
+  color: rgb(0 0 0 / 60%);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  background: white;
+  padding: 5px 5px 0px 2px;
+}
+
+.attributes-wrapper {
+  border: 1px solid rgb(0 0 0 / 12%);
+  border-radius: 5px;
+  padding: 15px 0px 5px 10px;
+}
+
+.retryMenuItem{
+  margin-top: 15px;
+}
+
+.retryMenuItemAttribute{
+  margin-top: 17px;
+}
+
+.my-custom-scrollbar {
+  margin-top: 5px;
+  position: relative;
+  height: 600px;
+  overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+  display: block;
+  table-layout: fixed;
+}
+
+.refresh-retries {
+  float: right;
+  margin-top: 10px;
+}
+
+.retries-title{
+  float:left;
+}
+
+.retries{
+  margin-top: 10px;
+  border-top: solid 1px black;
+}
+
+.sent{
+  background-color:green;
+  color: white;
+}
+
+th,
+td {
+  border: 1px solid black;
+  width: 100px;
+  overflow: hidden;
+}
+
+.retryMenu{
+  margin-top: 10px;
+  border-top: 1px solid black;
+}

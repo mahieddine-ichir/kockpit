@@ -1,0 +1,5 @@
+<div fxFlex="100" fxLayoutAlign="center start" style="padding-top: 15px;">
+    <mat-slide-toggle class="toggle" [checked]="isChecked()" style="transform: scale(1.7)"
+        (change)="updateValue($event)" [disabled]="!isEditable">
+    </mat-slide-toggle>
+</div>

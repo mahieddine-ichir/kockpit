@@ -1,0 +1,65 @@
+<div class="list-table">
+  <breadcrumb [menu]="breadCrumbService.breadcrumb"></breadcrumb>
+</div>
+
+<div>
+  <button mat-flat-button class="buttonRefresh" color="accent" (click)="fetchData()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
+<div fxLayout="column">
+  <div div class="form-elements" furyPage furyPagePadding fxLayout="row">
+    <div furyPage furyPagePadding furyScrollbar>
+      <div class="list-table">
+        <fury-list (filterChange)="onFilterChange($event)">
+
+          <table mat-table [dataSource]="usernotification" class="mat-elevation-z8">
+            <ng-container matColumnDef="timestamp">
+              <th mat-header-cell *matHeaderCellDef>Timestamp</th>
+              <td mat-cell *matCellDef="let usernotif">{{ usernotif.date | date: 'd/M/yy HH:mm:ss' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="level">
+              <th mat-header-cell *matHeaderCellDef>Level</th>
+              <td mat-cell *matCellDef="let usernotif">
+                <button *ngIf="usernotif.level == 'WARNING'" class="buttonWarning" mat-flat-button >
+                  {{usernotif.level}}
+                </button>
+
+                <button *ngIf="usernotif.level == 'CRITICAL'" mat-flat-button color="warn" class="buttonCritical">
+                  {{usernotif.level}}
+                </button>
+
+                <button *ngIf="usernotif.level == 'INFO'" class="buttonInfo" mat-flat-button>
+                  {{usernotif.level}}
+                </button>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="domain">
+              <th mat-header-cell *matHeaderCellDef>Domain-Env</th>
+              <td mat-cell *matCellDef="let usernotif">{{usernotif.domain}}-{{usernotif.env}}</td>
+            </ng-container>
+            <ng-container matColumnDef="service">
+              <th mat-header-cell *matHeaderCellDef>Service</th>
+              <td mat-cell *matCellDef="let usernotif">{{usernotif.serviceId}}</td>
+            </ng-container>
+            <ng-container matColumnDef="app">
+              <th mat-header-cell *matHeaderCellDef>App</th>
+              <td mat-cell *matCellDef="let usernotif">{{usernotif.applicationId}}</td>
+            </ng-container>
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef>Description</th>
+              <td mat-cell *matCellDef="let usernotif">{{usernotif.description}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let notif; columns: displayedColumns;"></tr>
+          </table>
+
+          <mat-paginator class="paginator" [pageSize]="pageSize"
+                         [pageSizeOptions]="[10, 25, 50, 100, 200]"></mat-paginator>
+        </fury-list>
+      </div>
+    </div>
+  </div>
+</div>
+
+

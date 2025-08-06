@@ -1,0 +1,219 @@
+@import '../../../assets/sass/variable';
+
+//:host {
+//  display: block;
+//
+//  .breadcrumb {
+//    display: flex;
+//    flex-wrap: wrap;
+//    font-size: 1.2rem;
+//    list-style-type: none;
+//    margin: 0;
+//    padding: 0;
+//    z-index: 9998;
+//    li {
+//      a,
+//      .static {
+//        .icon {
+//          font-size: 1rem;
+//          margin-right: 6px;
+//        }
+//      }
+//      .separator {
+//        color: rgba(#000, .4);
+//        margin: 0 $module/2;
+//      }
+//    }
+//    &.custom-1 {
+//      margin: -2px -7px;
+//
+//      li {
+//        margin: 2px 7px;
+//
+//        a,
+//        .static {
+//          background: main-color(500);
+//          border-color: main-color(900);
+//          display: inline-block;
+//          height: 36px;
+//          padding: 5px $module;
+//          position: relative;
+//          transition: background .2s $animation,
+//          color .2s $animation;
+//          vertical-align: top;
+//
+//          &:before,
+//          &:after {
+//            border-style: solid;
+//            border-color: transparent;
+//            content: '';
+//            display: block;
+//            height: 0px;
+//            position: absolute;
+//            top: 0px;
+//            transition: border-color .2s $animation;
+//            width: 0px;
+//          }
+//          &:before {
+//            border-width: 36px 10px 0 0;
+//            border-right-color: inherit;
+//            left: -10px;
+//          }
+//          &:after {
+//            border-width: 0 0 36px 10px;
+//            border-left-color: inherit;
+//            right: -10px;
+//          }
+//        }
+//        a {
+//          &:hover {
+//            background: #fff;
+//            border-color: #fff;
+//            color: #3c4e62;
+//          }
+//        }
+//        .static {
+//          opacity: .6;
+//        }
+//        .separator {
+//          display: none;
+//        }
+//        &:first-child {
+//          a,
+//          .static {
+//            &:before {
+//              display: none;
+//            }
+//          }
+//        }
+//        &:last-child {
+//          a,
+//          .static {
+//            &:after {
+//              display: none;
+//            }
+//          }
+//        }
+//      }
+//    }
+//    &.custom-2 {
+//      margin: 10px 0px 0px 25px;
+//
+//      li {
+//        margin: 2px 7px;
+//
+//        a,
+//        .static {
+//          background: #2B303B;
+//          border-color: #2B303B;
+//          color: #fff;
+//          display: inline-block;
+//          height: 26px;
+//          padding: 5px $module;
+//          position: relative;
+//          text-decoration: none;
+//          transition: background .2s $animation,
+//          color .2s $animation;
+//          vertical-align: top;
+//
+//          &:before,
+//          &:after {
+//            border-style: solid;
+//            border-color: transparent;
+//            content: '';
+//            display: block;
+//            height: 0px;
+//            position: absolute;
+//            top: 0px;
+//            transition: border-color .2s $animation;
+//            width: 0px;
+//          }
+//          &:before {
+//            border-width: 18px 0 18px 10px;
+//            border-top-color: inherit;
+//            border-bottom-color: inherit;
+//            left: -10px;
+//          }
+//          &:after {
+//            border-width: 18px 0 18px 10px;
+//            border-left-color: inherit;
+//            right: -10px;
+//          }
+//        }
+//        a {
+//          &:hover {
+//            background: #22262F;
+//            border-color: #22262F;
+//          }
+//        }
+//        .static {
+//          opacity: .6;
+//        }
+//        .separator {
+//          display: none;
+//        }
+//        &:first-child {
+//          a,
+//          .static {
+//            &:before {
+//              //  display: none;
+//            }
+//          }
+//        }
+//        &:last-child {
+//          a,
+//          .static {
+//            &:after {
+//              //display: none;
+//            }
+//          }
+//        }
+//      }
+//    }
+//  }
+//}
+
+@import "var";
+
+:host {
+  margin-bottom: $spacing;
+  display: block;
+}
+
+.breadcrumb {
+  margin-top: 15px;
+  margin-left: 15px;
+  .title {
+    @include mat-typography-level-to-styles($config, title);
+    font-weight: 400;
+  }
+
+  .crumb, .link {
+    color: $theme-secondary-text;
+    text-decoration: none;
+    transition: color $swift-ease-out-duration $swift-ease-out-timing-function;
+    text-transform: uppercase;
+
+    @include mat-typography-level-to-styles($config, caption);
+
+    &:hover {
+      color: $theme-text;
+    }
+  }
+
+  .link {
+    cursor: pointer;
+  }
+
+  .chevron {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+    margin-left: $spacing*0.25;
+    margin-right: $spacing*0.25;
+  }
+
+  .crumb.current, .crumb.current .link {
+    color: $theme-text;
+  }
+}

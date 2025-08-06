@@ -1,0 +1,37 @@
+.mat-flat-button, .mat-stroked-button {
+  font-size: 14px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-left: 5px;
+}
+
+.mat-flat-button.mat-green {
+  background-color: green;
+  color: white;
+}
+
+.mat-stroked-button.mat-green {
+  border-color: green;
+  color: green;
+}
+
+.mat-flat-button.mat-orange {
+  background-color: darkorange;
+  color: white;
+}
+
+.mat-stroked-button.mat-orange {
+  border-color: darkorange;
+  color: darkorange;
+}
+
+.mat-flat-button.mat-red {
+  background-color: red;
+  color: white;
+}
+
+.mat-stroked-button.mat-red {
+  border-color: red;
+  color: red;
+}
+

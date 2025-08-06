@@ -1,0 +1,51 @@
+<div class="sidenav" fxFlex="grow" fxLayout="column" [class.collapsed]="isCollapsed">
+
+  <div class="sidenavtoolbar" fxLayout="row" fxLayoutAlign="start center">
+    <span class="logo" fxFlexAlign="center">
+      <img *ngIf="!isCollapsed" class="logo-long">
+      <img *ngIf="isCollapsed" class="logo-short">
+    </span>
+    <span *ngIf="!isCollapsed" id="sidenavtitle" class="title" fxFlexAlign="center">Loading ...</span>
+
+    <span fxFlex>
+      <!-- fill space -->
+    </span>
+
+    <div fxHide fxShow.gt-md fxFlexAlign="center">
+      <button class="collapse-toggle" mat-icon-button (click)="toggleCollapsed()">
+        <mat-icon class="icon">radio_button_checked</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <mat-form-field *ngIf="subDomains" class="sub-domain" appearance="fill">
+    <mat-label class="sub-domain-label">Select sub domain</mat-label>
+    <mat-select #matSelectSubDomain class="filter" [formControl]="selectedSubDomain">
+      <mat-option *ngFor="let subDomain of subDomains" [value]="subDomain" (click)="onSelectedSubDomainChanged(subDomain)">
+        {{subDomain}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-button-toggle-group class="groupBy" name="groupBy">
+    <mat-button-toggle (click)="updateGroupByFilter('app')">By apps</mat-button-toggle>
+    <mat-button-toggle checked (click)="updateGroupByFilter('service')">By service</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <mat-accordion class="items-accordion" multi>
+    <mat-expansion-panel class="items-groups" *ngFor="let group of itemsByGroup | keyvalue" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon class="icon">apps</mat-icon>
+          <span>{{group.key | titlecase }}</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <fury-scrollbar class="sidenav-items" fxFlex="grow" fxLayout="column">
+        <div *ngFor="let item of group.value">
+          <fury-sidenav-item [item]="item" [level]="1"></fury-sidenav-item>
+        </div>
+      </fury-scrollbar>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</div>

@@ -1,0 +1,24 @@
+<ng-container *ngFor="let message of kinesisMessages">
+  <mat-card>
+    <mat-card-content>
+      <table style="width:100%">
+        <caption></caption>
+        <tr>
+          <th id="streamName">Stream name</th>
+          <td>{{message.streamName}}</td>
+        </tr>
+        <tr>
+          <th id="partitionKey">Partition Key</th>
+          <td>{{message.partitionKey}}</td>
+        </tr>
+        <tr>
+          <th id="payload">Payload</th>
+          <td>
+            <ngx-json-viewer [json]=message.payload></ngx-json-viewer>
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+</ng-container>

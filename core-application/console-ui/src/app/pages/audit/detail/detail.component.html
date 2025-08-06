@@ -1,0 +1,72 @@
+<breadcrumb [menu]="breadCrumbService.breadcrumb"></breadcrumb>
+
+<div furyPage furyPagePadding fxLayout="column">
+  <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+  <mat-tab-group (selectedTabChange)="onTabChanged($event)" (click)="refresh($event)" class="audit">
+
+    <mat-tab label="Details">
+      <ng-container *ngIf="this.indexTextLabel === 'Details'">
+        <wcc-properties [properties]="detail" [filtered]="'audits'" title="Common Properties"></wcc-properties>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="Key-Value">
+      <ng-container *ngIf="this.indexTextLabel === 'Key-Value'">
+        <wcc-keyvalues [keyValues]="keyValueExtensions" title="Extensions Key-Values"></wcc-keyvalues>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="Request/Response" *ngIf="isRequestResponsePresent">
+      <ng-container *ngIf="this.indexTextLabel === 'Request/Response'">
+          <wcc-request-content
+            [duration]="keyValueExtensions[keyValueExtensions.length - 1]" [httpExchange]="httpRequestResponseContentExtension"></wcc-request-content>
+      </ng-container>
+      <mat-divider></mat-divider>
+    </mat-tab>
+
+    <mat-tab label="Flow Executions" *ngIf="isFlowExecutionsAuditPresent">
+      <ng-container *ngIf="this.indexTextLabel === 'Flow Executions'">
+          <wcc-kengine [focusFlowExecutionsTab]="focusFlowExecutionsTab" [executions]="this.executions"></wcc-kengine>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="HttpExchanges" *ngIf="isHttpExchangeAuditPresent">
+      <ng-container *ngIf="this.indexTextLabel === 'HttpExchanges'">
+        <wcc-http-exchange [httpExchanges]="httpExchangeAuditsExtension"></wcc-http-exchange>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="SQS Messages" *ngIf="isSqsAuditPresent">
+      <ng-container *ngIf="this.indexTextLabel === 'SQS Messages'">
+        <wcc-sqs-message [sqsMessage]=sqsServiceAuditsExtension></wcc-sqs-message>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="Kinesis Messages" *ngIf="isKinesisAuditPresent">
+      <ng-container *ngIf="this.indexTextLabel === 'Kinesis Messages'">
+        <wcc-kinesis-message [kinesisMessages]=kinesisServiceAuditsExtension></wcc-kinesis-message>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="Kafka Messages" *ngIf="isKafkaAuditPresent">
+      <ng-container *ngIf="this.indexTextLabel === 'Kafka Messages'">
+        <wcp-kafka-message *ngIf="kafkaAuditsExtension" [kafkaMessages]=kafkaAuditsExtension></wcp-kafka-message>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="Full JSON Report">
+      <ng-container *ngIf="this.indexTextLabel === 'Full JSON Report'">
+        <div class="json-viewer">
+          <ngx-json-viewer *ngIf="!reportTooBig" [json]=detail></ngx-json-viewer>
+          <div *ngIf="reportTooBig">
+            <button class="download-button" mat-raised-button (click)="downloadJsonReport()">Download Json Report
+              <mat-icon>download</mat-icon>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>
+

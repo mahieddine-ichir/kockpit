@@ -1,0 +1,11 @@
+<mat-tab-group class="tab_group" [(selectedIndex)]="selectedIndex">
+  <mat-tab label="Produced Message" [disabled]="!producedActive">
+    <wcp-kafka-tab [kafkaMessages]="producedMessages"></wcp-kafka-tab>
+  </mat-tab>
+  <mat-tab label="Forwarded Message" [disabled]="!forwardedActive">
+    <wcp-kafka-tab [kafkaMessages]="forwardedMessages"></wcp-kafka-tab>
+  </mat-tab>
+  <mat-tab label="Consumed Messages" [disabled]="!consumedActive">
+    <wcp-kafka-tab [kafkaMessages]="consumedMessages"></wcp-kafka-tab>
+  </mat-tab>
+</mat-tab-group>

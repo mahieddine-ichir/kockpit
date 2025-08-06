@@ -1,0 +1,156 @@
+@use "sass:math";
+
+@import "var";
+
+:host {
+  display: flex;
+}
+
+.sidenav {
+  width: $sidenav-width;
+  max-width: $sidenav-width;
+  background: $sidenav-background;
+  z-index: $sidenav-z-index;
+  height: 100%;
+
+  .items-accordion {
+    overflow-y: auto;
+  }
+
+  .sub-domain {
+    &-label {
+      color: white;
+    }
+    ::ng-deep .mat-select-value {
+      color: white;
+    }
+  }
+
+  mat-button-toggle-group {
+    border: none;
+    mat-button-toggle {
+      border: none !important;
+      background: darkgrey;
+      color: white;
+      width: 50%;
+    }
+
+    .mat-button-toggle-checked {
+      background: dimgrey;
+    }
+
+    padding-bottom: 8px;
+    background: grey;
+    min-height: 48px;
+  }
+
+  ::ng-deep .mat-select-arrow {
+    color: white;
+  }
+
+  ::ng-deep .mat-expansion-indicator:after {
+    color: black;
+  }
+
+  .items-groups {
+    background: lightgrey;
+    border-radius: 0px;
+    mat-panel-title {
+      color: rgba(0, 0, 0, 1);
+
+      span {
+        padding-left: 24px;
+      }
+    }
+
+    ::ng-deep .mat-expansion-panel-body {
+      padding: 0;
+    }
+  }
+  .mat-expansion-panel-spacing {
+    margin: 0;
+  }
+
+  .sidenavtoolbar {
+    background: $sidenav-toolbar-background;
+    padding: 0 math.div($spacing, 1.333) 0 $spacing;
+    height: $sidenav-toolbar-height;
+    min-height: $sidenav-toolbar-height;
+    max-height: $sidenav-toolbar-height;
+    overflow: hidden;
+    margin-bottom: math.div($spacing, 3);
+
+    @include mat-elevation($sidenav-toolbar-elevation);
+
+    .title {
+      margin-left: 40px;
+      margin-bottom: -5px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .logo {
+      //cursor: pointer;
+      //outline: none;
+      width: 40px;
+      text-align: center;
+      margin-left: -3px;
+
+      .logo-long {
+        width: 80px;
+        vertical-align: text-top;
+      }
+
+      .logo-short {
+        width: 40px;
+        vertical-align: text-top;
+      }
+    }
+  }
+
+  .collapse-toggle {
+    color: $sidenav-color;
+    transition: transform 0.25s;
+
+    .icon {
+      width: 12px;
+      height: 12px;
+      font-size: 12px;
+      line-height: 12px;
+    }
+
+    &.rotate {
+      transform: rotate(-180deg);
+    }
+  }
+
+  .sidenav-items {
+    @include mat-elevation(4);
+    @include mat-elevation-transition();
+  }
+
+  @keyframes fadeout {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .logo,
+  .collapse-toggle {
+    will-change: opacity;
+  }
+
+  &.collapsed {
+    .logo,
+    .collapse-toggle {
+      animation-name: fadeout;
+      animation-duration: 300ms;
+      animation-direction: normal;
+      animation-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+  }
+}

@@ -1,0 +1,42 @@
+<div>
+  <div class="row">
+    <mat-form-field>
+      <mat-chip-list fxLayout="row">
+        <mat-chip selectable="true" [removable]="true">
+          {{ this.searchKey }} {{ this.searchValue }}
+          <mat-icon matChipRemove (click)="navigateBack()">cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-list>
+    </mat-form-field>
+  </div>
+
+  <div class="row" *ngIf="dataSource?.data.length > 0" furyPagePadding furyScrollbar>
+    <mat-tab-group>
+      <mat-tab label="List view">
+        <mat-paginator class="paginator"
+                       (page)="onPageEvent($event)"
+                       [length]="pageLength"
+                       [pageIndex]="pageIndex"
+                       [pageSize]="pageSize"
+                       [pageSizeOptions]="[10, 25, 50, 100, 200]"></mat-paginator>
+
+        <wcp-list-view [dataSource]="dataSource"
+                       [auditDashboardConfiguration]="auditDashboard"
+        ></wcp-list-view>
+
+        <mat-paginator class="paginator"
+                       (page)="onPageEvent($event)"
+                       [length]="pageLength"
+                       [pageIndex]="pageIndex"
+                       [pageSize]="pageSize"
+                       [pageSizeOptions]="[10, 25, 50, 100, 200]"></mat-paginator>
+      </mat-tab>
+
+      <mat-tab label="Timeline">
+        <wcp-timeline-view [dataSource]="dataSource"
+                           [auditTimelineConfiguration]="auditTimeline"
+        ></wcp-timeline-view>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

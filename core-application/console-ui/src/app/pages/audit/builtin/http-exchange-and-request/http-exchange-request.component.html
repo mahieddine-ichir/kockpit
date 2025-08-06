@@ -1,0 +1,126 @@
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+<mat-accordion>
+  <mat-expansion-panel [expanded]="httpExchange.panelOpenState"
+                        (afterExpand)="openState()"
+                        (closed)="closeState()">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <button mat-flat-button
+                color="{{httpStatusColor(httpExchange.httpAuditedResponse.status)}}">{{httpExchange.httpAuditedResponse.status}}</button>
+        <button mat-stroked-button color="primary">{{time}} ms</button>
+        <button mat-stroked-button
+                color="accent">{{httpExchange.httpAuditedRequest.method}}</button>
+        <button mat-stroked-button (click)="$event.stopPropagation(); copyMessage(httpExchange.httpAuditedRequest.uri)">
+          <mat-icon style="cursor: pointer"
+                    value="click to copy">content_copy
+          </mat-icon>
+        </button>
+        <button class="btn-uri" mat-stroked-button>{{httpExchange.httpAuditedRequest.uri}}</button>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <ng-container *ngIf="httpExchange.panelOpenState">
+      <mat-tab-group id="matTabGroup" (selectedTabChange)="onTabChanged($event)">
+
+        <mat-tab label="Response">
+          <ng-container *ngIf="this.indexTextLabel === 'Response'">
+            <mat-expansion-panel class="mat-elevation-z0" [expanded]="false"
+                                 *ngIf="httpExchange.httpAuditedResponse.headers">
+              <mat-expansion-panel-header>
+                <ng-container>
+                  <div style="font-size: 15px; font-weight: bold;">Headers ({{getResponseNumberOfHeaders()}})</div>
+                </ng-container>
+              </mat-expansion-panel-header>
+              <table style="margin: 20px">
+                <tr>
+                  <th>Nom</th>
+                  <th>Value(s)</th>
+                </tr>
+                <tr *ngFor="let response of httpExchange.httpAuditedResponse.headers | keyvalue">
+                  <td>{{response.key}}</td>
+                  <td>
+                    <div *ngFor="let value of response.value; let index = index">
+                      {{index}}: {{value}}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </mat-expansion-panel>
+            <ng-container *ngIf="httpExchange.httpAuditedResponse.body || httpExchange.httpAuditedResponse.payload">
+              <div style="display: inline-block; vertical-align: middle; margin: 20px; font-size: 15px; font-weight: bold;">Body</div>
+              <button mat-flat-button color="primary" style="margin: 20px; cursor: pointer; display: inline-block; vertical-align: middle; float: right"
+                      (click)="httpExchange.httpAuditedResponse.body && copyMessage(httpExchange.httpAuditedResponse.body)"
+                      (click)="httpExchange.httpAuditedResponse.payload && copyMessage(httpExchange.httpAuditedResponse.payload)"
+                      value="click to copy"><mat-icon >content_copy
+              </mat-icon> Copy body to clipboard</button>
+            </ng-container>
+            <ng-container>
+              <div style="margin-left: 20px">
+                <ngx-json-viewer *ngIf="httpExchange.httpAuditedResponse.body && isJSONResponse"
+                                 [json]=responseBody></ngx-json-viewer>
+                <ngx-json-viewer *ngIf="httpExchange.httpAuditedResponse.payload && isJSONResponse"
+                                 [json]=responseBody></ngx-json-viewer>
+                <pre *ngIf="isXMLResponse">{{responseBody}}</pre>
+                <div *ngIf="httpExchange.httpAuditedResponse.body && isStringResponse">{{responseBody}}</div>
+                <div *ngIf="httpExchange.httpAuditedResponse.payload && isStringResponse">{{responseBody}}</div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </mat-tab>
+
+        <mat-tab label="Request">
+          <ng-container *ngIf="this.indexTextLabel === 'Request'">
+            <mat-expansion-panel class="mat-elevation-z0" [expanded]="false" *ngIf="httpExchange.httpAuditedRequest.headers || httpExchange.httpAuditedRequest.params">
+              <mat-expansion-panel-header>
+                <ng-container>
+                  <div style="font-size: 15px; font-weight: bold;">Header and Query Params ({{getRequestNumberOfHeaders()}})</div>
+                </ng-container>
+              </mat-expansion-panel-header>
+              <table style="margin: 20px">
+                <tr>
+                  <th>Type</th>
+                  <th>Nom</th>
+                  <th>Value(s)</th>
+                </tr>
+                <tr *ngFor="let request of httpExchange.httpAuditedRequest.params | keyvalue">
+                  <td>Query</td>
+                  <td>{{request.key}}</td>
+                  <td style="word-break: break-all">
+                    <div *ngFor="let value of request.value; let index = index">
+                      {{index}}: {{value}}
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngFor="let request of httpExchange.httpAuditedRequest.headers | keyvalue">
+                  <td>Headers</td>
+                  <td style="white-space: nowrap">{{request.key}}</td>
+                  <td style="word-break: break-all">
+                    <div *ngFor="let value of request.value; let index = index">
+                      {{index}}: {{value}}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </mat-expansion-panel>
+            <ng-container *ngIf="httpExchange.httpAuditedRequest.body">
+              <div style="display: inline-block; vertical-align: middle; margin: 20px; font-size: 15px; font-weight: bold;">Body</div>
+              <button mat-flat-button color="primary" style="margin: 20px; cursor: pointer; float: right"
+                      (click)="copyMessage(httpExchange.httpAuditedRequest.body)"
+                      value="click to copy"><mat-icon >content_copy
+              </mat-icon> Copy body to clipboard</button>
+            </ng-container>
+            <ng-container>
+              <div style="margin-left: 20px">
+                <ngx-json-viewer *ngIf="httpExchange.httpAuditedRequest.body && isJSONRequest"
+                                 [json]=requestBody></ngx-json-viewer>
+                <pre class="prettyprint" *ngIf="isXMLRequest">{{requestBody}}</pre>
+                <div *ngIf="httpExchange.httpAuditedRequest.body && isStringRequest">{{requestBody}}</div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </mat-tab>
+
+      </mat-tab-group>
+    </ng-container>
+  </mat-expansion-panel>
+</mat-accordion>

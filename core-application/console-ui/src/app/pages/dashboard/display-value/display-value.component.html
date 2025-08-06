@@ -1,0 +1,12 @@
+<div matTooltip="{{ fetchValue(row, column, true) }}">
+  <ng-container *ngIf="column.displayFn === 'status'">
+    <button mat-stroked-button color="{{httpStatusColor(fetchValue(row, column))}}">
+      {{ fetchValue(row, column) }}
+    </button>
+  </ng-container>
+  <ng-container *ngIf="column.displayFn !== 'status'">
+    <p>{{ fetchValue(row, column) }}
+      <wcc-copy *ngIf="column.displayFn === 'substring' && !!fetchValue(row, column)" [shouldCopy]="true" [value]="fetchValue(row, column, true)"></wcc-copy>
+    </p>
+  </ng-container>
+</div>

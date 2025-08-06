@@ -1,0 +1,109 @@
+@import '_tables.scss';
+@import '_wcp-buttons.scss';
+
+// Styles pour la table
+.mat-table {
+  width: 100%;
+  max-width: 100%;
+  background-color: $table-bg;
+  border-spacing: 0;
+
+  &.resizing {
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: col-resize;
+  }
+
+  .mat-column-requestUri {
+    white-space: unset !important;
+    flex: 0 0 20% !important;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .mat-header-cell {
+    position: relative;
+    font-weight: $table-header-font-weight;
+    color: $table-header-font-color;
+    border-bottom: 1px solid rgba(0, 0, 0, .12);
+    font-size: 14px;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+
+    &:not(:last-child) {
+      .resize-holder {
+        cursor: col-resize;
+        width: 20px;
+        height: 100%;
+        position: absolute;
+        right: -10px;
+        top: 0;
+        z-index: 1;
+      }
+    }
+
+    &:not(:nth-child(1)) {
+      padding: 0 10px;
+    }
+  }
+}
+
+// Partagé entre .mat-cell, .mat-footer-cell, et .mat-header-cell
+mat-cell, mat-footer-cell, mat-header-cell {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+// Style pour .mat-cell
+.mat-cell {
+  font-size: 13px;
+  line-height: 1px;
+  word-break: keep-all;
+}
+
+// Flexibilité des colonnes
+@mixin flex-column($percentage) {
+  flex: 0 0 $percentage;
+}
+
+.mat-column-details {
+  @include flex-column(2%);
+}
+
+.mat-column-httpMethod,
+.mat-column-httpStatus,
+.mat-column-duration,
+.mat-column-KResult,
+.mat-column-executionId,
+.mat-column-traceId,
+.mat-column-K-Id,
+.mat-column-quotationId,
+.mat-column-orderId,
+.mat-column-purchasedOfferId {
+  @include flex-column(5%);
+}
+
+.mat-column-version {
+  @include flex-column(12%);
+}
+
+.mat-column-start {
+  @include flex-column(9%);
+}
+
+.mat-column-appId {
+  @include flex-column(15%);
+}
+
+.mat-column-requestUri {
+  @include flex-column(25%);
+}
+
+// Styles pour les tooltips
+.mat-tooltip {
+  background-color: #333;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 5px;
+}

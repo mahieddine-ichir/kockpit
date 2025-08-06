@@ -1,0 +1,14 @@
+@import 'styles/wcp-tables';
+
+div {
+  p {
+    display: flex;
+    align-items: center;
+
+    wcc-copy {
+      margin-left: 8px;
+      align-items: center;
+    }
+  }
+
+}

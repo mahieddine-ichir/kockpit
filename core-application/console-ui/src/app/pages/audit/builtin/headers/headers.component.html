@@ -1,0 +1,9 @@
+<mat-card>
+  <mat-card-subtitle>{{title}}</mat-card-subtitle>
+  <mat-card-content>
+    <ul>
+      <wcc-keyvalue *ngFor="let header of headers | keyvalue"
+                    [key]="header.key" [value]="header.value"></wcc-keyvalue>
+    </ul>
+  </mat-card-content>
+</mat-card>

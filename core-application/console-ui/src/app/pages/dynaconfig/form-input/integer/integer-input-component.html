@@ -1,0 +1,5 @@
+<mat-form-field fxFlex="100" appearance="outline">
+  <mat-label>Value</mat-label>
+  <input matInput rows="1" type="number" (keypress)="numberOnly($event)" (change)="property.value = $event.target.value"
+    value="{{property.value}}" [disabled]="!isEditable" min="0" step="1">
+</mat-form-field>

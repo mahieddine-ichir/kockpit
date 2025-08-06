@@ -1,0 +1,14 @@
+<button class="button" fxHide fxShow.gt-sm mat-button (click)="topology()" fxFlex="grow">
+  <mat-icon>cloud_sync</mat-icon>
+</button>
+
+<mat-form-field appearance="fill">
+  <mat-label>Selected environment</mat-label>
+  <mat-select class="filter" [formControl]="selectedEnvironment">
+    <mat-optgroup *ngFor="let domain of getDomains()" [label]="domain">
+      <mat-option *ngFor="let env of getEnvironments(domain)" [value]="domain + '-' + env" (click)="onSelectedEnvChanged(env, domain)">
+        {{domain}} - {{env}}
+      </mat-option>
+    </mat-optgroup>
+  </mat-select>
+</mat-form-field>

@@ -1,0 +1,61 @@
+.container{
+  margin:20px;
+}
+
+table {
+  width: 100%;
+
+  .mat-header-cell{
+    background-color: #EEEEEE;
+    font-weight: 400;
+    font-size: 15px;
+    color : black;
+    font-weight: bold;
+  }
+
+  .mat-cell,
+  .mat-header-cell {
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    &:not(:nth-child(1)) {
+      padding: 0 10px;
+    }
+  }
+}
+
+
+.mat-column-app,
+.mat-column-service,
+.mat-column-level {
+  width: 10%;
+}
+
+.mat-column-domain,
+.mat-column-timestamp {
+  width: 15%;
+}
+
+.mat-column-description {
+  word-break: break-word;
+}
+
+.buttonInfo{
+  background-color: green;
+  color: white;
+  width: 100%;
+}
+
+.buttonWarning{
+  background-color: orange;
+  color: white;
+  width: 100%;
+}
+
+.buttonCritical {
+  width: 100%;
+}
+
+.buttonRefresh{
+  margin-inline: 50px;
+  margin-bottom: 25px;
+}
+

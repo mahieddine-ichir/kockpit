@@ -1,0 +1,64 @@
+.header {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+textarea {
+  width: 100%;
+}
+
+.mat-flat-button, .mat-stroked-button {
+  font-size: 14px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-left: 5px;
+}
+
+.mat-flat-button.mat-green {
+  background-color: green;
+  color: white;
+}
+
+.mat-stroked-button.mat-green {
+  border-color: green;
+  color: green;
+}
+
+.mat-flat-button.mat-orange {
+  background-color: darkorange;
+  color: white;
+}
+
+.mat-stroked-button.mat-orange {
+  border-color: darkorange;
+  color: darkorange;
+}
+
+.mat-flat-button.mat-red {
+  background-color: red;
+  color: white;
+}
+
+.mat-stroked-button.mat-red {
+  border-color: red;
+  color: red;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th {
+  border: 2px solid black;
+  padding: 10px;
+  font-size: 13px;
+  text-align: left;
+}
+
+td {
+  border: 2px solid black;
+  padding: 10px;
+  font-size: 13px;
+  text-align: left;
+  //width: 1000px;
+}

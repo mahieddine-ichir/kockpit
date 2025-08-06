@@ -1,0 +1,5 @@
+<mat-form-field fxFlex="100" appearance="outline">
+    <mat-label>Value</mat-label>
+    <textarea matInput rows="1" value="{{property.value}}" (change)="property.value = $event.target.value"
+        [disabled]="!isEditable"></textarea>
+</mat-form-field>

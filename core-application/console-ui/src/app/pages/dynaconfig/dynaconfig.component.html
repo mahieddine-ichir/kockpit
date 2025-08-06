@@ -1,0 +1,172 @@
+<breadcrumb *ngIf="dynaconfig" [menu]="breadCrumbService.breadcrumb"></breadcrumb>
+<mat-tab-group *ngIf="dynaconfig" class="dynaconfig-properties">
+  <mat-tab label="Properties">
+    <mat-card>
+      <mat-card-content>
+        <form fxLayout="column" >
+
+          <div fxLayout="row" class="button-bar" >
+            <div>
+
+              <button *ngIf="editable" mat-flat-button color="primary" (click)="setEditable()" >
+                Close
+              </button>
+
+              <button *ngIf="editable" mat-flat-button  style="margin-left: 10px" color="accent" (click)="updateDynaConfig()">
+                Save and Refresh instances
+              </button>
+
+              <button *ngIf="!editable" mat-flat-button  color="accent" (click)="setEditable()" >
+                Edit
+              </button>
+
+              <button mat-flat-button  style="margin-left: 10px" color="accent" (click)="forceRefreshInstances()">
+                Refresh instances info
+              </button>
+
+              <button mat-mini-fab style="margin-left: 10px" (click)="this.fetchData()">
+                <mat-icon>refresh</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div *ngFor="let propertyValue of this.dynaconfig.properties | keyvalue" fxLayout="row" fxLayoutGap="10px" >
+            <ng-container *ngIf="propertyValue.value.source!='APP'">
+              <mat-form-field fxFlex="35" appearance="outline">
+                <mat-label>Name</mat-label>
+                <textarea matInput cdkTextareaAutosize value="{{propertyValue.value.name}}" disabled></textarea>
+                <mat-icon matSuffix matTooltip={{propertyValue.value.description}} matTooltipPosition="left" *ngIf="propertyValue.value.description">
+                  help_outline
+                </mat-icon>
+              </mat-form-field>
+
+              <mat-form-group fxFlex="35" [ngSwitch]="propertyValue.value.type">
+                <ng-container *ngSwitchCase="'boolean'">
+                  <boolean-input-component [property]="propertyValue.value" [isEditable]="editable"></boolean-input-component>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'json'">
+                  <json-input-component [property]="propertyValue.value" [isEditable]="editable"></json-input-component>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'integer'">
+                  <integer-input-component [property]="propertyValue.value" [isEditable]="editable"></integer-input-component>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'float'">
+                  <float-input-component [property]="propertyValue.value" [isEditable]="editable"></float-input-component>
+                </ng-container>
+
+                <ng-container *ngSwitchDefault>
+                  <string-input-component [property]="propertyValue.value" [isEditable]="editable"></string-input-component>
+                </ng-container>
+              </mat-form-group>
+
+
+              <mat-form-field fxFlex="30" appearance="outline">
+                <mat-label>Comment</mat-label>
+                <textarea name="comment" rows="1" matInput [value]="propertyValue.value.comment" [(value)]="propertyValue.value.comment" (change)="propertyValue.value.comment = $event.target.value" [disabled]="!editable"></textarea>
+              </mat-form-field>
+
+              <ng-container *ngIf="!executionMode || executionMode === 'ALWAYS_ON'">
+                <button class="valid" *ngIf="propertyValue.value.status=='SYNCHRO'"
+                        (click)="openDialog(this.domain, this.env, this.applicationId, propertyValue.key, propertyValue.value.value, propertyValue.value.instances)"
+                        mat-mini-fab matTooltip="The value is synchronised with the app">
+                  <mat-icon>done</mat-icon>
+                </button>
+
+                <button *ngIf="propertyValue.value.status=='NOT_SYNCHRO'"
+                        mat-mini-fab color="warn" style="margin-left: 10px"
+                        (click)="openDialog(this.domain, this.env, this.applicationId, propertyValue.key, propertyValue.value.value, propertyValue.value.instances)"
+                        matTooltip="The value is not synchronised with the app">
+                  <mat-icon>error</mat-icon>
+                </button>
+              </ng-container>
+
+            </ng-container>
+          </div>
+        </form>
+
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+
+  <mat-tab label="History">
+
+    <mat-card>
+      <mat-card-content>
+        <form [formGroup]="formGroup" fxLayout="column">
+
+          <div fxLayout="row" class="button-bar" >
+            <div >
+              <button mat-mini-fab style="margin-left: 10px" (click)="this.fetchData()">
+                <mat-icon>refresh</mat-icon>
+              </button>
+              <button mat-mini-fab color="warn" style="margin-left: 10px" (click)="this.flushDynaconfigHistory()">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div>
+            <h3>Changes</h3>
+
+            <div fxLayout="row">
+                <mat-form-field fxFlex="30" class="filter-bar" appearance="outline">
+                  <mat-label>Filter</mat-label>
+                  <input
+                    matInput
+                    type="text"
+                         class="form-control"
+                         name="searchString"
+                         placeholder="Type to search..."
+                         formControlName="filterPropertyChange">
+                </mat-form-field>
+            </div>
+
+            <div class="my-custom-scrollbar" fxLayout="column">
+              <table>
+                <tbody>
+                  <div *ngFor="let log of filteredPropertyChanges$ | async">
+                    <tr class="console">
+                      <td> {{log.logMessage}}</td>
+                    </tr>
+                  </div>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <h3>Refresh command issued</h3>
+
+            <div fxLayout="row">
+              <mat-form-field fxFlex="30" class="filter-bar" appearance="outline">
+                <mat-label>Filter</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  class="form-control"
+                  name="searchString"
+                  placeholder="Type to search..."
+                  formControlName="filterIssuedCommands">
+              </mat-form-field>
+            </div>
+
+            <div class="my-custom-scrollbar" fxLayout="column">
+              <table>
+                <tbody>
+                <div style="margin-bottom:3px" *ngFor="let log of filteredIssuedCommands$ | async">
+                  <tr class="console">
+                    <td> {{log.logMessage}}</td>
+                  </tr>
+                </div>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+  </mat-tab>
+
+</mat-tab-group>

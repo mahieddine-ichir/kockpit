@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": false,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es2019",
+      "dom"
+    ],
+    "outDir": "../out-tsc/app",
+    "target": "es5",
+    "baseUrl": "",
+    "types": [
+      "node",
+    ]
+  },
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts"
+  ],
+  "files": [
+    "main.ts",
+    "polyfills.ts"
+  ]
+}

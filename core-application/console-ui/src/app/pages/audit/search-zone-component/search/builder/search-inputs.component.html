@@ -1,0 +1,35 @@
+<div>
+
+  <mat-form-field color="accent" *ngIf="criterion.type.name == 'TEXT' || criterion.type.name == 'STRING' || criterion.type.name == 'EXTENSION' ">
+    <input matInput [(ngModel)]="operand.value" placeholder="{{criterion.name}}"
+           (ngModelChange)="updateOperand(operand)">
+  </mat-form-field>
+
+  <div *ngIf="criterion.type.name == 'FLOAT' || criterion.type.name == 'INTEGER' ">
+    <mat-form-field color="accent">
+      <input matInput type="number" [(ngModel)]="operand.value" (ngModelChange)="updateOperand(operand)" placeholder="{{isBetweenOperator() ? 'From' : ''}} {{criterion.name}}">
+    </mat-form-field>
+
+    <mat-form-field color="accent" style="margin-left: 5px" *ngIf="isBetweenOperator()">
+      <input matInput type="number" [(ngModel)]="operand.valueTo" (ngModelChange)="updateOperand(operand)" placeholder="To {{criterion.name}}">
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="criterion.type.name == 'DATE'">
+    <mat-form-field color="accent" style="width: 150px">
+      <input matInput [ngxMatDatetimePicker]="picker" [(ngModel)]="operand.value" (ngModelChange)="updateOperand(operand)" placeholder="{{isBetweenOperator() ? 'From' : ''}} {{criterion.name}} ">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker #picker [showSpinners]="true">
+      </ngx-mat-datetime-picker>
+    </mat-form-field>
+
+    <mat-form-field color="accent" style="width: 150px;margin-left: 5px" *ngIf="isBetweenOperator()">
+      <input matInput [ngxMatDatetimePicker]="picker" [(ngModel)]="operand.valueTo" (ngModelChange)="updateOperand(operand)" placeholder="To {{criterion.name}} ">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker #picker [showSpinners]="true">
+      </ngx-mat-datetime-picker>
+    </mat-form-field>
+
+  </div>
+
+</div>

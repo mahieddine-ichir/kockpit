@@ -1,0 +1,48 @@
+
+// Mixin pour les boutons colorés
+@mixin button-color($bg-color, $text-color) {
+  background-color: $bg-color;
+  color: $text-color;
+}
+
+@mixin button-border-color($border-color, $text-color) {
+  border-color: $border-color;
+  color: $text-color;
+}
+
+// Boutons plats (flat) et soulignés (stroked)
+.mat-flat-button, .mat-stroked-button {
+  font-size: 12px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+// Boutons plats (mat-flat-button)
+.mat-flat-button {
+  &.mat-green {
+    @include button-color(green, white);
+  }
+
+  &.mat-orange {
+    @include button-color(darkorange, white);
+  }
+
+  &.mat-red {
+    @include button-color(red, white);
+  }
+}
+
+// Boutons soulignés (mat-stroked-button)
+.mat-stroked-button {
+  &.mat-green {
+    @include button-border-color(green, green);
+  }
+
+  &.mat-orange {
+    @include button-border-color(darkorange, darkorange);
+  }
+
+  &.mat-red {
+    @include button-border-color(red, red);
+  }
+}

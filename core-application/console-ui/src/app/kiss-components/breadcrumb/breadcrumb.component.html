@@ -1,0 +1,22 @@
+<div class="breadcrumb">
+  <span class="title">{{breadCrumbService.currentBreadcrumb.title}}</span>
+  <div class=crumbs [ngClass]="getClasses()" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <a [routerLink]="['/']" class="crumb home">Home</a>
+    </div>
+    <div *ngFor="let item of menu">
+      <div *ngIf="item.link" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="chevron">chevron_right</mat-icon>
+        <a [routerLink]="item.link"  (click)="breadCrumbService.backItem(item)" class="crumb">
+          <span class="title" class="link">{{item.title}}</span>
+        </a>
+      </div>
+      <div *ngIf="!item.link" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="chevron">chevron_right</mat-icon>
+        <span class="static"  class="crumb current">{{item.title}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+

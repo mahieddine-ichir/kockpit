@@ -1,0 +1,23 @@
+<mat-button-toggle-group #group="matButtonToggleGroup" (change)="updateSelectedOperator(group.value)">
+    <mat-button-toggle *ngFor="let operator of option.type?.operations"
+                       [checked]="isChecked(operator)"
+                       [value]="operator"
+                       [matTooltip]="operator.tooltip"
+                       (click)="updateSelectedOperator(operator)">{{operator.name}}</mat-button-toggle>
+</mat-button-toggle-group>
+
+<wcp-search-inputs
+                   [editSelectedCriteria]="editSelectedCriteria"
+                   [criterion]="option" (onChange)="updateOperandOnInputChange($event)"
+                   [selectedOperator]="selectedOperator"
+                   ngDefaultControl>
+</wcp-search-inputs>
+
+<div class="flex">
+    <a mat-mini-fab [color]="'error'" (click)="closeSearchCriteriaBuilder()">
+        <mat-icon>close</mat-icon>
+    </a>
+    <a mat-mini-fab [color]="'success'" (click)="submitSearchCriteriaBuilder()">
+        <mat-icon>check</mat-icon>
+    </a>
+</div>

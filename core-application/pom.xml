@@ -9,11 +9,12 @@
   </parent>
 
   <artifactId>kockpit-core-application</artifactId>
-  <name>Kockpit - Core - Appplication</name>
+  <name>Kockpit - Core - Application</name>
   <packaging>pom</packaging>
 
   <modules>
     <module>console-api</module>
+      <module>console-ui</module>
   </modules>
 </project>
 

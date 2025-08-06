@@ -1,0 +1,134 @@
+<div fxLayout="column">
+  <div class="form-elements" furyPage furyPagePadding fxLayout="row">
+    <div furyPage furyPagePadding furyScrollbar>
+
+      <div class="queue-information" *ngIf="selectedQueue != null">
+        <mat-card>
+          <mat-card-content>
+            <div fxLayout="row" fxFlex="100" fxLayoutAlign="space-between center">
+              <div fxLayout="column">
+                <mat-card-subtitle><b>Queue :</b> {{selectedQueue.name}}</mat-card-subtitle>
+                <mat-card-subtitle><b>Dead letter queue :</b> {{selectedQueue.dlq}}</mat-card-subtitle>
+                <mat-card-subtitle><b>Delete when replay :</b> {{selectedQueue.deleteWhenReplay}}</mat-card-subtitle>
+              </div>
+              <div fxLayout="column">
+                <ul>
+                  <li> Total in DB : {{dynamoMessageCount}}</li>
+                  <li *ngFor="let status of messageStatusCheckBox">
+                    <mat-checkbox [(ngModel)]="status.checked"
+                                  (ngModelChange)="this.fetchQueuesMessages()">
+                        {{status.label}}
+                        - {{!nbMessagesByStatus[status.name] ? 0 : nbMessagesByStatus[status.name]}}
+                    </mat-checkbox>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="queue-actions">
+        <div class="refresh-messages">
+          <button mat-mini-fab color="accent" aria-label="Refresh messages" (click)="this.fetchQueuesMessages()">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </div>
+        <div class="delete-messages">
+          <button mat-flat-button (click)="openDeleteConfirmationDialog()"
+                  [disabled]="getNumberOfSelectedItems() == 0 ? true : null" color="warn">
+            <mat-icon>delete</mat-icon> Delete {{getNumberOfSelectedItems()}} message(s)
+          </button>
+
+          <button mat-flat-button (click)="openDeleteAllConfirmationDialog()"
+                  class="additional-button"
+                  [disabled]="dynamoMessageCount == 0 ? true : null" color="warn">
+            <mat-icon>delete</mat-icon> Delete all message(s)
+          </button>
+        </div>
+
+        <div class="replay-messages">
+          <button mat-flat-button color="primary" (click)="openReplayConfirmationDialog()"
+                  [disabled]="getNumberOfSelectedItems() == 0 ? true : null">
+            <mat-icon>replay</mat-icon> Replay {{getNumberOfSelectedItems()}} message(s)
+          </button>
+          <button mat-flat-button color="primary" (click)="openReplayAllConfirmationDialog()"
+                           class="additional-button"
+                  [disabled]="dynamoMessageCount == 0 ? true : null">
+            <mat-icon>replay</mat-icon> Replay all message(s)
+          </button>
+        </div>
+
+      </div>
+
+      <div class="list-table"  >
+        <fury-list [columns]="columns" (filterChange)="onFilterChange($event)" >
+          <table mat-table matSort matSortDisableClear="true" matSortActive="receivedDate" matSortDirection="desc" [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                  [checked]="selectedRows.hasValue() && isAllSelected()"
+                  [indeterminate]="selectedRows.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </th>
+
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selectedRows.toggle(row) : null"
+                  [checked]="selectedRows.isSelected(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <!-- Received date -->
+            <ng-container matColumnDef="receivedDate">
+              <th mat-sort-header mat-header-cell *matHeaderCellDef> Received Date </th>
+              <td mat-cell *matCellDef="let element"> {{ element.sentTimestamp | date: 'd/M/yy HH:mm:ss' }} </td>
+            </ng-container>
+
+            <!-- Comment -->
+            <ng-container matColumnDef="comment">
+              <th mat-sort-header mat-header-cell *matHeaderCellDef> Comment </th>
+              <td mat-cell *matCellDef="let element"> {{ element.comment }} </td>
+            </ng-container>
+
+            <!-- Status -->
+            <ng-container matColumnDef="status">
+              <th mat-sort-header mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let element"> {{ retrieveLabelStatus(element.status) }} </td>
+            </ng-container>
+
+            <!-- Message columns -->
+            <ng-container [matColumnDef]="col.property" *ngFor="let col of columns">
+              <th mat-sort-header mat-header-cell *matHeaderCellDef> {{col.name}} </th>
+              <td mat-cell *matCellDef="let element"> {{ retrievePropertyValue(element, col.property) }} </td>
+            </ng-container>
+
+            <!-- Action Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let row"><button mat-icon-button (click)="openMessageDetail(row)">
+                  <mat-icon>visibility</mat-icon>
+                </button></td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="retrieveDisplayedColumns()"></tr>
+            <tr mat-row *matRowDef="let row; columns: retrieveDisplayedColumns();"></tr>
+          </table>
+
+          <!-- Loading spinner -->
+          <div *ngIf="isLoading"
+            style="display: flex; justify-content: center; align-items: center; background: white;">
+            <mat-progress-spinner color="primary" mode="indeterminate">
+            </mat-progress-spinner>
+          </div>
+
+          <mat-paginator class="paginator" [pageSize]="50" [pageSizeOptions]="[10, 25, 50, 100, 200,1000,5000]">
+          </mat-paginator>
+        </fury-list>
+      </div>
+    </div>
+  </div>
+</div>

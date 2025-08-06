@@ -1,0 +1,10 @@
+<h2>{{data.name}}</h2>
+<div mat-dialog-content *ngFor="let instance of data.instances" fxLayout="row">
+  <p *ngIf="instance.status=='SYNCHRO'" style="color: #7cb342">{{instance.applicationInstance}} : {{instance.currentValue}}</p>
+  <p *ngIf="instance.status=='NOT_SYNCHRO'" style="color: red">{{instance.applicationInstance}} : {{instance.currentValue}}</p>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-flat-button color="accent" (click)="onNoClick()">Ok</button>
+  <button mat-flat-button color="accent" (click)="synchronize()">Synchronise</button>
+</div>

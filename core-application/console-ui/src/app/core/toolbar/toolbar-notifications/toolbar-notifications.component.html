@@ -1,0 +1,6 @@
+<div class="toolbar-notifications" fxFlex="grow" fxLayout="row" fxLayoutAlign="start center">
+  <button class="button" type="button" mat-button
+          routerLink="/notification" (click)="onClick()" fxFlex="grow" >
+    <mat-icon matBadge="{{this.nbNewNotif}}" [matBadgeHidden]="!isVisible()" matBadgePosition="above after" matBadgeColor="warn" class="icon">notifications_active</mat-icon>
+  </button>
+</div>

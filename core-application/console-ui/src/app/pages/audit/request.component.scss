@@ -1,0 +1,169 @@
+
+$table-header-font-weight:      400;
+$table-header-font-color:       #757575;
+$table-bg:                      #fff;
+
+@import "var";
+
+.list-table {
+  @include mat-elevation($card-elevation);
+
+}
+
+fury-breadcrumbs {
+  margin-left: 15px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+fury-card {
+  margin-top: 16px;
+}
+
+#style_Btn {
+  margin-top: 5px;
+}
+
+.mat-table {
+  width: 100%;
+  max-width: 100%;
+  //margin-bottom: 2rem;
+  background-color: $table-bg;
+  border-spacing: 0;
+  width: 100%;
+  &.resizing {
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: col-resize;
+  }
+  .mat-column-requestUri{
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 20% !important;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+
+    word-break: break-word;
+  }
+
+  .mat-cell {
+
+  }
+  .mat-header-cell {
+    position: relative;
+    font-weight: $table-header-font-weight;
+    color: $table-header-font-color;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    font-size: 14px;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    &:not(:last-child) {
+      .resize-holder {
+        cursor: col-resize;
+        width: 20px;
+        height: 100%;
+        position: absolute;
+        right: -10px;
+        top: 0;
+        z-index: 1;
+      }
+    }
+  }
+  .mat-header-cell {
+
+    &:not(:nth-child(1)) {
+      padding: 0 10px;
+    }
+  }
+}
+
+
+mat-cell,
+mat-footer-cell,
+mat-header-cell {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.mat-cell {
+  font-size: 13px;
+  line-height: 1px;
+  word-break: keep-all;
+}
+
+.mat-column-details {
+  flex: 0 0 2%;
+}
+
+.mat-column-httpMethod,
+.mat-column-httpStatus,
+.mat-column-duration,
+.mat-column-KResult {
+  flex: 0 0 5%;
+}
+
+.mat-column-executionId,
+.mat-column-traceId,
+.mat-column-K-Id,
+.mat-column-quotationId,
+.mat-column-orderId,
+.mat-column-purchasedOfferId{
+  flex: 0 0 5%;
+}
+
+.mat-column-version {
+  flex: 0 0 12%;
+}
+
+.mat-column-start {
+  flex: 0 0 9%;
+}
+
+.mat-column-appId {
+  flex: 0 0 15%;
+}
+
+.mat-column-requestUri {
+  flex: 0 0 25%;
+}
+
+.mat-icon {
+  font-size: 14px;
+}
+
+.mat-flat-button, .mat-stroked-button {
+  font-size: 12px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.mat-flat-button.mat-green {
+  background-color: green;
+  color: white;
+}
+
+.mat-stroked-button.mat-green {
+  border-color: green;
+  color: green;
+}
+
+.mat-flat-button.mat-orange {
+  background-color: darkorange;
+  color: white;
+}
+
+.mat-stroked-button.mat-orange {
+  border-color: darkorange;
+  color: darkorange;
+}
+
+.mat-flat-button.mat-red {
+  background-color: red;
+  color: white;
+}
+
+.mat-stroked-button.mat-red {
+  border-color: red;
+  color: red;
+}

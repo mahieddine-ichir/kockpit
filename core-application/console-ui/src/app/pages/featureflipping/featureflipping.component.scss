@@ -1,0 +1,58 @@
+.container{
+  margin:20px;
+}
+
+.button-bar {
+  float: right;
+  margin-top:5px;
+  margin-bottom: 15px;
+}
+
+.property-name{
+  background-color: gray;
+}
+
+.my-custom-scrollbar {
+  margin-top: 5px;
+  position: relative;
+  height: 300px;
+  overflow: auto;
+  border : 1px solid black;
+}
+
+.console{
+  font-family: "Courier New", Courier, monospace;
+}
+
+mat-card {
+  margin: 20px;
+  background-color: white;
+}
+
+::ng-deep .attributes-wrapper .mat-form-field-wrapper {
+  padding-bottom: 10px;
+}
+
+::ng-deep .existing-attributes .mat-form-field-wrapper {
+  padding-bottom: 5px;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(0, 0, 0, 0.12);
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-form-field-disabled .mat-form-field-flex {
+  background-color: rgb(240 240 240 / 85%);
+}
+
+::ng-deep .mat-tooltip{
+  font-size:16px !important;
+}
+
+.dynaconfig-properties {
+  .valid{
+    background-color: green;
+  }
+
+  ::ng-deep .mat-form-field-flex > .mat-form-field-infix textarea{ height: 15px;}
+}

@@ -1,0 +1,103 @@
+<div class="list-table">
+  <breadcrumb [menu]="breadCrumbService.breadcrumb" class="breadcrumnb"></breadcrumb>
+  <div class="form-elements" furyPage furyPagePadding>
+
+    <wcc-search-zone-component [auditViewName]="auditViewName"
+                               [size]="pageSize"
+                               [from]="pageFrom"
+                               [searchCriteria]="searchCriteria"
+                               [searchMap]="searchMap"
+                               (onBeginSearch)="onBeginSearch()"
+                               (onEndSearch)="onEndSearch($event)">
+    </wcc-search-zone-component>
+
+  </div>
+</div>
+
+<div fxLayout="column">
+  <div class="form-elements" furyPage furyPagePadding fxLayout="row" *ngIf="dataSource">
+
+    <div furyPage furyPagePadding furyScrollbar>
+      <div class="list-table">
+        <fury-list [columns]="columns" (filterChange)="onFilterChange($event)">
+
+          <mat-paginator class="paginator"
+                         (page)="onPageEvent($event)"
+                         [length]="pageLength"
+                         [pageIndex]="pageIndex"
+                         [pageSize]="pageSize"
+                         [pageSizeOptions]="[10, 25, 50, 100, 200]"></mat-paginator>
+
+          <table mat-table #table class="mat-elevation-z8" [dataSource]="dataSource"
+                 matSort matSortActive="date" matSortDirection="desc" (matSortChange)="sortData($event)"
+                 style="overflow-x: scroll">
+
+            <ng-container [matColumnDef]="col.property" *ngFor="let col of columns; let i = index" >
+              <th mat-header-cell *matHeaderCellDef [resizeColumn]="true"
+                  mat-sort-header [index]="i" [key]=localStorageKeyForSizingColumn>
+                {{displayName(col)}}
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <ng-container [ngSwitch]="col.displayFn">
+
+                  <!-- RENDERING CELL WITH SLICE CONTENT (copy button) -->
+                  <ng-container *ngSwitchCase="'substring'">
+                    <p>{{ getId(row, col.property )}}
+                      <mat-icon *ngIf="getId(row, col.property)" style="cursor: pointer" (click)="copyMessage(row, col.property)"
+                                value="click to copy">content_copy
+                      </mat-icon>
+                      <mat-icon *ngIf="col.dashboard && getId(row, col.property).length > 0" style="cursor: pointer" (click)="gotoDashboard(row, col)">
+                        north_east
+                      </mat-icon>
+                    </p>
+                  </ng-container>
+
+                  <!-- RENDERING RESULT OK / KO -->
+                  <ng-container *ngSwitchCase="'result'">
+                    <button mat-flat-button color="{{resultColor(getResult(row, col.property))}}">
+                      {{getResult(row,col.property)}}
+                    </button>
+                  </ng-container>
+
+                   <!-- RENDERING HTTP STATUS -->
+                  <ng-container *ngSwitchCase="'status'">
+                    <button mat-stroked-button color="{{httpStatusColor(getIndexedKeyValue(row,col.property))}}">{{getIndexedKeyValue(row,col.property)}}</button>
+                  </ng-container>
+
+                  <!-- RENDERING DATE CELL -->
+                  <ng-container *ngSwitchCase="'date'">
+                    <p>{{row[col.property] | date:'dd-MM-yyyy HH:mm:ss'}}</p>
+                  </ng-container>
+
+                   <!-- DEFAULT RENDERING -->
+                  <ng-container *ngSwitchDefault>
+                    <!-- {{ formatColumn(row, col.property, col) }} -->
+                    <p>{{ getIndexedKeyValue(row, col.property) }}</p>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'details'">
+                    <mat-icon style="cursor: pointer" (click)="select(row)">remove_red_eye
+                    </mat-icon>
+                  </ng-container>
+
+                </ng-container>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          </table>
+
+          <mat-paginator class="paginator"
+                         (page)="onPageEvent($event)"
+                         [length]="pageLength"
+                         [pageIndex]="pageIndex"
+                         [pageSize]="pageSize"
+                         [pageSizeOptions]="[10, 25, 50, 100, 200]"></mat-paginator>
+
+        </fury-list>
+      </div>
+    </div>
+  </div>
+</div>
