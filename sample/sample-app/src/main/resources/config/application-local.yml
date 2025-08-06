@@ -1,0 +1,61 @@
+logging:
+  level:
+    com.accor.wcp.sample.darkcanary: TRACE
+    com.accor.wcp.audit: TRACE
+
+wcp:
+  sdk:
+    initialization:
+      timeout: PT6S
+    service:
+      audit:
+        obfuscation:
+          configs:
+            - id: builtin.web
+              filters:
+                - path: httpAuditedRequest.uri
+                  expression: (.*)/wcpsamples/(.*)
+              properties:
+                "[httpAuditedRequest.params]":
+                  map-keys:
+                    - key: key1
+                      mask: default
+                    - key: key2
+                      mask: default
+
+        ttl:
+          default: 4
+    domain: wcp
+    env: local
+    application:
+      id: ${application.id}
+      env: local
+    audit:
+      aws:
+        kinesis:
+          stream-names: ${kinesis.streamName}
+
+sqs:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  queueUrl: "http://localhost:4566/000000000000/wcp-samples-audit-sqs-local"
+kinesis:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  streamName: "wcp-samples-audit-kinesis-local"
+sqsdlq:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  queueUrl: "http://localhost:4566/000000000000/wcp-samples-sqsdlq-local"
+sqsdlq-fifo:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  queueUrl: "http://localhost:4566/000000000000/wcp-samples-sqsdlq-local-dlq.fifo"
+
+application:
+  basepath: "http://localhost:8080/wcpsamples"
+
+# Temp - problem avec intellij qui prend le test/java dans le classpath de démarrage de l'application (main/java) !
+spring:
+  main:
+    allow-bean-definition-overriding: true

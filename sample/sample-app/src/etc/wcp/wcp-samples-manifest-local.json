@@ -1,0 +1,198 @@
+
+  {
+    "domain": "wcp",
+    "env": "local",
+    "groups": null,
+    "applications": [
+      {
+        "id": "wcpsamples",
+        "label": "Samples",
+        "subDomain": null,
+        "services": {
+          "cache": [
+            {
+              "name": "SamplesInfo",
+              "label": "WCPSamples Cache"
+            }
+          ],
+          "audit": [
+            {
+              "searchMetadatas": [
+                {
+                  "subtype": "builtin.kv",
+                  "name": "origin",
+                  "description": "Origin",
+                  "label": "Origin",
+                  "type": "string"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "httpMethod",
+                  "description": "Method",
+                  "label": "HTTP Method",
+                  "type": "string"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "httpStatus",
+                  "description": "Request HTTP Status",
+                  "label": "Status",
+                  "type": "integer"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "traceId",
+                  "description": "Trace ID",
+                  "label": "Trace ID",
+                  "type": "string"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "result",
+                  "description": "Result",
+                  "label": "Result",
+                  "type": "string"
+                },
+                {
+                  "name": "hotelCode",
+                  "description": "Hotel Code",
+                  "label": "Hotel Code",
+                  "type": "string"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "number",
+                  "description": "A random number",
+                  "label": "Random number",
+                  "type": "integer"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "duration",
+                  "description": "Duration",
+                  "label": "Duration",
+                  "type": "integer"
+                }
+              ],
+              "appIds": [
+                "wcpsamples"
+              ],
+              "resultColumns": [
+                {
+                  "renderer": "date",
+                  "name": "start",
+                  "label": "Start"
+                },
+                {
+                  "renderer": "substring",
+                  "name": "traceId",
+                  "label": "Trace ID"
+                },
+                {
+                  "renderer": "result",
+                  "name": "KResult",
+                  "label": "K Result"
+                },
+                {
+                  "name": "origin",
+                  "label": "Origin"
+                },
+                {
+                  "name": "httpMethod",
+                  "label": "Method"
+                },
+                {
+                  "name": "requestUri",
+                  "label": "Url"
+                },
+                {
+                  "name": "hotelCode",
+                  "label": "Hotel Code"
+                },
+                {
+                  "renderer": "status",
+                  "name": "httpStatus",
+                  "label": "Status"
+                },
+                {
+                  "name": "floatAttribute",
+                  "label": "floatAttribute"
+                },
+                {
+                  "name": "integerAttribute",
+                  "label": "integerAttribute"
+                },
+                {
+                  "name": "dateAttribute",
+                  "label": "dateAttribute"
+                }
+              ],
+              "name": "wcp-samples",
+              "label": "WCP Samples"
+            }
+          ],
+          "dynaconfig": [
+            {
+              "name": "wcpsamples",
+              "label": "WCP Samples",
+              "properties": [
+                {
+                  "name": "ff.backend.new2022",
+                  "description": "Feature Flipping to use new Backend 2022",
+                  "label": "FF Backend New",
+                  "type": "boolean"
+                },
+                {
+                  "name": "sample.resttemplate.timeout",
+                  "description": "Sample to POC RestTemplate timeout update",
+                  "label": "RestTemplate Timeout",
+                  "type": "int"
+                },
+                {
+                  "name": "application.client.axa.timeout",
+                  "description": "AXA Timeout - Configuration Properties example ",
+                  "label": "AXA Timeout - Configuration Properties example",
+                  "type": "int"
+                },
+                {
+                  "name": "application.client.axa.basepath",
+                  "description": "AXA BasePath - Configuration Properties example ",
+                  "label": "AXA BasePath - Configuration Properties example",
+                  "type": "string"
+                },
+                {
+                  "name": "ff.backend.test.nullvalue",
+                  "description": "Test JSon Property",
+                  "label": "Test JSon Property",
+                  "type": "json"
+                }
+              ]
+            }
+          ],
+          "sqsdlq": [
+            {
+              "resultColumns": [
+                {
+                  "name": "service",
+                  "label": "Service"
+                },
+                {
+                  "name": "test",
+                  "label": "Test"
+                },
+                {
+                  "name": "error",
+                  "label": "Error"
+                }
+              ],
+              "name": "wcp-samples-sqsdlq-local",
+              "dlq": "wcp-samples-sqsdlq-local",
+              "label": "WCP Samples sqsdlq",
+              "dlqArn": "wcp-samples-sqsdlq-local",
+              "url": "http://localhost:4566/queue/wcp-samples-sqsdlq-local"
+            }
+          ]
+        }
+      }
+    ]
+  }

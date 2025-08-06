@@ -1,0 +1,30 @@
+version: '2.4'
+
+services:
+  # The zipkin process services the UI, and also exposes a POST endpoint that
+  # instrumentation can send trace data to.
+  zipkin:
+    image: ghcr.io/openzipkin/zipkin-slim:${TAG:-latest}
+    container_name: zipkin
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    environment:
+      - STORAGE_TYPE=mem
+      # Point the zipkin at the storage backend
+      - MYSQL_HOST=mysql
+      # Uncomment to enable self-tracing
+      # - SELF_TRACING_ENABLED=true
+      # Uncomment to increase heap size
+      # - JAVA_OPTS=-Xms128m -Xmx128m -XX:+ExitOnOutOfMemoryError
+    network_mode: 'host' # to test locally running service
+    # Uncomment to enable debug logging
+    # command: --logging.level.zipkin2=DEBUG
+
+  zipkin-ui:
+    image: ghcr.io/openzipkin/zipkin-ui:${TAG:-latest}
+    container_name: zipkin-ui
+    environment:
+      # Change this if connecting to a different zipkin server
+      - ZIPKIN_BASE_URL=http://localhost:9411
+    network_mode: 'host' # to test locally running service
+    depends_on:
+      - zipkin

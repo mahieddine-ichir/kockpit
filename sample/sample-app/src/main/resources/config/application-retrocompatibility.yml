@@ -1,0 +1,50 @@
+wcp:
+  sdk:
+    initialization:
+      timeout: PT6S
+    service:
+      audit:
+        ttl:
+          default: 4
+    domain: wcp
+    env: mock
+    application:
+      id: ${application.id}
+      env: mock
+    audit:
+      aws:
+        kinesis:
+          stream-names: ${kinesis.streamName}
+  web:
+    rest:
+      api:
+        validation:
+          accept-version:
+            version: 1
+        header:
+          traceid:
+            retrocompatibilty: true
+sqs:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  queueUrl: "http://localhost:4566/000000000000/wcp-samples-audit-sqs-local"
+kinesis:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  streamName: "wcp-samples-audit-kinesis-local"
+sqsdlq:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  queueUrl: "http://localhost:4566/000000000000/wcp-samples-sqsdlq-local"
+sqsdlq-fifo:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  queueUrl: "http://localhost:4566/000000000000/wcp-samples-sqsdlq-local-dlq.fifo"
+
+application:
+  basepath: "http://localhost:8080/wcpsamples"
+
+# Temp - problem avec intellij qui prend le test/java dans le classpath de démarrage de l'application (main/java) !
+spring:
+  main:
+    allow-bean-definition-overriding: true

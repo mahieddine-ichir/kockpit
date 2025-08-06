@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: Normal inheritance
+  description: API endpoints openapigenerator test
+  version: 1.0.0
+  contact:
+    email: wcp@accor.com
+servers:
+  - url: 'https://api-dev.wcbd-dev.aws.accor.com/basketinheritance/v1'
+    description: Development server (DEV) (WCBD team only)
+  - url: 'https://api-rec.wcbd-oat.aws.accor.com/basketinheritance/v1'
+    description: Internal testing (REC) server (WCBD team only)
+  - url: 'https://api-int.wcbd-oat.aws.accor.com/basketinheritance/v1'
+    description: Integration (INT) server
+  - url: 'https://api-ppd.wcbd-oat.aws.accor.com/basketinheritance/v1'
+    description: Pre-production (PPD) server
+  - url: 'https://api.wcbd.aws.accor.com/basketinheritance/v1'
+    description: Production (PRO) server
+tags:
+  - name: inheritance/public
+    description: API endpoints for public consumption of Basket API
+paths:
+  '/inheritances':
+    post:
+      tags:
+        - inheritance/public
+      summary: Creates a inheritance
+      description: 'Creates a inheritance, you can (or not) directly add items in the inheritance by passing somme offer ids'
+      operationId: createBasket
+      parameters:
+        - $ref: '#/components/parameters/versionParam'
+        - $ref: '#/components/parameters/traceIdParam'
+        - $ref: '#/components/parameters/originParam'
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NormalMultipleInheritance_SubClass'
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NormalMultipleInheritance_SubClass'
+          headers:
+            X-Wcp-TraceId:
+              $ref: '#/components/headers/traceIdHeader'
+            Content-Language:
+              $ref: '#/components/headers/contentLanguageHeader'
+            Location: 
+              description: 'Standard Location header for POST verbs : uri of the created resource'
+              schema:
+                type: string
+                example: 'https://api-rec.wcbd-oat.aws.accor.com/basketinheritance/v0/basketinheritances/9e44a51d-f95a-40a8-9a82-9ef4b42f7f9c'
+  '/inheritances/{inheritanceId}':
+    get:
+      tags:
+        - inheritance/public
+      summary: Returns an inheritance
+      description: 'Given a inheritance identifier, returns the corresponding inheritance'
+      operationId: getBasketById
+      parameters:
+        - name: inheritanceId
+          required: true
+          in: path
+          description: 'identifier'
+          schema:
+            type: string
+            example: 6f170322-ac22-479c-bc72-c88454d5ccad
+        - $ref: '#/components/parameters/versionParam'
+        - $ref: '#/components/parameters/traceIdParam'
+        - $ref: '#/components/parameters/originParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NormalSingleInheritance_SubClass'
+          headers:
+            X-Wcp-TraceId:
+              $ref: '#/components/headers/traceIdHeader'
+            Content-Language:
+              $ref: '#/components/headers/contentLanguageHeader'
+components:
+  headers:
+    traceIdHeader:
+      description: 'End to end transaction identifier, may be included in request, will be provided in response'
+      schema:
+        type: string
+        example: 123e4567-e89b-12d3-a456-426614174000
+    contentLanguageHeader:
+      description: Standard Content-Language header
+      schema:
+        type: string
+        example: 'fr'
+  parameters:
+    versionParam:
+      name: "X-Accept-Version"
+      in: header
+      description: "Specifically used to define the major API Version you are calling. Must be set to this contract major version otherwise you will get a http 406 response"
+      required: true
+      example: '1'
+      schema:
+        type: "string"
+    traceIdParam:
+      name: X-Wcp-TraceId
+      in: header
+      description: 'End to end transaction identifier, may be included in request, will be provided in response'
+      schema:
+        type: string
+        example: 123e4567-e89b-12d3-a456-426614174000
+    originParam:
+      name: X-Wcp-Origin
+      in: header
+      description: 'origin of the request (human-readable), use a recognizable, unique name - for debugging purposes'
+      schema:
+        type: string
+        example: partner-name.com
+
+  schemas:
+    NormalMultipleInheritance_ParentClassA:
+      type: object
+      properties:
+        parentClassAProperty1:
+          type: string
+        parentClassAProperty2:
+          type: string
+    NormalMultipleInheritance_ParentClassB:
+      type: object
+      properties:
+        parentClassBProperty1:
+          type: string
+        parentClassBProperty2:
+          type: string
+    NormalMultipleInheritance_SubClass:
+      allOf:
+        - $ref: '#/components/schemas/NormalMultipleInheritance_ParentClassA'
+        - $ref: '#/components/schemas/NormalMultipleInheritance_ParentClassB'
+        - type: object
+          properties:
+            subClassProperty1:
+              type: string
+            subClassProperty2:
+              type: string
+    NormalSingleInheritance_ParentClass:
+      type: object
+      properties:
+        parentClassProperty1:
+          type: string
+        parentClassProperty2:
+          type: string
+    NormalSingleInheritance_SubClass:
+      allOf:
+        - $ref: '#/components/schemas/NormalSingleInheritance_ParentClass'
+        - type: object
+          properties:
+            subClassProperty1:
+              type: string
+            subClassProperty2:
+              type: string

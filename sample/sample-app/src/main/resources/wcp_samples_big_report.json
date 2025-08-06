@@ -1,0 +1,1667 @@
+{
+  "domain": "wcp",
+  "env": "local",
+  "appId": "wcpsamples",
+  "version": "1.12-SNAPSHOT",
+  "artifact": "wcpsamples",
+  "requestId": "8e40bb68-fadf-44df-8b7a-f63b82d937f3",
+  "start": "2021-10-01T14:46:02.634150Z",
+  "end": "2021-10-01T14:46:11.076227Z",
+  "hostname": "ip-100-64-7-31.eu-west-1.compute.internal",
+  "ttl": 10,
+  "extensions": [
+    {
+      "executionEDTDTO": {
+        "error": "VALID",
+        "errorMessage": null,
+        "errorDetails": null,
+        "date": 1633099564271,
+        "time": 6697,
+        "executionUUID": "645b42db-1f16-4130-9d13-55e275efe3cd",
+        "registryId": -1895035496,
+        "executionRules": [
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099564271,
+            "time": 9,
+            "name": "BR_QUOT_PRE_ELIGIBILITY_HAS_NAME_ON_MULTIPLE_LINES",
+            "detail": "BR_QUOT_PRE_ELIGIBILITY_HAS_NAME_ON_MULTIPLE_LINES"
+          },
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099564280,
+            "time": 0,
+            "name": "BR_QUOT_CANPOL_ELIGIBILITY_VERY_LONG_RULE_NAME",
+            "detail": "BR_QUOT_CANPOL_ELIGIBILITY_VERY_LONG_RULE_NAME"
+          },
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099564280,
+            "time": 0,
+            "name": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_DISPLAY_LONG_RULE_NAME",
+            "detail": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_DISPLAY_LONG_RULE_NAME"
+          },
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099564280,
+            "time": 3,
+            "name": "BR_QUOT_PAYMENT_MULTIPLE_METHODS_TO_ASSERT_CUSTOMER_ELIGIBILITY",
+            "detail": "BR_QUOT_PAYMENT_MULTIPLE_METHODS_TO_ASSERT_CUSTOMER_ELIGIBILITY"
+          },
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099564283,
+            "time": 3614,
+            "name": "BR_QUOT_GET_LOYALTY_INFO",
+            "detail": "BR_QUOT_GET_LOYALTY_INFO"
+          },
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099567897,
+            "time": 1076,
+            "name": "BR_QUOT_ELIG_LOAD_HOTEL",
+            "detail": "BR_QUOT_ELIG_LOAD_HOTEL"
+          },
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099568973,
+            "time": 1,
+            "name": "BR_QUOT_SET_BI_INFO",
+            "detail": "BR_QUOT_SET_BI_INFO"
+          },
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099568974,
+            "time": 422,
+            "name": "BR_QUOT_ELIG_CALL_AXA",
+            "detail": "BR_QUOT_ELIG_CALL_AXA"
+          },
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099569396,
+            "time": 77,
+            "name": "BR_QUOT_AXA_PROCESS_RESPONSE",
+            "detail": "BR_QUOT_AXA_PROCESS_RESPONSE"
+          },
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099569473,
+            "time": 1495,
+            "name": "BR_QUOT_STORE_QUOTATION",
+            "detail": "BR_QUOT_STORE_QUOTATION"
+          }
+        ],
+        "rules": {
+          "BR_QUOT_CANPOL_ELIGIBILITY_VERY_LONG_RULE_NAME": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564280,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_HAS_SAME_CANCELLATION_POLICY",
+              "detail": "PRE_HAS_SAME_CANCELLATION_POLICY"
+            }
+          ],
+          "BR_QUOT_PAYMENT_MULTIPLE_METHODS_TO_ASSERT_CUSTOMER_ELIGIBILITY": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564280,
+              "time": 1,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_FILTER_NON_CREDIT_CARD_PAYMENT_FAMILY",
+              "detail": "ACT_FILTER_NON_CREDIT_CARD_PAYMENT_FAMILY"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564281,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_IS_CREDIT_CARD_FAMILY_EMPTY",
+              "detail": "PRE_IS_CREDIT_CARD_FAMILY_EMPTY"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564281,
+              "time": 2,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_IS_HAS_PAYMENT_METHOD_WITH_DIRECT_LINK",
+              "detail": "PRE_IS_HAS_PAYMENT_METHOD_WITH_DIRECT_LINK"
+            }
+          ],
+          "BR_QUOT_PRE_ELIGIBILITY_HAS_NAME_ON_MULTIPLE_LINES": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564272,
+              "time": 7,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE",
+              "detail": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE"
+            }
+          ],
+          "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_DISPLAY_LONG_RULE_NAME": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564280,
+              "time": 0,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_IDENTIFY_PRODUCT_FILTER",
+              "detail": "ACT_IDENTIFY_PRODUCT_FILTER"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564280,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_HAS_IDENTIFIED_PRODUCT_FILTER",
+              "detail": "PRE_HAS_IDENTIFIED_PRODUCT_FILTER"
+            }
+          ],
+          "BR_QUOT_GET_LOYALTY_INFO": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564283,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": false,
+              "name": "PRE_ISB2B",
+              "detail": "PRE_ISB2B"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564283,
+              "time": 1,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_HAS_VALID_CARDNUMBER",
+              "detail": "PRE_HAS_VALID_CARDNUMBER"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564284,
+              "time": 1,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_EXTRACT_PMID_FROM_CARD",
+              "detail": "ACT_EXTRACT_PMID_FROM_CARD"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564285,
+              "time": 3612,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_LOAD_CONTACT",
+              "detail": "ACT_LOAD_CONTACT"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099567897,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": false,
+              "name": "PRE_IS_CONTACT_FOUND",
+              "detail": "PRE_IS_CONTACT_FOUND"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099567897,
+              "time": 0,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_SET_B2B_NOCONFIDENCE",
+              "detail": "ACT_SET_B2B_NOCONFIDENCE"
+            }
+          ],
+          "BR_QUOT_ELIG_CALL_AXA": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099568974,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_IS_AXA_QUOTATION_FEATURE_ENABLED",
+              "detail": "PRE_IS_AXA_QUOTATION_FEATURE_ENABLED"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099568974,
+              "time": 422,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_CALL_AXA_QUOTATION",
+              "detail": "ACT_CALL_AXA_QUOTATION"
+            }
+          ],
+          "BR_QUOT_STORE_QUOTATION": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099569473,
+              "time": 1495,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_CALL_STORE_QUOTATION",
+              "detail": "ACT_CALL_STORE_QUOTATION"
+            }
+          ],
+          "BR_QUOT_AXA_PROCESS_RESPONSE": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099569396,
+              "time": 1,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_IS_AXA_CATEGORY_OFFER_NOT_EMPTY",
+              "detail": "PRE_IS_AXA_CATEGORY_OFFER_NOT_EMPTY"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099569397,
+              "time": 72,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_ENRICH_QUOTATION_WITH_CATEGORY_OFFERS",
+              "detail": "ACT_ENRICH_QUOTATION_WITH_CATEGORY_OFFERS"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099569469,
+              "time": 1,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_COMPUTE_PAYMENT_DATES",
+              "detail": "ACT_COMPUTE_PAYMENT_DATES"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099569470,
+              "time": 0,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_COMPUTE_CANCELLATION_INFO",
+              "detail": "ACT_COMPUTE_CANCELLATION_INFO"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099569470,
+              "time": 3,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_QUOT_HANDLE_LINKS",
+              "detail": "ACT_QUOT_HANDLE_LINKS"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099569473,
+              "time": 0,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_QUOT_HANDLE_LINKS",
+              "detail": "ACT_QUOT_HANDLE_LINKS"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099569473,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_IS_AXA_CATEGORY_OFFER_UNIQUE",
+              "detail": "PRE_IS_AXA_CATEGORY_OFFER_UNIQUE"
+            }
+          ],
+          "BR_QUOT_ELIG_LOAD_HOTEL": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099567897,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_IS_HOTEL_CODE_IN_QUOTATION",
+              "detail": "PRE_IS_HOTEL_CODE_IN_QUOTATION"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099567897,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": false,
+              "name": "PRE_IS_HOTEL_IN_CACHE",
+              "detail": "PRE_IS_HOTEL_IN_CACHE"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099567897,
+              "time": 382,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_LOAD_HOTEL_FROM_CATALOG",
+              "detail": "ACT_LOAD_HOTEL_FROM_CATALOG"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099568279,
+              "time": 204,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_LOAD_HOTEL_ACCOMMODATIONS_FROM_CATALOG",
+              "detail": "ACT_LOAD_HOTEL_ACCOMMODATIONS_FROM_CATALOG"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099568484,
+              "time": 483,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_LOAD_HOTEL_FACILITIES_FROM_CATALOG",
+              "detail": "ACT_LOAD_HOTEL_FACILITIES_FROM_CATALOG"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099568967,
+              "time": 6,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_POPULATE_HOTEL_IN_CACHE",
+              "detail": "ACT_POPULATE_HOTEL_IN_CACHE"
+            },
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099568973,
+              "time": 0,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_IS_HOTEL_FOUND",
+              "detail": "PRE_IS_HOTEL_FOUND"
+            }
+          ],
+          "BR_QUOT_SET_BI_INFO": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099568973,
+              "time": 1,
+              "actionPredicate": "ACTION",
+              "condition": false,
+              "name": "ACT_SET_BI_INFORMATION",
+              "detail": "ACT_SET_BI_INFORMATION"
+            }
+          ]
+        },
+        "referential": {
+          "BR_QUOT_CANPOL_ELIGIBILITY_VERY_LONG_RULE_NAME": {
+            "id": "BR_QUOT_CANPOL_ELIGIBILITY_VERY_LONG_RULE_NAME",
+            "name": "BR_QUOT_CANPOL_ELIGIBILITY_VERY_LONG_RULE_NAME",
+            "details": {
+              "code": "BR_QUOT_CANPOL_ELIGIBILITY_VERY_LONG_RULE_NAME",
+              "name": "BR_QUOT_CANPOL_ELIGIBILITY_VERY_LONG_RULE_NAME",
+              "description": "Compute canpol eligibility"
+            },
+            "ok": null,
+            "ko": {
+              "id": "BR_QUOT_CANPOL_ELIGIBILITY_ko",
+              "name": "BR_QUOT_CANPOL_ELIGIBILITY_ko",
+              "details": {
+                "code": "BR_QUOT_CANPOL_ELIGIBILITY_ko",
+                "name": "BR_QUOT_CANPOL_ELIGIBILITY_ko",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_AXA_QUOTATION_NOT_ELIGIBLE_HETEROGENEOUS_CANPOLS",
+                  "name": "ACT_AXA_QUOTATION_NOT_ELIGIBLE_HETEROGENEOUS_CANPOLS",
+                  "description": "Request not eligible due to cancellation policies"
+                }
+              ],
+              "predicates": []
+            },
+            "lastly": null,
+            "actions": [],
+            "predicates": [
+              {
+                "code": "PRE_HAS_SAME_CANCELLATION_POLICY",
+                "name": "PRE_HAS_SAME_CANCELLATION_POLICY",
+                "description": "Has same values in cancellation policies"
+              }
+            ]
+          },
+          "BR_QUOT_GET_QUOTATION": {
+            "id": "BR_QUOT_GET_QUOTATION",
+            "name": "BR_QUOT_GET_QUOTATION",
+            "details": {
+              "code": "BR_QUOT_GET_QUOTATION",
+              "name": "BR_QUOT_GET_QUOTATION",
+              "description": "Return quotation info"
+            },
+            "ok": null,
+            "ko": {
+              "id": "BR_QUOT_GET_QUOTATION_ko",
+              "name": "BR_QUOT_GET_QUOTATION_ko",
+              "details": {
+                "code": "BR_QUOT_GET_QUOTATION_ko",
+                "name": "BR_QUOT_GET_QUOTATION_ko",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_QUOT_NOT_FOUND_POLICY",
+                  "name": "ACT_QUOT_NOT_FOUND_POLICY",
+                  "description": "Quotation not found in repository policy"
+                }
+              ],
+              "predicates": []
+            },
+            "lastly": null,
+            "actions": [
+              {
+                "code": "ACT_CALL_LOAD_QUOTATION",
+                "name": "ACT_CALL_LOAD_QUOTATION",
+                "description": "Load quotation"
+              }
+            ],
+            "predicates": [
+              {
+                "code": "PRE_IS_QUOTATION_FOUND",
+                "name": "PRE_IS_QUOTATION_FOUND",
+                "description": "Is Quotation found in repository ?"
+              }
+            ]
+          },
+          "BR_QUOT_PAYMENT_MULTIPLE_METHODS_TO_ASSERT_CUSTOMER_ELIGIBILITY": {
+            "id": "BR_QUOT_PAYMENT_MULTIPLE_METHODS_TO_ASSERT_CUSTOMER_ELIGIBILITY",
+            "name": "BR_QUOT_PAYMENT_MULTIPLE_METHODS_TO_ASSERT_CUSTOMER_ELIGIBILITY",
+            "details": {
+              "code": "BR_QUOT_PAYMENT_MULTIPLE_METHODS_TO_ASSERT_CUSTOMER_ELIGIBILITY",
+              "name": "BR_QUOT_PAYMENT_MULTIPLE_METHODS_TO_ASSERT_CUSTOMER_ELIGIBILITY",
+              "description": "Compute eligibility based on available payment methods"
+            },
+            "ok": {
+              "id": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok",
+              "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok",
+              "details": {
+                "code": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok",
+                "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok",
+                "description": null
+              },
+              "ok": null,
+              "ko": {
+                "id": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok_ko",
+                "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok_ko",
+                "details": {
+                  "code": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok_ko",
+                  "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok_ko",
+                  "description": null
+                },
+                "ok": null,
+                "ko": null,
+                "lastly": null,
+                "actions": [
+                  {
+                    "code": "ACT_NOT_ELIGIBLE_PAYMENT_METHOD_DIRECT_LINK",
+                    "name": "ACT_NOT_ELIGIBLE_PAYMENT_METHOD_DIRECT_LINK",
+                    "description": "Request not eligible due to payment method direct link"
+                  }
+                ],
+                "predicates": []
+              },
+              "lastly": null,
+              "actions": [],
+              "predicates": [
+                {
+                  "code": "PRE_IS_HAS_PAYMENT_METHOD_WITH_DIRECT_LINK",
+                  "name": "PRE_IS_HAS_PAYMENT_METHOD_WITH_DIRECT_LINK",
+                  "description": "Has at least one payment method with direct link ?"
+                }
+              ]
+            },
+            "ko": {
+              "id": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ko",
+              "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ko",
+              "details": {
+                "code": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ko",
+                "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ko",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_AXA_QUOTATION_NOT_ELIGIBLE_AVAILPAYMTMETHODS_NO_CREDITCARD",
+                  "name": "ACT_AXA_QUOTATION_NOT_ELIGIBLE_AVAILPAYMTMETHODS_NO_CREDITCARD",
+                  "description": "Request not eligible due to payment methods family"
+                }
+              ],
+              "predicates": []
+            },
+            "lastly": null,
+            "actions": [
+              {
+                "code": "ACT_FILTER_NON_CREDIT_CARD_PAYMENT_FAMILY",
+                "name": "ACT_FILTER_NON_CREDIT_CARD_PAYMENT_FAMILY",
+                "description": "Remove non credit card payment method family from eligibility criteria"
+              }
+            ],
+            "predicates": [
+              {
+                "code": "PRE_IS_CREDIT_CARD_FAMILY_EMPTY",
+                "name": "PRE_IS_CREDIT_CARD_FAMILY_EMPTY",
+                "description": "Is credit card method family empty ?"
+              }
+            ]
+          },
+          "BR_QUOT_FILTER_OFFER": {
+            "id": "BR_QUOT_FILTER_OFFER",
+            "name": "BR_QUOT_FILTER_OFFER",
+            "details": {
+              "code": "BR_QUOT_FILTER_OFFER",
+              "name": "BR_QUOT_FILTER_OFFER",
+              "description": "Remove non selected offer from the quotation"
+            },
+            "ok": {
+              "id": "BR_QUOT_FILTER_OFFER_ok",
+              "name": "BR_QUOT_FILTER_OFFER_ok",
+              "details": {
+                "code": "BR_QUOT_FILTER_OFFER_ok",
+                "name": "BR_QUOT_FILTER_OFFER_ok",
+                "description": null
+              },
+              "ok": null,
+              "ko": {
+                "id": "BR_QUOT_FILTER_OFFER_ok_ko",
+                "name": "BR_QUOT_FILTER_OFFER_ok_ko",
+                "details": {
+                  "code": "BR_QUOT_FILTER_OFFER_ok_ko",
+                  "name": "BR_QUOT_FILTER_OFFER_ok_ko",
+                  "description": null
+                },
+                "ok": null,
+                "ko": null,
+                "lastly": null,
+                "actions": [
+                  {
+                    "code": "ACT_QUOTATION_SELECTED_OFFER_NOT_FOUND",
+                    "name": "ACT_QUOTATION_SELECTED_OFFER_NOT_FOUND",
+                    "description": "Selected offer not found in quotation"
+                  }
+                ],
+                "predicates": []
+              },
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_FILTER_QUOTATION_OFFERS",
+                  "name": "ACT_FILTER_QUOTATION_OFFERS",
+                  "description": "Filter non selected offers from context quotation"
+                }
+              ],
+              "predicates": [
+                {
+                  "code": "PRE_IS_SELECTED_OFFER_FOUND",
+                  "name": "PRE_IS_SELECTED_OFFER_FOUND",
+                  "description": "Is selected offer found in quotation ?"
+                }
+              ]
+            },
+            "ko": null,
+            "lastly": null,
+            "actions": [],
+            "predicates": [
+              {
+                "code": "PRE_IS_SELECTED_OFFER_PARAM_PRESENT",
+                "name": "PRE_IS_SELECTED_OFFER_PARAM_PRESENT",
+                "description": "Is selected offer param present ?"
+              }
+            ]
+          },
+          "BR_QUOT_PRE_ELIGIBILITY_HAS_NAME_ON_MULTIPLE_LINES": {
+            "id": "BR_QUOT_PRE_ELIGIBILITY_HAS_NAME_ON_MULTIPLE_LINES",
+            "name": "BR_QUOT_PRE_ELIGIBILITY_HAS_NAME_ON_MULTIPLE_LINES",
+            "details": {
+              "code": "BR_QUOT_PRE_ELIGIBILITY_HAS_NAME_ON_MULTIPLE_LINES",
+              "name": "BR_QUOT_PRE_ELIGIBILITY_HAS_NAME_ON_MULTIPLE_LINES",
+              "description": "Country-Language-Guarantee policy Eligibility"
+            },
+            "ok": null,
+            "ko": {
+              "id": "BR_QUOT_PRE_ELIGIBILITY_ko",
+              "name": "BR_QUOT_PRE_ELIGIBILITY_ko",
+              "details": {
+                "code": "BR_QUOT_PRE_ELIGIBILITY_ko",
+                "name": "BR_QUOT_PRE_ELIGIBILITY_ko",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_NOT_ELIGIBLE_POLICY",
+                  "name": "ACT_NOT_ELIGIBLE_POLICY",
+                  "description": "Request not eligible due to country, language, guapol policy"
+                }
+              ],
+              "predicates": []
+            },
+            "lastly": null,
+            "actions": [],
+            "predicates": [
+              {
+                "code": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE",
+                "name": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE",
+                "description": "Has (input) valid country language based on specification table (navCountry / navLanguage / guapol)"
+              }
+            ]
+          },
+          "BR_QUOT_GET_LOYALTY_INFO": {
+            "id": "BR_QUOT_GET_LOYALTY_INFO",
+            "name": "BR_QUOT_GET_LOYALTY_INFO",
+            "details": {
+              "code": "BR_QUOT_GET_LOYALTY_INFO",
+              "name": "BR_QUOT_GET_LOYALTY_INFO",
+              "description": "Get loyalty info"
+            },
+            "ok": {
+              "id": "BR_QUOT_GET_LOYALTY_INFO_ok",
+              "name": "BR_QUOT_GET_LOYALTY_INFO_ok",
+              "details": {
+                "code": "BR_QUOT_GET_LOYALTY_INFO_ok",
+                "name": "BR_QUOT_GET_LOYALTY_INFO_ok",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_SET_CONTACTDATA_B2B",
+                  "name": "ACT_SET_CONTACTDATA_B2B",
+                  "description": "Set contact data to B2B"
+                }
+              ],
+              "predicates": []
+            },
+            "ko": {
+              "id": "BR_QUOT_GET_LOYALTY_INFO_ko",
+              "name": "BR_QUOT_GET_LOYALTY_INFO_ko",
+              "details": {
+                "code": "BR_QUOT_GET_LOYALTY_INFO_ko",
+                "name": "BR_QUOT_GET_LOYALTY_INFO_ko",
+                "description": null
+              },
+              "ok": {
+                "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok",
+                "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok",
+                "details": {
+                  "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok",
+                  "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok",
+                  "description": null
+                },
+                "ok": {
+                  "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok",
+                  "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok",
+                  "details": {
+                    "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok",
+                    "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok",
+                    "description": null
+                  },
+                  "ok": null,
+                  "ko": {
+                    "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_ko",
+                    "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_ko",
+                    "details": {
+                      "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_ko",
+                      "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_ko",
+                      "description": null
+                    },
+                    "ok": null,
+                    "ko": null,
+                    "lastly": null,
+                    "actions": [
+                      {
+                        "code": "ACT_THROW_PRODUCT_CARD_TIER_MAPPING_WARNING",
+                        "name": "ACT_THROW_PRODUCT_CARD_TIER_MAPPING_WARNING",
+                        "description": "Product card tier is supported by axa"
+                      }
+                    ],
+                    "predicates": []
+                  },
+                  "lastly": {
+                    "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly",
+                    "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly",
+                    "details": {
+                      "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly",
+                      "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly",
+                      "description": null
+                    },
+                    "ok": {
+                      "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ok",
+                      "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ok",
+                      "details": {
+                        "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ok",
+                        "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ok",
+                        "description": null
+                      },
+                      "ok": null,
+                      "ko": null,
+                      "lastly": null,
+                      "actions": [
+                        {
+                          "code": "ACT_SET_B2B_CONFIDENCE",
+                          "name": "ACT_SET_B2B_CONFIDENCE",
+                          "description": "Set B2B with 0.5 confidence"
+                        }
+                      ],
+                      "predicates": []
+                    },
+                    "ko": {
+                      "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ko",
+                      "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ko",
+                      "details": {
+                        "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ko",
+                        "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ko",
+                        "description": null
+                      },
+                      "ok": null,
+                      "ko": null,
+                      "lastly": null,
+                      "actions": [
+                        {
+                          "code": "ACT_SET_B2B_NOCONFIDENCE",
+                          "name": "ACT_SET_B2B_NOCONFIDENCE",
+                          "description": "Set B2B with null confidence"
+                        }
+                      ],
+                      "predicates": []
+                    },
+                    "lastly": null,
+                    "actions": [],
+                    "predicates": [
+                      {
+                        "code": "PRE_IS_IBIS_BUSINESS_OR_IBIS_BUSINESS_PLUS",
+                        "name": "PRE_IS_IBIS_BUSINESS_OR_IBIS_BUSINESS_PLUS",
+                        "description": "Does contact have an non expired at dateIn Ibis Business or Ibis Business Plus Card in subscriptions cards"
+                      }
+                    ]
+                  },
+                  "actions": [
+                    {
+                      "code": "ACT_SET_LOYALTY_PRODUCT_CARD_TIER",
+                      "name": "ACT_SET_LOYALTY_PRODUCT_CARD_TIER",
+                      "description": "Set Loyalty card tier"
+                    }
+                  ],
+                  "predicates": [
+                    {
+                      "code": "PRE_IS_LOYALTY_CARD_TIER_SUPPORTED",
+                      "name": "PRE_IS_LOYALTY_CARD_TIER_SUPPORTED",
+                      "description": "Check if product card tier is supported by axa"
+                    }
+                  ]
+                },
+                "ko": {
+                  "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ko",
+                  "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ko",
+                  "details": {
+                    "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ko",
+                    "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ko",
+                    "description": null
+                  },
+                  "ok": null,
+                  "ko": null,
+                  "lastly": null,
+                  "actions": [
+                    {
+                      "code": "ACT_SET_B2B_NOCONFIDENCE",
+                      "name": "ACT_SET_B2B_NOCONFIDENCE",
+                      "description": "Set B2B with null confidence"
+                    }
+                  ],
+                  "predicates": []
+                },
+                "lastly": null,
+                "actions": [
+                  {
+                    "code": "ACT_EXTRACT_PMID_FROM_CARD",
+                    "name": "ACT_EXTRACT_PMID_FROM_CARD",
+                    "description": "Extract PMID from cardNumber"
+                  },
+                  {
+                    "code": "ACT_LOAD_CONTACT",
+                    "name": "ACT_LOAD_CONTACT",
+                    "description": "Load contact data from WCC"
+                  }
+                ],
+                "predicates": [
+                  {
+                    "code": "PRE_IS_CONTACT_FOUND",
+                    "name": "PRE_IS_CONTACT_FOUND",
+                    "description": "Is Contact found in WCC ?"
+                  }
+                ]
+              },
+              "ko": {
+                "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ko",
+                "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ko",
+                "details": {
+                  "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ko",
+                  "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ko",
+                  "description": null
+                },
+                "ok": null,
+                "ko": null,
+                "lastly": null,
+                "actions": [
+                  {
+                    "code": "ACT_SET_B2B_NOCONFIDENCE",
+                    "name": "ACT_SET_B2B_NOCONFIDENCE",
+                    "description": "Set B2B with null confidence"
+                  }
+                ],
+                "predicates": []
+              },
+              "lastly": null,
+              "actions": [],
+              "predicates": [
+                {
+                  "code": "PRE_HAS_VALID_CARDNUMBER",
+                  "name": "PRE_HAS_VALID_CARDNUMBER",
+                  "description": "Has valid card number as input ?"
+                }
+              ]
+            },
+            "lastly": null,
+            "actions": [],
+            "predicates": [
+              {
+                "code": "PRE_ISB2B",
+                "name": "PRE_ISB2B",
+                "description": "Is for a B2B request?"
+              }
+            ]
+          },
+          "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_DISPLAY_LONG_RULE_NAME": {
+            "id": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_DISPLAY_LONG_RULE_NAME",
+            "name": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_DISPLAY_LONG_RULE_NAME",
+            "details": {
+              "code": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_DISPLAY_LONG_RULE_NAME",
+              "name": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_DISPLAY_LONG_RULE_NAME",
+              "description": "Compute canpol / guapol eligibility + product filter determination"
+            },
+            "ok": null,
+            "ko": {
+              "id": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_ko",
+              "name": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_ko",
+              "details": {
+                "code": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_ko",
+                "name": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_ko",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_NOT_ELIGIBLE_POLICY",
+                  "name": "ACT_NOT_ELIGIBLE_POLICY",
+                  "description": "Request not eligible due to country, language, guapol policy"
+                }
+              ],
+              "predicates": []
+            },
+            "lastly": null,
+            "actions": [
+              {
+                "code": "ACT_IDENTIFY_PRODUCT_FILTER",
+                "name": "ACT_IDENTIFY_PRODUCT_FILTER",
+                "description": "Compute guapol and canpol to Identify product filters"
+              }
+            ],
+            "predicates": [
+              {
+                "code": "PRE_HAS_IDENTIFIED_PRODUCT_FILTER",
+                "name": "PRE_HAS_IDENTIFIED_PRODUCT_FILTER",
+                "description": "Has product filter been identified"
+              }
+            ]
+          },
+          "BR_QUOT_ELIG_CALL_AXA": {
+            "id": "BR_QUOT_ELIG_CALL_AXA",
+            "name": "BR_QUOT_ELIG_CALL_AXA",
+            "details": {
+              "code": "BR_QUOT_ELIG_CALL_AXA",
+              "name": "BR_QUOT_ELIG_CALL_AXA",
+              "description": "Call AXA with eligibility request"
+            },
+            "ok": {
+              "id": "BR_QUOT_ELIG_CALL_AXA_ok",
+              "name": "BR_QUOT_ELIG_CALL_AXA_ok",
+              "details": {
+                "code": "BR_QUOT_ELIG_CALL_AXA_ok",
+                "name": "BR_QUOT_ELIG_CALL_AXA_ok",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_CALL_AXA_QUOTATION",
+                  "name": "ACT_CALL_AXA_QUOTATION",
+                  "description": "Call AXA for quotation"
+                }
+              ],
+              "predicates": []
+            },
+            "ko": {
+              "id": "BR_QUOT_ELIG_CALL_AXA_ko",
+              "name": "BR_QUOT_ELIG_CALL_AXA_ko",
+              "details": {
+                "code": "BR_QUOT_ELIG_CALL_AXA_ko",
+                "name": "BR_QUOT_ELIG_CALL_AXA_ko",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_AXA_QUOTATION_NOT_ENABLED",
+                  "name": "ACT_AXA_QUOTATION_NOT_ENABLED",
+                  "description": "Axa quotation feature is not active"
+                }
+              ],
+              "predicates": []
+            },
+            "lastly": null,
+            "actions": [],
+            "predicates": [
+              {
+                "code": "PRE_IS_AXA_QUOTATION_FEATURE_ENABLED",
+                "name": "PRE_IS_AXA_QUOTATION_FEATURE_ENABLED",
+                "description": "Is axa quotation feature flipping active"
+              }
+            ]
+          },
+          "BR_QUOT_STORE_QUOTATION": {
+            "id": "BR_QUOT_STORE_QUOTATION",
+            "name": "BR_QUOT_STORE_QUOTATION",
+            "details": {
+              "code": "BR_QUOT_STORE_QUOTATION",
+              "name": "BR_QUOT_STORE_QUOTATION",
+              "description": "Store AXA quotation"
+            },
+            "ok": null,
+            "ko": null,
+            "lastly": null,
+            "actions": [
+              {
+                "code": "ACT_CALL_STORE_QUOTATION",
+                "name": "ACT_CALL_STORE_QUOTATION",
+                "description": "Store quotation"
+              }
+            ],
+            "predicates": []
+          },
+          "BR_QUOT_AXA_PROCESS_RESPONSE": {
+            "id": "BR_QUOT_AXA_PROCESS_RESPONSE",
+            "name": "BR_QUOT_AXA_PROCESS_RESPONSE",
+            "details": {
+              "code": "BR_QUOT_AXA_PROCESS_RESPONSE",
+              "name": "BR_QUOT_AXA_PROCESS_RESPONSE",
+              "description": "Process AXA responses to extract quotation offers"
+            },
+            "ok": {
+              "id": "BR_QUOT_AXA_PROCESS_RESPONSE_ok",
+              "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ok",
+              "details": {
+                "code": "BR_QUOT_AXA_PROCESS_RESPONSE_ok",
+                "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ok",
+                "description": null
+              },
+              "ok": null,
+              "ko": {
+                "id": "BR_QUOT_AXA_PROCESS_RESPONSE_ok_ko",
+                "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ok_ko",
+                "details": {
+                  "code": "BR_QUOT_AXA_PROCESS_RESPONSE_ok_ko",
+                  "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ok_ko",
+                  "description": null
+                },
+                "ok": null,
+                "ko": null,
+                "lastly": null,
+                "actions": [
+                  {
+                    "code": "ACT_THROW_MULTIPLE_CATEGORIES_OFFERS_RETRIEVED_WARNING",
+                    "name": "ACT_THROW_MULTIPLE_CATEGORIES_OFFERS_RETRIEVED_WARNING",
+                    "description": "Axa service returned multiple categories offer"
+                  }
+                ],
+                "predicates": []
+              },
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_ENRICH_QUOTATION_WITH_CATEGORY_OFFERS",
+                  "name": "ACT_ENRICH_QUOTATION_WITH_CATEGORY_OFFERS",
+                  "description": "Enrich quotation with the category offers retrieved"
+                },
+                {
+                  "code": "ACT_COMPUTE_PAYMENT_DATES",
+                  "name": "ACT_COMPUTE_PAYMENT_DATES",
+                  "description": "Determine insurance offer payment date"
+                },
+                {
+                  "code": "ACT_COMPUTE_CANCELLATION_INFO",
+                  "name": "ACT_COMPUTE_CANCELLATION_INFO",
+                  "description": "Determine insurance offer cancellation info"
+                },
+                {
+                  "code": "ACT_QUOT_HANDLE_LINKS",
+                  "name": "ACT_QUOT_HANDLE_LINKS",
+                  "description": "Handle url of links in text containing markdowns"
+                },
+                {
+                  "code": "ACT_QUOT_HANDLE_LINKS",
+                  "name": "ACT_QUOT_HANDLE_LINKS",
+                  "description": "Handle url of links in text containing markdowns"
+                }
+              ],
+              "predicates": [
+                {
+                  "code": "PRE_IS_AXA_CATEGORY_OFFER_UNIQUE",
+                  "name": "PRE_IS_AXA_CATEGORY_OFFER_UNIQUE",
+                  "description": "Is axa response contains only one category offer ?"
+                }
+              ]
+            },
+            "ko": {
+              "id": "BR_QUOT_AXA_PROCESS_RESPONSE_ko",
+              "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ko",
+              "details": {
+                "code": "BR_QUOT_AXA_PROCESS_RESPONSE_ko",
+                "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ko",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_NO_CATEGORY_OFFERS_RETRIEVED",
+                  "name": "ACT_NO_CATEGORY_OFFERS_RETRIEVED",
+                  "description": "Axa service returned no category offer"
+                }
+              ],
+              "predicates": []
+            },
+            "lastly": null,
+            "actions": [],
+            "predicates": [
+              {
+                "code": "PRE_IS_AXA_CATEGORY_OFFER_NOT_EMPTY",
+                "name": "PRE_IS_AXA_CATEGORY_OFFER_NOT_EMPTY",
+                "description": "Is axa response contains at least one category offer"
+              }
+            ]
+          },
+          "BR_QUOT_ELIG_LOAD_HOTEL": {
+            "id": "BR_QUOT_ELIG_LOAD_HOTEL",
+            "name": "BR_QUOT_ELIG_LOAD_HOTEL",
+            "details": {
+              "code": "BR_QUOT_ELIG_LOAD_HOTEL",
+              "name": "BR_QUOT_ELIG_LOAD_HOTEL",
+              "description": "Load hotel data"
+            },
+            "ok": {
+              "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok",
+              "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok",
+              "details": {
+                "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok",
+                "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok",
+                "description": null
+              },
+              "ok": {
+                "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ok",
+                "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ok",
+                "details": {
+                  "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ok",
+                  "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ok",
+                  "description": null
+                },
+                "ok": null,
+                "ko": null,
+                "lastly": null,
+                "actions": [
+                  {
+                    "code": "ACT_LOAD_HOTEL_FROM_CACHE",
+                    "name": "ACT_LOAD_HOTEL_FROM_CACHE",
+                    "description": "Load hotel data from cache"
+                  }
+                ],
+                "predicates": []
+              },
+              "ko": {
+                "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ko",
+                "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ko",
+                "details": {
+                  "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ko",
+                  "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ko",
+                  "description": null
+                },
+                "ok": null,
+                "ko": null,
+                "lastly": null,
+                "actions": [
+                  {
+                    "code": "ACT_LOAD_HOTEL_FROM_CATALOG",
+                    "name": "ACT_LOAD_HOTEL_FROM_CATALOG",
+                    "description": "Load hotel data from catalog"
+                  },
+                  {
+                    "code": "ACT_LOAD_HOTEL_ACCOMMODATIONS_FROM_CATALOG",
+                    "name": "ACT_LOAD_HOTEL_ACCOMMODATIONS_FROM_CATALOG",
+                    "description": "Load hotel accommodations from catalog"
+                  },
+                  {
+                    "code": "ACT_LOAD_HOTEL_FACILITIES_FROM_CATALOG",
+                    "name": "ACT_LOAD_HOTEL_FACILITIES_FROM_CATALOG",
+                    "description": "Load hotel facilities from catalog"
+                  },
+                  {
+                    "code": "ACT_POPULATE_HOTEL_IN_CACHE",
+                    "name": "ACT_POPULATE_HOTEL_IN_CACHE",
+                    "description": "Populate hotel info cache"
+                  }
+                ],
+                "predicates": []
+              },
+              "lastly": {
+                "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly",
+                "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly",
+                "details": {
+                  "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly",
+                  "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly",
+                  "description": null
+                },
+                "ok": null,
+                "ko": {
+                  "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly_ko",
+                  "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly_ko",
+                  "details": {
+                    "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly_ko",
+                    "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly_ko",
+                    "description": null
+                  },
+                  "ok": null,
+                  "ko": null,
+                  "lastly": null,
+                  "actions": [
+                    {
+                      "code": "ACT_HOTEL_CODE_UNKNOWN_POLICY",
+                      "name": "ACT_HOTEL_CODE_UNKNOWN_POLICY",
+                      "description": "Hotel code unknown from catalog"
+                    }
+                  ],
+                  "predicates": []
+                },
+                "lastly": null,
+                "actions": [],
+                "predicates": [
+                  {
+                    "code": "PRE_IS_HOTEL_FOUND",
+                    "name": "PRE_IS_HOTEL_FOUND",
+                    "description": "Is hotel info found"
+                  }
+                ]
+              },
+              "actions": [],
+              "predicates": [
+                {
+                  "code": "PRE_IS_HOTEL_IN_CACHE",
+                  "name": "PRE_IS_HOTEL_IN_CACHE",
+                  "description": "Is hotel in cache"
+                }
+              ]
+            },
+            "ko": null,
+            "lastly": null,
+            "actions": [],
+            "predicates": [
+              {
+                "code": "PRE_IS_HOTEL_CODE_IN_QUOTATION",
+                "name": "PRE_IS_HOTEL_CODE_IN_QUOTATION",
+                "description": "Is hotel code present in quotation"
+              }
+            ]
+          },
+          "BR_QUOT_SET_BI_INFO": {
+            "id": "BR_QUOT_SET_BI_INFO",
+            "name": "BR_QUOT_SET_BI_INFO",
+            "details": {
+              "code": "BR_QUOT_SET_BI_INFO",
+              "name": "BR_QUOT_SET_BI_INFO",
+              "description": "Set BI information"
+            },
+            "ok": null,
+            "ko": null,
+            "lastly": null,
+            "actions": [
+              {
+                "code": "ACT_SET_BI_INFORMATION",
+                "name": "ACT_SET_BI_INFORMATION",
+                "description": "Set BI information in Quotation"
+              }
+            ],
+            "predicates": []
+          }
+        },
+        "logs": []
+      },
+      "indexedKeyValues": [],
+      "type": "kengine.flows"
+    },
+    {
+      "key": "quotationId",
+      "value": "d93860d0-91fa-4227-9de3-c3e90ae3f87d",
+      "indexedKeyValues": [
+        {
+          "key": "quotationId",
+          "value": "d93860d0-91fa-4227-9de3-c3e90ae3f87d"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "KId",
+      "value": "645b42db-1f16-4130-9d13-55e275efe3cd",
+      "indexedKeyValues": [
+        {
+          "key": "KId",
+          "value": "645b42db-1f16-4130-9d13-55e275efe3cd"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "KResult",
+      "value": "VALID",
+      "indexedKeyValues": [
+        {
+          "key": "KResult",
+          "value": "VALID"
+        }
+      ],
+      "valueType": "com.accor.kengine.audit.model.ResultStatus",
+      "type": "builtin.kv"
+    },
+    {
+      "startTime": 1633099571073,
+      "httpAuditedRequest": {
+        "uri": "/insurance/v1/quotations",
+        "headers": {
+          "x-forwarded-for": [
+            "176.182.81.20"
+          ],
+          "x-forwarded-proto": [
+            "https"
+          ],
+          "x-forwarded-port": [
+            "443"
+          ],
+          "host": [
+            "api-dev.wcxss-dev.aws.accor.com"
+          ],
+          "x-amzn-trace-id": [
+            "Root=1-61571f2a-55186f645a00b53222e6b6be"
+          ],
+          "content-length": [
+            "837"
+          ],
+          "x-wcp-origin": [
+            "QA test suite"
+          ],
+          "x-mock-match-request-headers": [
+            "Axa_mock_nominal_case"
+          ],
+          "apikey": [
+            "{{wcxss.apimApikey}}"
+          ],
+          "content-type": [
+            "application/json"
+          ],
+          "user-agent": [
+            "PostmanRuntime/7.26.8"
+          ],
+          "accept": [
+            "*/*"
+          ],
+          "cache-control": [
+            "no-cache"
+          ],
+          "accept-encoding": [
+            "gzip, deflate, br"
+          ],
+          "cookie": [
+            "displayZone=france; userLang=en; userPrefLocalization=en"
+          ]
+        },
+        "body": "{\r\n  \"eligibilityCriteria\": {\r\n    \"cancellationPolicies\": [\"FLEX\"],\r\n    \"cardNumber\": \"30810311234567A9\",\r\n    \"checkinDate\": \"2021-11-01\",\r\n    \"childrenAges\": [\r\n      4\r\n    ],\r\n    \"guaranteePolicy\": \"PREPAYABLE_AUTOMATIC\",\r\n    \"hasSCAccessCode\": false,\r\n    \"hotelCode\": \"1312\",\r\n    \"navCountry\": \"IT\",\r\n    \"navCurrency\": \"EUR\",\r\n    \"navLanguage\": \"it\",\r\n    \"nbAdults\": 2,\r\n    \"nbNights\": 2,\r\n    \"productCodes\": [\r\n      \"DBB\"\r\n    ],\r\n    \"roomsCurrency\": \"EUR\",\r\n    \"roomsTotalPrice\": 300.55,\r\n    \"availablePaymentMeans\": [\r\n      {\r\n        \"code\": \"CC\",\r\n        \"methods\": [\r\n          {\r\n            \"code\": \"VI\",\r\n            \"directLink\": true,\r\n            \"name\": \"Visa\",\r\n            \"walletCard\": true\r\n          }\r\n        ],\r\n        \"methodsType\": \"CC\",\r\n        \"name\": \"Bank Card\"\r\n      }\r\n    ]\r\n  }\r\n}",
+        "method": "POST",
+        "principal": "anonymousUser"
+      },
+      "httpAuditedResponse": {
+        "headers": {
+          "X-WCP-TraceId": [
+            "c35934f6-9443-4696-9c0c-abf847c2843e"
+          ]
+        },
+        "body": "{\"creationDatetime\":\"2021-10-01T14:46:08.974585Z\",\"eligibilityCriteria\":{\"availablePaymentMeans\":[{\"code\":\"CC\",\"methods\":[{\"code\":\"VI\",\"directLink\":true,\"name\":\"Visa\",\"walletCard\":true}],\"methodsType\":\"CC\",\"name\":\"Bank Card\"}],\"cancellationPolicies\":[\"FLEX\"],\"cardNumber\":\"30810311234567A9\",\"checkinDate\":\"2021-11-01\",\"childrenAges\":[4],\"guaranteePolicy\":\"PREPAYABLE_AUTOMATIC\",\"hasSCAccessCode\":false,\"hotelCode\":\"1312\",\"hotelEnvironmentCode\":\"TOW\",\"isB2B\":false,\"navCountry\":\"IT\",\"navCurrency\":\"EUR\",\"navLanguage\":\"it\",\"nbAdults\":2,\"nbNights\":2,\"productCodes\":[\"DBB\"],\"productFilter\":[\"PREPAID\",\"FLEX\"],\"roomsCurrency\":\"EUR\",\"roomsTotalPrice\":300.55},\"id\":\"d93860d0-91fa-4227-9de3-c3e90ae3f87d\",\"languageCode\":\"pt-br\",\"modificationDatetime\":\"2021-10-01T14:46:08.974585Z\",\"offers\":[{\"coolingOffPeriodDuration\":14,\"id\":\"8f821621-07ce-4b4d-8e7f-5cbc712ed942\",\"insuranceCoveragePeriodFrom\":\"2020-12-31\",\"insuranceCoveragePeriodTo\":\"2021-01-03\",\"insurancePaymentDate\":\"2021-10-01\",\"priceBreakdown\":{\"currency\":\"EUR\",\"priceExcludingTaxes\":54.98,\"priceIncludingTaxes\":56.99,\"totalTaxes\":2.01,\"unitPrice\":56.99},\"priceBreakdownInRoomsCurrency\":{\"currency\":\"USD\",\"priceExcludingTaxes\":59.98,\"priceIncludingTaxes\":62.99,\"totalTaxes\":3.01,\"unitPrice\":62.99},\"productCode\":\"ACCOR-COMP-EU1\",\"productInformation\":{\"benefits\":[{\"text\":\"Benefit text 1.1\",\"title\":\"Benefit_1.1\"},{\"text\":\"Benefit text 1.2\",\"title\":\"Benefit_1.2\"},{\"text\":\"Benefit text 1.3\",\"title\":\"Benefit_1.3\"},{\"text\":\"Benefit text 1.4\",\"title\":\"Benefit_1.4\"},{\"text\":\"Benefit text 1.5\",\"title\":\"Benefit_1.5\"}],\"datasheetUrl\":\"https://path/to/datasheet1\",\"description\":\"Protects your family and your loved description ones in case of accident overseas...1\",\"extras\":{\"cancellationNotice\":\"This is a cancellation notice offer 1\",\"disclaimer2Notice\":\"This Insurance product is not a personalized recommendation following the Article L. 521-4 of the French insurance Code 1\",\"disclaimerNotice\":\"This insurance is provided ... 1\",\"ipid2Text\":\"This is ipid2 text offer 1\",\"ipid2Url\":\"https://path/to/ipid2_1\",\"ipidText\":\"This is ipid test offer 1\",\"legalNotice\":\"This insurance is provided ...1\",\"pictureUrl\":\"https://path/to/picture1\",\"privacyNotice\":\"This is a privacy notice offer 1\",\"privacyUrl\":\"https://path/to/privacy1\",\"provisionNotice\":\"L112-10 du Code des assurances 1\"},\"tcsUrl\":\"https://path/to/tcs1\",\"title\":\"Accor Protect1\"}},{\"coolingOffPeriodDuration\":14,\"id\":\"2d688b4c-d17a-4b80-ba2c-c2e49b7ca8c6\",\"insuranceCoveragePeriodFrom\":\"2020-12-30\",\"insuranceCoveragePeriodTo\":\"2021-01-04\",\"insurancePaymentDate\":\"2021-10-01\",\"priceBreakdown\":{\"currency\":\"EUR\",\"priceExcludingTaxes\":144.98,\"priceIncludingTaxes\":156.99,\"totalTaxes\":12.01,\"unitPrice\":156.99},\"priceBreakdownInRoomsCurrency\":{\"currency\":\"USD\",\"priceExcludingTaxes\":149.98,\"priceIncludingTaxes\":162.99,\"totalTaxes\":13.01,\"unitPrice\":162.99},\"productCode\":\"ACCOR-COMP-EU2\",\"productInformation\":{\"benefits\":[{\"text\":\"Benefit text 2.1.1\",\"title\":\"Benefit_2.1\"},{\"text\":\"Benefit text 2.2\",\"title\":\"Benefit_2.2\"},{\"text\":\"Benefit text 2.3\",\"title\":\"Benefit_2.3\"},{\"text\":\"Benefit text 2.4\",\"title\":\"Benefit_2.4\"},{\"text\":\"Benefit text 2.5\",\"title\":\"Benefit_2.5\"}],\"datasheetUrl\":\"https://path/to/datasheet2\",\"description\":\"Protects your family and your loved description ones in case of accident overseas...2\",\"extras\":{\"cancellationNotice\":\"This is a cancellation notice offer 2\",\"disclaimer2Notice\":\"This Insurance product is not a personalized recommendation following the Article L. 521-4 of the French insurance Code 2\",\"disclaimerNotice\":\"This insurance is provided ... 2\",\"ipid2Text\":\"This is ipid2 text offer 2\",\"ipid2Url\":\"https://path/to/ipid2_2\",\"ipidText\":\"This is ipid test offer 2\",\"legalNotice\":\"This insurance is provided ...2\",\"pictureUrl\":\"https://path/to/picture2\",\"privacyNotice\":\"This is a privacy notice offer 2\",\"privacyUrl\":\"https://path/to/privacy2\",\"provisionNotice\":\"L112-10 du Code des assurances 2\"},\"tcsUrl\":\"https://path/to/tcs2\",\"title\":\"Accor Protect2\"}}],\"productType\":\"travel-insurance\"}",
+        "status": 201
+      },
+      "traceId": "c35934f6-9443-4696-9c0c-abf847c2843e",
+      "origin": "QA test suite",
+      "endTime": 1633099570986,
+      "indexedKeyValues": [],
+      "type": "builtin.web"
+    },
+    {
+      "key": "requestUri",
+      "value": "/insurance/v1/quotations",
+      "indexedKeyValues": [
+        {
+          "key": "requestUri",
+          "value": "/insurance/v1/quotations"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "traceId",
+      "value": "c35934f6-9443-4696-9c0c-abf847c2843e",
+      "indexedKeyValues": [
+        {
+          "key": "traceId",
+          "value": "c35934f6-9443-4696-9c0c-abf847c2843e"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "origin",
+      "value": "QA test suite",
+      "indexedKeyValues": [
+        {
+          "key": "origin",
+          "value": "QA test suite"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "httpStatus",
+      "value": "2222",
+      "indexedKeyValues": [
+        {
+          "key": "doubleAttribute",
+          "value": "0.4843119705020521",
+          "valueInteger": null,
+          "valueFloat": 0.48431197,
+          "valueDate": null
+        },
+        {
+          "key": "floatAttribute",
+          "value": "48593.496",
+          "valueInteger": null,
+          "valueFloat": 48593.496,
+          "valueDate": null
+        },
+        {
+          "key": "integerAttribute",
+          "value": "384739",
+          "valueInteger": 384739,
+          "valueFloat": null,
+          "valueDate": null
+        },
+        {
+          "key": "stringAttribute",
+          "value": "Hello Audit !",
+          "valueInteger": null,
+          "valueFloat": null,
+          "valueDate": null
+        },
+        {
+          "key": "objectAttribute",
+          "value": "org.apache.catalina.util.ParameterMap@715e517c",
+          "valueInteger": null,
+          "valueFloat": null,
+          "valueDate": null
+        },
+        {
+          "key": "dateAttribute",
+          "value": "Fri Feb 25 10:49:34 CET 2022",
+          "valueInteger": null,
+          "valueFloat": null,
+          "valueDate": 1645782574444
+        }
+      ],
+      "valueType": "java.lang.Integer",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "httpMethod",
+      "value": "POST",
+      "indexedKeyValues": [
+        {
+          "key": "httpMethod",
+          "value": "POST"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "principal",
+      "value": "anonymousUser",
+      "indexedKeyValues": [
+        {
+          "key": "principal",
+          "value": "anonymousUser"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "indexedKeyValues": [],
+      "moduleAuditReports": [
+        {
+          "startTime": 1633099566277,
+          "httpAuditedRequest": {
+            "uri": "https://rec-api.accor.com/contacts/v2.0/users/1234567A?delegate=true&noPostalAddressFilter=false&oldPref=false&reachableFilter=false",
+            "headers": "[Accept:\"application/json\", Content-Type:\"application/json\", x-origin:\"wcxss-insurance-quotation\", x-traceid:\"c35934f6-9443-4696-9c0c-abf847c2843e\", apikey:\"eBckJPnEsbtAsFK0samID6cxsF9JPZP6\", User-Agent:\"Java-SDK\", Content-Length:\"0\", X-B3-TraceId:\"7ba13e94dab77b63\", X-B3-SpanId:\"99606a6f3c4fe66b\", X-B3-ParentSpanId:\"7ba13e94dab77b63\", X-B3-Sampled:\"0\", x-mock-match-request-headers:\"Axa_mock_nominal_case\", x-wcp-origin:\"QA test suite\"]",
+            "body": "",
+            "method": "GET"
+          },
+          "httpAuditedResponse": {
+            "headers": "[Date:\"Fri, 01 Oct 2021 14:46:07 GMT\", Content-Type:\"application/json\", Content-Length:\"152\", Connection:\"keep-alive\", Access-Control-Allow-Credentials:\"true\", Access-Control-Expose-Headers:\"WWW-Authenticate\", Vary:\"Origin\", \"Access-Control-Request-Method\", \"Access-Control-Request-Headers\", X-WCC-AUTHENTICATED-USER:\"wco-axa\", X-Content-Type-Options:\"nosniff\", X-XSS-Protection:\"1; mode=block\", Cache-Control:\"no-cache, no-store, max-age=0, must-revalidate\", Pragma:\"no-cache\", Expires:\"0\", Strict-Transport-Security:\"max-age=31536000 ; includeSubDomains\", Set-Cookie:\"TS0112465a=01b6ac4d28f84a79948948421d8ea3a3432c39e434630ea931c21f9b5ee9e3e2d414a9e50321fe8d5dc9c48cab112682ce2315e331; Path=/\", apiproxy-name:\"WCC__Contact_Management_v2_0\", apiproxy-revision:\"21\", proxy-name:\"default\"]",
+            "payload": "\n{\n    \"error\": {\n        \"message\": \"CONTACT_NOT_FOUND_IN_MDM\",\n        \"details\": \"Contact not found in MDM\",\n        \"code\": \"11118\"\n    }\n}\n        ",
+            "status": 404
+          },
+          "endTime": 1633099567887,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        },
+        {
+          "startTime": 1633099568076,
+          "httpAuditedRequest": {
+            "uri": "https://rec-api.accor.com/catalog/v1.0/hotels/1312",
+            "headers": "[Accept:\"application/json\", Content-Type:\"application/json\", clientId:\"all.accor\", apikey:\"eBckJPnEsbtAsFK0samID6cxsF9JPZP6\", User-Agent:\"Java-SDK\", Content-Length:\"0\", X-B3-TraceId:\"7ba13e94dab77b63\", X-B3-SpanId:\"381b6326d14e13ec\", X-B3-ParentSpanId:\"7ba13e94dab77b63\", X-B3-Sampled:\"0\", x-mock-match-request-headers:\"Axa_mock_nominal_case\", x-wcp-origin:\"QA test suite\"]",
+            "body": "",
+            "method": "GET"
+          },
+          "httpAuditedResponse": {
+            "headers": "[Date:\"Fri, 01 Oct 2021 14:46:08 GMT\", Content-Type:\"application/json;charset=UTF-8\", Transfer-Encoding:\"chunked\", Connection:\"keep-alive\", Correlation-ID:\"89561826-48a1-45e6-8e92-41d38d45adf6\", X-Content-Type-Options:\"nosniff\", X-XSS-Protection:\"1; mode=block\", Cache-Control:\"private, no-cache, no-store\", Pragma:\"no-cache\", Expires:\"0\", Strict-Transport-Security:\"max-age=31536000 ; includeSubDomains\", X-Frame-Options:\"DENY\", vary:\"accept-encoding,Origin\", P3P:\"CP=\"NO P3P POLICY\"\", X-Clacks-Overhead:\"GNU Terry Pratchett\", Referrer-Policy:\"origin\", Server-Timing:\"dtSInfo;desc=\"0\", dtRpid;desc=\"317386325\"\", Set-Cookie:\"org=dev; Max-Age=900; path=/; SameSite=none; Secure\", \"dtCookie=v_4_srv_2_sn_C6024B66F8A16B60067CB65D048777D1_perc_100000_ol_0_mul_1_app-3A_1_rcs-3Acss_0; Path=/; Domain=.accorhotels.ws\", \"TS014fefaa=01b6ac4d28b6e40fa2a19b57623cede44152fdd81ead74aef064b10898d86e7c8ac79fcd2da9c3fd110d9c9b460d6bb9489d8e18d02f7c004cc7cdcc874c8a1d520211f8a7; Path=/\", \"TS01240f0c=01b6ac4d2812f9a7723037a8bba42d5b13161fc694ad74aef064b10898d86e7c8ac79fcd2db25f3b5903cb23c4585d67214a789e181af9704d8aa7ef82d884a6177a56552e; path=/; domain=.accorhotels.ws\", apiproxy-name:\"API_WEB__Get_Hotels_Catalogs_v1_0\", apiproxy-revision:\"2\", proxy-name:\"default\"]",
+            "payload": "{\"id\":\"1312\",\"name\":\"RMS Sofitel Rome Villa Borghese\",\"description\":\"When in Rome for business or pleasure, stay at the historic Sofitel Rome Villa Borghese. This 5 star hotel in central Rome, close to the Spanish steps, Trevi Fountain and designer shops, has a top floor restaurant and lounge bar boasting spectacular views  over Italy's capital city. With over a hundred luxury rooms, three penthouse suites with a private terrace, 24 hour room service, a business center and concierge, it is among the best boutique hotels in Rome for service, style and location.\",\"lodging\":\"HTL\",\"brand\":\"SOF\",\"scale\":\"LX\",\"currencyCode\":\"EUR\",\"roomOccupancy\":{\"maxAdult\":4,\"maxChild\":1,\"maxChildAge\":11,\"maxPax\":4,\"maxRoom\":7},\"spokenLanguages\":[\"FR\",\"ES\",\"DE\"],\"checkin\":{\"available\":false},\"loyaltyProgram\":{\"advantageAllowed\":true,\"burnAllowed\":true,\"earnAllowed\":true,\"huazhuRewards\":false,\"status\":\"PARTICIPATING_HOTEL\",\"memberRate\":false},\"label\":[\"FASTCOM\"],\"amenity\":{\"free\":[\"air_conditioning\",\"baby_sitting\",\"bar\",\"meeting_rooms\",\"privative_bathroom\",\"restaurant\",\"laundry\"],\"paying\":[\"wifi\"]},\"media\":{\"count\":17,\"medias\":[{\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_ho_00_p_346x260.jpg\",\"120x90\":\"https://rec3-www.ahstatic.com/photos/1312_ho_00_p_120x90.jpg,https://rec3-www.ahstatic.com/photos/1312e00.jpg\",\"726x260\":\"https://rec3-www.ahstatic.com/photos/1312_ho_00_p_726x260.jpg\"},{\"120x90\":\"https://rec3-www.ahstatic.com/photos/1312_ho_01_p_120x90.jpg\",\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_ho_01_p_346x260.jpg\"}]},\"contact\":{\"phonePrefix\":\"39\",\"phone\":\"06/478021\",\"fax\":\"06/4821019\"},\"localization\":{\"address\":{\"street\":\"Via Lombardia 47\",\"zipCode\":\"00187\",\"city\":\"ROMA\",\"country\":\"Italy\",\"countryCode\":\"IT\"},\"environmentCode\":\"TOW\",\"gps\":{\"lng\":\"12.486524\",\"lat\":\"41.907516\"}},\"factsheetUrl\":\"https://rec3-all.accor.com/hotel/1312/index.en.shtml\",\"rating\":{\"tripadvisor\":{\"score\":4.5,\"nbReviews\":2381}},\"checkInHour\":\"14:00\",\"checkOutHour\":\"12:00\"}",
+            "status": 200
+          },
+          "endTime": 1633099568273,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        },
+        {
+          "startTime": 1633099568386,
+          "httpAuditedRequest": {
+            "uri": "https://rec-api.accor.com/catalog/v1.0/hotels/1312/products/accommodations",
+            "headers": "[Accept:\"application/json\", Content-Type:\"application/json\", Accept-Language:\"en\", clientId:\"all.accor\", apikey:\"eBckJPnEsbtAsFK0samID6cxsF9JPZP6\", User-Agent:\"Java-SDK\", Content-Length:\"0\", X-B3-TraceId:\"7ba13e94dab77b63\", X-B3-SpanId:\"96f99bdb4c514065\", X-B3-ParentSpanId:\"7ba13e94dab77b63\", X-B3-Sampled:\"0\", x-mock-match-request-headers:\"Axa_mock_nominal_case\", x-wcp-origin:\"QA test suite\"]",
+            "body": "",
+            "method": "GET"
+          },
+          "httpAuditedResponse": {
+            "headers": "[Date:\"Fri, 01 Oct 2021 14:46:08 GMT\", Content-Type:\"application/json;charset=UTF-8\", Transfer-Encoding:\"chunked\", Connection:\"keep-alive\", Correlation-ID:\"69f492bd-d1a3-4a9f-a426-d523480e1a50\", X-Content-Type-Options:\"nosniff\", X-XSS-Protection:\"1; mode=block\", Cache-Control:\"private, no-cache, no-store\", Pragma:\"no-cache\", Expires:\"0\", Strict-Transport-Security:\"max-age=31536000 ; includeSubDomains\", X-Frame-Options:\"DENY\", vary:\"accept-encoding,Origin\", P3P:\"CP=\"NO P3P POLICY\"\", X-Clacks-Overhead:\"GNU Terry Pratchett\", Referrer-Policy:\"origin\", Server-Timing:\"dtSInfo;desc=\"0\", dtRpid;desc=\"-1653016946\"\", Set-Cookie:\"org=dev; Max-Age=900; path=/; SameSite=none; Secure\", \"dtCookie=v_4_srv_1_sn_E20264B7132E1A60D574E4916EAAAF19_perc_100000_ol_0_mul_1_app-3A_1_rcs-3Acss_0; Path=/; Domain=.accorhotels.ws\", \"TS014fefaa=01b6ac4d28b6e40fa2a19b57623cede44152fdd81ead74aef064b10898d86e7c8ac79fcd2da9c3fd110d9c9b460d6bb9489d8e18d02f7c004cc7cdcc874c8a1d520211f8a7; Path=/\", \"TS01240f0c=01b6ac4d28cf023c5e9e76ee2990de28a419d180c1ad74aef064b10898d86e7c8ac79fcd2da9c3fd110d9c9b460d6bb9489d8e18d063c87561d5371bdca69189d658e6523a5c534ee40dde01e0c2757efa47a9bc7c; path=/; domain=.accorhotels.ws\", apiproxy-name:\"API_WEB__Get_Hotels_Catalogs_v1_0\", apiproxy-revision:\"2\", proxy-name:\"default\"]",
+            "payload": "{\"accommodations\":[{\"configuration\":[{\"beddings\":{\"singleBed\":0,\"doubleBed\":1,\"extra\":{\"childBed\":true,\"adultBed\":false,\"crib\":true},\"details\":[]},\"maxOccupancy\":{\"pax\":2,\"adult\":2,\"children\":1,\"maxChildAge\":11},\"situation\":{\"views\":[]},\"assets\":[]}],\"id\":\"QED\",\"label\":\"Classic room with Double bed\",\"shortLabel\":\"1 Qn bed Clc\",\"description\":\"Elegant room measuring 215 sq. ft. (20 m²), decorated in a classical style with double MyBed bed, marble bathroom with Hermès products, computer desk, minibar, safe, Bose iPod docking station, LCD TV, WIFI (256 KB) and ADSL connection available.\",\"extendedStay\":false,\"classification\":{\"type\":\"ROOM\",\"standard\":\"STANDARD\"},\"inventoryCount\":12.0,\"surface\":{},\"amenities\":[{\"name\":\"FOOD_AND_BEVERAGE\",\"facilities\":[{\"name\":\"FOOD_AND_BEVERAGE_FACILITIES\",\"items\":[{\"code\":\"minibararMinib\",\"name\":\"Mini Bar\",\"paying\":false}]}]},{\"name\":\"BATHROOM\",\"amenities\":[],\"facilities\":[{\"name\":\"BATHROOM_FACILITIES\",\"items\":[{\"code\":\"bathroomdoorswi\",\"name\":\"Bathroom doors 32 inches wide\",\"paying\":false},{\"code\":\"bathrobeobBathro\",\"name\":\"Bathrobe\",\"paying\":false},{\"code\":\"hairdryerb\",\"name\":\"Hair dryer in bathroom\",\"paying\":false},{\"code\":\"telephoneinba\",\"name\":\"Telephone in bathroom\",\"paying\":false}]}]},{\"name\":\"MEDIA_AND_TECHNOLOGY\",\"amenities\":[],\"facilities\":[{\"name\":\"INTERNET_FACILITIES\",\"items\":[{\"code\":\"dataportro\",\"name\":\"Data port in room\",\"paying\":false},{\"code\":\"rj11outletoutl\",\"name\":\"RJ 11 Outlet\",\"paying\":false},{\"code\":\"rj45outletoutl\",\"name\":\"RJ 45 Outlet\",\"paying\":false}]},{\"name\":\"TV_FACILITIES\",\"items\":[{\"code\":\"payper\",\"name\":\"Pay per view channel(s)\",\"paying\":true},{\"code\":\"satellitecable\",\"name\":\"Satellite/cable colour TV\",\"paying\":false},{\"code\":\"bill\",\"name\":\"TV with on-screen billing info\",\"paying\":false}]},{\"name\":\"COMPLEMENTARY_ELEMENTS\",\"items\":[{\"code\":\"radio\",\"name\":\"Radio\",\"paying\":false}]}]},{\"name\":\"SERVICE_AND_EQUIPMENT\",\"facilities\":[{\"name\":\"ACCESSIBILITY_AND_SECURITY\",\"items\":[{\"code\":\"emergencyinforoo\",\"name\":\"Emergency info in rooms\",\"paying\":false},{\"code\":\"smokealarm\",\"name\":\"Smoke alarm in room\",\"paying\":false},{\"code\":\"safedepositro\",\"name\":\"Safe deposit box in room\",\"paying\":false},{\"code\":\"accandsec.alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"audiblesmokeroo\",\"name\":\"Audible smoke alarms in rooms\",\"paying\":false},{\"code\":\"peepholeolpeepho\",\"name\":\"Security Peephole\",\"paying\":false},{\"code\":\"keycardoperatedloc\",\"name\":\"Keycard-operated door locks\",\"paying\":false}]},{\"name\":\"ELECTRIC_FACILITIES\",\"items\":[{\"code\":\"110/120vaC\",\"name\":\"110/120 V AC\",\"paying\":false},{\"code\":\"220/240vaC\",\"name\":\"220/240 V AC\",\"paying\":false}]},{\"name\":\"BEDDING_FACILITIES\",\"items\":[{\"code\":\"newspaperinroom\",\"name\":\"Newspaper in room\",\"paying\":false}]},{\"name\":\"COMFORT_FEATURES\",\"items\":[{\"code\":\"alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"doubleGlazingGlazi\",\"name\":\"Double Glazing\",\"paying\":false},{\"code\":\"soundproofdoorsdoor\",\"name\":\"Soundproof doors\",\"paying\":false},{\"code\":\"turnDownservi\",\"name\":\"Turn Down Services\",\"paying\":false}]},{\"name\":\"WORKING_AREA\",\"items\":[{\"code\":\"workdesk\",\"name\":\"Business Desk\",\"paying\":false}]},{\"name\":\"TEMPERATURE_AIR_CONTROL\",\"items\":[{\"code\":\"pulseaira\",\"name\":\"Pulse Air\",\"paying\":false},{\"code\":\"airconditioningndairconditioning\",\"name\":\"Air Conditioning\",\"paying\":false}]}]}],\"topAmenities\":[\"Bathrobe\",\"Mini Bar\"],\"medias\":{\"total\":1,\"photos\":[{\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_roqed_00_p_346x260.jpg\"}]}},{\"configuration\":[{\"beddings\":{\"singleBed\":0,\"doubleBed\":1,\"extra\":{\"childBed\":true,\"adultBed\":false,\"crib\":true},\"details\":[]},\"maxOccupancy\":{\"pax\":2,\"adult\":2,\"children\":1,\"maxChildAge\":11},\"situation\":{\"views\":[]},\"assets\":[]}],\"id\":\"QEB\",\"label\":\"Superior Room with double bed\",\"shortLabel\":\"1 Qn bed Sup\",\"description\":\"Elegant room measuring 269 sq. ft. (25 m²), decorated in a classical style with double MyBed bed, marble bathroom with Hermès products, computer desk, Bose iPod docking station, digital safe, LCD TV, WIFI (256 KB) and ADSL connection available.\",\"extendedStay\":false,\"classification\":{\"type\":\"ROOM\",\"standard\":\"STANDARD\"},\"inventoryCount\":31.0,\"surface\":{},\"amenities\":[{\"name\":\"FOOD_AND_BEVERAGE\",\"facilities\":[{\"name\":\"FOOD_AND_BEVERAGE_FACILITIES\",\"items\":[{\"code\":\"minibararMinib\",\"name\":\"Mini Bar\",\"paying\":false}]}]},{\"name\":\"BATHROOM\",\"amenities\":[],\"facilities\":[{\"name\":\"BATHROOM_FACILITIES\",\"items\":[{\"code\":\"bathroomdoorswi\",\"name\":\"Bathroom doors 32 inches wide\",\"paying\":false},{\"code\":\"bathrobeobBathro\",\"name\":\"Bathrobe\",\"paying\":false},{\"code\":\"hairdryerb\",\"name\":\"Hair dryer in bathroom\",\"paying\":false},{\"code\":\"telephoneinba\",\"name\":\"Telephone in bathroom\",\"paying\":false}]}]},{\"name\":\"MEDIA_AND_TECHNOLOGY\",\"amenities\":[],\"facilities\":[{\"name\":\"INTERNET_FACILITIES\",\"items\":[{\"code\":\"dataportro\",\"name\":\"Data port in room\",\"paying\":false},{\"code\":\"rj11outletoutl\",\"name\":\"RJ 11 Outlet\",\"paying\":false},{\"code\":\"rj45outletoutl\",\"name\":\"RJ 45 Outlet\",\"paying\":false}]},{\"name\":\"TV_FACILITIES\",\"items\":[{\"code\":\"payper\",\"name\":\"Pay per view channel(s)\",\"paying\":true},{\"code\":\"satellitecable\",\"name\":\"Satellite/cable colour TV\",\"paying\":false},{\"code\":\"bill\",\"name\":\"TV with on-screen billing info\",\"paying\":false}]},{\"name\":\"COMPLEMENTARY_ELEMENTS\",\"items\":[{\"code\":\"radio\",\"name\":\"Radio\",\"paying\":false}]}]},{\"name\":\"SERVICE_AND_EQUIPMENT\",\"facilities\":[{\"name\":\"ACCESSIBILITY_AND_SECURITY\",\"items\":[{\"code\":\"emergencyinforoo\",\"name\":\"Emergency info in rooms\",\"paying\":false},{\"code\":\"smokealarm\",\"name\":\"Smoke alarm in room\",\"paying\":false},{\"code\":\"safedepositro\",\"name\":\"Safe deposit box in room\",\"paying\":false},{\"code\":\"accandsec.alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"audiblesmokeroo\",\"name\":\"Audible smoke alarms in rooms\",\"paying\":false},{\"code\":\"peepholeolpeepho\",\"name\":\"Security Peephole\",\"paying\":false},{\"code\":\"keycardoperatedloc\",\"name\":\"Keycard-operated door locks\",\"paying\":false}]},{\"name\":\"ELECTRIC_FACILITIES\",\"items\":[{\"code\":\"110/120vaC\",\"name\":\"110/120 V AC\",\"paying\":false},{\"code\":\"220/240vaC\",\"name\":\"220/240 V AC\",\"paying\":false}]},{\"name\":\"BEDDING_FACILITIES\",\"items\":[{\"code\":\"newspaperinroom\",\"name\":\"Newspaper in room\",\"paying\":false}]},{\"name\":\"COMFORT_FEATURES\",\"items\":[{\"code\":\"alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"doubleGlazingGlazi\",\"name\":\"Double Glazing\",\"paying\":false},{\"code\":\"soundproofdoorsdoor\",\"name\":\"Soundproof doors\",\"paying\":false},{\"code\":\"turnDownservi\",\"name\":\"Turn Down Services\",\"paying\":false}]},{\"name\":\"WORKING_AREA\",\"items\":[{\"code\":\"workdesk\",\"name\":\"Business Desk\",\"paying\":false}]},{\"name\":\"TEMPERATURE_AIR_CONTROL\",\"items\":[{\"code\":\"pulseaira\",\"name\":\"Pulse Air\",\"paying\":false},{\"code\":\"airconditioningndairconditioning\",\"name\":\"Air Conditioning\",\"paying\":false}]}]}],\"topAmenities\":[\"Bathrobe\",\"Mini Bar\"],\"medias\":{\"total\":1,\"photos\":[{\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_roqeb_00_p_346x260.jpg\"}]}},{\"configuration\":[{\"beddings\":{\"singleBed\":2,\"doubleBed\":0,\"extra\":{\"childBed\":true,\"adultBed\":false,\"crib\":true},\"details\":[]},\"maxOccupancy\":{\"pax\":2,\"adult\":2,\"children\":1,\"maxChildAge\":11},\"situation\":{\"views\":[]},\"assets\":[]}],\"id\":\"TWB\",\"label\":\"Superior Room With 2 Single Beds\",\"shortLabel\":\"BBA\",\"description\":\"Elegant room measuring 269 sq. ft. (25 m²), decorated in a classical style with twin MyBed beds, marble bathroom with Hermès products, computer desk, Bose iPod docking station, digital safe, LCD TV, WIFI (256 KB) and ADSL connection available.\",\"extendedStay\":false,\"classification\":{\"type\":\"ROOM\",\"standard\":\"STANDARD\"},\"inventoryCount\":20.0,\"surface\":{},\"amenities\":[{\"name\":\"FOOD_AND_BEVERAGE\",\"facilities\":[{\"name\":\"FOOD_AND_BEVERAGE_FACILITIES\",\"items\":[{\"code\":\"minibararMinib\",\"name\":\"Mini Bar\",\"paying\":false}]}]},{\"name\":\"BATHROOM\",\"amenities\":[],\"facilities\":[{\"name\":\"BATHROOM_FACILITIES\",\"items\":[{\"code\":\"bathroomdoorswi\",\"name\":\"Bathroom doors 32 inches wide\",\"paying\":false},{\"code\":\"bathrobeobBathro\",\"name\":\"Bathrobe\",\"paying\":false},{\"code\":\"hairdryerb\",\"name\":\"Hair dryer in bathroom\",\"paying\":false},{\"code\":\"telephoneinba\",\"name\":\"Telephone in bathroom\",\"paying\":false}]}]},{\"name\":\"MEDIA_AND_TECHNOLOGY\",\"amenities\":[],\"facilities\":[{\"name\":\"INTERNET_FACILITIES\",\"items\":[{\"code\":\"dataportro\",\"name\":\"Data port in room\",\"paying\":false},{\"code\":\"rj11outletoutl\",\"name\":\"RJ 11 Outlet\",\"paying\":false},{\"code\":\"rj45outletoutl\",\"name\":\"RJ 45 Outlet\",\"paying\":false}]},{\"name\":\"TV_FACILITIES\",\"items\":[{\"code\":\"payper\",\"name\":\"Pay per view channel(s)\",\"paying\":true},{\"code\":\"satellitecable\",\"name\":\"Satellite/cable colour TV\",\"paying\":false},{\"code\":\"bill\",\"name\":\"TV with on-screen billing info\",\"paying\":false}]},{\"name\":\"COMPLEMENTARY_ELEMENTS\",\"items\":[{\"code\":\"radio\",\"name\":\"Radio\",\"paying\":false}]}]},{\"name\":\"SERVICE_AND_EQUIPMENT\",\"facilities\":[{\"name\":\"ACCESSIBILITY_AND_SECURITY\",\"items\":[{\"code\":\"emergencyinforoo\",\"name\":\"Emergency info in rooms\",\"paying\":false},{\"code\":\"smokealarm\",\"name\":\"Smoke alarm in room\",\"paying\":false},{\"code\":\"safedepositro\",\"name\":\"Safe deposit box in room\",\"paying\":false},{\"code\":\"accandsec.alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"audiblesmokeroo\",\"name\":\"Audible smoke alarms in rooms\",\"paying\":false},{\"code\":\"peepholeolpeepho\",\"name\":\"Security Peephole\",\"paying\":false},{\"code\":\"keycardoperatedloc\",\"name\":\"Keycard-operated door locks\",\"paying\":false}]},{\"name\":\"ELECTRIC_FACILITIES\",\"items\":[{\"code\":\"110/120vaC\",\"name\":\"110/120 V AC\",\"paying\":false},{\"code\":\"220/240vaC\",\"name\":\"220/240 V AC\",\"paying\":false}]},{\"name\":\"BEDDING_FACILITIES\",\"items\":[{\"code\":\"newspaperinroom\",\"name\":\"Newspaper in room\",\"paying\":false}]},{\"name\":\"COMFORT_FEATURES\",\"items\":[{\"code\":\"alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"doubleGlazingGlazi\",\"name\":\"Double Glazing\",\"paying\":false},{\"code\":\"soundproofdoorsdoor\",\"name\":\"Soundproof doors\",\"paying\":false},{\"code\":\"turnDownservi\",\"name\":\"Turn Down Services\",\"paying\":false}]},{\"name\":\"WORKING_AREA\",\"items\":[{\"code\":\"workdesk\",\"name\":\"Business Desk\",\"paying\":false}]},{\"name\":\"TEMPERATURE_AIR_CONTROL\",\"items\":[{\"code\":\"pulseaira\",\"name\":\"Pulse Air\",\"paying\":false},{\"code\":\"airconditioningndairconditioning\",\"name\":\"Air Conditioning\",\"paying\":false}]}]}],\"topAmenities\":[\"Bathrobe\",\"Mini Bar\"],\"medias\":{\"total\":1,\"photos\":[{\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_rotwb_00_p_346x260.jpg\"}]}},{\"configuration\":[{\"beddings\":{\"singleBed\":0,\"doubleBed\":1,\"extra\":{\"childBed\":true,\"adultBed\":false,\"crib\":true},\"details\":[]},\"maxOccupancy\":{\"pax\":3,\"adult\":2,\"children\":2,\"maxChildAge\":11},\"situation\":{\"views\":[]},\"assets\":[]}],\"id\":\"QEA\",\"label\":\"Luxury Room with a double bed and sofa\",\"shortLabel\":\"1 Qn bed Dlx\",\"description\":\"Peaceful and spacious Luxury Room measuring 355 sq. ft. (33 m²) with double MyBed bed & sofa bed, bathroom with Hermès products, desk, Bose iPod docking station, LCD TV, WIFI (256 KB) & ADSL connection available. Extra bed on request, subject to charge.\",\"extendedStay\":false,\"classification\":{\"type\":\"ROOM\",\"standard\":\"STANDARD\"},\"inventoryCount\":11.0,\"surface\":{},\"amenities\":[{\"name\":\"FOOD_AND_BEVERAGE\",\"facilities\":[{\"name\":\"FOOD_AND_BEVERAGE_FACILITIES\",\"items\":[{\"code\":\"minibararMinib\",\"name\":\"Mini Bar\",\"paying\":false}]}]},{\"name\":\"BATHROOM\",\"amenities\":[],\"facilities\":[{\"name\":\"BATHROOM_FACILITIES\",\"items\":[{\"code\":\"bathroomdoorswi\",\"name\":\"Bathroom doors 32 inches wide\",\"paying\":false},{\"code\":\"bathrobeobBathro\",\"name\":\"Bathrobe\",\"paying\":false},{\"code\":\"hairdryerb\",\"name\":\"Hair dryer in bathroom\",\"paying\":false},{\"code\":\"telephoneinba\",\"name\":\"Telephone in bathroom\",\"paying\":false}]}]},{\"name\":\"MEDIA_AND_TECHNOLOGY\",\"amenities\":[],\"facilities\":[{\"name\":\"INTERNET_FACILITIES\",\"items\":[{\"code\":\"dataportro\",\"name\":\"Data port in room\",\"paying\":false},{\"code\":\"rj11outletoutl\",\"name\":\"RJ 11 Outlet\",\"paying\":false},{\"code\":\"rj45outletoutl\",\"name\":\"RJ 45 Outlet\",\"paying\":false}]},{\"name\":\"TV_FACILITIES\",\"items\":[{\"code\":\"payper\",\"name\":\"Pay per view channel(s)\",\"paying\":true},{\"code\":\"satellitecable\",\"name\":\"Satellite/cable colour TV\",\"paying\":false},{\"code\":\"bill\",\"name\":\"TV with on-screen billing info\",\"paying\":false}]},{\"name\":\"COMPLEMENTARY_ELEMENTS\",\"items\":[{\"code\":\"radio\",\"name\":\"Radio\",\"paying\":false}]}]},{\"name\":\"SERVICE_AND_EQUIPMENT\",\"facilities\":[{\"name\":\"ACCESSIBILITY_AND_SECURITY\",\"items\":[{\"code\":\"emergencyinforoo\",\"name\":\"Emergency info in rooms\",\"paying\":false},{\"code\":\"smokealarm\",\"name\":\"Smoke alarm in room\",\"paying\":false},{\"code\":\"safedepositro\",\"name\":\"Safe deposit box in room\",\"paying\":false},{\"code\":\"accandsec.alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"audiblesmokeroo\",\"name\":\"Audible smoke alarms in rooms\",\"paying\":false},{\"code\":\"peepholeolpeepho\",\"name\":\"Security Peephole\",\"paying\":false},{\"code\":\"keycardoperatedloc\",\"name\":\"Keycard-operated door locks\",\"paying\":false}]},{\"name\":\"ELECTRIC_FACILITIES\",\"items\":[{\"code\":\"110/120vaC\",\"name\":\"110/120 V AC\",\"paying\":false},{\"code\":\"220/240vaC\",\"name\":\"220/240 V AC\",\"paying\":false}]},{\"name\":\"BEDDING_FACILITIES\",\"items\":[{\"code\":\"newspaperinroom\",\"name\":\"Newspaper in room\",\"paying\":false}]},{\"name\":\"COMFORT_FEATURES\",\"items\":[{\"code\":\"alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"doubleGlazingGlazi\",\"name\":\"Double Glazing\",\"paying\":false},{\"code\":\"soundproofdoorsdoor\",\"name\":\"Soundproof doors\",\"paying\":false},{\"code\":\"turnDownservi\",\"name\":\"Turn Down Services\",\"paying\":false}]},{\"name\":\"WORKING_AREA\",\"items\":[{\"code\":\"workdesk\",\"name\":\"Business Desk\",\"paying\":false}]},{\"name\":\"TEMPERATURE_AIR_CONTROL\",\"items\":[{\"code\":\"pulseaira\",\"name\":\"Pulse Air\",\"paying\":false},{\"code\":\"airconditioningndairconditioning\",\"name\":\"Air Conditioning\",\"paying\":false}]}]}],\"topAmenities\":[\"Bathrobe\",\"Mini Bar\"],\"medias\":{\"total\":1,\"photos\":[{\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_roqea_00_p_346x260.jpg\"}]}},{\"configuration\":[{\"beddings\":{\"singleBed\":0,\"doubleBed\":1,\"extra\":{\"childBed\":true,\"adultBed\":false,\"crib\":true},\"details\":[]},\"maxOccupancy\":{\"pax\":2,\"adult\":2,\"children\":1,\"maxChildAge\":11},\"situation\":{\"views\":[]},\"assets\":[]}],\"id\":\"KGA\",\"label\":\"LUXURY ROOM with 1 double bed\",\"shortLabel\":\"CCC\",\"description\":\"Luxury Room measuring 301 sq. ft. (28 m²) with external views, decorated in a chic classical style with double MyBed bed, marble bathroom with Hermès products, desk, Bose iPod docking station, digital safe, LCD TV, WIFI (256 KB) and ADSL connection.\",\"extendedStay\":false,\"classification\":{\"type\":\"ROOM\",\"standard\":\"STANDARD\"},\"inventoryCount\":23.0,\"surface\":{},\"amenities\":[{\"name\":\"FOOD_AND_BEVERAGE\",\"facilities\":[{\"name\":\"FOOD_AND_BEVERAGE_FACILITIES\",\"items\":[{\"code\":\"minibararMinib\",\"name\":\"Mini Bar\",\"paying\":false}]}]},{\"name\":\"BATHROOM\",\"amenities\":[],\"facilities\":[{\"name\":\"BATHROOM_FACILITIES\",\"items\":[{\"code\":\"bathroomdoorswi\",\"name\":\"Bathroom doors 32 inches wide\",\"paying\":false},{\"code\":\"bathrobeobBathro\",\"name\":\"Bathrobe\",\"paying\":false},{\"code\":\"hairdryerb\",\"name\":\"Hair dryer in bathroom\",\"paying\":false},{\"code\":\"telephoneinba\",\"name\":\"Telephone in bathroom\",\"paying\":false}]}]},{\"name\":\"MEDIA_AND_TECHNOLOGY\",\"amenities\":[],\"facilities\":[{\"name\":\"INTERNET_FACILITIES\",\"items\":[{\"code\":\"dataportro\",\"name\":\"Data port in room\",\"paying\":false},{\"code\":\"rj11outletoutl\",\"name\":\"RJ 11 Outlet\",\"paying\":false},{\"code\":\"rj45outletoutl\",\"name\":\"RJ 45 Outlet\",\"paying\":false}]},{\"name\":\"TV_FACILITIES\",\"items\":[{\"code\":\"payper\",\"name\":\"Pay per view channel(s)\",\"paying\":true},{\"code\":\"satellitecable\",\"name\":\"Satellite/cable colour TV\",\"paying\":false},{\"code\":\"bill\",\"name\":\"TV with on-screen billing info\",\"paying\":false}]},{\"name\":\"COMPLEMENTARY_ELEMENTS\",\"items\":[{\"code\":\"radio\",\"name\":\"Radio\",\"paying\":false}]}]},{\"name\":\"SERVICE_AND_EQUIPMENT\",\"facilities\":[{\"name\":\"ACCESSIBILITY_AND_SECURITY\",\"items\":[{\"code\":\"emergencyinforoo\",\"name\":\"Emergency info in rooms\",\"paying\":false},{\"code\":\"smokealarm\",\"name\":\"Smoke alarm in room\",\"paying\":false},{\"code\":\"safedepositro\",\"name\":\"Safe deposit box in room\",\"paying\":false},{\"code\":\"accandsec.alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"audiblesmokeroo\",\"name\":\"Audible smoke alarms in rooms\",\"paying\":false},{\"code\":\"peepholeolpeepho\",\"name\":\"Security Peephole\",\"paying\":false},{\"code\":\"keycardoperatedloc\",\"name\":\"Keycard-operated door locks\",\"paying\":false}]},{\"name\":\"ELECTRIC_FACILITIES\",\"items\":[{\"code\":\"110/120vaC\",\"name\":\"110/120 V AC\",\"paying\":false},{\"code\":\"220/240vaC\",\"name\":\"220/240 V AC\",\"paying\":false}]},{\"name\":\"BEDDING_FACILITIES\",\"items\":[{\"code\":\"newspaperinroom\",\"name\":\"Newspaper in room\",\"paying\":false}]},{\"name\":\"COMFORT_FEATURES\",\"items\":[{\"code\":\"alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"doubleGlazingGlazi\",\"name\":\"Double Glazing\",\"paying\":false},{\"code\":\"soundproofdoorsdoor\",\"name\":\"Soundproof doors\",\"paying\":false},{\"code\":\"turnDownservi\",\"name\":\"Turn Down Services\",\"paying\":false}]},{\"name\":\"WORKING_AREA\",\"items\":[{\"code\":\"workdesk\",\"name\":\"Business Desk\",\"paying\":false}]},{\"name\":\"TEMPERATURE_AIR_CONTROL\",\"items\":[{\"code\":\"pulseaira\",\"name\":\"Pulse Air\",\"paying\":false},{\"code\":\"airconditioningndairconditioning\",\"name\":\"Air Conditioning\",\"paying\":false}]}]}],\"topAmenities\":[\"Bathrobe\",\"Mini Bar\"],\"medias\":{\"total\":1,\"photos\":[{\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_rokga_00_p_346x260.jpg\"}]}},{\"configuration\":[{\"beddings\":{\"singleBed\":0,\"doubleBed\":1,\"extra\":{\"childBed\":true,\"adultBed\":false,\"crib\":true},\"details\":[]},\"maxOccupancy\":{\"pax\":2,\"adult\":2,\"children\":1,\"maxChildAge\":11},\"situation\":{\"views\":[]},\"assets\":[]}],\"id\":\"SKC\",\"label\":\"Prestige Suite with king-size double bed\",\"shortLabel\":\"Suite 1 Kg bed Sup\",\"description\":\"Suite measuring 538 sq. ft. with panoramic terrace, king-size MyBed bed & spacious bathroom with Hermès products. Separate living area with home theater & Bose iPod docking station, 2 LCD TVs, Nespresso machine, WIFI (256 KB) & ADSL. Extra bed on request.\",\"extendedStay\":false,\"classification\":{\"type\":\"ROOM\",\"standard\":\"STANDARD\"},\"inventoryCount\":3.0,\"surface\":{},\"amenities\":[{\"name\":\"FOOD_AND_BEVERAGE\",\"facilities\":[{\"name\":\"FOOD_AND_BEVERAGE_FACILITIES\",\"items\":[{\"code\":\"minibararMinib\",\"name\":\"Mini Bar\",\"paying\":false}]}]},{\"name\":\"BATHROOM\",\"amenities\":[],\"facilities\":[{\"name\":\"BATHROOM_FACILITIES\",\"items\":[{\"code\":\"bathroomdoorswi\",\"name\":\"Bathroom doors 32 inches wide\",\"paying\":false},{\"code\":\"bathrobeobBathro\",\"name\":\"Bathrobe\",\"paying\":false},{\"code\":\"hairdryerb\",\"name\":\"Hair dryer in bathroom\",\"paying\":false},{\"code\":\"telephoneinba\",\"name\":\"Telephone in bathroom\",\"paying\":false}]}]},{\"name\":\"MEDIA_AND_TECHNOLOGY\",\"amenities\":[],\"facilities\":[{\"name\":\"INTERNET_FACILITIES\",\"items\":[{\"code\":\"dataportro\",\"name\":\"Data port in room\",\"paying\":false},{\"code\":\"rj11outletoutl\",\"name\":\"RJ 11 Outlet\",\"paying\":false},{\"code\":\"rj45outletoutl\",\"name\":\"RJ 45 Outlet\",\"paying\":false}]},{\"name\":\"TV_FACILITIES\",\"items\":[{\"code\":\"payper\",\"name\":\"Pay per view channel(s)\",\"paying\":true},{\"code\":\"satellitecable\",\"name\":\"Satellite/cable colour TV\",\"paying\":false},{\"code\":\"bill\",\"name\":\"TV with on-screen billing info\",\"paying\":false}]},{\"name\":\"COMPLEMENTARY_ELEMENTS\",\"items\":[{\"code\":\"radio\",\"name\":\"Radio\",\"paying\":false}]}]},{\"name\":\"SERVICE_AND_EQUIPMENT\",\"facilities\":[{\"name\":\"ACCESSIBILITY_AND_SECURITY\",\"items\":[{\"code\":\"emergencyinforoo\",\"name\":\"Emergency info in rooms\",\"paying\":false},{\"code\":\"smokealarm\",\"name\":\"Smoke alarm in room\",\"paying\":false},{\"code\":\"safedepositro\",\"name\":\"Safe deposit box in room\",\"paying\":false},{\"code\":\"accandsec.alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"audiblesmokeroo\",\"name\":\"Audible smoke alarms in rooms\",\"paying\":false},{\"code\":\"peepholeolpeepho\",\"name\":\"Security Peephole\",\"paying\":false},{\"code\":\"keycardoperatedloc\",\"name\":\"Keycard-operated door locks\",\"paying\":false}]},{\"name\":\"ELECTRIC_FACILITIES\",\"items\":[{\"code\":\"110/120vaC\",\"name\":\"110/120 V AC\",\"paying\":false},{\"code\":\"220/240vaC\",\"name\":\"220/240 V AC\",\"paying\":false}]},{\"name\":\"BEDDING_FACILITIES\",\"items\":[{\"code\":\"newspaperinroom\",\"name\":\"Newspaper in room\",\"paying\":false}]},{\"name\":\"COMFORT_FEATURES\",\"items\":[{\"code\":\"alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"doubleGlazingGlazi\",\"name\":\"Double Glazing\",\"paying\":false},{\"code\":\"soundproofdoorsdoor\",\"name\":\"Soundproof doors\",\"paying\":false},{\"code\":\"turnDownservi\",\"name\":\"Turn Down Services\",\"paying\":false}]},{\"name\":\"WORKING_AREA\",\"items\":[{\"code\":\"workdesk\",\"name\":\"Business Desk\",\"paying\":false}]},{\"name\":\"TEMPERATURE_AIR_CONTROL\",\"items\":[{\"code\":\"pulseaira\",\"name\":\"Pulse Air\",\"paying\":false},{\"code\":\"airconditioningndairconditioning\",\"name\":\"Air Conditioning\",\"paying\":false}]}]}],\"topAmenities\":[\"Bathrobe\",\"Mini Bar\"],\"medias\":{\"total\":1,\"photos\":[{\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_roskc_00_p_346x260.jpg\"}]}},{\"configuration\":[{\"beddings\":{\"singleBed\":1,\"doubleBed\":0,\"extra\":{\"childBed\":true,\"adultBed\":false,\"crib\":true},\"details\":[]},\"maxOccupancy\":{\"pax\":1,\"adult\":1,\"children\":0,\"maxChildAge\":11},\"situation\":{\"views\":[]},\"assets\":[]}],\"id\":\"SGD\",\"label\":\"Classic room with single bed\",\"shortLabel\":\"1 Sg bed Clc\",\"description\":\"Elegant room measuring 183 sq. ft. (17 m²), decorated in a classical style with single MyBed bed, marble bathroom with Hermès products, computer desk, minibar, digital safe, LCD TV, WIFI (256 KB) and ADSL connection available.\",\"extendedStay\":false,\"classification\":{\"type\":\"ROOM\",\"standard\":\"STANDARD\"},\"inventoryCount\":3.0,\"surface\":{},\"amenities\":[{\"name\":\"FOOD_AND_BEVERAGE\",\"facilities\":[{\"name\":\"FOOD_AND_BEVERAGE_FACILITIES\",\"items\":[{\"code\":\"minibararMinib\",\"name\":\"Mini Bar\",\"paying\":false}]}]},{\"name\":\"BATHROOM\",\"amenities\":[],\"facilities\":[{\"name\":\"BATHROOM_FACILITIES\",\"items\":[{\"code\":\"bathroomdoorswi\",\"name\":\"Bathroom doors 32 inches wide\",\"paying\":false},{\"code\":\"bathrobeobBathro\",\"name\":\"Bathrobe\",\"paying\":false},{\"code\":\"hairdryerb\",\"name\":\"Hair dryer in bathroom\",\"paying\":false},{\"code\":\"telephoneinba\",\"name\":\"Telephone in bathroom\",\"paying\":false}]}]},{\"name\":\"MEDIA_AND_TECHNOLOGY\",\"amenities\":[],\"facilities\":[{\"name\":\"INTERNET_FACILITIES\",\"items\":[{\"code\":\"dataportro\",\"name\":\"Data port in room\",\"paying\":false},{\"code\":\"rj11outletoutl\",\"name\":\"RJ 11 Outlet\",\"paying\":false},{\"code\":\"rj45outletoutl\",\"name\":\"RJ 45 Outlet\",\"paying\":false}]},{\"name\":\"TV_FACILITIES\",\"items\":[{\"code\":\"payper\",\"name\":\"Pay per view channel(s)\",\"paying\":true},{\"code\":\"satellitecable\",\"name\":\"Satellite/cable colour TV\",\"paying\":false},{\"code\":\"bill\",\"name\":\"TV with on-screen billing info\",\"paying\":false}]},{\"name\":\"COMPLEMENTARY_ELEMENTS\",\"items\":[{\"code\":\"radio\",\"name\":\"Radio\",\"paying\":false}]}]},{\"name\":\"SERVICE_AND_EQUIPMENT\",\"facilities\":[{\"name\":\"ACCESSIBILITY_AND_SECURITY\",\"items\":[{\"code\":\"emergencyinforoo\",\"name\":\"Emergency info in rooms\",\"paying\":false},{\"code\":\"smokealarm\",\"name\":\"Smoke alarm in room\",\"paying\":false},{\"code\":\"safedepositro\",\"name\":\"Safe deposit box in room\",\"paying\":false},{\"code\":\"accandsec.alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"audiblesmokeroo\",\"name\":\"Audible smoke alarms in rooms\",\"paying\":false},{\"code\":\"peepholeolpeepho\",\"name\":\"Security Peephole\",\"paying\":false},{\"code\":\"keycardoperatedloc\",\"name\":\"Keycard-operated door locks\",\"paying\":false}]},{\"name\":\"ELECTRIC_FACILITIES\",\"items\":[{\"code\":\"110/120vaC\",\"name\":\"110/120 V AC\",\"paying\":false},{\"code\":\"220/240vaC\",\"name\":\"220/240 V AC\",\"paying\":false}]},{\"name\":\"BEDDING_FACILITIES\",\"items\":[{\"code\":\"newspaperinroom\",\"name\":\"Newspaper in room\",\"paying\":false}]},{\"name\":\"COMFORT_FEATURES\",\"items\":[{\"code\":\"alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"doubleGlazingGlazi\",\"name\":\"Double Glazing\",\"paying\":false},{\"code\":\"soundproofdoorsdoor\",\"name\":\"Soundproof doors\",\"paying\":false},{\"code\":\"turnDownservi\",\"name\":\"Turn Down Services\",\"paying\":false}]},{\"name\":\"WORKING_AREA\",\"items\":[{\"code\":\"workdesk\",\"name\":\"Business Desk\",\"paying\":false}]},{\"name\":\"TEMPERATURE_AIR_CONTROL\",\"items\":[{\"code\":\"pulseaira\",\"name\":\"Pulse Air\",\"paying\":false},{\"code\":\"airconditioningndairconditioning\",\"name\":\"Air Conditioning\",\"paying\":false}]}]}],\"topAmenities\":[\"Bathrobe\",\"Mini Bar\"],\"medias\":{\"total\":1,\"photos\":[{\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_rosgd_00_p_346x260.jpg\"}]}},{\"configuration\":[{\"beddings\":{\"singleBed\":0,\"doubleBed\":2,\"extra\":{\"childBed\":true,\"adultBed\":false,\"crib\":true},\"details\":[]},\"maxOccupancy\":{\"pax\":4,\"adult\":4,\"children\":2,\"maxChildAge\":11},\"situation\":{\"views\":[]},\"assets\":[]}],\"id\":\"SKA\",\"label\":\"Dolce Vita Suite with double bed and sofa bed\",\"shortLabel\":\"Suite 1 Kg bed Exec\",\"description\":\"904-sq. ft. Suite with a modern chic style, balcony, MyBed bed & walk-in closet. Spacious white marble bathroom & 2nd bathroom. Large living area with sofa bed, home theater, Bose iPod docking station, 2 LCD TVs, Nespresso machine, 256-KB WIFI & ADSL.\",\"extendedStay\":false,\"classification\":{\"type\":\"ROOM\",\"standard\":\"STANDARD\"},\"inventoryCount\":1.0,\"surface\":{},\"amenities\":[{\"name\":\"FOOD_AND_BEVERAGE\",\"facilities\":[{\"name\":\"FOOD_AND_BEVERAGE_FACILITIES\",\"items\":[{\"code\":\"minibararMinib\",\"name\":\"Mini Bar\",\"paying\":false}]}]},{\"name\":\"BATHROOM\",\"amenities\":[],\"facilities\":[{\"name\":\"BATHROOM_FACILITIES\",\"items\":[{\"code\":\"bathroomdoorswi\",\"name\":\"Bathroom doors 32 inches wide\",\"paying\":false},{\"code\":\"bathrobeobBathro\",\"name\":\"Bathrobe\",\"paying\":false},{\"code\":\"hairdryerb\",\"name\":\"Hair dryer in bathroom\",\"paying\":false},{\"code\":\"telephoneinba\",\"name\":\"Telephone in bathroom\",\"paying\":false}]}]},{\"name\":\"MEDIA_AND_TECHNOLOGY\",\"amenities\":[],\"facilities\":[{\"name\":\"INTERNET_FACILITIES\",\"items\":[{\"code\":\"dataportro\",\"name\":\"Data port in room\",\"paying\":false},{\"code\":\"rj11outletoutl\",\"name\":\"RJ 11 Outlet\",\"paying\":false},{\"code\":\"rj45outletoutl\",\"name\":\"RJ 45 Outlet\",\"paying\":false}]},{\"name\":\"TV_FACILITIES\",\"items\":[{\"code\":\"payper\",\"name\":\"Pay per view channel(s)\",\"paying\":true},{\"code\":\"satellitecable\",\"name\":\"Satellite/cable colour TV\",\"paying\":false},{\"code\":\"bill\",\"name\":\"TV with on-screen billing info\",\"paying\":false}]},{\"name\":\"COMPLEMENTARY_ELEMENTS\",\"items\":[{\"code\":\"radio\",\"name\":\"Radio\",\"paying\":false}]}]},{\"name\":\"SERVICE_AND_EQUIPMENT\",\"facilities\":[{\"name\":\"ACCESSIBILITY_AND_SECURITY\",\"items\":[{\"code\":\"emergencyinforoo\",\"name\":\"Emergency info in rooms\",\"paying\":false},{\"code\":\"smokealarm\",\"name\":\"Smoke alarm in room\",\"paying\":false},{\"code\":\"safedepositro\",\"name\":\"Safe deposit box in room\",\"paying\":false},{\"code\":\"accandsec.alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"audiblesmokeroo\",\"name\":\"Audible smoke alarms in rooms\",\"paying\":false},{\"code\":\"peepholeolpeepho\",\"name\":\"Security Peephole\",\"paying\":false},{\"code\":\"keycardoperatedloc\",\"name\":\"Keycard-operated door locks\",\"paying\":false}]},{\"name\":\"ELECTRIC_FACILITIES\",\"items\":[{\"code\":\"110/120vaC\",\"name\":\"110/120 V AC\",\"paying\":false},{\"code\":\"220/240vaC\",\"name\":\"220/240 V AC\",\"paying\":false}]},{\"name\":\"BEDDING_FACILITIES\",\"items\":[{\"code\":\"newspaperinroom\",\"name\":\"Newspaper in room\",\"paying\":false}]},{\"name\":\"COMFORT_FEATURES\",\"items\":[{\"code\":\"alarmclockclo\",\"name\":\"Alarm clock\",\"paying\":false},{\"code\":\"doubleGlazingGlazi\",\"name\":\"Double Glazing\",\"paying\":false},{\"code\":\"soundproofdoorsdoor\",\"name\":\"Soundproof doors\",\"paying\":false},{\"code\":\"turnDownservi\",\"name\":\"Turn Down Services\",\"paying\":false}]},{\"name\":\"WORKING_AREA\",\"items\":[{\"code\":\"workdesk\",\"name\":\"Business Desk\",\"paying\":false}]},{\"name\":\"TEMPERATURE_AIR_CONTROL\",\"items\":[{\"code\":\"pulseaira\",\"name\":\"Pulse Air\",\"paying\":false},{\"code\":\"airconditioningndairconditioning\",\"name\":\"Air Conditioning\",\"paying\":false}]}]}],\"topAmenities\":[\"Bathrobe\",\"Mini Bar\"],\"medias\":{\"total\":1,\"photos\":[{\"346x260\":\"https://rec3-www.ahstatic.com/photos/1312_roska_00_p_346x260.jpg\"}]}}],\"description\":\"Our 111 luxury Rome hotel rooms feature the famous Sofitel MyBed®, marble bathrooms, fluffy robes, high-speed wifi and 24 hour room service. Prestige suites boast a panoramic terrace. A 5 star boutique hotel in Rome with a view of Villa Borghese.\"}",
+            "status": 200
+          },
+          "endTime": 1633099568471,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        },
+        {
+          "startTime": 1633099568788,
+          "httpAuditedRequest": {
+            "uri": "https://rec-api.accor.com/catalog/v1.0/hotels/1312/facilities/global",
+            "headers": "[Accept:\"application/json\", Content-Type:\"application/json\", Accept-Language:\"en\", clientId:\"all.accor\", apikey:\"eBckJPnEsbtAsFK0samID6cxsF9JPZP6\", User-Agent:\"Java-SDK\", Content-Length:\"0\", X-B3-TraceId:\"7ba13e94dab77b63\", X-B3-SpanId:\"b5d50e66fbcb6641\", X-B3-ParentSpanId:\"7ba13e94dab77b63\", X-B3-Sampled:\"0\", x-mock-match-request-headers:\"Axa_mock_nominal_case\", x-wcp-origin:\"QA test suite\"]",
+            "body": "",
+            "method": "GET"
+          },
+          "httpAuditedResponse": {
+            "headers": "[Date:\"Fri, 01 Oct 2021 14:46:08 GMT\", Content-Type:\"application/json;charset=UTF-8\", Transfer-Encoding:\"chunked\", Connection:\"keep-alive\", Correlation-ID:\"42ec5ea5-1110-44cf-bfc7-7d2dd4fa5b6a\", X-Content-Type-Options:\"nosniff\", X-XSS-Protection:\"1; mode=block\", Cache-Control:\"private, no-cache, no-store\", Pragma:\"no-cache\", Expires:\"0\", Strict-Transport-Security:\"max-age=31536000 ; includeSubDomains\", X-Frame-Options:\"DENY\", vary:\"accept-encoding,Origin\", P3P:\"CP=\"NO P3P POLICY\"\", X-Clacks-Overhead:\"GNU Terry Pratchett\", Referrer-Policy:\"origin\", Server-Timing:\"dtSInfo;desc=\"0\", dtRpid;desc=\"1250735819\"\", Set-Cookie:\"org=dev; Max-Age=900; path=/; SameSite=none; Secure\", \"dtCookie=v_4_srv_5_sn_7D60345E7A613F4FDF82780E6DD84C11_perc_100000_ol_0_mul_1_app-3A_1_rcs-3Acss_0; Path=/; Domain=.accorhotels.ws\", \"TS014fefaa=01b6ac4d28b6e40fa2a19b57623cede44152fdd81ead74aef064b10898d86e7c8ac79fcd2da9c3fd110d9c9b460d6bb9489d8e18d02f7c004cc7cdcc874c8a1d520211f8a7; Path=/\", \"TS01240f0c=01b6ac4d28d072b8d9b3e4e4e47385d4bfe012ef8aad74aef064b10898d86e7c8ac79fcd2da9c3fd110d9c9b460d6bb9489d8e18d0535d67a7e46d679ed81d7377e6a597aedf960bd7c927a4ffdc4b579bc881cde2; path=/; domain=.accorhotels.ws\", apiproxy-name:\"API_WEB__Get_Hotels_Catalogs_v1_0\", apiproxy-revision:\"2\", proxy-name:\"default\"]",
+            "payload": "{\"generalInformation\":{\"hotel\":{\"inventory\":{\"roomApartments\":104,\"reducedMobilityRooms\":1,\"nonSmokingRooms\":43,\"floors\":7},\"services\":[{\"code\":\"LAUNDRY\",\"facilities\":[{\"code\":\"drycleaningironing\",\"paying\":false,\"label\":\"Dry cleaning / Ironing\"}]},{\"code\":\"WIFI\",\"facilities\":[{\"code\":\"highspeed\",\"paying\":true,\"label\":\"High speed transmission line\"},{\"code\":\"wifihotel\",\"paying\":true,\"label\":\"WiFi at the hotel\"}]},{\"code\":\"AIR_CONDITIONING\",\"facilities\":[{\"code\":\"airconditioningndairconditioning\",\"paying\":false,\"label\":\"Air Conditioning\"}]}]},\"desk\":{\"staffLanguages\":[\"French\",\"Spanish\",\"German\"],\"services\":[{\"code\":\"CHECKIN_CHECKOUT_FACILITIES\",\"facilities\":[{\"code\":\"expresscheckout\",\"paying\":false,\"label\":\"Express check-out\"},{\"code\":\"expresscheckin\",\"paying\":false,\"label\":\"Express check-in\"}]},{\"code\":\"PORTER\",\"facilities\":[{\"code\":\"porter\",\"paying\":false}]},{\"code\":\"CONCIERGE\",\"facilities\":[{\"code\":\"concierge\",\"paying\":false,\"label\":\"Concierge\"}]},{\"code\":\"SAFE_DEPOSIT\",\"facilities\":[{\"code\":\"safedepositatdesk\",\"paying\":false,\"label\":\"Safe deposit box at reception\"}]}]},\"shops\":[],\"parkings\":[]},\"catering\":{\"inventory\":{\"restaurants\":1,\"bars\":2},\"services\":[{\"code\":\"ROOM_SERVICE\",\"facilities\":[{\"code\":\"COLD_SNACK\",\"paying\":false},{\"code\":\"HOT_MEAL\",\"paying\":false}]},{\"code\":\"RESTAURANT\"},{\"code\":\"BAR\"}]},\"event\":{\"inventory\":{\"meetingRooms\":3},\"services\":[{\"code\":\"BUSINESS_CENTER\",\"facilities\":[{\"code\":\"selfbusic\",\"paying\":false,\"label\":\"Self service business center\"}]},{\"code\":\"MEETING_ROOMS\"}]},\"family\":{\"services\":[{\"code\":\"BABYSITTING\",\"facilities\":[{\"code\":\"babysit\",\"paying\":false}]}]},\"wellbeing\":{\"pools\":[],\"fitnessCenters\":[]},\"sports\":[{\"code\":\"BOWLING\",\"label\":\"Bowling\",\"location\":\"ON_SITE\",\"paying\":false},{\"code\":\"BASKETBALL_COURT\",\"label\":\"Basketball court\",\"location\":\"ON_SITE\",\"paying\":false}]}",
+            "status": 200
+          },
+          "endTime": 1633099568903,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        },
+        {
+          "startTime": 1633099569092,
+          "httpAuditedRequest": {
+            "uri": "http://wiremock-dev.xss-dev-apps.local:8081/mock/v1/pricing",
+            "headers": "[Accept:\"application/json\", Content-Type:\"application/json\", x-trace-id:\"c35934f6-9443-4696-9c0c-abf847c2843e\", x-api-key:\"PMAK-609a67f6a64f8b0051b5b8eb-a9afd20ed10d44f767e66061e1d8d0bd67\", User-Agent:\"Java-SDK\", Content-Length:\"550\", X-B3-TraceId:\"7ba13e94dab77b63\", X-B3-SpanId:\"02f945d213c3fc47\", X-B3-ParentSpanId:\"7ba13e94dab77b63\", X-B3-Sampled:\"0\", x-mock-match-request-headers:\"Axa_mock_nominal_case\", x-wcp-origin:\"QA test suite\"]",
+            "body": "{\"market\":\"IT\",\"languageCode\":\"it\",\"channel\":\"integrated\",\"context\":{\"departureCountry\":\"IT\",\"arrivalCountry\":\"IT\",\"departureDate\":\"2021-11-01\",\"returnDate\":\"2021-11-03\",\"adultsCount\":2,\"childrenCount\":1,\"ticketPriceAllOptions\":300.55,\"currency\":\"EUR\",\"tripType\":\"RT\",\"extras\":{\"customerType\":\"\",\"hotel\":{\"code\":\"1312\",\"geoLocation\":{\"lat\":41.907516,\"lng\":12.486524},\"environmentCode\":\"TOW\",\"closestLandmarkTypes\":[\"BOWLING\",\"BASKETBALL_COURT\"],\"city\":\"ROMA\",\"brandCode\":\"SOF\"},\"childrenAges\":[4],\"roomRanges\":[]}},\"productFilter\":[\"PREPAID\",\"FLEX\"]}",
+            "method": "POST"
+          },
+          "httpAuditedResponse": {
+            "headers": "[X-WCP-TraceId:\"8fc60908-e625-414b-9756-4991d563b508\", Matched-Stub-Id:\"0695ca76-1277-4733-a74e-de4ebeeba726\", X-Content-Type-Options:\"nosniff\", X-XSS-Protection:\"1; mode=block\", Cache-Control:\"no-cache, no-store, max-age=0, must-revalidate\", Pragma:\"no-cache\", Expires:\"0\", X-Frame-Options:\"DENY\", Content-Type:\"application/json;charset=utf-8\", Transfer-Encoding:\"chunked\", Date:\"Fri, 01 Oct 2021 14:46:09 GMT\", Keep-Alive:\"timeout=60\", Connection:\"keep-alive\"]",
+            "payload": "{\n    \"id\": \"d93860d0-91fa-4227-9de3-c3e90ae3f87d\",\n    \"languageCode\": \"pt-br\",\n    \"offerCategories\": [\n      {\n        \"productType\": \"travel-insurance\",\n        \"offers\": [\n          {\n            \"id\": \"8f821621-07ce-4b4d-8e7f-5cbc712ed942\",\n            \"productCode\": \"ACCOR-COMP-EU1\",\n            \"unitPrice\": 56.99,\n            \"priceBreakdown\": {\n              \"priceExc\": 54.98,\n              \"priceInc\": 56.99,\n              \"priceExcFX\": 59.98,\n              \"priceIncFX\": 62.99,\n              \"totalTaxes\": 2.01,\n              \"totalTaxesFX\": 3.01\n            },\n            \"coverDates\": {\n                \"from\": \"2020-12-31\",\n                \"to\": \"2021-01-03\"\n            },\n            \"currency\": \"EUR\",\n            \"unitPriceFX\": 62.99,\n            \"currencyFX\": \"USD\",\n            \"productInformation\": {\n              \"title\": \"Accor Protect1\",\n              \"description\": \"Protects your family and your loved description ones in case of accident overseas...1\",\n              \"benefits\": \"[{\\\"title\\\": \\\"Benefit_1.1\\\",\\\"text\\\": \\\"Benefit text 1.1\\\"},{\\\"title\\\": \\\"Benefit_1.2\\\",\\\"text\\\": \\\"Benefit text 1.2\\\"},{\\\"title\\\": \\\"Benefit_1.3\\\",\\\"text\\\": \\\"Benefit text 1.3\\\"},{\\\"title\\\": \\\"Benefit_1.4\\\",\\\"text\\\": \\\"Benefit text 1.4\\\"},{\\\"title\\\": \\\"Benefit_1.5\\\",\\\"text\\\": \\\"Benefit text 1.5\\\"}]\",\n              \"tcsUrl\": \"https://path/to/tcs1\",\n              \"datasheetUrl\": \"https://path/to/datasheet1\",\n              \"extras\": {\n                \"ipid2URL\": \"https://path/to/ipid2_1\",\n                \"privacyURL\": \"https://path/to/privacy1\",\n                \"legalNotice\": \"This insurance is provided ...1\",\n                \"provisionNotice\": \"L112-10 du Code des assurances 1\",\n                \"disclaimerNotice\": \"This insurance is provided ... 1\",\n                \"disclaimer2Notice\": \"This Insurance product is not a personalized recommendation following the Article L. 521-4 of the French insurance Code 1\",\n                \"pictureURL\": \"https://path/to/picture1\",\n                \"cancellationNotice\": \"This is a cancellation notice offer 1\",\n                \"privacyNotice\": \"This is a privacy notice offer 1\",\n                \"ipidText\": \"This is ipid test offer 1\",\n                \"ipid2Text\": \"This is ipid2 text offer 1\"\n              }\n            }\n          },\n          {\n            \"id\": \"2d688b4c-d17a-4b80-ba2c-c2e49b7ca8c6\",\n            \"productCode\": \"ACCOR-COMP-EU2\",\n            \"unitPrice\": 156.99,\n            \"priceBreakdown\": {\n              \"priceExc\": 144.98,\n              \"priceInc\": 156.99,\n              \"priceExcFX\": 149.98,\n              \"priceIncFX\": 162.99,\n              \"totalTaxes\": 12.01,\n              \"totalTaxesFX\": 13.01\n            },\n            \"coverDates\": {\n                \"from\": \"2020-12-30\",\n                \"to\": \"2021-01-04\"\n            },\n            \"currency\": \"EUR\",\n            \"unitPriceFX\": 162.99,\n            \"currencyFX\": \"USD\",\n            \"productInformation\": {\n              \"title\": \"Accor Protect2\",\n              \"description\": \"Protects your family and your loved description ones in case of accident overseas...2\",\n              \"benefits\": \"[{\\\"title\\\": \\\"Benefit_2.1\\\",\\\"text\\\": \\\"Benefit text 2.1.1\\\"},{\\\"title\\\": \\\"Benefit_2.2\\\",\\\"text\\\": \\\"Benefit text 2.2\\\"},{\\\"title\\\": \\\"Benefit_2.3\\\",\\\"text\\\": \\\"Benefit text 2.3\\\"},{\\\"title\\\": \\\"Benefit_2.4\\\",\\\"text\\\": \\\"Benefit text 2.4\\\"},{\\\"title\\\": \\\"Benefit_2.5\\\",\\\"text\\\": \\\"Benefit text 2.5\\\"}]\",\n              \"tcsUrl\": \"https://path/to/tcs2\",\n              \"datasheetUrl\": \"https://path/to/datasheet2\",\n              \"extras\": {\n                \"ipid2URL\": \"https://path/to/ipid2_2\",\n                \"privacyURL\": \"https://path/to/privacy2\",\n                \"legalNotice\": \"This insurance is provided ...2\",\n                \"provisionNotice\": \"L112-10 du Code des assurances 2\",\n                \"disclaimerNotice\": \"This insurance is provided ... 2\",\n                \"disclaimer2Notice\": \"This Insurance product is not a personalized recommendation following the Article L. 521-4 of the French insurance Code 2\",\n                \"pictureURL\": \"https://path/to/picture2\",\n                \"cancellationNotice\": \"This is a cancellation notice offer 2\",\n                \"privacyNotice\": \"This is a privacy notice offer 2\",\n                \"ipidText\": \"This is ipid test offer 2\",\n                \"ipid2Text\": \"This is ipid2 text offer 2\"\n              }\n            }\n          }\n        ]\n      }\n    ]\n  }",
+            "status": 200
+          },
+          "endTime": 1633099569393,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        }
+      ],
+      "type": "builtin.httpexchanges"
+    }
+  ],
+  "indexedExtensions": null,
+  "originalJsonValue": null
+}

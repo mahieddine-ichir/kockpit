@@ -19,6 +19,7 @@
       <module>feature</module>
       <module>starter</module>
       <module>core-application</module>
+      <module>sample</module>
   </modules>
 
   <properties>

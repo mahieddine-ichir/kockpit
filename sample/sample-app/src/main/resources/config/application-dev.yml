@@ -1,0 +1,22 @@
+server:
+  tomcat:
+    accesslog:
+      enabled: false
+  compression:
+    enabled: false
+
+logging:
+  level:
+    ROOT: WARN
+    com.accor: DEBUG
+    org.springframework: INFO
+
+spring:
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+  jackson:
+    serialization:
+      indent-output: true

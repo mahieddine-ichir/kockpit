@@ -1,0 +1,13 @@
+server:
+  port: 8099
+wcp:
+  sdk:
+    service:
+      audit:
+        ttl:
+          default: 1
+    domain: mondomain
+    env: local
+    application:
+      id: ${application.id}
+      env: local

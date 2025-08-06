@@ -1,0 +1,175 @@
+openapi: 3.0.3
+info:
+  title: Polymorphism
+  description: API endpoints openapigenerator test
+  version: 1.0.0
+  contact:
+    email: wcp@accor.com
+servers:
+  - url: 'https://api-dev.wcbd-dev.aws.accor.com/basketpolymorphism/v1'
+    description: Development server (DEV) (WCBD team only)
+  - url: 'https://api-rec.wcbd-oat.aws.accor.com/basketpolymorphism/v1'
+    description: Internal testing (REC) server (WCBD team only)
+  - url: 'https://api-int.wcbd-oat.aws.accor.com/basketpolymorphism/v1'
+    description: Integration (INT) server
+  - url: 'https://api-ppd.wcbd-oat.aws.accor.com/basketpolymorphism/v1'
+    description: Pre-production (PPD) server
+  - url: 'https://api.wcbd.aws.accor.com/basketpolymorphism/v1'
+    description: Production (PRO) server
+tags:
+  - name: polymorphism/public
+    description: API endpoints for public consumption of Basket API
+paths:
+  '/polymorphisms':
+    post:
+      tags:
+        - polymorphism/public
+      summary: Creates a polymorphism
+      description: 'Creates a polymorphism, you can (or not) directly add items in the polymorphism by passing somme offer ids'
+      operationId: createPolymorphism
+      parameters:
+        - $ref: '#/components/parameters/versionParam'
+        - $ref: '#/components/parameters/traceIdParam'
+        - $ref: '#/components/parameters/originParam'
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Polymorphism_ParentClass'
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Polymorphism_ParentClass'
+          headers:
+            X-Wcp-TraceId:
+              $ref: '#/components/headers/traceIdHeader'
+            Content-Language:
+              $ref: '#/components/headers/contentLanguageHeader'
+            Location:
+              description: 'Standard Location header for POST verbs : uri of the created resource'
+              schema:
+                type: string
+                example: 'https://api-rec.wcbd-oat.aws.accor.com/basketpolymorphism/v0/basketpolymorphisms/9e44a51d-f95a-40a8-9a82-9ef4b42f7f9c'
+  '/polymorphisms/{polymorphismId}':
+    get:
+      tags:
+        - polymorphism/public
+      summary: Returns a polymorphism
+      description: 'Given a polymorphism identifier, returns the corresponding polymorphism'
+      operationId: getPolymorphismById
+      parameters:
+        - name: polymorphismId
+          required: true
+          in: path
+          description: 'identifier'
+          schema:
+            type: string
+            example: 6f170322-ac22-479c-bc72-c88454d5ccad
+        - $ref: '#/components/parameters/versionParam'
+        - $ref: '#/components/parameters/traceIdParam'
+        - $ref: '#/components/parameters/originParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Polymorphism_ParentClass'
+          headers:
+            X-Wcp-TraceId:
+              $ref: '#/components/headers/traceIdHeader'
+            Content-Language:
+              $ref: '#/components/headers/contentLanguageHeader'
+
+components:
+  headers:
+    traceIdHeader:
+      description: 'End to end transaction identifier, may be included in request, will be provided in response'
+      schema:
+        type: string
+        example: 123e4567-e89b-12d3-a456-426614174000
+    contentLanguageHeader:
+      description: Standard Content-Language header
+      schema:
+        type: string
+        example: 'fr'
+  parameters:
+    versionParam:
+      name: "X-Accept-Version"
+      in: header
+      description: "Specifically used to define the major API Version you are calling. Must be set to this contract major version otherwise you will get a http 406 response"
+      required: true
+      example: '1'
+      schema:
+        type: "string"
+    traceIdParam:
+      name: X-Wcp-TraceId
+      in: header
+      description: 'End to end transaction identifier, may be included in request, will be provided in response'
+      schema:
+        type: string
+        example: 123e4567-e89b-12d3-a456-426614174000
+    originParam:
+      name: X-Wcp-Origin
+      in: header
+      description: 'origin of the request (human-readable), use a recognizable, unique name - for debugging purposes'
+      schema:
+        type: string
+        example: partner-name.com
+  schemas:
+    DiscriminatorEnum:
+      description: " * SUBCLASS_A > \n * SUBCLASS_B > "
+      enum:
+      - SUBCLASS_A
+      - SUBCLASS_B
+      type: string
+    Polymorphism_ParentClass:
+      discriminator:
+        mapping:
+          SUBCLASS_A: '#/components/schemas/Polymorphism_SubClassA'
+          SUBCLASS_B: '#/components/schemas/Polymorphism_SubClassB'
+        propertyName: discriminatorProperty
+#      oneOf:
+#      - $ref: '#/components/schemas/Polymorphism_SubClassA'
+#      - $ref: '#/components/schemas/Polymorphism_SubClassB'
+      properties:
+        discriminatorProperty:
+#          type: string
+          $ref: '#/components/schemas/DiscriminatorEnum'
+        parentClassProperty1:
+          type: string
+        parentClassProperty2:
+          type: string
+      required:
+      - discriminatorProperty
+      - parentClassProperty1
+      - parentClassProperty2
+      type: object
+    Polymorphism_SubClassA:
+      allOf:
+      - properties:
+          subClassAProperty1:
+            type: string
+          subClassAProperty2:
+            type: string
+        required:
+        - subClassAProperty1
+        - subClassAProperty2
+        type: object
+      - $ref: '#/components/schemas/Polymorphism_ParentClass'
+    Polymorphism_SubClassB:
+      allOf:
+      - properties:
+          subClassBProperty1:
+            type: string
+          subClassBProperty2:
+            type: string
+        required:
+        - subClassBProperty1
+        - subClassBProperty2
+        type: object
+      - $ref: '#/components/schemas/Polymorphism_ParentClass'
