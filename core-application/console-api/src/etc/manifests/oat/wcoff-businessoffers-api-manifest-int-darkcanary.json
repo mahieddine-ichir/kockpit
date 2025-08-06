@@ -1,0 +1,37 @@
+{
+  "domain": "wcoff",
+  "env": "int",
+  "applications": [
+    {
+      "id": "offers-business-api",
+      "label": "BusinessOffers API",
+      "services": {
+        "darkcanary": [
+      {
+        "name": "darkcanary-business-offers",
+        "label": "DarkCanary BusinessOffers",
+        "appId": "offers-business-api",
+        "id": [
+          {
+            "key": "dk1",
+            "type": "header"
+          }
+        ],
+        "endpoints": [
+          {
+            "uri": "/web/businessoffers/v1/availabilities/best-offers",
+            "method": "get",
+            "environment": "int"
+          },
+          {
+            "uri": "/web/businessoffers/v1/availabilities/best-offers",
+            "method": "get",
+            "environment": "rec"
+          }
+        ]
+      }
+    ]
+      }
+    }
+  ]
+}

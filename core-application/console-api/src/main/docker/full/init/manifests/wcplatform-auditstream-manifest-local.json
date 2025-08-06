@@ -1,0 +1,83 @@
+{
+  "domain": "wcplatform",
+  "env": "local",
+  "groups": null,
+  "applications": [
+    {
+      "id": "auditstream",
+      "label": "Audit Streams",
+      "services": {
+        "audit": [
+          {
+            "appIds": [
+              "auditstream"
+            ],
+            "label": "Audit Streams",
+            "name": "auditstream",
+            "resultColumns": [
+              {
+                "label": "Start",
+                "name": "start",
+                "renderer": "date"
+              },
+              {
+                "label": "Trace ID",
+                "name": "traceId",
+                "renderer": "substring"
+              },
+              {
+                "label": "Method",
+                "name": "httpMethod",
+                "renderer": null
+              },
+              {
+                "label": "Url",
+                "name": "requestUri",
+                "renderer": null
+              },
+              {
+                "label": "Status",
+                "name": "httpStatus",
+                "renderer": "status"
+              },
+              {
+                "label": "Duration",
+                "name": "duration",
+                "renderer": null
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "description": "Trace ID",
+                "label": "Trace ID",
+                "name": "traceId",
+                "subtype": "builtin.kv",
+                "type": "string"
+              },
+              {
+                "description": "Duration",
+                "label": "Duration",
+                "name": "duration",
+                "subtype": "builtin.kv",
+                "type": "integer"
+              }
+            ]
+          }
+        ],
+        "featureflipping": [
+          {
+            "label": "AuditStreams",
+            "keys": [
+              {
+                "description": "Dark Canary Feature",
+                "key": "ff.darkcanary.enabled",
+                "defaultValue": false,
+                "expiration": "2025-06-01"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

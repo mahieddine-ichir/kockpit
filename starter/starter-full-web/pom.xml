@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.kockpit</groupId>
+      <artifactId>kockpit-starter</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>starter-full-web</artifactId>
+  <packaging>jar</packaging>
+  <name>Welcome Connect Starter - Full - Web</name>
+  <description>Spring Web, KEngine, Audit Filter, Audit KEngine, SDK integration ...</description>
+
+  <!--  swagger-->
+  <dependencies>
+<!--    <dependency>-->
+<!--        <groupId>org.kockpit</groupId>-->
+<!--      <artifactId>wcp-rest-api</artifactId>-->
+<!--    </dependency>-->
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>audit-module-autoconfigure-web</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>audit-module-autoconfigure-kengine</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>kengine-web</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>audit-module-autoconfigure-httpexchange</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>audit-module-autoconfigure-aws</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>audit-notification-autoconfigure-service</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>dynacache-application</artifactId>
+        <version>${project.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>dynaconfig-application</artifactId>
+        <version>${project.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+        <groupId>org.kockpit</groupId>
+      <artifactId>sdk-application-starter</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>

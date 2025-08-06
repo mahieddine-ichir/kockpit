@@ -1,0 +1,97 @@
+{
+  "domain": "wcp",
+  "env": "local",
+  "applications": [
+    {
+      "id": "samples",
+      "label": "Samples",
+      "subDomain": "samples",
+      "services": {
+        "audit": [
+          {
+            "name": "wcp-samples",
+            "label": "WCP Samples",
+            "appIds": [
+              "wcpsamples"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring",
+                "dashboard": true
+              },
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "renderer": "result"
+              },
+              {
+                "name": "origin",
+                "label": "Origin"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "hotelCode",
+                "label": "Hotel Code"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "origin",
+                "label": "Origin",
+                "description": "Origin",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpMethod",
+                "label": "HTTP Method",
+                "description": "Method",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "description": "Request HTTP Status",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "hotelCode",
+                "label": "Hotel Code",
+                "description": "Hotel Code",
+                "type": "string"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "description": "Trace ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

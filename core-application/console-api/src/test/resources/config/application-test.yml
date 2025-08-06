@@ -1,0 +1,44 @@
+sqs_table_name: SqsDocument
+sqs_table_name_v2: SqsDocumentV2
+kengine_table_name: KEngineRegistryDocument
+dynaconfig_table_name: DynaConfigDocument
+dynaconfig_history_table_name: DynaConfigDocumentHistory
+featureflipping_table_name: FeatureFlippingDocument
+featureflipping_history_table_name: FeatureFlippingDocumentHistory
+
+aws:
+  env: local
+  accessKeyId: TEST
+  secretKey: TEST
+
+  cloudwatch:
+    endpoint: http://localhost:4566
+  kinesis:
+    endpoint: http://localhost:4566
+  dynamodb:
+    endpoint: http://localhost:4566
+  sqs:
+    endpoint: http://localhost:4566
+  sns:
+    endpoint: http://localhost:4566
+    topic_alert_es:
+      arn: arn:aws:sns:eu-west-1:000000000000:sns-topic-alerting
+  region: eu-west-1
+
+SECURITY_CORS_ALLOW_ORIGINS: '*'
+OAUTH2_ISSUERURI: http://localhost:8083/ihm_api/public
+
+wcp:
+  env: none
+  sdk:
+    communication:
+      heartbit:
+        stream_name: wcp-sdk-stream-communication-heartbit-local
+      wcp2app:
+        stream_name: wcp-sdk-stream-communication-wcp2app-local
+        s3: wcp-sdk-bucket-wcp2app-local
+      app2wcp:
+        stream_name: wcp-sdk-stream-communication-app2wcp-local
+
+ENV: test
+WCP_ENV: none

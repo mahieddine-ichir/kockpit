@@ -17,6 +17,8 @@
       <module>core</module>
       <module>config</module>
       <module>feature</module>
+      <module>starter</module>
+      <module>core-application</module>
   </modules>
 
   <properties>

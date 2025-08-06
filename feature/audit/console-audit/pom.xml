@@ -12,7 +12,7 @@
     <name>Welcome Connect Audit - Console Audit</name>
 
     <modules>
-        <module>console-audit-console-backend</module>
+        <module>audit-console-backend</module>
         <module>console-audit-registry-dynamo</module>
     </modules>
 </project>

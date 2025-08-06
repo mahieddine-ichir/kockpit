@@ -1,0 +1,13 @@
+server:
+  port: 8083
+
+logging:
+  level:
+    root: INFO
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+WCP_ENV: none
+ENV: none

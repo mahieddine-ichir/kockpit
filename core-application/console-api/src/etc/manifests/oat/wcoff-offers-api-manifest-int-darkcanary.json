@@ -1,0 +1,37 @@
+{
+  "domain": "wcoff",
+  "env": "int",
+  "applications": [
+    {
+      "id": "offers-api",
+      "label": "DomainOffers API",
+      "services": {
+        "darkcanary": [
+          {
+            "name": "darkcanary-domain-offers",
+            "label": "DarkCanary DomainOffers",
+            "appId": "offers-api",
+            "id": [
+              {
+                "key": "X-B3-TraceId",
+                "type": "header"
+              }
+            ],
+            "endpoints": [
+              {
+                "uri": "/web/offers/v1/hotels/H1715/offers",
+                "method": "get",
+                "environment": "int"
+              },
+              {
+                "uri": "/web/offers/v1/hotels/H1715/offers",
+                "method": "get",
+                "environment": "rec"
+              }
+            ]
+          }
+    ]
+      }
+    }
+  ]
+}

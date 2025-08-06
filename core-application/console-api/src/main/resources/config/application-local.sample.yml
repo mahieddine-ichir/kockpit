@@ -1,0 +1,58 @@
+server:
+  port: 8082
+
+search:
+  opensearch-endpoint: localhost:9200
+
+logging:
+  level:
+    com.accor.wcp: DEBUG
+
+    org:
+      springframework:
+        security: DEBUG
+
+auth:
+  root:
+    redirecturl: /
+
+# Localhost app client for cognito dev instance
+#OAUTH2_ISSUERURI: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_I04Zn8e82
+#https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_I04Zn8e82/.well-known/jwks.json
+#https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_I04Zn8e82/.well-known/openid-configuration
+
+# Only for dev env
+aws:
+  env: local
+  cloudwatch:
+    endpoint: http://localhost:4566
+  kinesis:
+    endpoint: http://localhost:4566
+  dynamodb:
+    endpoint: http://localhost:4566
+  s3:
+    endpoint: http://localhost:4566
+  sqs:
+    endpoint: http://localhost:4566
+  sns:
+    topic_alert_es:
+      arn: arn:aws:sns:eu-west-1:000000000000:sns-topic-alerting
+    endpoint: http://localhost:4566
+  region: eu-west-1
+
+# Local
+OAUTH2_ISSUERURI: http://localhost:8083/ihm_api/public
+SECURITY_CORS_ALLOW_ORIGINS: '*'
+
+manifest.bucket-name: wcp-manifest-bucket
+
+dynaconfig_table_name: DynaConfigDocument
+dynaconfig_history_table_name: DynaConfigDocumentHistory
+sqs_table_name: SqsDocument
+sqs_table_name_v2: SqsDocumentV2
+kengine_table_name: KEngineRegistryDocument
+featureflipping_table_name: FeatureFlippingDocument
+featureflipping_history_table_name: FeatureFlippingDocumentHistory
+
+WCP_ENV: local
+ENV: local

@@ -1,0 +1,367 @@
+
+  {
+    "domain": "wcplatform",
+    "env": "dev",
+    "groups": null,
+    "applications": [
+      {
+        "id": "wcpsamples",
+        "label": "WCP Samples",
+        "subDomain": "null",
+        "services": {
+          "cache": [
+            {
+              "name": "SamplesInfo",
+              "label": "WCPSamples Cache"
+            }
+          ],
+          "audit": [
+            {
+              "searchMetadatas": [
+                {
+                  "subtype": "builtin.kv",
+                  "name": "origin",
+                  "description": "Origin",
+                  "label": "Origin",
+                  "type": "string"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "httpMethod",
+                  "description": "Method",
+                  "label": "HTTP Method",
+                  "type": "string"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "httpStatus",
+                  "description": "Request HTTP Status",
+                  "label": "Status",
+                  "type": "integer"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "traceId",
+                  "description": "Trace ID",
+                  "label": "Trace ID",
+                  "type": "string"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "result",
+                  "description": "Result",
+                  "label": "Result",
+                  "type": "string"
+                },
+                {
+                  "subtype": "builtin.web",
+                  "name": "hotelCode",
+                  "description": "Hotel Code",
+                  "label": "Hotel Code",
+                  "type": "string"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "number",
+                  "description": "A random number",
+                  "label": "Random number",
+                  "type": "integer"
+                },
+                {
+                  "subtype": "builtin.kv",
+                  "name": "duration",
+                  "description": "Duration",
+                  "label": "Duration",
+                  "type": "integer"
+                }
+              ],
+              "dashboardColumns": [
+                {
+                  "renderer": "date",
+                  "name": "start",
+                  "label": "Start date"
+                },
+                {
+                  "renderer": "string",
+                  "name": "appId",
+                  "label": "Application"
+                },
+                {
+                  "renderer": null,
+                  "name": "httpMethod",
+                  "label": "HTTP Method"
+                },
+                {
+                  "renderer": null,
+                  "name": "requestUri",
+                  "label": "Url"
+                },
+                {
+                  "renderer": null,
+                  "name": "origin",
+                  "label": "Origin"
+                },
+                {
+                  "renderer": "substring",
+                  "name": "traceId",
+                  "label": "Trace ID"
+                },
+                {
+                  "renderer": "status",
+                  "name": "httpStatus",
+                  "label": "Status"
+                },
+                {
+                  "renderer": "result",
+                  "name": "KResult",
+                  "label": "K Result"
+                },
+                {
+                  "renderer": null,
+                  "name": "duration",
+                  "label": "Duration"
+                }
+              ],
+              "appIds": [
+                "wcpsamples"
+              ],
+              "resultColumns": [
+                {
+                  "renderer": "date",
+                  "name": "start",
+                  "label": "Start",
+                  "dashboard": false
+                },
+                {
+                  "renderer": "substring",
+                  "name": "traceId",
+                  "label": "Trace ID",
+                  "dashboard": true
+                },
+                {
+                  "renderer": "result",
+                  "name": "KResult",
+                  "label": "K Result",
+                  "dashboard": false
+                },
+                {
+                  "renderer": null,
+                  "name": "httpMethod",
+                  "label": "Method",
+                  "dashboard": false
+                },
+                {
+                  "renderer": null,
+                  "name": "requestUri",
+                  "label": "Url",
+                  "dashboard": false
+                },
+                {
+                  "renderer": null,
+                  "name": "another",
+                  "label": "Test",
+                  "dashboard": false
+                },
+                {
+                  "renderer": "status",
+                  "name": "httpStatus",
+                  "label": "Status",
+                  "dashboard": false
+                },
+                {
+                  "renderer": null,
+                  "name": "hotelCode",
+                  "label": "Hotel Code",
+                  "dashboard": true
+                },
+                {
+                  "renderer": null,
+                  "name": "number",
+                  "label": "Random number",
+                  "dashboard": false
+                },
+                {
+                  "renderer": null,
+                  "name": "duration",
+                  "label": "Duration",
+                  "dashboard": false
+                }
+              ],
+              "name": "wcpsamples",
+              "label": "WCP Samples",
+              "dashboardTimelineConfiguration": {
+                "displayedProperties": [
+                  {
+                    "renderer": "string",
+                    "label": "Application",
+                    "properties": [
+                      "appId"
+                    ]
+                  },
+                  {
+                    "renderer": "string",
+                    "label": "Type",
+                    "properties": [
+                      "httpMethod",
+                      "messageType"
+                    ]
+                  },
+                  {
+                    "renderer": "string",
+                    "label": "Message",
+                    "properties": [
+                      "requestUri",
+                      "messageKey"
+                    ]
+                  }
+                ],
+                "executionLag": {
+                  "property": "start",
+                  "source": "root"
+                }
+              }
+            }
+          ],
+          "darkcanary": [
+            {
+              "testingSource": "remote",
+              "callRate": 1.0,
+              "strict": true,
+              "endpoints": [
+                {
+                  "environment": "dev",
+                  "method": "get",
+                  "uri": "/wcpsamples/darkcanary/offer/v1",
+                  "targetUri": "https://console.wcplatform-dev.aws.accor.com/wcpsamples/darkcanary/offer/v2"
+                }
+              ],
+              "excludes": [],
+              "appId": "wcpsamples",
+              "includes": [],
+              "id": [
+                {
+                  "type": "header",
+                  "key": "x-b3-traceid"
+                }
+              ],
+              "label": "WCPSamples DK Offer"
+            }
+          ],
+          "dynaconfig": [
+            {
+              "executionMode": "ALWAYS_ON",
+              "label": "Samples",
+              "properties": [
+                {
+                  "name": "ff.backend.new2022",
+                  "description": "Feature Flipping to use new Backend 2022",
+                  "type": "boolean"
+                },
+                {
+                  "name": "sample.resttemplate.timeout",
+                  "description": "Sample for not exist property in app",
+                  "type": "integer"
+                },
+                {
+                  "name": "dyna.property.backend.call.timeout",
+                  "description": "Sample to POC RestTemplate timeout update",
+                  "type": "integer"
+                },
+                {
+                  "name": "application.client.axa.timeout",
+                  "description": "AXA Timeout - Configuration Properties example ",
+                  "type": "int"
+                },
+                {
+                  "name": "application.client.axa.basepath",
+                  "description": "AXA BasePath - Configuration Properties example ",
+                  "type": "string"
+                },
+                {
+                  "name": "application.client.wcxssinsurancequotation.timeout",
+                  "description": "InsuranceQuotation Timeout - Configuration Properties example ",
+                  "type": "int"
+                },
+                {
+                  "name": "application.client.apim.aps.timeout",
+                  "description": "APIM Timeout - Configuration Properties example ",
+                  "type": "int"
+                },
+                {
+                  "name": "application.client.apim.aps.x-custom-header",
+                  "description": "Custom header - to test interceptors",
+                  "type": "string"
+                },
+                {
+                  "name": "application.wcpsamples.testing.display.for.a.long.property.name.hello-this-is-a-long-property-name-to-test-if-it-is-correctly-displayed",
+                  "description": "Test for long property name correctly display - Long property example",
+                  "type": "string"
+                },
+                {
+                  "name": "ff.backend.test.nullvalue",
+                  "description": "Special case for property with no default value from application (WCP-109)",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "sqsdlq": [
+            {
+              "deleteWhenReplay": false,
+              "dedupIdGenerationStrategy": null,
+              "resultColumns": [
+                {
+                  "name": "service",
+                  "label": "Service"
+                },
+                {
+                  "name": "test",
+                  "label": "Test"
+                },
+                {
+                  "name": "SecondAttribute",
+                  "label": "Second Attribute"
+                },
+                {
+                  "name": "error",
+                  "label": "Error"
+                }
+              ],
+              "dlq": "wcp-samples-sqsdlq-dlq",
+              "name": "wcp-samples-sqsdlq",
+              "label": "WCPSamples",
+              "concurrentConsumers": 1,
+              "ttl": 30,
+              "dlqArn": "arn:aws:sqs:eu-west-1:531583874639:wcp-samples-sqsdlq-dlq",
+              "url": "https://sqs.eu-west-1.amazonaws.com/531583874639/wcp-samples-sqsdlq"
+            },
+            {
+              "deleteWhenReplay": false,
+              "dedupIdGenerationStrategy": "MD5_ON_PAYLOAD",
+              "resultColumns": [
+                {
+                  "name": "service",
+                  "label": "Service"
+                },
+                {
+                  "name": "test",
+                  "label": "Test"
+                },
+                {
+                  "name": "error",
+                  "label": "Error"
+                }
+              ],
+              "dlq": "wcp-samples-sqsdlq-dlq.fifo",
+              "name": "wcp-samples-sqsdlq.fifo",
+              "label": "WCPSamples Fifo",
+              "concurrentConsumers": 1,
+              "ttl": 30,
+              "dlqArn": "arn:aws:sqs:eu-west-1:531583874639:wcp-samples-sqsdlq-dlq.fifo",
+              "url": "https://sqs.eu-west-1.amazonaws.com/531583874639/wcp-samples-sqsdlq.fifo"
+            }
+          ]
+        }
+      }
+    ]
+  }
