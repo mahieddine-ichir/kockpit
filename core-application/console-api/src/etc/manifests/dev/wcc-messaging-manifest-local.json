@@ -1,0 +1,97 @@
+{
+  "domain": "wcc",
+  "env": "local",
+  "applications": [
+    {
+      "id": "wcc-messaging",
+      "label": "Messaging",
+      "subDomain": "messaging",
+      "services": {
+        "audit": [
+          {
+            "name": "wcc-messaging",
+            "label": "WCC Messaging",
+            "appIds": [
+              "wcc-messaging"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring"
+              },
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "renderer": "result"
+              },
+              {
+                "name": "origin",
+                "label": "Origin"
+              },
+              {
+                "name": "requestedEmail",
+                "label": "Requested Email"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "origin",
+                "label": "Origin",
+                "description": "Origin",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpMethod",
+                "label": "HTTP Method",
+                "description": "Method",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "description": "Request HTTP Status",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "description": "Trace ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "requestedEmail",
+                "label": "Email",
+                "description": "Requested email",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

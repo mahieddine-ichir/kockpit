@@ -1,0 +1,49 @@
+{
+  "domain": "wcp",
+  "env": "local",
+  "applications": [
+    {
+      "id": "samples",
+      "label": "Samples",
+      "subDomain": "samples",
+      "services": {
+        "darkcanary": [
+          {
+            "name": "darkcanary-testing",
+            "label": "DarkCanary Testing",
+            "appId": "wcpsamples",
+		    "testingSource": "audit",
+            "callRate": 1.0,
+            "strict": true,
+            "allowedTimeIntervals": [
+              {
+                "day": "MON-FRI",
+                "hour": "8-23"
+              }
+            ],
+            "id": [
+              {
+                "key": "x-b3-traceid",
+                "type": "header"
+              }
+            ],
+            "endpoints": [
+              {
+                "uri": "/wcpsamples/darkcanary/offer/v1",
+                "method": "get",
+                "environment": "local",
+		        "targetUri": "http://localhost:8080/wcpsamples/darkcanary/offer/v2"
+              },
+              {
+                "uri": "/wcpsamples/darkcanary/offer/v2",
+                "method": "get",
+                "environment": "local",
+		        "targetUri": "http://localhost:8080/wcpsamples/darkcanary/offer/v3"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+server:
+  tomcat:
+    connection-timeout: 125s
+  port: 8080
+  servlet:
+    context-path: /ihm_api
+cors:
+  allow:
+    origins: ${SECURITY_CORS_ALLOW_ORIGINS}
+application:
+  id: console-services-${ENV:default}
+  manifest.bucket-name: ${manifest.bucket-name}
+  dynamodb_table_name:
+    dynaconfig : ${dynaconfig_table_name}
+    dynaconfig_history : ${dynaconfig_history_table_name}
+    sqs: ${sqs_table_name}
+    sqs_v2: ${sqs_table_name_v2}
+    kengine: ${kengine_table_name}
+    featureflipping : ${featureflipping_table_name}
+    featureflipping_history : ${featureflipping_history_table_name}
+
+console:
+  services:
+    path-prefix: /api/services/{domain}/{env}
+    internal-public-prefix: /internal/public/api/services
+    public-prefix: /public/api/services/{domain}/{env}
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: [ "metrics", "configprops", "env", "health", "info", "threaddump", "logfile", "prometheus" ]
+
+search:
+  index_name: auditdata
+  opensearch-endpoint: localhost:9200
+  connection-timeout: 10s
+  socket-timeout: 120s
+
+auth:
+  root:
+    redirecturl: /ihm/
+
+spring:
+  web:
+    resources:
+      add-mappings: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  jmx:
+    enabled: true
+  application:
+    name: WCPlatform Console Services endpoints
+  opensearch:
+    rest:
+      uris: ${search.opensearch-endpoint}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH2_ISSUERURI}
+
+logging:
+  level:
+    root: WARN
+    org:
+      springframework: ERROR
+    com.accor.wcp: INFO
+
+# Disable camel consumers (specially SQS) not to down health because of a bad SQS manifest configuration
+camel:
+  health:
+    consumersEnabled: false
+
+wcp:
+  sdk:
+    initialization:
+      timeout: PT1S
+    service:
+      audit:
+        http:
+          traceid:
+            header: X-B3-TraceId
+        ttl:
+          default: 30
+    domain: wcplatform
+    env: ${WCP_ENV}
+    application:
+      id: console-services
+      env: ${ENV}

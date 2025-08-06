@@ -1,0 +1,101 @@
+{
+  "domain": "wcc",
+  "env": "rec",
+  "groups": [
+    "AWS-359195335135-wcc_user",
+    "AWS-359195335135-wcc-dev-MCO"
+  ],
+  "applications": [
+    {
+      "id": "wcp-purge",
+      "label": "WCP Purge",
+      "subDomain": "purge",
+      "services": {
+        "audit": [
+          {
+            "name": "wcp-purge",
+            "label": "WCP Purge",
+            "appIds": [
+              "wcp-purge"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring"
+              },
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "renderer": "result"
+              },
+              {
+                "name": "origin",
+                "label": "Origin"
+              },
+              {
+                "name": "pmid",
+                "label": "PMID"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "origin",
+                "label": "Origin",
+                "description": "Origin",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpMethod",
+                "label": "HTTP Method",
+                "description": "Method",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "description": "Request HTTP Status",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "description": "Trace ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "pmid",
+                "label": "PMID",
+                "description": "PMID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

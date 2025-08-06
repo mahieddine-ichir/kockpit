@@ -1,0 +1,32 @@
+package com.accor.wcp.console.services.core.servicemanager;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.Base64;
+
+class ConsoleConfigApiTest {
+
+    @Test
+    public void testJwtClaimsFromCognito() {
+        String tokenString = "eyJraWQiOiJLS1QrZFpaNjZUMlNXenFiaGY3dkFuK3NkTnlnR0J4T0tld3Jkam9CUVdnPSIsImFsZyI6IlJTMjU2In0.eyJjdXN0b206YWRncm91cHMiOiJbQVdTLTM1OTE5NTMzNTEzNS13Y2NfdXNlciwgQVdTLTUzMTU4Mzg3NDYzOS1wbGF0Zm9ybS1kZXYtTUNPLCBBV1MtMzU5MTk1MzM1MTM1LXdjYy1kZXYtTUNPLCBBV1MtNDI4NDE1MDgwODA1LXhzcy1kZXYtQWRtaW5dIiwiYXRfaGFzaCI6IkxoaDZleUxvZHR3Qk1UMXo2RTR3TWciLCJzdWIiOiJmZDcyMDg5Yi1iMjAyLTQwYmMtYjlkYy00MDBkZjllMTRmYzgiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5ldS13ZXN0LTEuYW1hem9uYXdzLmNvbVwvZXUtd2VzdC0xX0kwNFpuOGU4MiIsImNvZ25pdG86dXNlcm5hbWUiOiJBY3RpdmVEaXJlY3RvcnlfQ3lyaWwuSk9VSUBjb25zdWx0aW5nLWZvci5hY2Nvci5jb20iLCJnaXZlbl9uYW1lIjoiQ3lyaWwiLCJvcmlnaW5fanRpIjoiYjM3NTQ2NmMtODc5Ni00MzMzLWEzNWYtODc2YjQzZDEyYjk3IiwiYXVkIjoiM2wwc3BodGdyaXZycDNic3BhZnBkOHE0NDIiLCJpZGVudGl0aWVzIjpbeyJ1c2VySWQiOiJDeXJpbC5KT1VJQGNvbnN1bHRpbmctZm9yLmFjY29yLmNvbSIsInByb3ZpZGVyTmFtZSI6IkFjdGl2ZURpcmVjdG9yeSIsInByb3ZpZGVyVHlwZSI6IlNBTUwiLCJpc3N1ZXIiOiJodHRwczpcL1wvc3RzLndpbmRvd3MubmV0XC8zZWU4MTE5MC05NTRiLTQwNjQtOGU3ZC1mMTJmZDc2MWZkMzlcLyIsInByaW1hcnkiOiJ0cnVlIiwiZGF0ZUNyZWF0ZWQiOiIxNjM5NTYzOTE3OTAxIn1dLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY0MDM0MjI3NCwibmFtZSI6IkN5cmlsLkpPVUlAY29uc3VsdGluZy1mb3IuYWNjb3IuY29tIiwiZXhwIjoxNjQwMzQ1ODc0LCJpYXQiOjE2NDAzNDIyNzQsImZhbWlseV9uYW1lIjoiSk9VSSIsImp0aSI6IjQ0ZGQ2MWFmLTMyOGMtNDRhMi1iYTEzLTc0NDNhNjhhZGI5NiIsImVtYWlsIjoiQ3lyaWwuSk9VSUBjb25zdWx0aW5nLWZvci5hY2Nvci5jb20ifQ.ossJP3ECf-rdqITO7IKOmYg761Y1o6BGL6W1DDor8lPKkCeZeOfVWGtRoP0aBtXcyNjzE6dm7tO25gpYUjEepsDtcjOqAjIi4FTdoEeBXBhmf2LQGtivoLiFN3cUX-5pai-Z17deOnrnci_I8CeuXyguNJjv1NiXkzDRRwfmb6FH2a6L2PDM6U7o6VD-8QZfPN6jpJyD1LSKoMHg4luNn_UyYxdaDEPS2eZIkRNnAu563Ap9XzHFlbAy_sy5PzubUJFsQSCbM7HcuM29wPAIrIfyUVmbJySsgwaw7jdSOzszxqrUaR6-FV88w0tikZhVIKqTsBYqNWbQOpape5l-EA";
+        Base64.Decoder decoder = Base64.getDecoder();
+
+        String[] chunks = tokenString.split("\\.");
+        String header = new String(decoder.decode(chunks[0]));
+        String payload = new String(decoder.decode(chunks[1]));
+
+        System.out.println("payload:" + payload);
+    }
+
+    @Test
+    public void testJwtClaimsFromLocalDev() {
+        String tokenString = "eyJhbGciOiJSUzI1NiJ9.eyJjdXN0b206YWRncm91cHMiOlsidXNlcjEiLCJXQ0MiXSwic3ViIjoiYm9iLmxvY2FsQGFjY29yLWRldi5sb2NhbCIsImNvZ25pdG86Z3JvdXBzIjoiZXUtd2VzdC0xX3ZXWDBZM3dNZF9BY3RpdmVEaXJlY3RvcnkiLCJST0xFUyI6WyJST0xFX1VTRVIiXSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4My9paG1fYXBpL3B1YmxpYyIsImdpdmVuX25hbWUiOiJCb2IiLCJleHAiOjIwNzE1NjU5NTUsImZhbWlseV9uYW1lIjoiTG9jYWwiLCJlbWFpbCI6ImJvYi5sb2NhbEBhY2Nvci1kZXYubG9jYWwiLCJ1c2VybmFtZSI6IkFjdGl2ZURpcmVjdG9yeV9ib2IubG9jYWxAYWNjb3ItZGV2LmxvY2FsIn0.iN0Uxao6753tQ1UepYkPXCQe-960e4dnTiqwLXw5gm5zEeqRkBC4w48w5Tluruy5-tDsOEkpkZXLOWPhiCN-AeW_AWSECw3c67KcHzGv-At4bVhpfChVWEhdg8wqSHC9udQk9ccmOym7kxIn00BN5MuHDc6ZUTr_f1NS6sHblEL6od6YjxPRuLVN2o_GAkdK4M21OUJEe3jW3r-mEgZJDlSYacvKXlSUoD0cusCgsXVcMWR-JcbQERKc0o9PlVfJVL3kgSbmFUlLqAgArpMIN-APC5_3OlFMSZZqfA1RoT8uOZEoZbgUPFYvvnhUWnhP10OrXNELkL2yjZHJbg7rlw";
+        Base64.Decoder decoder = Base64.getDecoder();
+
+        String[] chunks = tokenString.split("\\.");
+        String header = new String(decoder.decode(chunks[0]));
+        String payload = new String(decoder.decode(chunks[1]));
+
+        System.out.println("payload:" + payload);
+    }
+}

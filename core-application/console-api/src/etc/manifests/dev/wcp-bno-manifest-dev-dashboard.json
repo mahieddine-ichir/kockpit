@@ -1,0 +1,182 @@
+{
+  "domain": "wcbno",
+  "env": "dev",
+  "applications": [
+    {
+      "id": "samples",
+      "label": "Samples",
+      "subDomain": "samples",
+      "services": {
+        "audit": [
+          {
+            "name": "order-process-stream",
+            "label": "order-process-stream",
+            "appIds": [
+              "order-process-stream",
+              "order-process-stream-web"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring",
+                "dashboard": true
+              },
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "renderer": "result"
+              },
+              {
+                "name": "origin",
+                "label": "Origin"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "hotelCode",
+                "label": "Hotel Code"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "origin",
+                "label": "Origin",
+                "description": "Origin",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpMethod",
+                "label": "HTTP Method",
+                "description": "Method",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "description": "Request HTTP Status",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "hotelCode",
+                "label": "Hotel Code",
+                "description": "Hotel Code",
+                "type": "string"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "description": "Trace ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ],
+            "dashboardColumns": [
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "messageKey",
+                "label": "Message Key"
+              },
+              {
+                "name": "messageType",
+                "label": "Message Type"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              },
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "env",
+                "label": "Environment"
+              },
+              {
+                "label": "App. ID",
+                "name": "appId"
+              }
+            ],
+            "dashboardTimelineConfiguration": {
+              "executionLag": {
+                "property": "start",
+                "source": "builtin.kv"
+              },
+              "displayedProperties": [
+                {
+                  "label": "Application",
+                  "properties": [
+                    "appId"
+                  ]
+                },
+                {
+                  "label": "Type",
+                  "properties": [
+                    "httpMethod",
+                    "messageType"
+                  ]
+                },
+                {
+                  "label": "Message",
+                  "properties": [
+                    "requestUri",
+                    "messageKey"
+                  ],
+                  "renderer": "substring"
+                },
+                {
+                  "label": "Start",
+                  "properties": [
+                    "start"
+                  ],
+                  "renderer": "date"
+                },
+                {
+                  "label": "End",
+                  "properties": [
+                    "end"
+                  ],
+                  "renderer": "date"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

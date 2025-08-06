@@ -1,0 +1,50 @@
+server:
+  servlet:
+    context-path: /ihm_api
+
+search:
+  opensearch-endpoint: localhost:9200
+  aws:
+    service_name: es
+    region: eu-west-1
+
+SECURITY_CORS_ALLOW_ORIGINS: '*'
+
+#Only for dev env
+aws:
+  cloudwatch:
+    endpoint: http://localhost:4572
+  dynamodb:
+    endpoint: http://localhost:4569
+  sqs:
+    endpoint: http://localhost:4576
+  kinesis:
+    endpoint: http://localhost:4573
+  s3:
+    endpoint: http://localhost:4566
+  sns:
+    endpoint: http://localhost:4566
+    topic_alert_es:
+      arn: arn:aws:sns:eu-west-1:000000000000:sns-topic-alerting
+  region: eu-west-1
+  env: local
+
+
+manifest.bucket-name: wcp-manifest-bucket
+
+dynaconfig_table_name: DynaconfigDocument-dev
+dynaconfig_history_table_name: DynaConfigDocumentHistory-dev
+sqs_table_name: SqsDocument-dev
+kengine_table_name: KEngineRegistryDocument-dev
+
+wcp:
+  env: dev
+  sdk:
+    communication:
+      heartbit:
+        stream_name: wcp-sdk-stream-communication-heartbit-local
+      wcp2app:
+        stream_name: wcp-sdk-stream-communication-wcp2app-local
+        s3: wcp-sdk-bucket-wcp2app-local
+      app2wcp:
+        stream_name: wcp-sdk-stream-communication-app2wcp-local

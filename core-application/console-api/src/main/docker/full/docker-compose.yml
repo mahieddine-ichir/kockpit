@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  localstack_console_services:
+    container_name: localstack_console_services
+    image: localstack/localstack:latest
+    healthcheck:
+      test: [ "CMD", "awslocal", "s3api", "wait", "bucket-exists", "--bucket", "wcp-manifest-bucket" ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    volumes:
+      - ./init:/etc/localstack/init/ready.d/
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - AWS_DEFAULT_REGION=eu-west-1
+      - SERVICES=sqs:4576,dynamodb:4569,s3:4572,kinesis:4573,cloudwatch,sns
+      - DEBUG=1
+
+  opensearch:
+    container_name: opensearch_2_0_0
+    image: opensearchproject/opensearch:2.17.1
+    environment:
+      - cluster.name=audit-cluster
+      - node.name=audit-node
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - network.host=0.0.0.0
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=P@42BRhjBcT69d8z
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"

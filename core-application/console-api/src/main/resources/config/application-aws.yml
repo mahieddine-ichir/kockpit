@@ -1,0 +1,36 @@
+server:
+  servlet:
+    context-path: /ihm_api
+
+search:
+  opensearch-endpoint: localhost:9200
+  aws:
+    service_name: es
+    region: eu-west-1
+
+manifest.bucket-name: ${MANIFEST_BUCKET_NAME}
+
+dynaconfig_table_name: ${DYNACONFIG_TABLE_NAME}
+dynaconfig_history_table_name: ${DYNACONFIG_HISTORY_TABLE_NAME}
+sqs_table_name: ${SQS_TABLE_NAME}
+kengine_table_name: ${KENGINE_TABLE_NAME}
+featureflipping : ${FEATUREFLIPPING_TABLE_NAME}
+featureflipping_history : ${FEATUREFLIPPING_HISTORY_TABLE_NAME}
+
+wcp:
+  env: ${ENV}
+  sdk:
+    communication:
+      heartbit:
+        stream_name: wcp-sdk-stream-communication-heartbit-${ENV}
+      wcp2app:
+        stream_name: wcp-sdk-stream-communication-wcp2app-${ENV}
+        s3: wcp-sdk-bucket-communication-wcp2app-${ENV}
+      app2wcp:
+        stream_name: wcp-sdk-stream-communication-app2wcp-${ENV}
+
+aws:
+  env: ${ENV}
+  sns:
+    topic_alert_es:
+      arn: ${SNS_TOPIC_ALERT_ES_ARN}

@@ -1,0 +1,27 @@
+server:
+  servlet:
+    context-path: /
+
+wcp.sdk.communication:
+  wcp2app:
+    stream_name: wcp2app
+    s3: wcp-sdk-bucket-wcp2app-local
+  app2wcp:
+    stream_name: app2wcp
+
+aws:
+  cloudwatch:
+    endpoint: http://localhost:4566
+  kinesis:
+    endpoint: http://localhost:4566
+  dynamodb:
+    endpoint: http://localhost:4566
+  sqs:
+    endpoint: http://localhost:4566
+  region: eu-west-1
+
+WCP_ENV: none
+ENV: testit
+
+OAUTH2_ISSUERURI: http://localhost:8083/ihm_api/public
+SECURITY_CORS_ALLOW_ORIGINS: '*'

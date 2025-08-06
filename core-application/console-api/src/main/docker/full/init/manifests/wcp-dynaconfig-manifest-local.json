@@ -1,0 +1,107 @@
+{
+  "domain": "wcp",
+  "env": "local",
+  "groups": null,
+  "applications": [
+    {
+      "id": "wcpdynaconfig_always_on",
+      "label": "WCP Dynaconfig ALWAYS_ON",
+      "subDomain": "dynaconf mode",
+      "services": {
+        "dynaconfig": [
+          {
+            "label": "Dynaconfig ALWAYS_ON",
+            "executionMode": "ALWAYS_ON",
+            "properties": [
+              {
+                "description": "Feature Flipping to use new Backend 2022",
+                "name": "ff.backend.new2022",
+                "type": "boolean"
+              },
+              {
+                "description": "Sample for not exist property in app",
+                "name": "sample.resttemplate.timeout",
+                "type": "integer"
+              },
+              {
+                "description": "Sample to POC RestTemplate timeout update",
+                "name": "dyna.property.backend.call.timeout",
+                "type": "integer"
+              },
+              {
+                "description": "AXA Timeout - Configuration Properties example ",
+                "name": "application.client.axa.timeout",
+                "type": "int"
+              },
+              {
+                "description": "AXA BasePath - Configuration Properties example ",
+                "name": "application.client.axa.basepath",
+                "type": "string"
+              },
+              {
+                "description": "InsuranceQuotation Timeout - Configuration Properties example ",
+                "name": "application.client.wcxssinsurancequotation.timeout",
+                "type": "int"
+              },
+              {
+                "description": "APIM Timeout - Configuration Properties example ",
+                "name": "application.client.apim.aps.timeout",
+                "type": "int"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcpdynaconfig_scheduled_task",
+      "label": "WCP Dynaconfig SCHEDULED_TASK",
+      "subDomain": "dynaconf mode",
+      "services": {
+        "dynaconfig": [
+          {
+            "label": "Dynaconfig SCHEDULED_TASK",
+            "executionMode": "SCHEDULED_TASK",
+            "properties": [
+              {
+                "description": "Feature Flipping to use new Backend 2022",
+                "name": "ff.backend.new2022",
+                "type": "boolean"
+              },
+              {
+                "description": "Sample for not exist property in app",
+                "name": "sample.resttemplate.timeout",
+                "type": "integer"
+              },
+              {
+                "description": "Sample to POC RestTemplate timeout update",
+                "name": "dyna.property.backend.call.timeout",
+                "type": "integer"
+              },
+              {
+                "description": "AXA Timeout - Configuration Properties example ",
+                "name": "application.client.axa.timeout",
+                "type": "int"
+              },
+              {
+                "description": "AXA BasePath - Configuration Properties example ",
+                "name": "application.client.axa.basepath",
+                "type": "string"
+              },
+              {
+                "description": "InsuranceQuotation Timeout - Configuration Properties example ",
+                "name": "application.client.wcxssinsurancequotation.timeout",
+                "type": "int"
+              },
+              {
+                "description": "APIM Timeout - Configuration Properties example ",
+                "name": "application.client.apim.aps.timeout",
+                "type": "int"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

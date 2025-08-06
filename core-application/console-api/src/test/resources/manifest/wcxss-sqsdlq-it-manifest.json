@@ -1,0 +1,49 @@
+{
+  "domain": "WCXSS",
+  "env": "test",
+  "groups": ["test1", "admin"],
+  "applications": [
+    {
+      "id": "wcxss-insurance-purchase",
+      "label": "Insurance Purchase",
+      "subDomain": "insurance",
+      "services": {
+        "sqsdlq": [
+          {
+            "name": "booking-event-notif.fifo",
+            "label": "Booking Event Notif",
+            "dlq": "testdlq.fifo",
+            "dlqArn": "testdlq.fifo",
+            "url": "${queues.booking-event-notif.fifo.url}",
+            "resultColumns": [
+              {
+                "name": "groupId",
+                "label": "Group id"
+              },
+              {
+                "name": "X-Wcp-TraceId",
+                "label": "Trace Id"
+              },
+              {
+                "name": "eventType",
+                "label": "Event type"
+              },
+              {
+                "name": "bookingSystem",
+                "label": "Booking system"
+              },
+              {
+                "name": "orderId",
+                "label": "Order"
+              },
+              {
+                "name": "orderItemId",
+                "label": "Order item"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

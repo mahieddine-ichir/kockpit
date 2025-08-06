@@ -1,0 +1,902 @@
+{
+  "domain": "wcxss",
+  "env": "local",
+  "groups": ["XSS", "WCC"],
+  "applications": [
+    {
+      "id": "wcxss-sbk",
+      "label": "StayBooking",
+      "subDomain": "fnb",
+      "services": {
+        "sqsdlq": [
+          {
+            "name": "sqs-sbk",
+            "label": "Staybooking dlq",
+            "dlq": "sqs-sbk-dlq",
+            "dlqArn": "sqs-sbk-dlq",
+            "url": "http://localhost:4566/queue/sqs-sbk",
+            "concurrentConsumers": 20,
+            "deleteWhenReplay": true,
+            "resultColumns": [
+              {
+                "name"  : "pmid",
+                "label" : "PMID"
+              },
+              {
+                "name"  : "survivor",
+                "label" : "Survivor"
+              },
+              {
+                "name"  : "victim",
+                "label" : "Victim"
+              },
+              {
+                "name"  : "service",
+                "label" : "Service"
+              },
+              {
+                "name"  : "legacyHttpStatusCode",
+                "label" : "Legacy http status code"
+              },
+              {
+                "name"  : "origin",
+                "label" : "Origin"
+              },
+              {
+                "name"  : "writetime",
+                "label" : "Writetime"
+              },
+              {
+                "name"  : "errorDescription",
+                "label" : "Error description"
+              }
+            ]
+
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-insurance",
+      "label": "Insurance Local",
+      "subDomain": "insurance",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-insurance",
+            "label": "API Insurance Local",
+            "appIds": [
+              "wcxss-insurance-quotation",
+              "wcxss-insurance-purchase"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring"
+              },
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "renderer": "result"
+              },
+              {
+                "name": "origin",
+                "label": "Origin"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              },
+              {
+                "name": "orderId",
+                "label": "Order"
+              },
+              {
+                "name": "quotationId",
+                "label": "Quotation",
+                "renderer": "substring"
+              },
+              {
+                "name": "purchasedOfferId",
+                "label": "Purchase",
+                "renderer": "substring"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "start",
+                "label": "Start date",
+                "description": "Start date",
+                "type": "Date"
+              },
+              {
+                "name": "origin",
+                "label": "Origin",
+                "description": "Origin",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpMethod",
+                "label": "HTTP Method",
+                "description": "Method",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "description": "Request HTTP Status",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "description": "Trace ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "orderId",
+                "label": "Order ID",
+                "description": "Order ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "quotationId",
+                "label": "Quotation ID",
+                "description": "Quotation ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "purchaseId",
+                "label": "Purchase ID",
+                "description": "Purchase ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-insurance-quotation-v1",
+      "label": "Insurance Quotation",
+      "subDomain": "insurance",
+      "services": {
+        "cache": [
+          {
+            "name": "hotelsInfo",
+            "label": "Quotations - API v1 - Hotels"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-insurance-quotation-v2",
+      "label": "Insurance Quotation",
+      "subDomain": "insurance",
+      "services": {
+        "cache": [
+          {
+            "name": "hotelsInfo",
+            "label": "Quotations - API v2 - Hotels"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-insurance-purchase",
+      "label": "Insurance Purchase",
+      "subDomain": "insurance",
+      "services": {
+        "sqsdlq": [
+          {
+            "name": "booking-event-notif.fifo",
+            "label": "Booking Event Notif",
+            "dlq": "booking-event-notif-dlq.fifo",
+            "dlqArn": "booking-event-notif-dlq.fifo",
+            "url": "http://localhost:4566/queue/booking-event-notif.fifo",
+            "resultColumns": [
+              {
+                "name": "groupId",
+                "label": "Group id"
+              },
+              {
+                "name": "X-Wcp-TraceId",
+                "label": "Trace Id"
+              },
+              {
+                "name": "eventType",
+                "label": "Event type"
+              },
+              {
+                "name": "bookingSystem",
+                "label": "Booking system"
+              },
+              {
+                "name": "orderId",
+                "label": "Order"
+              },
+              {
+                "name": "orderItemId",
+                "label": "Order item"
+              }
+            ]
+          },
+          {
+            "name": "insurance-cancellation-notif",
+            "label": "Purchase Cancellation Notif",
+            "dlq": "insurance-cancellation-notif-dlq",
+            "dlqArn": "insurance-cancellation-notif-dlq",
+            "url": "http://localhost:4566/queue/insurance-cancellation-notif",
+            "resultColumns": [
+              {
+                "name": "purchasedOfferId",
+                "label": "Purchased offer"
+              },
+              {
+                "name": "result.cancelCode",
+                "label": "Cancel code"
+              },
+              {
+                "name": "result.result",
+                "label": "Result"
+              }
+            ]
+          },
+          {
+            "name": "insurance-payment-status-update",
+            "label": "Payment Status Update",
+            "dlq": "insurance-payment-status-update-dlq",
+            "dlqArn": "insurance-payment-status-update-dlq",
+            "url": "http://localhost:4566/queue/insurance-payment-status-update",
+            "resultColumns": [
+              {
+                "name": "purchasedOfferId",
+                "label": "Purchased offer"
+              },
+              {
+                "name": "targetStatus",
+                "label": "Target status"
+              },
+              {
+                "name": "pspTransactionId",
+                "label": "Psp transaction"
+              },
+              {
+                "name": "paymentAmount",
+                "label": "Payment amount"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-restaurants-v1",
+      "label": "XSS Restaurants API V1",
+      "subDomain": "fnb",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-restaurants-v1",
+            "label": "Ref Restau - API v1",
+            "appIds": [
+              "wcxss-restaurants-v1"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring"
+              },
+              {
+                "name": "KResult",
+                "label": "K-Result",
+                "renderer": "result"
+              },
+              {
+                "name": "origin",
+                "label": "Origin"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "start",
+                "label": "Start date",
+                "description": "Start date",
+                "type": "Date"
+              },
+              {
+                "name": "origin",
+                "label": "Origin",
+                "description": "Origin",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpMethod",
+                "label": "HTTP Method",
+                "description": "Method",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "description": "Request HTTP Status",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "description": "Trace ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-restaurants-v2",
+      "label": "XSS Restaurants API V2",
+      "subDomain": "fnb",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-restaurants-v2",
+            "label": "Ref Restau - API v2",
+            "appIds": [
+              "wcxss-restaurants-v2"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring"
+              },
+              {
+                "name": "KResult",
+                "label": "K-Result",
+                "renderer": "result"
+              },
+              {
+                "name": "origin",
+                "label": "Origin"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "start",
+                "label": "Start date",
+                "description": "Start date",
+                "type": "Date"
+              },
+              {
+                "name": "origin",
+                "label": "Origin",
+                "description": "Origin",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpMethod",
+                "label": "HTTP Method",
+                "description": "Method",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "description": "Request HTTP Status",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "description": "Trace ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-order-trap",
+      "label": "XSS Order Trap API",
+      "subDomain": "insurance",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-order-trap",
+            "label": "API Order Trap",
+            "appIds": [
+              "wcxss-order-trap"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring"
+              },
+              {
+                "name": "KResult",
+                "label": "K-Result",
+                "renderer": "result"
+              },
+              {
+                "name": "origin",
+                "label": "Origin"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "start",
+                "label": "Start date",
+                "description": "Start date",
+                "type": "Date"
+              },
+              {
+                "name": "origin",
+                "label": "Origin",
+                "description": "Origin",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpMethod",
+                "label": "HTTP Method",
+                "description": "Method",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "description": "Request HTTP Status",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "description": "Trace ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-restaurants-bulk-task",
+      "label": "XSS Bulk Restaurants",
+      "subDomain": "fnb",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-restaurants-bulk-task",
+            "label": "Ref Restau - Bulk",
+            "appIds": [
+              "wcxss-restaurants-bulk-task"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "KResult",
+                "label": "K-Result",
+                "renderer": "result"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              },
+              {
+                "name": "restaurantsNumber",
+                "label": "# Restaurants"
+              },
+              {
+                "name": "restaurantsProcessedOkNumber",
+                "label": "# Restaurants OK"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "start",
+                "label": "Start date",
+                "description": "Start date",
+                "type": "Date"
+              },
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "description": "K Result",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-fnbv2-restaurants-connector-apicontent",
+      "label": "Fnb Connector API Content",
+      "subDomain": "fnb",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-fnbv2-restaurants-connector-tars-apicontent",
+            "label": "Ref Restau - Alim - Conn TARS API Content",
+            "appIds": [
+              "wcxss-fnbv2-restaurants-connector-tars-apicontent"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "KResult",
+                "label": "K-Result",
+                "renderer": "result"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              },
+              {
+                "name": "flowId",
+                "label": "Flow"
+              },
+              {
+                "name": "layerId",
+                "label": "Restaurant"
+              },
+              {
+                "name": "hotelCode",
+                "label": "Code hotel"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "start",
+                "label": "Start date",
+                "description": "Start date",
+                "type": "Date"
+              },
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "description": "K Result",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-fnb-restaurants-connector-wc-media",
+      "label": "Fnb Connector WC Media",
+      "subDomain": "fnb",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-fnb-restaurants-connector-wc-media",
+            "label": "Ref Restau - Alim - Conn WC Media",
+            "appIds": [
+              "wcxss-fnb-restaurants-connector-wc-media"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "KResult",
+                "label": "K-Result",
+                "renderer": "result"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              },
+              {
+                "name": "flowId",
+                "label": "Flow"
+              },
+              {
+                "name": "restaurantId",
+                "label": "Restaurant"
+              },
+              {
+                "name": "hotelCode",
+                "label": "Code hotel"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "description": "K Result",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-fnb-restaurants-connector-resdiary",
+      "label": "Fnb Connector Resdiary",
+      "subDomain": "fnb",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-fnb-restaurants-connector-resdiary",
+            "label": "Ref Restau - Alim - Conn Resdiary",
+            "appIds": [
+              "wcxss-fnb-restaurants-connector-resdiary"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "KResult",
+                "label": "K-Result",
+                "renderer": "result"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              },
+              {
+                "name": "flowId",
+                "label": "Flow"
+              },
+              {
+                "name": "restaurantId",
+                "label": "Restaurant"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "description": "K Result",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "wcxss-fnb-restaurants-connector-geomaj",
+      "label": "Fnb Connector tars Geomaj",
+      "subDomain": "fnb",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-fnb-restaurants-connector-geomaj",
+            "label": "Ref Restau - Alim - Conn Geomaj",
+            "appIds": [
+              "wcxss-fnb-restaurants-connector-geomaj"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "KResult",
+                "label": "K-Result",
+                "renderer": "result"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              },
+              {
+                "name": "flowId",
+                "label": "Flow"
+              },
+              {
+                "name": "restaurantId",
+                "label": "Restaurant"
+              },
+              {
+                "name": "hotelCode",
+                "label": "Code hotel"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "description": "K Result",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fnb-restaurants-feed",
+      "label": "Fnb Restaurant Feed",
+      "subDomain": "fnb",
+      "services": {
+        "audit": [
+          {
+            "name": "fnb-restaurants-feed",
+            "label": "Ref Restau - Alim - Feed",
+            "appIds": [
+              "fnb-restaurants-feed"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "KResult",
+                "label": "K-Result",
+                "renderer": "result"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              },
+              {
+                "name": "objectId",
+                "label": "Object"
+              },
+              {
+                "name": "eventType",
+                "label": "Event"
+              },
+              {
+                "name": "dataConnector",
+                "label": "Data connector"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "description": "K Result",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
