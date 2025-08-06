@@ -1,0 +1,8 @@
+<mat-card>
+  <mat-card-subtitle>{{title}}</mat-card-subtitle>
+  <mat-card-content>
+    <ul>
+      <wcc-keyvalue *ngFor="let key of getDisplayedKeys()" [key]="key" [value]="properties[key]"></wcc-keyvalue>
+    </ul>
+  </mat-card-content>
+</mat-card>

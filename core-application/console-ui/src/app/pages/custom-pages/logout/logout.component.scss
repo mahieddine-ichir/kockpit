@@ -1,0 +1,24 @@
+.logout {
+  display: block;
+  background: #fff url('/assets/img/backgrounds/bg-grey.jpg') no-repeat center center fixed;
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.login-div{
+  background: grey;
+  width: 380px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-div img {
+  padding-bottom: 20px;
+}
+
+.mat-flat-button {
+  color: black;
+  background-color: lightgrey;
+}

@@ -1,0 +1,80 @@
+.detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.detail-row {
+  height: 0;
+}
+
+element-row:not(.expanded-row):hover {
+  background: whitesmoke;
+}
+
+element-row:not(.expanded-row):active {
+  background: #efefef;
+}
+
+.element-row td {
+  border-bottom-width: 0;
+}
+
+.table-detail {
+  width: 100%;
+  border: 1px solid;
+  border-collapse: collapse;
+}
+
+.table-detail-header {
+  border: 1px solid;
+  font-size: 15px;
+}
+
+.table-detail-body {
+  text-align: center;
+  font-size: 15px;
+}
+
+.buttonRefresh{
+  text-align: left;
+  background: #2196F3;
+  color: white;
+}
+
+.fileList {
+  margin-bottom: 15px;
+  border: 1px solid;
+  background: white;
+  width: 30%;
+}
+
+input {
+  font-size: 17px;
+}
+
+.uploadButton {
+  font-size: 17px;
+  background: #2196F3;
+  color: white;
+  padding: 2px 10px;
+  border-radius: 5px;
+  margin: 15px;
+}
+
+.file-list {
+  margin: 15px;
+}
+
+.mat-header-cell {
+  font-size: 17px;
+}
+
+label {
+  color: white;
+  background: #2196F3;
+  padding: 10px 16px;
+  font-size: 17px;
+  display: inline-block;
+  border-radius: 5px;
+  cursor: pointer;
+}

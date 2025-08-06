@@ -1,0 +1,13 @@
+<div furyPage furyPagePadding fxLayout="column">
+  <mat-card fxLayout="row">
+    Topology - {{domain}} - {{env}}
+    <button class="button" mat-button (click)="reset()" >
+      <mat-icon>refresh</mat-icon>
+    </button>
+
+  </mat-card>
+
+  <mat-card fxLayout="row">
+    <div style="height: 500px; width: 90%;" vistopology [options]="topologyOptions" (click)="selectTopology($event)"></div>
+  </mat-card>
+</div>

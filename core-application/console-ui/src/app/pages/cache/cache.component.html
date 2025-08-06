@@ -1,0 +1,85 @@
+<breadcrumb [menu]="breadCrumbService.breadcrumb" class="breadcrumnb"></breadcrumb>
+<div fxLayout="column">
+  <div class="form-elements" furyPage furyPagePadding fxLayout="row">
+
+    <div furyPage furyPagePadding furyScrollbar>
+
+      <div class="refresh-cache">
+        <button mat-flat-button (click)="this.emptyCache()" color="warn">
+          <mat-icon>vertical_align_bottom</mat-icon>
+          Clear cache
+        </button>
+        <button mat-flat-button (click)="this.resetStats()" color="accent">
+          <mat-icon>brush</mat-icon>
+          Reset stats
+        </button>
+        <button mat-flat-button (click)="this.reloadComponent()" color="primary">
+          <mat-icon>refresh</mat-icon>
+          Refresh
+        </button>
+      </div>
+
+      <div class="list-table">
+        <h3>Statistics</h3>
+        <fury-list [hideHeader]="true">
+          <table mat-table [dataSource]="statsDataSource">
+
+            <div *ngFor="let displayedColumn of statsDisplayedColumns">
+              <ng-container [matColumnDef]="displayedColumn">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{displayedColumn}}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <div *ngIf="displayedColumn !== 'Gets / Hits / Misses'; else displayCacheGetsHitsMisses">
+                    {{displayStatsElement(element, displayedColumn)}}
+                  </div>
+                  <ng-template #displayCacheGetsHitsMisses>
+                    <!-- Bold numbers, hits in green, misses in red -->
+                    <span style="font-weight: bold">
+                      {{displayStatsElement(element, 'cacheGets')}}
+                    </span> Gets =
+                    <span style="color: #006644">
+                      <span style="font-weight: bold">
+                      {{displayStatsElement(element, 'cacheHits')}}
+                      </span> Hits (<span style="font-weight: bold">{{displayStatsElement(element, 'cacheHitPercentage')}}%</span>)
+                    </span> +
+                    <span style="color: #bf2600">
+                      <span style="font-weight: bold">
+                        {{displayStatsElement(element, 'cacheMisses')}}
+                      </span> Misses (<span style="font-weight: bold">{{displayStatsElement(element, 'cacheMissPercentage')}}%</span>)
+                    </span>
+                  </ng-template>
+                </td>
+              </ng-container>
+            </div>
+            <tr mat-header-row *matHeaderRowDef="statsDisplayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: statsDisplayedColumns;"></tr>
+
+          </table>
+        </fury-list>
+      </div>
+      <hr/>
+      <div class="list-table">
+        <h3>Commands History</h3>
+        <fury-list [hideHeader]="true">
+          <table mat-table [dataSource]="commandsDataSource">
+
+            <div *ngFor="let displayedColumn of commandsDisplayedColumns">
+              <ng-container [matColumnDef]="displayedColumn">
+                <th mat-header-cell *matHeaderCellDef> {{displayedColumn}} </th>
+                <td mat-cell *matCellDef="let element"
+                    [innerHTML]="displayCommandsElement(element,displayedColumn)">
+                </td>
+              </ng-container>
+            </div>
+            <tr mat-header-row *matHeaderRowDef="commandsDisplayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: commandsDisplayedColumns;"></tr>
+
+          </table>
+        </fury-list>
+      </div>
+
+
+    </div>
+  </div>
+</div>

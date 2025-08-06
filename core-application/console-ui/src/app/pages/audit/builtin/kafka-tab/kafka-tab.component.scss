@@ -1,0 +1,28 @@
+.title {
+  font-size: 17px;
+  font-weight: bold;
+  text-align: left;
+  margin: 10px;
+}
+
+.payload {
+  font-size: 17px;
+  font-weight: bold;
+  text-align: left;
+  margin-left: 10px;
+  margin-top: 22px;
+  margin-bottom: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.kafkaData, .kafkaHead, .kafkaBody {
+  border: 1px solid;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.kafkaData {
+  width: 50%;
+  margin-right: 30px;
+}

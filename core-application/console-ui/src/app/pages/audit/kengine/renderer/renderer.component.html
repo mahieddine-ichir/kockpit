@@ -1,0 +1,13 @@
+<mat-card fxLayout="column">
+  <app-flow-hierarchy [hierarchy]="flowHierarchy" (flowSelected)="onFlowSelected($event)"></app-flow-hierarchy>
+</mat-card>
+<mat-card fxLayout="column" *ngIf="selectedFlow">
+  <div class="graph" #ruleNetwork></div>
+</mat-card>
+
+<mat-card fxLayout="row" *ngIf="selectedRule">
+  <mat-icon wccTooltip image="assets/img/kengine-display/legends_kengine1.png">
+    help_outline
+  </mat-icon>
+  <div class="graph-detail" #ruleDetailNetwork></div>
+</mat-card>

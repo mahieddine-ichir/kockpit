@@ -1,0 +1,29 @@
+
+.queue-actions {
+  margin-bottom: 20px;
+}
+.delete-messages {
+  float: left;
+  margin-right: 20px;
+}
+
+.refresh-messages {
+  float: right;
+}
+
+.queue-information {
+  margin-bottom: 20px;
+}
+
+.queue-information ul {
+  list-style-type: none;
+}
+
+.queue-information mat-checkbox  {
+  color : rgba(0,0,0,.541);
+  list-style-type: none;
+}
+
+.additional-button{
+  margin-left: 20px;
+}

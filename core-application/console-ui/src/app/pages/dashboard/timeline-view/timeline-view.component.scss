@@ -1,0 +1,44 @@
+@import 'styles/wcp-tables';
+
+table {
+  .timeline-container {
+    width: 55%;
+
+    .timeline-cell {
+      display: flex;
+      width: 100%;
+      height: 30px;
+      background-color: #f4f4f9;
+      border-radius: 8px;
+      padding: 5px 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+
+      .timeline-bar {
+        height: 100%;
+
+        &.execution {
+          background-color: #4CAF50;
+          border-radius: 5px;
+        }
+
+        &.lag {
+          background-color: #d3d3d3;
+          border-radius: 5px;
+        }
+
+      }
+    }
+
+  }
+
+  th, td {
+    &.collapse-columns {
+      display: none;
+    }
+
+    &.expand-execution-column {
+      padding-left: 24px;
+    }
+  }
+}

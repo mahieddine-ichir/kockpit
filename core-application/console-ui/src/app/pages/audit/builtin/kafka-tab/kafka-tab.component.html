@@ -1,0 +1,37 @@
+<ng-container *ngFor="let kafkaMessage of kafkaMessages">
+  <mat-expansion-panel style="margin-top: 15px; margin-bottom: 15px">
+    <mat-expansion-panel-header [collapsedHeight]="'125px'" [expandedHeight]="'125px'">
+      <table class="kafkaData">
+        <caption class="title">Kafka details</caption>
+        <thead>
+        <tr>
+          <th class="kafkaHead">Source</th>
+          <th class="kafkaHead">Topic</th>
+          <th class="kafkaHead">Key</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="kafkaBody">{{kafkaMessage.source}}</td>
+          <td class="kafkaBody">{{kafkaMessage.topic}}</td>
+          <td class="kafkaBody">{{kafkaMessage.key}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </mat-expansion-panel-header>
+    <ng-container>
+      <div class="payload">Payload</div>
+      <button mat-flat-button color="primary" style="margin: 20px; cursor: pointer; float: right"
+              (click)="copyMessage(kafkaMessage.payload)"
+              value="click to copy"><mat-icon >content_copy
+      </mat-icon>Copy body to clipboard</button>
+    </ng-container>
+    <ng-container>
+      <div>
+        <ngx-json-viewer *ngIf="kafkaMessage.isJson" [json]="kafkaMessage.payload"></ngx-json-viewer>
+        <pre class="prettyprint" *ngIf="kafkaMessage.isXml">{{kafkaMessage.payload}}</pre>
+        <div *ngIf="kafkaMessage.isString">{{kafkaMessage.payload}}</div>
+      </div>
+    </ng-container>
+  </mat-expansion-panel>
+</ng-container>

@@ -1,0 +1,35 @@
+.mat-form-field-infix, mat-card-content, mat-card-header {
+  margin: 5px 16px 0 16px;
+}
+selected-criteria-component {
+  z-index: 0;
+  margin: -20px 16px 0 16px;
+}
+mat-card-content {
+  z-index: 1;
+}
+selected-criteria-component ~ #search {
+  margin-top: -20px;
+}
+
+.loading:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4, end) 900ms infinite;
+  animation: ellipsis steps(4, end) 900ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}

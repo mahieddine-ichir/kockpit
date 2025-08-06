@@ -1,0 +1,154 @@
+$loki-bg-color: #000000;
+$loki-fg-color: #fff;
+$loki-primary-color:#3c4e62;
+$loki-secondary-color:#3c4e62;
+
+$loki-danger:#D98880;
+$loki-success:#7DCEA0;
+$loki-warning:#ffb07f;
+
+@function loki-danger(){
+    @return $loki-danger;
+}
+
+$main-fs: 14px;
+$main-ff: 'SF Display', sans-serif;
+$main-fw: 400;
+$main-lh: 1.5714286;
+$module: 1.5714286rem;
+
+$second-ff: 'SF Display', sans-serif;
+
+$animation: ease-in-out;
+
+$sidebar-width: 180px;
+
+$max543 : only screen and (max-width: 543px);
+$min544 : only screen and (min-width: 544px);
+$max767 : only screen and (max-width: 767px);
+$min768 : only screen and (min-width: 768px);
+$max991 : only screen and (max-width: 991px);
+$min992 : only screen and (min-width: 992px);
+$max1199 : only screen and (max-width: 1199px);
+$min1200 : only screen and (min-width: 1200px);
+
+$headers-ff: $second-ff;
+$headers-fw: 700;
+$height_mat_card:45px;
+
+$success-color: #008000;
+$info-color: #00bfff;
+$warning-color: #ff8c00;
+$danger-color: #dc143c;
+
+$main-color: (
+  50 : #e8eaec,
+  100 : #c5cad0,
+  200 : #9ea7b1,
+  300 : #778391,
+  400 : #59697a,
+  500 : #3c4e62,
+  600 : #36475a,
+  700 : #2e3d50,
+  800 : #273546,
+  900 : #1a2534,
+  A100 : #3c4e62,
+  A200 : #2694d9,
+  A400 : #0e7cc5,
+  A700 : #03568b,
+  contrast: (
+  50 : #000000,
+       100 : #000000,
+       200 : #000000,
+       300 : #000000,
+       400 : #ffffff,
+       500 : #ffffff,
+       600 : #ffffff,
+       700 : #ffffff,
+       800 : #ffffff,
+       900 : #ffffff,
+       A100 : #000000,
+       A200 : #000000,
+       A400 : #ffffff,
+       A700 : #ffffff,
+  )
+);
+
+$second-color: (
+50 : #f2f3f5,
+100 : #dfe2e5,
+200 : #cacfd4,
+300 : #b4bbc3,
+400 : #a4adb6,
+500 : #949ea9,
+600 : #8c96a2,
+700 : #818c98,
+800 : #77828f,
+900 : #65707e,
+A100 : #f4f9ff,
+A200 : #c3ddfd,
+A400 : #8ec0ff,
+A700 : #74b2ff,
+contrast: (
+  50 : #000000,
+  100 : #000000,
+  200 : #000000,
+  300 : #000000,
+  400 : #000000,
+  500 : #000000,
+  600 : #000000,
+  700 : #000000,
+  800 : #000000,
+  900 : #ffffff,
+  A100 : #000000,
+  A200 : #000000,
+  A400 : #000000,
+  A700 : #000000,
+    )
+);
+@function main-color($key: $main-color) {
+  @return map-get($main-color, $key);
+}
+@function main-color-contrast($key: $main-color) {
+  @return map-get(map-get($main-color, 'contrast'),$key);
+}
+
+@function second-color($key: $second-color) {
+  @return map-get($second-color, $key);
+}
+@function second-color-contrast($key: $second-color) {
+  @return map-get(map-get($second-color, 'contrast'),$key);
+}
+
+$accent-palette: (
+  50: #e8eaec,
+  100: #c5cad0,
+  200: #9ea7b1,
+  300: #778391,
+  400: #59697a,
+  500: #3c4e62,
+  600: #36475a,
+  700: #2e3d50,
+  800: #273546,
+  900: #1a2534,
+  A100: #78adff,
+  A200: #458eff,
+  A400: #126fff,
+  A700: #0061f7,
+  contrast: (
+       50 : #000000,
+       100 : #000000,
+       200 : #000000,
+       300 : #000000,
+       400 : #ffffff,
+       500 : #ffffff,
+       600 : #ffffff,
+       700 : #ffffff,
+       800 : #ffffff,
+       900 : #ffffff,
+       A100 : #000000,
+       A200 : #000000,
+       A400 : #ffffff,
+       A700 : #ffffff,
+  )
+);

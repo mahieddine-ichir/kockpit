@@ -1,0 +1,39 @@
+<!DOCTYPE html><html><head><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <meta charset="utf-8">
+  <title id="redirect">Loading ...</title>
+  <base href="">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script type="application/javascript">
+function startUp() {
+console.log('start up ...');
+setTimeout(function() {
+window.location = 'index.html?' + Math.random();
+}, 500);
+}
+</script>
+  <script>
+    fetch('./assets/custom.json')
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        appendData(data);
+      })
+      .catch(function(error) {
+      });
+
+    function appendData(data) {
+      const redirect = document.getElementById("redirect");
+      if(data.redirect) {
+        redirect.textContent = data.redirect;
+      }
+    }
+</script>
+<body onLoad="startUp();">
+<a href="index.html">ICI</a>
+</body>
+</html>
+

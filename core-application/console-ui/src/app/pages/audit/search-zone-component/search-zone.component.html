@@ -1,0 +1,44 @@
+<!-- TODO : collapse on search... -->
+<fury-card>
+    <mat-card-header>
+        <mat-card-title>Add a search term...
+            <stored-request-component fxLayout="row" [selectedCriteria]="selectedCriteria">
+            </stored-request-component>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-card-title>
+            <button mat-button *ngFor="let searchCriterion of searchCriteria"
+                    [matTooltip]="searchCriterion.description"
+                    (click)="selectCriteria(searchCriterion)">{{searchCriterion.label}}
+            </button>
+
+            <!--
+            <span style="text-align: right;">
+            <button class="add-job" mat-fab color="warn" (click)="metadataUpload.click()">
+                <mat-icon class="icon">add</mat-icon>
+            </button>
+            </span>
+            -->
+
+        </mat-card-title>
+
+        <build-criteria-component fxLayout="row" fxLayoutAlign="space-evenly center"
+                                  *ngIf="isBuilding"
+                                  (onCriteriaBuilderCancel)="closeCriteriaBuilder()"
+                                  (onCriteriaBuilderSubmit)="updateSelectedCriteria($event)"
+                                  [editSelectedCriteria]="editSelectedCriterion"
+                                  [option]="selectedItem"></build-criteria-component>
+    </mat-card-content>
+    <selected-criteria-component fxLayout="row"
+                                 *ngIf="selectedCriteria.length > 0"
+                                 [selectedCriteria]="selectedCriteria"
+                                 (onDeleteSelectedCriterion)="onDeleteSelectedCriterion($event)"
+                                 (onEditSelectedCriterion)="onEditSelectedCriterion($event)"></selected-criteria-component>
+    <button id="search" mat-flat-button [color]="isError ? 'warn' : 'primary'" [disabled]="isLoading"
+            (click)="search()">
+        <div [className]="isLoading? 'loading' : (isError ? 'error' : '')">
+            {{isLoading ? 'LOADING' : (isError ? 'ERROR' : 'SEARCH')}}
+        </div>
+    </button>
+</fury-card>

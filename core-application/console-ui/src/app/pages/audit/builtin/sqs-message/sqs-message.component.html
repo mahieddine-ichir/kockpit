@@ -1,0 +1,47 @@
+<ng-container *ngFor="let message of sqsMessage">
+  <mat-card>
+    <mat-card-content>
+      <table style="width:100%">
+        <caption></caption>
+        <tr>
+          <th id="queryUrl">Query URL</th>
+          <td>{{message.queueUrl}}</td>
+        </tr>
+        <tr>
+          <th id="issue">Issue</th>
+          <td>{{message.issue}}</td>
+        </tr>
+        <tr>
+          <th id="messageId">Message Id</th>
+          <td>{{message.messageId}}</td>
+        </tr>
+        <tr>
+          <th id="deduplicationId">Deduplication Id</th>
+          <td>{{message.deduplicationId}}</td>
+        </tr>
+        <tr>
+          <th id="groupId">Group Id</th>
+          <td>{{message.groupId}}</td>
+        </tr>
+        <tr>
+          <th id="metadata">Attributes</th>
+          <td>
+            <table>
+              <tr *ngFor="let attr of message.attributes | keyvalue">
+                <td>{{attr.key}}</td>
+                <td style="padding-left: 20px">{{attr.value}}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <th id="payload">Payload</th>
+          <td>
+            <ngx-json-viewer [json]=message.payload></ngx-json-viewer>
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+</ng-container>

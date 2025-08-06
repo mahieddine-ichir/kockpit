@@ -1,0 +1,8 @@
+<mat-card>
+  <mat-card-subtitle>{{title}}
+    <ng-container *ngIf="contentType"> ({{contentType}})</ng-container>
+  </mat-card-subtitle>
+  <mat-card-content>
+    <div #content></div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,78 @@
+{
+  "id": "wcp-local-samples",
+  "properties": {
+    "ff.backend.new2022": {
+      "name": "ff.backend.new2022",
+      "value": "1000",
+      "lastUpdatedTimestamp": 1643098812007,
+      "comment": "my comment",
+      "source": "MANIFEST",
+      "status": "NOT_SYNCHRO",
+      "instances" : [
+        {
+          "applicationInstance" : "127.0.0.1@toto",
+          "status" : "NOT_SYNCHRO",
+          "currentValue": "99999"
+        },
+        {
+          "applicationInstance" : "127.0.0.1@tata",
+          "status" : "SYNCHRO",
+          "currentValue": "1000"
+        }
+      ]
+    },
+    "sample.resttemplate.timeout": {
+      "name": "sample.resttemplate.timeout",
+      "value": "123",
+      "lastUpdatedTimestamp": 1643098812083,
+      "comment": "my comment",
+      "sourceDto": "MANIFEST",
+      "status": "SYNCHRO",
+      "instances" : [
+        {
+          "applicationInstance" : "127.0.0.1@tata",
+          "status" : "SYNCHRO",
+          "currentValue": "123"
+        },
+        {
+          "applicationInstance" : "tata",
+          "status" : "SYNCHRO",
+          "currentValue": "123"
+        }
+      ]
+    }
+  },
+  "changes": [{
+    "timestamp": 1643098812083,
+    "propertyName": "ff.backend.new2022",
+    "valueBeforeChange": "9999",
+    "valueAfterChange": "1000"
+  }],
+  "issuedCommands": [
+    {
+      "status": "KO",
+      "message": "NullPointer can not update kslkkqskldklqsdj",
+      "type": "RESPONSE",
+      "timestamp": 1643098812083,
+      "requestId": "1643098812083",
+      "applicationInstance": "127.0.0.1@tata",
+      "propertyName": ["ff.backend.new2022", "sample.resttemplate.timeout"]
+    },
+    {
+      "status": "OK",
+      "type": "RESPONSE",
+      "timestamp": 1643098812083,
+      "requestId": "1643098812083",
+      "applicationInstance": "127.0.0.1@tata",
+      "propertyName": ["ff.backend.new2022", "sample.resttemplate.timeout"]
+    },
+    {
+      "status": "OK",
+      "type": "REQUEST",
+      "timestamp": 1643098812000,
+      "requestId": "1643098812083",
+      "applicationInstance": "127.0.0.1@tata",
+      "propertyName": ["ff.backend.new2022", "sample.resttemplate.timeout"]
+    }
+  ]
+}

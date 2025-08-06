@@ -1,0 +1,28 @@
+<div class="user-button" #userButton (furyClickOutside)="onClickOutside()" fxFlex="grow">
+  <button class="button" mat-button (click)="toggleDropdown()" [class.open]="isOpen" fxFlex="grow">
+    <span fxLayout="row" fxLayoutAlign="start center">
+      <!--<img class="avatar" src="assets/img/avatars/1.jpg">-->
+      <!--*ngIf="!user.avatar"-->
+      <div id="avatar" *ngIf="user && user.avatar" [style.margin-top]="'2px'" [style.margin-right]="'4px'" src="{{user.avatar}}">
+      </div>
+
+      <div id="avatar" *ngIf="!user || !user.avatar"  [style.margin-top]="'2px'" [style.margin-right]="'4px'" name="{{user.firstName + ' ' + user.lastName}}">
+        <div class="avatar-content ng-star-inserted" *ngIf="user && user.firstName"  >{{user.firstName[0]}}{{user.lastName[0]}}</div>
+      </div>
+      <span class="name" *ngIf="user && user.firstName" fxHide fxShow.gt-sm>{{user.firstName}} {{user.lastName}}</span>
+      <mat-icon class="icon" fxHide fxShow.gt-sm>keyboard_arrow_down</mat-icon>
+    </span>
+  </button>
+
+  <div class="dropdown mat-elevation-z1" [class.open]="isOpen">
+    <div class="content">
+      <div class="list">
+        <mat-divider></mat-divider>
+        <div class="item" matRipple (click)="logout()">
+          <mat-icon class="icon">exit_to_app</mat-icon>
+          <span class="title">Logout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

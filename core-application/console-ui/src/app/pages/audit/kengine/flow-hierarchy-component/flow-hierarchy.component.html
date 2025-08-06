@@ -1,0 +1,69 @@
+<div class="tree-container">
+  <div class="tree-controls">
+    <button mat-icon-button class="small-icon-button" *ngIf="showToggle()"
+            (click)="toggleExpandCollapse()"
+            [matTooltip]="allNodesExpanded ? 'Collapse All' : 'Expand All'"
+    >
+      <mat-icon>{{ allNodesExpanded ? 'unfold_less' : 'unfold_more' }}</mat-icon>
+    </button>
+  </div>
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+      <button mat-icon-button disabled></button>
+      <span
+        (click)="onFlowClick(node)"
+        style="cursor: pointer;"
+        [ngClass]="{'selected': node.flow === selectedFlow}">
+        {{ node.name }}
+      </span>
+      <div class="timeline-container">
+        <div class="timeline-cell">
+          <div class="timeline-bar execution"
+               [ngStyle]="{'background-color': getTimelineColor(node)}"
+               [style.width.%]="calculateExecutionPercentage(node, timelineMinTime, timelineMaxTime)"
+               [style.margin-left.%]="calculateExecutionOffsetPercentage(node, timelineMinTime, timelineMaxTime)"
+               matTooltip="Execution: {{ calculateExecutionDuration(node) }} ms"></div>
+        </div>
+      </div>
+      <div class="panel-info">
+        <button mat-flat-button color="{{flowStatusColor(node.flow.status)}}">
+          {{ node.flow.status }}
+        </button>
+        <button mat-stroked-button>
+          {{ node.endTime - node.startTime }} ms
+        </button>
+      </div>
+    </mat-tree-node>
+
+    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+      <button mat-icon-button matTreeNodeToggle
+              [attr.aria-label]="'toggle ' + node.name">
+        <mat-icon>{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+      </button>
+      <span
+        (click)="onFlowClick(node)"
+        style="cursor: pointer;"
+        [ngClass]="{'selected': node.flow === selectedFlow}">
+        {{ node.name }}
+      </span>
+      <div class="timeline-container">
+        <div class="timeline-cell"
+             matTooltip="Execution: {{ calculateExecutionDuration(node) }} ms">
+          <div class="timeline-bar execution"
+               [ngStyle]="{'background-color': getTimelineColor(node)}"
+               [style.width.%]="calculateExecutionPercentage(node, timelineMinTime, timelineMaxTime)"
+               [style.margin-left.%]="calculateExecutionOffsetPercentage(node, timelineMinTime, timelineMaxTime)"
+               ></div>
+        </div>
+      </div>
+      <div class="panel-info">
+        <button mat-flat-button color="{{flowStatusColor(node.flow.status)}}">
+          {{ node.flow.status }}
+        </button>
+        <button mat-stroked-button>
+          {{ node.endTime - node.startTime }} ms
+        </button>
+      </div>
+    </mat-tree-node>
+  </mat-tree>
+</div>

@@ -1,0 +1,18 @@
+<div class="toolbar" fxLayout="row" fxLayoutAlign="space-between">
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <fury-toolbar-sidenav-mobile-toggle></fury-toolbar-sidenav-mobile-toggle>
+
+    <span fxHide.gt-md fxHide.xs style="margin-left: 24px; margin-bottom: -5px;font-size:30px;font-weight: bold;color:black">WCP</span>
+
+    <!--fury-toolbar-search-bar fxFlex="500px" fxHide fxShow.gt-md></fury-toolbar-search-bar-->
+  </div>
+
+  <div fxLayout="row">
+    <fury-toolbar-manifest></fury-toolbar-manifest>
+    <fury-toolbar-notifications></fury-toolbar-notifications>
+    <fury-toolbar-environment></fury-toolbar-environment>
+    <fury-toolbar-fullscreen-toggle class="button"></fury-toolbar-fullscreen-toggle>
+    <fury-toolbar-user-button class="button"></fury-toolbar-user-button>
+    <!--<fury-toolbar-quickpanel-toggle class="button" [quickpanel]="quickpanel"></fury-toolbar-quickpanel-toggle>-->
+  </div>
+</div>

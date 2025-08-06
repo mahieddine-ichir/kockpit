@@ -1,0 +1,17 @@
+@use "sass:math";
+
+@import "var";
+
+.toolbar-manifest {
+  position: relative;
+
+  .button {
+    height: 100%;
+    padding: 0;
+    min-width: $toolbar-button-width;
+
+    .icon {
+      color: $toolbar-button-icon-color;
+    }
+  }
+}

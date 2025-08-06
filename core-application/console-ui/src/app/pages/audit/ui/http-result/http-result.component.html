@@ -1,0 +1,7 @@
+<ng-container [ngSwitch]="severity(value)">
+  <mat-icon *ngSwitchCase="'SUCCESS'" [ngStyle]="{'color':'green'}">check</mat-icon>
+  <mat-icon *ngSwitchCase="'ERROR'" [ngStyle]="{'color':'red'}">close</mat-icon>
+  <mat-icon *ngSwitchCase="'WARNING'" [ngStyle]="{'color':'orange'}">warning</mat-icon>
+  <ng-container *ngSwitchDefault>{{value}}</ng-container>
+</ng-container>
+

@@ -1,0 +1,7 @@
+<mat-form-field fxFlex="100" appearance="outline">
+  <mat-label>Value</mat-label>
+
+  <textarea matInput rows="1" 
+    (change)="updateProperty($event.target.value)"
+    [formControl]="jsonValidityControl"></textarea>
+</mat-form-field>

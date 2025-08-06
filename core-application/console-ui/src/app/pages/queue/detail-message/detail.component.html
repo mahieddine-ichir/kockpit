@@ -1,0 +1,246 @@
+<breadcrumb *ngIf="message" [menu]="breadCrumbService.breadcrumb"></breadcrumb>
+
+<mat-card *ngIf="message">
+  <mat-card-content>
+    <form #myForm="ngForm" fxLayout="column">
+
+      <div fxLayout="row" fxLayoutGap="7px" fxLayoutGap.lt-md="0px" fxLayout.lt-md="column">
+        <mat-form-field fxFlex="25" appearance="outline">
+          <mat-label>Id</mat-label>
+          <input name="id" matInput [value]="message.id" disabled>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="23" appearance="outline">
+          <mat-label>Receive Date</mat-label>
+          <input name="receivedDate" matInput [value]="message.sentTimestamp | date: 'd/M/yy HH:mm:ss'" disabled>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="25" appearance="outline">
+          <mat-label>Group id</mat-label>
+          <input name="groupId" matInput [(ngModel)]="message.groupId" disabled>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="25" appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select name="status" [(ngModel)]="message.status">
+            <mat-option *ngFor="let status of messageStatusEnum" [value]="status.name">{{status.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+      </div>
+
+      <div fxLayout="row" fxLayoutGap.lt-md="0px" fxLayout.lt-md="column">
+        <mat-form-field fxFlex appearance="outline">
+          <mat-label>Comment</mat-label>
+          <textarea name="comment" matInput [(ngModel)]="message.comment"></textarea>
+        </mat-form-field>
+      </div>
+
+
+      <div fxLayout="row" fxLayoutGap="10px" fxLayoutGap.lt-md="0px" fxLayout.lt-md="column">
+
+        <mat-form-field fxFlex="50" appearance="outline">
+          <mat-label>Body</mat-label>
+          <input name="body" matInput [(ngModel)]="message.body" style="overflow: hidden"  disabled>
+        </mat-form-field>
+
+        <div fxFlex="50" class="attributes-wrapper">
+
+          <label>Attributes</label>
+
+          <div fxLayout="column">
+            <div class="existing-attributes" *ngFor="let attribute of message.attributes" fxLayout="row"
+                 fxLayoutGap="5px">
+
+              <mat-form-field  xFlex="25" appearance="outline">
+                <mat-label>Type</mat-label>
+                <input matInput value="{{attributeTypeMap.get(attribute.type)}}" disabled>
+              </mat-form-field>
+
+              <mat-form-field fxFlex="30" appearance="outline">
+                <mat-label>Name</mat-label>
+                <input matInput value="{{attribute.name}}" disabled>
+              </mat-form-field>
+
+              <mat-form-field fxFlex="30" appearance="outline">
+                <mat-label>Value</mat-label>
+                <input matInput value="{{attribute.value}}" disabled>
+              </mat-form-field>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section>
+        <button class="button-send" mat-flat-button color="primary" (click)="updateMessage()"
+                [disabled]="!myForm.valid" value="Save">Save
+        </button>
+        <button class="button-send" mat-flat-button color="accent" (click)="this.retryEnable=!this.retryEnable"
+                [disabled]="!myForm.valid">Retry
+        </button>
+      </section>
+
+      <div *ngIf="this.retryEnable" class="retryMenu">
+        <div fxLayout="row" fxLayoutGap="10px" fxLayoutGap.lt-md="0px" fxLayout.lt-md="column">
+          <div fxFlex="50" class="retryMenuItem">
+            <div fxLayout="column">
+              <mat-form-field fxFlex="50" appearance="outline">
+                <mat-label>Group id</mat-label>
+                <input name="groupIdRetry" matInput [(ngModel)]="messageRetry.groupId" style="overflow: hidden">
+              </mat-form-field>
+
+              <mat-form-field fxFlex="50" appearance="outline">
+                <mat-label>Body</mat-label>
+                <!--<input name="bodyRetry" matInput [(ngModel)]="messageRetry.body" style="overflow: hidden">-->
+                <textarea name="retryBody" matInput [(ngModel)]="messageRetry.body" ></textarea>
+
+              </mat-form-field>
+            </div>
+          </div>
+          <div fxFlex="50" class="attributes-wrapper retryMenuItemAttribute">
+
+            <label>Attributes</label>
+
+            <div fxLayout="column">
+
+              <div fxLayout="row" fxLayoutGap="5px">
+
+                <mat-form-field fxFlex="25" appearance="outline">
+                  <mat-label>Type</mat-label>
+                  <mat-select name="attribute_type" [(ngModel)]="newAttribute.type">
+                    <mat-option *ngFor="let type of attributeTypeMap | keyvalue" [value]="type.key">{{type.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field fxFlex="30" appearance="outline">
+                  <mat-label>Name</mat-label>
+                  <input name="attribute_name" matInput [(ngModel)]="newAttribute.name">
+                </mat-form-field>
+
+                <mat-form-field fxFlex="30" appearance="outline">
+                  <mat-label>Value</mat-label>
+                  <input name="attribute_value" matInput [(ngModel)]="newAttribute.value">
+                </mat-form-field>
+
+                <div fxFlex="15" style="display: grid;">
+                  <button style="margin:auto;" mat-mini-fab color="primary"
+                          (click)="addAttribute()">
+                    <mat-icon>add_circle</mat-icon>
+                  </button>
+                </div>
+
+              </div>
+
+              <div class="existing-attributes" *ngFor="let attribute of messageRetry.attributes" fxLayout="row"
+                   fxLayoutGap="5px">
+                <ng-container *ngIf="attribute.name!=parentIdAttribute">
+                  <mat-form-field fxFlex="25" appearance="outline">
+                    <mat-label>Type</mat-label>
+                    <input matInput value="{{attributeTypeMap.get(attribute.type)}}" [(value)]="attribute.type" (change)="attribute.type = $event.target.value" enabled>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="30" appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input matInput value="{{attribute.name}}" [(value)]="attribute.name" (change)="attribute.name = $event.target.value" enabled>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="30" appearance="outline">
+                    <mat-label>Value</mat-label>
+                    <input matInput value="{{attribute.value}}" [(value)]="attribute.value" (change)="attribute.value = $event.target.value" enabled>
+                  </mat-form-field>
+
+                  <div fxFlex="15" style="display: grid;" *ngIf="message.attributes" >
+                    <button style="margin:auto;" mat-mini-fab color="warn" (click)="deleteAttribute(attribute.name)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+        <section>
+          <button class="button-send" mat-flat-button color="primary" (click)="openSendConfirmationDialog()"
+                  [disabled]="!myForm.valid">Send
+          </button>
+        </section>
+      </div>
+
+
+      <ng-template [ngIf]="!selectedQueue.deleteWhenReplay">
+        <div class="retries" xLayout="row">
+          <div>
+            <h3 class="retries-title">Retries :</h3>
+          </div>
+          <div class="refresh-retries">
+            <button mat-mini-fab color="accent" aria-label="Refresh messages" (click)="this.fetchMessage()">
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+          <table  class="table table-bordered table-striped mb-0">
+            <thead >
+            <tr>
+              <th *ngFor="let head of headElements; let i = index" scope="col">{{head}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let retry of message.retries.slice().reverse()">
+              <tr>
+                <th scope="row">{{retry.sentTimestamp | date: 'd/M/yy HH:mm:ss'}}</th>
+                <th scope="row">{{retry.receiveTime | date: 'd/M/yy HH:mm:ss'}}</th>
+                <td>{{retry.groupId}}</td>
+                <td *ngIf="retry.status=='Error'">
+                  <button mat-flat-button color="warn" >Error</button>
+                </td>
+                <td *ngIf="retry.status=='Sent'">
+                  <button mat-flat-button class="sent">Sent</button>
+                </td>
+                <td>
+                  <button mat-icon-button (click)="retry.showDetail = !retry.showDetail">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="retry.showDetail">
+                <td colspan="0">
+                  {{retry.body}}
+                </td>
+                <td colspan="5">
+                  <ng-container *ngFor="let attribute of retry.attributes" >
+                    <div *ngIf="attribute.name!='WCP_RETRY_MESSAGE_PARENT_ID'" class="existing-attributes" fxLayout="row"
+                         fxLayoutGap="5px">
+
+                      <mat-form-field *ngIf="attribute.name!='WCP_RETRY_MESSAGE_PARENT_ID'" fxFlex="30" appearance="outline">
+                        <mat-label>Name</mat-label>
+                        <input matInput value="{{attribute.name}}" disabled>
+                      </mat-form-field>
+
+                      <mat-form-field *ngIf="attribute.name!='WCP_RETRY_MESSAGE_PARENT_ID'" fxFlex="30" appearance="outline">
+                        <mat-label>Value</mat-label>
+                        <input matInput value="{{attribute.value}}" disabled>
+                      </mat-form-field>
+                    </div>
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+
+          <div *ngIf="isLoading"
+               style="display: flex; justify-content: center; align-items: center; background: white;">
+            <mat-progress-spinner color="primary" mode="indeterminate">
+            </mat-progress-spinner>
+          </div>
+        </div>
+      </ng-template>
+
+    </form>
+
+  </mat-card-content>
+</mat-card>
