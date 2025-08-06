@@ -1,0 +1,39 @@
+{
+  "domain": "wcxss",
+  "env": "local",
+  "groups": [
+    "XSS",
+    "WCC"
+  ],
+  "applications": [
+    {
+      "id": "wcpsamples",
+      "label": "Samples",
+      "services": {
+        "sqsdlq": [
+          {
+            "name": "wcp-samples-sqsdlq-local",
+            "label": "WCP Samples sqsdlq",
+            "dlq": "wcp-samples-sqsdlq-local",
+            "dlqArn": "wcp-samples-sqsdlq-local",
+            "url": "http://localhost:4566/queue/wcp-samples-sqsdlq-local",
+            "resultColumns": [
+              {
+                "name": "service",
+                "label": "Service"
+              },
+              {
+                "name": "test",
+                "label": "Test"
+              },
+              {
+                "name": "error",
+                "label": "Error"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
