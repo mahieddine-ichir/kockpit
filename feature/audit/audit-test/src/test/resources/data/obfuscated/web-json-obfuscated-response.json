@@ -1,0 +1,144 @@
+{
+  "order": {
+    "id": "ORD-ID",
+    "accorReference": "ACCREF-1",
+    "basketId": "BSKT-ID",
+    "language": "en",
+    "creationDatetime": "2021-01-01T11:30:25.521Z",
+    "modificationDatetime": "2021-01-01T11:30:25.521Z",
+    "version": 1,
+    "modelVersion": 1,
+    "items": [
+      {
+        "id": "ORDITM-ID-1",
+        "basketItemId": "BSKTITEM-ID-ITM1",
+        "booking": {
+          "status": "AWAITING_BOOKING"
+        },
+        "resourceReservation": {
+          "status": "NO_PRERESERVATION"
+        }
+      }
+    ],
+    "payment": {
+      "status": "PAYMENT_DONE",
+      "paymentTransactionId": "PAYMTTRANSAC-ID-1",
+      "result": {
+        "walletUsed": false
+      }
+    },
+    "basket": {
+      "id": "BSKT-ID",
+      "language": "en",
+      "creationDatetime": "2021-01-01T11:30:25.521Z",
+      "modificationDatetime": "2021-01-01T11:30:25.521Z",
+      "version": 1,
+      "modelVersion": 1,
+      "items": [
+        {
+          "id": "BSKTITEM-ID-ITM1",
+          "offerType": "HOTEL_STAY",
+          "offerId": "OFFERID-ITM1",
+          "comment": "COMMENT-ITM1",
+          "purposeOfStay": "LEISURE",
+          "guests": [
+            {
+              "firstName": "*******************M1",
+              "lastName": "******************M1",
+              "age": 20
+            },
+            {
+              "firstName": "*******************M1",
+              "lastName": "******************M1",
+              "age": 10
+            },
+            {
+              "firstName": "*******************M1",
+              "lastName": "******************M1",
+              "age": 19
+            },
+            {
+              "firstName": "*******************M1",
+              "lastName": "******************M1",
+              "age": 14
+            }
+          ],
+          "mainBeneficiary": {
+            "email": "M*******************@m*******",
+            "firstName": "**********************M1",
+            "lastName": "*********************M1",
+            "phone": {
+              "number": "******5678",
+              "prefix": "33"
+            }
+          },
+          "offer": {
+            "type": "HOTEL_STAY",
+            "id": "OFFERID-ITM1",
+            "providerSystem": "TARS",
+            "language": "en",
+            "creationDatetime": "2021-01-01T11:30:25.521Z",
+            "modificationDatetime": "2021-01-01T11:30:25.521Z",
+            "version": 1,
+            "modelVersion": 1,
+            "pricing": "*",
+            "mealPlan": "EP",
+            "mealPlanDescription": "Room only",
+            "remaining": 3,
+            "paymentDescription": "Payment at the hotel",
+            "prepay": false,
+            "burnPointAvailable": false,
+            "badges": [],
+            "context": {
+              "hotelId": 2192,
+              "dateIn": "2023-06-13",
+              "nights": 2,
+              "adults": 1,
+              "childrenAges": [],
+              "clientId": "CLIENTID-ITM1"
+            },
+            "room": {
+              "id": "ROOM-ITM1",
+              "label": "ROOMLABEL-ITM1",
+              "description": "ROOMDESC-ITM1"
+            },
+            "rate": {
+              "id": "RATE-ITM1",
+              "label": "RATELABEL-ITM1",
+              "description": "RATEDESC-ITM1"
+            },
+            "effectiveOccupancy": {
+              "adults": 1,
+              "childrenAges": [],
+              "childrenAgesAsAdult": []
+            },
+            "flexibility": {
+              "code": "FLEX",
+              "label": "Flexible offer",
+              "limitDate": "2024-05-01T12:00:00+02:00",
+              "penalty": {
+                "night": 0,
+                "percent": 0,
+                "amount": {
+                  "amount": 0,
+                  "currency": "EUR"
+                }
+              }
+            },
+            "providerSystemInfo": {
+              "providerSystem": "TARS",
+              "cro": "INT",
+              "subCro": "INT",
+              "offerCode": "COG5",
+              "productCode": "DBBBW"
+            },
+            "categories": []
+          }
+        }
+      ]
+    }
+  },
+  "orderItemIds": [
+    "ORDITM-ID-1"
+  ]
+}

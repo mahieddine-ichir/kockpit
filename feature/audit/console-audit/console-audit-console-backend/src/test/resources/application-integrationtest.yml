@@ -1,0 +1,11 @@
+# Global console service path prefix
+console:
+  services:
+    path-prefix: /api/services/{domain}/{env}
+aws:
+  env: testit
+  sns:
+    topic_alert_es:
+      arn: arn:00000:sns/fake
+search:
+  index_name: testit

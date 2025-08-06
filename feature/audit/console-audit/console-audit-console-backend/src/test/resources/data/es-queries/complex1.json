@@ -1,0 +1,92 @@
+{
+  "bool" : {
+    "must" : [
+      {
+        "bool" : {
+          "should" : [
+            {
+              "term" : {
+                "appId" : {
+                  "value" : "app1",
+                  "boost" : 1.0
+                }
+              }
+            },
+            {
+              "term" : {
+                "appId" : {
+                  "value" : "app2",
+                  "boost" : 1.0
+                }
+              }
+            }
+          ],
+          "adjust_pure_negative" : true,
+          "boost" : 1.0
+        }
+      },
+      {
+        "bool" : {
+          "must" : [
+            {
+              "bool" : {
+                "should" : [
+                  {
+                    "bool" : {
+                      "must" : [
+                        {
+                          "range" : {
+                            "name2" : {
+                              "from" : "1000",
+                              "to" : "2000",
+                              "include_lower" : true,
+                              "include_upper" : true,
+                              "boost" : 1.0
+                            }
+                          }
+                        }
+                      ],
+                      "adjust_pure_negative" : true,
+                      "boost" : 1.0
+                    }
+                  }
+                ],
+                "adjust_pure_negative" : true,
+                "boost" : 1.0
+              }
+            },
+            {
+              "bool" : {
+                "should" : [
+                  {
+                    "bool" : {
+                      "must" : [
+                        {
+                          "term" : {
+                            "name1" : {
+                              "value" : "equalsVal1",
+                              "case_insensitive" : true,
+                              "boost" : 1.0
+                            }
+                          }
+                        }
+                      ],
+                      "adjust_pure_negative" : true,
+                      "boost" : 1.0
+                    }
+                  }
+                ],
+                "adjust_pure_negative" : true,
+                "boost" : 1.0
+              }
+            }
+          ],
+          "adjust_pure_negative" : true,
+          "boost" : 1.0
+        }
+      }
+    ],
+    "adjust_pure_negative" : true,
+    "boost" : 1.0
+  }
+}

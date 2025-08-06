@@ -1,0 +1,19 @@
+include:
+  - project: welcome-connect-platform/framework/templates/gitlabci
+    ref: "master"
+    file: lib-build-java-ci.yml
+
+mvn-deploy-snapshot-feat:
+  when: manual
+  extends:
+    - .mvn-deploy-snapshot
+    - .mr
+
+mvn-build-mr:
+  variables:
+    CACHE_MODE: "true"
+  cache:
+    key: m2-cache
+    policy: pull-push
+    paths:
+      - $CI_PROJECT_DIR/.m2/repository/

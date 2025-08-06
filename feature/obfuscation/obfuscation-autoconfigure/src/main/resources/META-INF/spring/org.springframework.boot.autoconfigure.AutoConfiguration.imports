@@ -1,0 +1,3 @@
+com.accor.wcp.obfuscation.impl.ObfuscationConfig
+com.accor.wcp.obfuscation.impl.BuiltinObfuscatesConfig
+com.accor.wcp.obfuscation.impl.BuiltinMaskersConfig

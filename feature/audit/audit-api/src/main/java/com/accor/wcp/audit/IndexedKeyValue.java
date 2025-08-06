@@ -1,0 +1,85 @@
+package com.accor.wcp.audit;
+
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@Builder
+@AllArgsConstructor
+@EqualsAndHashCode
+@ToString
+public final class IndexedKeyValue {
+
+  private final String key;
+
+  private String value;
+
+  private Integer valueInteger;
+
+  private Float valueFloat;
+
+  private Date valueDate;
+
+  public static IndexedKeyValue of(String key, String value) {
+    return new IndexedKeyValue(key, value);
+  }
+
+  public static IndexedKeyValue of(String key, Integer value) {
+    return new IndexedKeyValue(key, value);
+  }
+
+  public static IndexedKeyValue of(String key, Float value) {
+    return new IndexedKeyValue(key, value);
+  }
+
+  public static IndexedKeyValue of(String key, Date value) {
+    return new IndexedKeyValue(key, value);
+  }
+
+  public static IndexedKeyValue of(String key, Object value) {
+    return new IndexedKeyValue(key, value);
+  }
+
+  @Deprecated(forRemoval = true, since = "2.3.1")
+  public IndexedKeyValue(String key, String value) {
+    this.key = key;
+    this.value = value;
+  }
+
+  private IndexedKeyValue(String key, Integer integer) {
+    this.key = key;
+    this.valueInteger = integer;
+  }
+
+  private IndexedKeyValue(String key, Float f) {
+    this.key = key;
+    this.valueFloat = f;
+  }
+
+  private IndexedKeyValue(String key, Date date) {
+    this.key = key;
+    this.valueDate = date;
+  }
+
+  @Deprecated(forRemoval = true, since = "2.3.1")
+  public IndexedKeyValue(String key, Object value) {
+    this.key = key;
+    // For temp retro-compatibility
+    this.value = "" + value;
+    if (value instanceof Integer) {
+      valueInteger = (Integer) value;
+    } else if (value instanceof Long) {
+      valueInteger = ((Long) value).intValue();
+    } else if (value instanceof Float) {
+      valueFloat = (Float) value;
+    } else if (value instanceof Double) {
+      valueFloat = ((Double) value).floatValue();
+    } else if (value instanceof Date) {
+      valueDate = (Date) value;
+    }
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 1,
+      "relation": "eq"
+    },
+    "max_score": 1.0,
+    "hits": [
+      {
+        "_index": "wcp-auditdata-local-ttl5d-2022.12.06-1",
+        "_type": "_doc",
+        "_id": "1903c2d3-91a6-4fd2-949e-a550daf58664",
+        "_score": 1.0,
+        "_source": {
+          "domain": "wcp",
+          "env": "local",
+          "appId": "wcpsamples",
+          "version": "2.7.0.202210.2",
+          "artifact": "wcp-sdk-config-accor",
+          "requestId": "1903c2d3-91a6-4fd2-949e-a550daf58664",
+          "start": "2022-12-06T10:16:52.435592561Z",
+          "end": "2022-12-06T10:16:52.500626354Z",
+          "hostname": "cjosystem-Precision-7560",
+          "indexedExtensions": [
+            {
+              "indexedKeyValues": [
+                {
+                  "key": "requestUri",
+                  "value": "/wcpsamples/sayHello/cyril",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "traceId",
+                  "value": "d54abf45-a3b6-44f4-9e7d-1b4c73260a2d",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "origin",
+                  "value": "",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "httpStatus",
+                  "value": "200",
+                  "valueInteger": 200,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "httpMethod",
+                  "value": "GET",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "principal",
+                  "value": "anonymousUser",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "response1",
+                  "value": null,
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "Response2",
+                  "value": null,
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "doubleAttribute",
+                  "value": "null",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "floatAttribute",
+                  "value": "null",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "integerAttribute",
+                  "value": "null",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "stringAttribute",
+                  "value": "null",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "objectAttribute",
+                  "value": "null",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "dateAttribute",
+                  "value": "null",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "_INTERNAL_TTL_",
+                  "value": "null",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "Accept-Language",
+                  "value": "en-US,en;q=0.9,fr;q=0.8,es;q=0.7",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": null,
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "Referer",
+                  "value": null,
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "result",
+                  "value": "Hello cyril !",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "number",
+                  "value": "996031066",
+                  "valueInteger": 996031066,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "KId",
+                  "value": "ecf9b06b-47d2-4555-8898-5cb0ed607a6c",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "KResult",
+                  "value": "VALID",
+                  "valueInteger": null,
+                  "valueFloat": null,
+                  "valueDate": null
+                },
+                {
+                  "key": "duration",
+                  "value": "65",
+                  "valueInteger": 65,
+                  "valueFloat": null,
+                  "valueDate": null
+                }
+              ]
+            }
+          ],
+          "compressedOriginalJsonValue": "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",
+          "@timestamp": 1670321813832
+        }
+      }
+    ]
+  }
+}

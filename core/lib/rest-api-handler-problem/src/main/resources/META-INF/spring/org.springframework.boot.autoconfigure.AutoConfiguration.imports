@@ -1,0 +1,2 @@
+com.accor.wcp.web.rest.problem.GlobalApiExceptionHandler
+com.accor.wcp.web.rest.problem.InternalServerErrorHandler

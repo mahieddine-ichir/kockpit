@@ -1,0 +1,38 @@
+{
+  "id": "49387549374893112",
+  "items": [
+    {
+      "comment": "My husband is afraid of spiders, make extra sure that none is in the room !",
+      "mainBeneficiary": {
+        "email": "s************@g********",
+        "firstName": "Sean",
+        "lastName": "As***",
+        "phone": {
+          "number": "*****7425",
+          "prefix": "33"
+        }
+      },
+      "offerId": "4f8e8637-922b-4248-828e-4ef94bc77e11",
+      "offerType": "HOTEL_STAY"
+    },
+    {
+      "comment": "My husband2 is afraid of spiders, make extra sure that none is in the room !",
+      "mainBeneficiary": {
+        "email": "s*************@g********",
+        "firstName": "Sean2",
+        "lastName": "As****",
+        "phone": {
+          "number": "******4252",
+          "prefix": "33"
+        }
+      },
+      "offerId": "4f8e8637-922b-4248-828e-4ef94bc77e12",
+      "offerType": "HOTEL_STAY"
+    },
+    {
+      "comment": "Only ...",
+      "offerId": "4f8e8637-922b-4248-828e-4ef94bc77e13",
+      "offerType": "TREATMENT"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+wcp:
+  sdk:
+    initialization:
+      timeout: 1ms
+    env: mock
+    application:
+      env: testit
+
+    service:
+      audit:
+        ttl:
+          default: 1
+        obfuscation:
+          configs:
+            -
+              id: builtin.httpexchanges
+              filters:
+                -
+                  path: request.uri
+                  expression: (.*)/bank/(.*)
+              properties:
+                "[request.body]":
+                  payload-paths:
+                    - path: $..phone.number
+                      mask: keepLast4
+                "[request.headers]":
+                  map-keys:
+                    - key: api-key
+                      mask: keepLast3
+                "[httpAuditedResponse.payload]":
+                  payload-paths:
+                    - path: $..phone.number
+                      mask: keepFirst4
+                    - path: $..lastName
+                      mask: keepLast2
+                    - path: $..email
+                      mask: email
+                    - path: $..guests
+                      mask: keepFirst2
+
+            -
+              id: builtin.web
+              filters:
+                -
+                  path: request.uri
+                  expression: (.*)/bank/transaction/(.*)
+              properties:
+                "[request.body]":
+                  payloadPaths:
+                    - path: $..phone.number
+                      mask: keepLast4
+                    - path: $..email
+                      mask: email
+                    - path: $..lastName
+                      mask: keepFirst2
+                "[request.headers]":
+                  map-keys:
+                    - key: api-key
+                      mask: keepLast3
+                "[httpAuditedResponse.body]":
+                  payloadPaths:
+                    - path: $..phone.number
+                      mask: keepLast4
+                    - path: $..lastName
+                      mask: keepFirst2
+                    - path: $..email
+                      mask: email
+                    - path: $..guests
+                      mask: keepFirst1
+                "[request.params]":
+                  map-keys:
+                    -:
+                    - path: ids
+                      mask: keepLast1
+                    - path: emails
+                      mask: email
