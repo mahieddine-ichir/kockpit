@@ -1,0 +1,31 @@
+wcp:
+  sdk:
+    service:
+      audit:
+        ttl:
+          default: 1
+    domain: wcplatform
+    env: dev
+    application:
+      env: local
+
+sqs:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  queueUrl: "http://localhost:4566/000000000000/wcp-samples-audit-sqs-local"
+kinesis:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  streamName: "wcp-samples-audit-kinesis-local"
+sqsdlq:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  queueUrl: "http://localhost:4566/000000000000/wcp-samples-sqsdlq-local"
+sqsdlq-fifo:
+  awsRegion: "eu-west-1"
+  sqsEndpointUrl: "http://localhost:4566"
+  queueUrl: "http://localhost:4566/000000000000/wcp-samples-sqsdlq-local-dlq.fifo"
+
+
+application:
+  basepath: "http://localhost:8080/wcpsamples"

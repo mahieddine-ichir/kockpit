@@ -1,0 +1,79 @@
+application:
+  id: wcphello
+
+wcp:
+  sdk:
+    service:
+      audit:
+        request-attributes: hello_name
+        ttl:
+          default: 1
+    domain: mondomain
+    env: ${WCP_ENV}
+    application:
+      id: ${application.id}
+      env: ${ENV}
+
+server:
+  port: 8080
+  servlet:
+    context-path: /hello
+
+#management:
+#  endpoint:
+#    metrics:
+#      enabled: true
+#    prometheus:
+#      enabled: true
+#  endpoints:
+#    web:
+#      exposure:
+#        include: [ "metrics", "configprops", "env", "health", "info", "threaddump", "logfile", "prometheus" ]
+#  info:
+#    git:
+#      mode: full
+#  metrics:
+#    export:
+#      prometheus:
+#        enabled: true
+#        step: 60
+#    enable:
+#      http: true
+#      jvm: true
+#      logback: true
+#      process: true
+#      system: true
+#    distribution:
+#      percentiles-histogram:
+#        all: true
+#      percentiles:
+#        all: 0, 0.5, 0.75, 0.95, 0.99, 1.0
+#    tags:
+#      application: ${spring.application.name}
+#    web:
+#      server:
+#        request:
+#          autotime:
+#            enabled: true
+
+spring:
+  web:
+    resources:
+      add-mappings: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  jmx:
+    enabled: true
+  application:
+    name: HelloWorld Example
+  sleuth:
+    baggage:
+      remote-fields:
+      - X-WCP-Origin
+      - X-WCP-Traceid
+  profiles:
+    # The commented value for `active` can be replaced with valid Spring profiles to load.
+    # Otherwise, it will be filled in by maven when building the JAR file
+    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+    active: #spring.profiles.active#
+

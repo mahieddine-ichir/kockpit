@@ -1,0 +1,215 @@
+{
+  "id": "d39RXKdHPXnpsLZ3cu",
+  "crs": "TARS",
+  "type": "ROOM",
+  "availability": {
+    "status": "NOT_AVAILABLE",
+    "reasons": [],
+    "remaining": null
+  },
+  "occupancy": {
+    "adults": 1,
+    "childrenAges": [],
+    "childrenAsAdults": [],
+    "babies": 0,
+    "infants": 0
+  },
+  "hotel": {
+    "id": "1930"
+  },
+  "product": {
+    "id": "Q2B",
+    "quantity": 1,
+    "capacity": {
+      "maxAdult": 3,
+      "maxChild": 2,
+      "maxPax": 4
+    },
+    "remaining": null
+  },
+  "rate": {
+    "id": "1RA1",
+    "label": "FLEXIBLE RATE",
+    "includedProducts": [],
+    "mealPlan": "EUROPEAN_PLAN",
+    "productBestOffer": true,
+    "remaining": null,
+    "flexibility": {
+      "code": "FREE_CANCELLATION",
+      "limitDate": "2025-01-29",
+      "limitTime": "23:59",
+      "penalty": null
+    },
+    "pricing": {
+      "currency": "EUR",
+      "main": {
+        "amount": {
+          "hotelKeeper": 315,
+          "beforeTax": 305.825243,
+          "afterTax": 315,
+          "afterFees": 305.825243,
+          "average": {
+            "hotelKeeper": 315,
+            "beforeTax": 305.825243,
+            "afterTax": 315,
+            "afterFees": 305.825243
+          },
+          "vat": {
+            "amount": {
+              "excluded": 0,
+              "included": 9.174757
+            },
+            "detail": [
+              {
+                "code": "TCNTRR",
+                "included": true,
+                "onlinePayable": true,
+                "refundable": false,
+                "applicability": {
+                  "frequency": "PER_NIGHT",
+                  "unit": "PER_PRODUCT"
+                },
+                "value": {
+                  "amount": null,
+                  "percent": 3
+                }
+              }
+            ]
+          },
+          "fees": {
+            "amount": {
+              "excluded": 0,
+              "included": 0
+            },
+            "detail": []
+          },
+          "otherTax": {
+            "amount": {
+              "excluded": 0,
+              "included": 0
+            },
+            "detail": []
+          },
+          "payAtTheHotel": 315,
+          "payOnline": 0
+        },
+        "commission": null,
+        "categories": [
+          {
+            "code": "MEMBER_RATE",
+            "subCategories": [],
+            "restrictions": [
+              "BOOKING_MUST_CONTAIN_ONLY_ONE_OFFER"
+            ]
+          }
+        ],
+        "reference": null
+      },
+      "deduction": [
+        {
+          "percent": 10,
+          "amount": 35,
+          "type": "MEMBER_RATE"
+        }
+      ],
+      "alternative": {
+        "id": "d39RXKdHPXnw3Ciqtk",
+        "bookable": true,
+        "amount": {
+          "hotelKeeper": 340,
+          "beforeTax": 339.805825,
+          "afterTax": 350,
+          "afterFees": 339.805825,
+          "average": {
+            "hotelKeeper": 350,
+            "beforeTax": 339.805825,
+            "afterTax": 350,
+            "afterFees": 339.805825
+          }
+        },
+        "categories": [
+          {
+            "code": "STANDARD",
+            "subCategories": [],
+            "restrictions": []
+          },
+          {
+            "code": "VIP",
+            "subCategories": [],
+            "restrictions": []
+          }
+        ],
+        "reference": null
+      }
+    },
+    "details": [
+      {
+        "from": "2025-01-30",
+        "to": "2025-01-31",
+        "date": "2025-01-30",
+        "mealPlan": "EUROPEAN_PLAN",
+        "pricing": {
+          "currency": "EUR",
+          "main": {
+            "amount": {
+              "hotelKeeper": 315,
+              "beforeTax": 305.825243,
+              "afterTax": 315,
+              "afterFees": 305.825243,
+              "average": null,
+              "vat": {
+                "amount": {
+                  "excluded": 0,
+                  "included": 9.174757
+                },
+                "detail": [
+                  {
+                    "code": "TCNTRR",
+                    "included": true,
+                    "onlinePayable": true,
+                    "refundable": false,
+                    "applicability": {
+                      "frequency": "PER_NIGHT",
+                      "unit": "PER_PRODUCT"
+                    },
+                    "value": {
+                      "amount": null,
+                      "percent": 3
+                    }
+                  }
+                ]
+              },
+              "fees": {
+                "amount": {
+                  "excluded": 0,
+                  "included": 0
+                },
+                "detail": []
+              },
+              "otherTax": {
+                "amount": {
+                  "excluded": 0,
+                  "included": 0
+                },
+                "detail": []
+              },
+              "payAtTheHotel": null,
+              "payOnline": null
+            },
+            "commission": null,
+            "categories": [
+              {
+                "code": "MEMBER_RATE",
+                "subCategories": [],
+                "restrictions": [
+                  "BOOKING_MUST_CONTAIN_ONLY_ONE_OFFER"
+                ]
+              }
+            ],
+            "reference": null
+          }
+        }
+      }
+    ]
+  }
+}

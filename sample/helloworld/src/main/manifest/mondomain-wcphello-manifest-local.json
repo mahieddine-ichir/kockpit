@@ -1,0 +1,12 @@
+{
+  "domain": "mondomain",
+  "env": "local",
+  "groups": null,
+  "applications": [
+    {
+      "id": "wcphello",
+      "label": "HelloWorld Example",
+      "services": {"audit" : [{"appIds":["wcphello"],"label":"HelloWorld","name":"hello","resultColumns":[{"label":"Start","name":"start","renderer":"date"},{"label":"Trace ID","name":"traceId","renderer":"substring"},{"label":"K Result","name":"KResult","renderer":"result"},{"label":"Method","name":"httpMethod","renderer":null},{"label":"Url","name":"requestUri","renderer":null},{"label":"Hello Name","name":"hello_name","renderer":null},{"label":"Status","name":"httpStatus","renderer":"status"}],"searchMetadatas":[{"description":"Origin","label":"Origin","name":"origin","subtype":"builtin.kv","type":"string"},{"description":"Method","label":"HTTP Method","name":"httpMethod","subtype":"builtin.kv","type":"string"},{"description":"Request HTTP Status","label":"Status","name":"httpStatus","subtype":"builtin.kv","type":"integer"},{"description":"Trace ID","label":"Trace ID","name":"traceId","subtype":"builtin.kv","type":"string"},{"description":"Result","label":"Result","name":"result","subtype":"builtin.kv","type":"string"},{"description":"Hello name","label":"Name","name":"hello_name","subtype":"builtin.kv","type":"string"}]}],"dynaconfig" : [{"label":"HelloWorld","properties":[{"description":"Hello Greeting. Default is hello","name":"helloapp.greeting","type":"string"}]}]}
+    }
+  ]
+}

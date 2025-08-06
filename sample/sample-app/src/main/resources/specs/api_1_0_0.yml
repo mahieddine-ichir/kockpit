@@ -1,0 +1,485 @@
+openapi: 3.0.1
+info:
+  title: Welcome Connect - Basket & Order - Basket API
+  description: API endpoints for Basket v0
+  contact:
+    email: DIGITALFACTORY.D3WCO-OpenDistribution.Basket-OrderALL@accor.com
+  version: 0.0.0
+servers:
+  - url: 'https://api-dev.wcbd-dev.aws.accor.com/basket/v0'
+    description: Development server (DEV) (WCBD team only)
+  - url: 'https://api-rec.wcbd-oat.aws.accor.com/basket/v0'
+    description: Internal testing (REC) server (WCBD team only)
+  - url: 'https://api-int.wcbd-oat.aws.accor.com/basket/v0'
+    description: Integration (INT) server
+  - url: 'https://api-ppd.wcbd-oat.aws.accor.com/basket/v0'
+    description: Pre-production (PPD) server
+  - url: 'https://api.wcbd.aws.accor.com/basket/v0'
+    description: Production (PRO) server
+tags:
+  - name: basket/public
+    description: API endpoints for public consumption of Basket API
+paths:
+  '/baskets':
+    post:
+      tags:
+        - basket/public
+      summary: Creates a basket
+      description: 'Creates a basket, you can (or not) directly add items in the basket by passing somme offer ids'
+      operationId: createBasket
+      parameters:
+        - $ref: '#/components/parameters/traceIdParam'
+        - $ref: '#/components/parameters/originParam'
+        - $ref: '#/components/parameters/acceptLanguageParam'
+        - $ref: '#/components/parameters/squigglyFieldsParam'
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Basket'
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Basket'
+          headers:
+            X-Wcp-TraceId:
+              $ref: '#/components/headers/traceIdHeader'
+            Content-Language:
+              $ref: '#/components/headers/contentLanguageHeader'
+            Location:
+              description: 'Standard Location header for POST verbs : uri of the created resource'
+              schema:
+                type: string
+                example: 'https://api-rec.wcbd-oat.aws.accor.com/basket/v0/baskets/9e44a51d-f95a-40a8-9a82-9ef4b42f7f9c'
+        '400':
+          description: An exception occurred
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-Wcp-TraceId:
+              $ref: '#/components/headers/traceIdHeader'
+  '/baskets/{basketId}':
+    get:
+      tags:
+        - basket/public
+      summary: Returns a basket
+      description: 'Given a basket identifier, returns the corresponding basket'
+      operationId: getBasketById
+      parameters:
+        - name: X-Accept-Version
+          in: header
+          description: 'Specifically used to define the major API Version you are calling. Must be set to this contract major version otherwise you will get a http 406 response'
+          required: true
+          schema:
+            type: string
+            example: 1
+
+        - name: basketId
+          required: true
+          in: path
+          description: 'Basket identifier'
+          schema:
+            type: string
+            example: 6f170322-ac22-479c-bc72-c88454d5ccad
+        - $ref: '#/components/parameters/traceIdParam'
+        - $ref: '#/components/parameters/originParam'
+        - $ref: '#/components/parameters/acceptLanguageParam'
+        - $ref: '#/components/parameters/squigglyFieldsParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Basket'
+          headers:
+            X-Wcp-TraceId:
+              $ref: '#/components/headers/traceIdHeader'
+            Content-Language:
+              $ref: '#/components/headers/contentLanguageHeader'
+        '400':
+          description: An exception occurred
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-Wcp-TraceId:
+              $ref: '#/components/headers/traceIdHeader'
+        '404':
+          description: Resource not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+          headers:
+            X-Wcp-TraceId:
+              $ref: '#/components/headers/traceIdHeader'
+components:
+  headers:
+    traceIdHeader:
+      description: 'End to end transaction identifier, may be included in request, will be provided in response'
+      schema:
+        type: string
+        example: 123e4567-e89b-12d3-a456-426614174000
+    contentLanguageHeader:
+      description: Standard Content-Language header
+      schema:
+        type: string
+        example: 'fr'
+  parameters:
+    traceIdParam:
+      name: X-Wcp-TraceId
+      in: header
+      description: 'End to end transaction identifier, may be included in request, will be provided in response'
+      schema:
+        type: string
+        example: 123e4567-e89b-12d3-a456-426614174000
+    originParam:
+      name: X-Wcp-Origin
+      in: header
+      description: 'origin of the request (human-readable), use a recognizable, unique name - for debugging purposes'
+      schema:
+        type: string
+        example: partner-name.com
+    acceptLanguageParam:
+      name: Accept-Language
+      in: header
+      description: Standard Accept-Language header
+      required: false
+      schema:
+        type: string
+        example: 'fr-BE,nl;q=0.25,fr-FR;q=0.5'
+    squigglyFieldsParam:
+      name: fields
+      in: query
+      description: Allows to limit the size of response according to your needs by specifying the fields you want in your response. For more info on the syntax to use visit https://github.com/bohnman/squiggly#general-usage
+      required: false
+      schema:
+        type: string
+        example: 'field1[subField],field2'
+  schemas:
+    Basket:
+      allOf:
+        - properties:
+            creationDatetime:
+              description: Creation date and time of the basket
+              example: '2021-01-01T11:30:25.521Z'
+              format: date-time
+              readOnly: true
+              type: string
+            id:
+              description: Basket identifier
+              example: 9e44a51d-f95a-40a8-9a82-9ef4b42f7f9c
+              readOnly: true
+              type: string
+            items:
+              description: List of basket items, each item corresponding to an offer
+                obtained from Wellness availability API
+              items:
+                $ref: '#/components/schemas/BasketItem'
+              minItems: 0
+              type: array
+            language:
+              description: Language of the document
+              example: pt-BR
+              readOnly: true
+              type: string
+            modelVersion:
+              description: Model version (useful in case of concurrent versions with
+                model evolution / breaking changes)
+              example: '1'
+              readOnly: true
+              type: integer
+            modificationDatetime:
+              description: Last modification date and time of the basket
+              example: '2021-01-01T11:30:25.521Z'
+              format: date-time
+              readOnly: true
+              type: string
+            version:
+              description: Version of the basket document
+              example: '12'
+              readOnly: true
+              type: integer
+          type: object
+        - $ref: '#/components/schemas/SuccessResponseBody'
+    BasketItem:
+      discriminator:
+        mapping:
+          HOTEL_STAY: '#/components/schemas/HotelStayBasketItem'
+          STANDALONE_TREATMENT: '#/components/schemas/StandaloneTreatmentBasketItem'
+          THALASSA_PACKAGED: '#/components/schemas/ThalassaPackagedBasketItem'
+        propertyName: offerType
+#      oneOf:
+#        - $ref: '#/components/schemas/ThalassaPackagedBasketItem'
+#        - $ref: '#/components/schemas/HotelStayBasketItem'
+#        - $ref: '#/components/schemas/StandaloneTreatmentBasketItem'
+      properties:
+        id:
+          description: Basket item identifier
+          example: 2153edfa-c31f-4675-b9ed-d0e7c126bc92
+          readOnly: true
+          type: string
+        offerId:
+          description: Id of the offer to add to the basket
+          example: 4f8e8637-922b-4248-828e-4ef94bc77e11
+          type: string
+        offerType:
+          $ref: '#/components/schemas/OfferTypeEnum'
+#          allOf:
+#            - $ref: '#/components/schemas/OfferTypeEnum'
+#            - description: Offer type
+#              example: STANDALONE_TREATMENT
+      required:
+        - offerType
+        - offerId
+      type: object
+    ConstraintViolation:
+      properties:
+        field:
+          description: Identifies the field for which a constraint violation has been
+            found
+          example: guest.age
+          type: string
+        message:
+          description: Expresses, in a human-readable format, the specific constraint
+            that has been violated
+          example: must be greater than or equal to 0
+          type: string
+      type: object
+    ErrorResponseBody:
+      description: 'Sent in the response body in case of error.
+
+        Defined following recommandations from RFC-7807.'
+      properties:
+        code:
+          description: Error code identifying the problem.  It SHOULD NOT change from
+            occurrence to occurrence of the problem.
+          example: WCBO_INPUT_VALIDATION_METHODARGINVALID
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of
+            the problem.
+          example: Input validation error, parser raised some issues that are defined
+            in violations array
+          type: string
+        fieldErrors:
+          description: "An extension in the sense of RFC-7807.\r\nIn some error cases\
+            \ pertaining to the analysis of input, contains the information allowing\
+            \ the developper to easily find the problem."
+          items:
+            $ref: '#/components/schemas/FieldError'
+          minItems: 0
+          type: array
+        status:
+          description: The HTTP status code ([RFC7231], Section 6) generated by the
+            origin server for this occurrence of the problem.
+          example: '400'
+          type: integer
+        title:
+          description: A short, human-readable summary of the problem type.  It SHOULD
+            NOT change from occurrence to occurrence of the problem.
+          example: Method argument not valid
+          type: string
+        violations:
+          $ref: '#/components/schemas/ConstraintViolation'
+#          allOf:
+#            - $ref: '#/components/schemas/ConstraintViolation'
+#            - description: "An extension in the sense of RFC-7807.\r\nIn some error\
+#              \ cases pertaining to the analysis of input, contains the information\
+#              \ allowing the developper to easily find the problem."
+      type: object
+    FieldError:
+      properties:
+        field:
+          description: Identifies the field for which a field error has been found
+          example: offerId
+          type: string
+        message:
+          description: Expresses, in a human-readable format, the specific error that
+            has been found
+          example: must not be null
+          type: string
+        objectName:
+          description: Refers to the object name for which a field error has been
+            found
+          example: BasketItem
+          type: string
+      type: object
+    GenderEnum:
+      description: "List the different applicable genders\n * MALE > \n * FEMALE > "
+      enum:
+        - MALE
+        - FEMALE
+      type: string
+    HotelStayBasketItem:
+      allOf:
+        - properties:
+            comment:
+              description: Comment / special request set by the customer
+              example: My husband is afraid of spiders, make extra sure that none is
+                in the room !
+              type: string
+            guests:
+              description: List the guests that will use the hotel stay
+              items:
+                $ref: '#/components/schemas/HotelStayGuest'
+              minItems: 0
+              type: array
+            mainBeneficiary:
+              $ref: '#/components/schemas/HotelStayMainBeneficiary'
+#              allOf:
+#                - $ref: '#/components/schemas/HotelStayMainBeneficiary'
+#                - description: Describes the hotel stay main beneficiary
+          required:
+            - mainBeneficiary
+          type: object
+        - $ref: '#/components/schemas/BasketItem'
+    HotelStayGuest:
+      properties:
+        age:
+          description: Age of the guest (should only be filled if the guest is a child)
+          example: '6'
+          minimum: 0
+          type: integer
+        firstName:
+          description: Guest first name
+          example: Sean
+          type: string
+        lastName:
+          description: Guest last name
+          example: Astin
+          type: string
+      required:
+        - lastName
+        - firstName
+      type: object
+    HotelStayMainBeneficiary:
+      properties:
+        email:
+          description: Email of the main beneficiary
+          example: sean.astin.pa@gmail.com
+          type: string
+        firstName:
+          description: Main beneficiary first name
+          example: Sean
+          type: string
+        lastName:
+          description: Main beneficiary last name
+          example: Astin
+          type: string
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
+#          allOf:
+#            - $ref: '#/components/schemas/PhoneNumber'
+#            - description: Phone of the main beneficiary
+      required:
+        - firstName
+        - lastName
+        - email
+        - phone
+      type: object
+    OfferTypeEnum:
+      description: " * THALASSA_PACKAGED > Indicates a Thalassa package (stay + spa\
+        \ program)\n * STANDALONE_TREATMENT > Indicates a Wellness standalone treatment\n\
+        \ * HOTEL_STAY > Indicates a Hotel Stay"
+      enum:
+        - THALASSA_PACKAGED
+        - STANDALONE_TREATMENT
+        - HOTEL_STAY
+      type: string
+    OperationWarning:
+      properties:
+        code:
+          description: Code identifying the warning
+          example: WCBO_READONLYFIELD_PASSED
+          type: string
+        message:
+          description: Human-readable text describing the reason for the warning
+          example: Field basket.id was passed as input but it is marked as a read-only
+            field. This might have unpredictable side-effects and should be avoided.
+          type: string
+      type: object
+    PhoneNumber:
+      description: A phone number
+      properties:
+        number:
+          description: Phone number
+          example: 0644857425
+          type: string
+        prefix:
+          description: International prefix country code
+          example: '33'
+          type: string
+      required:
+        - prefix
+        - number
+      type: object
+    StandaloneTreatmentBasketItem:
+      allOf:
+        - properties:
+            guest:
+              $ref: '#/components/schemas/StandaloneTreatmentGuest'
+            specialRequest:
+              description: Special request
+              example: I have a back problem, please be careful during the massage
+              type: string
+          required:
+            - guest
+          type: object
+        - $ref: '#/components/schemas/BasketItem'
+    StandaloneTreatmentGuest:
+      properties:
+        email:
+          description: Email of the guest
+          example: sean.astin.pa@gmail.com
+          type: string
+        firstName:
+          description: Guest first name
+          example: Sean
+          type: string
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+#          allOf:
+#            - $ref: '#/components/schemas/GenderEnum'
+#            - example: MALE
+        lastName:
+          description: Guest last name
+          example: Astin
+          type: string
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
+#          allOf:
+#            - $ref: '#/components/schemas/PhoneNumber'
+#            - description: Phone of the guest
+      required:
+        - firstName
+        - lastName
+        - email
+        - phone
+      type: object
+    SuccessResponseBody:
+      properties:
+        operationWarnings:
+          description: "In case some warnings are raised, they will be found here.\r\
+            \nThe consumer may or may not take them into account."
+          items:
+            $ref: '#/components/schemas/OperationWarning'
+          minItems: 0
+          readOnly: true
+          type: array
+      type: object
+    ThalassaPackagedBasketItem:
+      allOf:
+        - description: For the moment the basket will not handle basket items based
+            on Thalassa packaged offers, which means the object hereunder is just a
+            stub
+          type: object
+        - $ref: '#/components/schemas/BasketItem'

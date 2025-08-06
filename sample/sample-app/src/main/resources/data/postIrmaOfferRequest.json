@@ -1,0 +1,109 @@
+{
+  "computeBarByCategoryEnabled": true,
+  "cro": "INT",
+  "dayUseSearch": "ALL",
+  "enableFamilyOfferInBar": true,
+  "postIrmaRoomCriterias": [
+    {
+      "adultNumber": 4,
+      "childrenAges": [],
+      "dateIn": [
+        2023,
+        6,
+        27
+      ],
+      "explicitDateInSearch": true,
+      "los": 1,
+      "offerCode": "1RB3",
+      "productCode": "D3CDP",
+      "roomNumber": 1
+    },
+    {
+      "adultNumber": 4,
+      "childrenAges": [],
+      "dateIn": [
+        2023,
+        6,
+        27
+      ],
+      "explicitDateInSearch": true,
+      "los": 1,
+      "offerCode": "1RB3",
+      "productCode": "D3CDP",
+      "roomNumber": 1
+    },
+    {
+      "adultNumber": 4,
+      "childrenAges": [],
+      "dateIn": [
+        2023,
+        6,
+        27
+      ],
+      "explicitDateInSearch": true,
+      "los": 1,
+      "offerCode": "1RB3",
+      "productCode": "D3CDP",
+      "roomNumber": 1
+    },
+    {
+      "adultNumber": 4,
+      "childrenAges": [],
+      "dateIn": [
+        2023,
+        6,
+        27
+      ],
+      "explicitDateInSearch": true,
+      "los": 1,
+      "offerCode": "1RB3",
+      "productCode": "D3CDP",
+      "roomNumber": 1
+    },
+    {
+      "adultNumber": 4,
+      "childrenAges": [],
+      "dateIn": [
+        2023,
+        6,
+        27
+      ],
+      "explicitDateInSearch": true,
+      "los": 1,
+      "offerCode": "1RB3",
+      "productCode": "D3CDP",
+      "roomNumber": 1
+    }
+  ],
+  "regularOffersSearch": true,
+  "requestChannel": "OG",
+  "rids": [
+    "2994"
+  ],
+  "beneficiaire": {
+    "natureClient": "B",
+    "codeTypeClient": "INDI",
+    "nom1": "Javier",
+    "nom2": "Pastore",
+    "nom3": "MR",
+    "adresse": {
+      "codePostal": "",
+      "ville": "",
+      "codeEtat": "",
+      "codePays": "FR",
+      "email": "test_bob@accor.com",
+      "adresse1": "",
+      "adresse2": "",
+      "adresse3": "",
+      "adresse4": "",
+      "telephone": {
+        "number": "0610203040",
+        "indicatif": "33",
+        "type": 0
+      }
+    }
+  },
+  "subCro": "INT",
+  "upsellSearch": true,
+  "wdrSearch": false
+}

@@ -1,0 +1,5566 @@
+{
+  "postIrmaOfferHotel": {
+    "rid": "2994",
+    "brand": "IBH",
+    "chain": "IBH",
+    "pictos": [],
+    "pictosGao": [],
+    "progExtCodes": [
+      "PP",
+      "FG",
+      "RT",
+      "LN",
+      "RW",
+      "DL",
+      "DP",
+      "E2",
+      "UC",
+      "SA",
+      "SC",
+      "BU",
+      "DW",
+      "OC",
+      "OD",
+      "WM",
+      "OG",
+      "ME",
+      "WP",
+      "WR",
+      "OM",
+      "WU",
+      "CC",
+      "AC",
+      "OR",
+      "MR",
+      "MS",
+      "IP",
+      "EL",
+      "CM",
+      "CS",
+      "RD",
+      "AS",
+      "LE",
+      "FA",
+      "HD",
+      "TR",
+      "TS"
+    ],
+    "available": true,
+    "prepayements": [
+      {
+        "code": "VI",
+        "flagCVC": true,
+        "directPayment": true,
+        "paymentPartner": "TH"
+      },
+      {
+        "code": "AX",
+        "flagCVC": true,
+        "directPayment": true,
+        "paymentPartner": "TH"
+      },
+      {
+        "code": "CA",
+        "flagCVC": true,
+        "directPayment": true,
+        "paymentPartner": "TH"
+      }
+    ],
+    "offersByCriteria": [
+      {
+        "offers": [
+          {
+            "product": {
+              "code": "D3CDP",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 3,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 166.6,
+              "tarsPriceUnitary": 166.6,
+              "tarsDiscount": 166.6,
+              "tarsPostDiscount": 166.6,
+              "netClientTarsPrice": 166.6,
+              "grossPriceExcludingTaxes": 151.454545,
+              "netPriceExcludingTaxes": 151.454545,
+              "tarsNetPriceAndVat": 166.6,
+              "grossPriceIncludingTaxes": 170.2,
+              "netPriceIncludingTaxes": 170.2,
+              "prepayableAmount": 170.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 15.145455,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 11.327273,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 11.327273,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 11.327273
+              }
+            },
+            "available": true,
+            "rank": 3,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 166.6,
+                  "tarsPriceUnitary": 166.6,
+                  "tarsDiscount": 166.6,
+                  "tarsPostDiscount": 166.6,
+                  "netClientTarsPrice": 166.6,
+                  "grossPriceExcludingTaxes": 151.454545,
+                  "netPriceExcludingTaxes": 151.454545,
+                  "tarsNetPriceAndVat": 166.6,
+                  "grossPriceIncludingTaxes": 170.2,
+                  "netPriceIncludingTaxes": 170.2,
+                  "prepayableAmount": 170.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 15.145455,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 11.327273,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 170.2,
+              "averagePriceExcludingTaxes": 151.454545,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          },
+          {
+            "product": {
+              "code": "D3COV",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 4,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 186.6,
+              "tarsPriceUnitary": 186.6,
+              "tarsDiscount": 186.6,
+              "tarsPostDiscount": 186.6,
+              "netClientTarsPrice": 186.6,
+              "grossPriceExcludingTaxes": 169.636364,
+              "netPriceExcludingTaxes": 169.636364,
+              "tarsNetPriceAndVat": 186.6,
+              "grossPriceIncludingTaxes": 190.2,
+              "netPriceIncludingTaxes": 190.2,
+              "prepayableAmount": 190.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 16.963636,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 13.145455,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 13.145455,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 13.145455
+              }
+            },
+            "available": true,
+            "rank": 4,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 186.6,
+                  "tarsPriceUnitary": 186.6,
+                  "tarsDiscount": 186.6,
+                  "tarsPostDiscount": 186.6,
+                  "netClientTarsPrice": 186.6,
+                  "grossPriceExcludingTaxes": 169.636364,
+                  "netPriceExcludingTaxes": 169.636364,
+                  "tarsNetPriceAndVat": 186.6,
+                  "grossPriceIncludingTaxes": 190.2,
+                  "netPriceIncludingTaxes": 190.2,
+                  "prepayableAmount": 190.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 16.963636,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 13.145455,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 190.2,
+              "averagePriceExcludingTaxes": 169.636364,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          }
+        ],
+        "criteria": {
+          "dateIn": [
+            2023,
+            6,
+            27
+          ],
+          "los": 1,
+          "roomNumber": 1,
+          "adultNumber": 4,
+          "childrenAges": [],
+          "productCode": "D3CDP",
+          "offerCode": "1RB3",
+          "disabledFamilyOffer": false,
+          "explicitDateInSearch": true
+        },
+        "segmentExtraInfo": {
+          "occupancyUnavailabilities": {
+            "MAX_ADULT": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ],
+            "MAX_OCCUPANCY": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ]
+          },
+          "availableFreenightOffers": 0,
+          "availableBwpOffers": 0,
+          "availableSnuOffers": 0,
+          "ada": false,
+          "segmentPlannings": {
+            "hotelPlanning": {
+              "leftToSale": 14,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "productPlanning": {
+              "D3CDP": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              },
+              "D3COV": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              }
+            },
+            "rlPlanning": {
+              "RB3": {
+                "plStatus": "OPEN"
+              }
+            },
+            "rlProductPlanning": {
+              "(RB3,D3CDP)": {
+                "plStatus": "OPEN"
+              },
+              "(RB3,D3COV)": {
+                "plStatus": "OPEN"
+              }
+            }
+          }
+        }
+      },
+      {
+        "offers": [
+          {
+            "product": {
+              "code": "D3CDP",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 3,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 166.6,
+              "tarsPriceUnitary": 166.6,
+              "tarsDiscount": 166.6,
+              "tarsPostDiscount": 166.6,
+              "netClientTarsPrice": 166.6,
+              "grossPriceExcludingTaxes": 151.454545,
+              "netPriceExcludingTaxes": 151.454545,
+              "tarsNetPriceAndVat": 166.6,
+              "grossPriceIncludingTaxes": 170.2,
+              "netPriceIncludingTaxes": 170.2,
+              "prepayableAmount": 170.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 15.145455,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 11.327273,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 11.327273,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 11.327273
+              }
+            },
+            "available": true,
+            "rank": 3,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 166.6,
+                  "tarsPriceUnitary": 166.6,
+                  "tarsDiscount": 166.6,
+                  "tarsPostDiscount": 166.6,
+                  "netClientTarsPrice": 166.6,
+                  "grossPriceExcludingTaxes": 151.454545,
+                  "netPriceExcludingTaxes": 151.454545,
+                  "tarsNetPriceAndVat": 166.6,
+                  "grossPriceIncludingTaxes": 170.2,
+                  "netPriceIncludingTaxes": 170.2,
+                  "prepayableAmount": 170.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 15.145455,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 11.327273,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 170.2,
+              "averagePriceExcludingTaxes": 151.454545,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          },
+          {
+            "product": {
+              "code": "D3COV",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 4,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 186.6,
+              "tarsPriceUnitary": 186.6,
+              "tarsDiscount": 186.6,
+              "tarsPostDiscount": 186.6,
+              "netClientTarsPrice": 186.6,
+              "grossPriceExcludingTaxes": 169.636364,
+              "netPriceExcludingTaxes": 169.636364,
+              "tarsNetPriceAndVat": 186.6,
+              "grossPriceIncludingTaxes": 190.2,
+              "netPriceIncludingTaxes": 190.2,
+              "prepayableAmount": 190.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 16.963636,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 13.145455,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 13.145455,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 13.145455
+              }
+            },
+            "available": true,
+            "rank": 4,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 186.6,
+                  "tarsPriceUnitary": 186.6,
+                  "tarsDiscount": 186.6,
+                  "tarsPostDiscount": 186.6,
+                  "netClientTarsPrice": 186.6,
+                  "grossPriceExcludingTaxes": 169.636364,
+                  "netPriceExcludingTaxes": 169.636364,
+                  "tarsNetPriceAndVat": 186.6,
+                  "grossPriceIncludingTaxes": 190.2,
+                  "netPriceIncludingTaxes": 190.2,
+                  "prepayableAmount": 190.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 16.963636,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 13.145455,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 190.2,
+              "averagePriceExcludingTaxes": 169.636364,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          }
+        ],
+        "criteria": {
+          "dateIn": [
+            2023,
+            6,
+            27
+          ],
+          "los": 1,
+          "roomNumber": 1,
+          "adultNumber": 4,
+          "childrenAges": [],
+          "productCode": "D3CDP",
+          "offerCode": "1RB3",
+          "disabledFamilyOffer": false,
+          "explicitDateInSearch": true
+        },
+        "segmentExtraInfo": {
+          "occupancyUnavailabilities": {
+            "MAX_ADULT": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ],
+            "MAX_OCCUPANCY": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ]
+          },
+          "availableFreenightOffers": 0,
+          "availableBwpOffers": 0,
+          "availableSnuOffers": 0,
+          "ada": false,
+          "segmentPlannings": {
+            "hotelPlanning": {
+              "leftToSale": 14,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "productPlanning": {
+              "D3CDP": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              },
+              "D3COV": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              }
+            },
+            "rlPlanning": {
+              "RB3": {
+                "plStatus": "OPEN"
+              }
+            },
+            "rlProductPlanning": {
+              "(RB3,D3CDP)": {
+                "plStatus": "OPEN"
+              },
+              "(RB3,D3COV)": {
+                "plStatus": "OPEN"
+              }
+            }
+          }
+        }
+      },
+      {
+        "offers": [
+          {
+            "product": {
+              "code": "D3CDP",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 3,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 166.6,
+              "tarsPriceUnitary": 166.6,
+              "tarsDiscount": 166.6,
+              "tarsPostDiscount": 166.6,
+              "netClientTarsPrice": 166.6,
+              "grossPriceExcludingTaxes": 151.454545,
+              "netPriceExcludingTaxes": 151.454545,
+              "tarsNetPriceAndVat": 166.6,
+              "grossPriceIncludingTaxes": 170.2,
+              "netPriceIncludingTaxes": 170.2,
+              "prepayableAmount": 170.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 15.145455,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 11.327273,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 11.327273,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 11.327273
+              }
+            },
+            "available": true,
+            "rank": 3,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 166.6,
+                  "tarsPriceUnitary": 166.6,
+                  "tarsDiscount": 166.6,
+                  "tarsPostDiscount": 166.6,
+                  "netClientTarsPrice": 166.6,
+                  "grossPriceExcludingTaxes": 151.454545,
+                  "netPriceExcludingTaxes": 151.454545,
+                  "tarsNetPriceAndVat": 166.6,
+                  "grossPriceIncludingTaxes": 170.2,
+                  "netPriceIncludingTaxes": 170.2,
+                  "prepayableAmount": 170.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 15.145455,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 11.327273,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 170.2,
+              "averagePriceExcludingTaxes": 151.454545,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          },
+          {
+            "product": {
+              "code": "D3COV",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 4,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 186.6,
+              "tarsPriceUnitary": 186.6,
+              "tarsDiscount": 186.6,
+              "tarsPostDiscount": 186.6,
+              "netClientTarsPrice": 186.6,
+              "grossPriceExcludingTaxes": 169.636364,
+              "netPriceExcludingTaxes": 169.636364,
+              "tarsNetPriceAndVat": 186.6,
+              "grossPriceIncludingTaxes": 190.2,
+              "netPriceIncludingTaxes": 190.2,
+              "prepayableAmount": 190.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 16.963636,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 13.145455,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 13.145455,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 13.145455
+              }
+            },
+            "available": true,
+            "rank": 4,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 186.6,
+                  "tarsPriceUnitary": 186.6,
+                  "tarsDiscount": 186.6,
+                  "tarsPostDiscount": 186.6,
+                  "netClientTarsPrice": 186.6,
+                  "grossPriceExcludingTaxes": 169.636364,
+                  "netPriceExcludingTaxes": 169.636364,
+                  "tarsNetPriceAndVat": 186.6,
+                  "grossPriceIncludingTaxes": 190.2,
+                  "netPriceIncludingTaxes": 190.2,
+                  "prepayableAmount": 190.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 16.963636,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 13.145455,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 190.2,
+              "averagePriceExcludingTaxes": 169.636364,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          }
+        ],
+        "criteria": {
+          "dateIn": [
+            2023,
+            6,
+            27
+          ],
+          "los": 1,
+          "roomNumber": 1,
+          "adultNumber": 4,
+          "childrenAges": [],
+          "productCode": "D3CDP",
+          "offerCode": "1RB3",
+          "disabledFamilyOffer": false,
+          "explicitDateInSearch": true
+        },
+        "segmentExtraInfo": {
+          "occupancyUnavailabilities": {
+            "MAX_ADULT": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ],
+            "MAX_OCCUPANCY": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ]
+          },
+          "availableFreenightOffers": 0,
+          "availableBwpOffers": 0,
+          "availableSnuOffers": 0,
+          "ada": false,
+          "segmentPlannings": {
+            "hotelPlanning": {
+              "leftToSale": 14,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "productPlanning": {
+              "D3CDP": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              },
+              "D3COV": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              }
+            },
+            "rlPlanning": {
+              "RB3": {
+                "plStatus": "OPEN"
+              }
+            },
+            "rlProductPlanning": {
+              "(RB3,D3CDP)": {
+                "plStatus": "OPEN"
+              },
+              "(RB3,D3COV)": {
+                "plStatus": "OPEN"
+              }
+            }
+          }
+        }
+      },
+      {
+        "offers": [
+          {
+            "product": {
+              "code": "D3CDP",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 3,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 166.6,
+              "tarsPriceUnitary": 166.6,
+              "tarsDiscount": 166.6,
+              "tarsPostDiscount": 166.6,
+              "netClientTarsPrice": 166.6,
+              "grossPriceExcludingTaxes": 151.454545,
+              "netPriceExcludingTaxes": 151.454545,
+              "tarsNetPriceAndVat": 166.6,
+              "grossPriceIncludingTaxes": 170.2,
+              "netPriceIncludingTaxes": 170.2,
+              "prepayableAmount": 170.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 15.145455,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 11.327273,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 11.327273,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 11.327273
+              }
+            },
+            "available": true,
+            "rank": 3,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 166.6,
+                  "tarsPriceUnitary": 166.6,
+                  "tarsDiscount": 166.6,
+                  "tarsPostDiscount": 166.6,
+                  "netClientTarsPrice": 166.6,
+                  "grossPriceExcludingTaxes": 151.454545,
+                  "netPriceExcludingTaxes": 151.454545,
+                  "tarsNetPriceAndVat": 166.6,
+                  "grossPriceIncludingTaxes": 170.2,
+                  "netPriceIncludingTaxes": 170.2,
+                  "prepayableAmount": 170.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 15.145455,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 11.327273,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 170.2,
+              "averagePriceExcludingTaxes": 151.454545,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          },
+          {
+            "product": {
+              "code": "D3COV",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 4,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 186.6,
+              "tarsPriceUnitary": 186.6,
+              "tarsDiscount": 186.6,
+              "tarsPostDiscount": 186.6,
+              "netClientTarsPrice": 186.6,
+              "grossPriceExcludingTaxes": 169.636364,
+              "netPriceExcludingTaxes": 169.636364,
+              "tarsNetPriceAndVat": 186.6,
+              "grossPriceIncludingTaxes": 190.2,
+              "netPriceIncludingTaxes": 190.2,
+              "prepayableAmount": 190.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 16.963636,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 13.145455,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 13.145455,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 13.145455
+              }
+            },
+            "available": true,
+            "rank": 4,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 186.6,
+                  "tarsPriceUnitary": 186.6,
+                  "tarsDiscount": 186.6,
+                  "tarsPostDiscount": 186.6,
+                  "netClientTarsPrice": 186.6,
+                  "grossPriceExcludingTaxes": 169.636364,
+                  "netPriceExcludingTaxes": 169.636364,
+                  "tarsNetPriceAndVat": 186.6,
+                  "grossPriceIncludingTaxes": 190.2,
+                  "netPriceIncludingTaxes": 190.2,
+                  "prepayableAmount": 190.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 16.963636,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 13.145455,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 190.2,
+              "averagePriceExcludingTaxes": 169.636364,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          }
+        ],
+        "criteria": {
+          "dateIn": [
+            2023,
+            6,
+            27
+          ],
+          "los": 1,
+          "roomNumber": 1,
+          "adultNumber": 4,
+          "childrenAges": [],
+          "productCode": "D3CDP",
+          "offerCode": "1RB3",
+          "disabledFamilyOffer": false,
+          "explicitDateInSearch": true
+        },
+        "segmentExtraInfo": {
+          "occupancyUnavailabilities": {
+            "MAX_ADULT": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ],
+            "MAX_OCCUPANCY": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ]
+          },
+          "availableFreenightOffers": 0,
+          "availableBwpOffers": 0,
+          "availableSnuOffers": 0,
+          "ada": false,
+          "segmentPlannings": {
+            "hotelPlanning": {
+              "leftToSale": 14,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "productPlanning": {
+              "D3CDP": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              },
+              "D3COV": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              }
+            },
+            "rlPlanning": {
+              "RB3": {
+                "plStatus": "OPEN"
+              }
+            },
+            "rlProductPlanning": {
+              "(RB3,D3CDP)": {
+                "plStatus": "OPEN"
+              },
+              "(RB3,D3COV)": {
+                "plStatus": "OPEN"
+              }
+            }
+          }
+        }
+      },
+      {
+        "offers": [
+          {
+            "product": {
+              "code": "D3CDP",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 3,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 166.6,
+              "tarsPriceUnitary": 166.6,
+              "tarsDiscount": 166.6,
+              "tarsPostDiscount": 166.6,
+              "netClientTarsPrice": 166.6,
+              "grossPriceExcludingTaxes": 151.454545,
+              "netPriceExcludingTaxes": 151.454545,
+              "tarsNetPriceAndVat": 166.6,
+              "grossPriceIncludingTaxes": 170.2,
+              "netPriceIncludingTaxes": 170.2,
+              "prepayableAmount": 170.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 15.145455,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 11.327273,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 11.327273,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 11.327273
+              }
+            },
+            "available": true,
+            "rank": 3,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 166.6,
+                  "tarsPriceUnitary": 166.6,
+                  "tarsDiscount": 166.6,
+                  "tarsPostDiscount": 166.6,
+                  "netClientTarsPrice": 166.6,
+                  "grossPriceExcludingTaxes": 151.454545,
+                  "netPriceExcludingTaxes": 151.454545,
+                  "tarsNetPriceAndVat": 166.6,
+                  "grossPriceIncludingTaxes": 170.2,
+                  "netPriceIncludingTaxes": 170.2,
+                  "prepayableAmount": 170.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 15.145455,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 11.327273,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 170.2,
+              "averagePriceExcludingTaxes": 151.454545,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          },
+          {
+            "product": {
+              "code": "D3COV",
+              "family": "A",
+              "type": "ROOMD3",
+              "orderInResa": 4,
+              "capacity": {
+                "maxAdult": 4,
+                "maxChild": 3,
+                "maxPax": 4
+              },
+              "webOnly": false,
+              "paying": true,
+              "roomSizeM2": 22,
+              "roomSizeFt2": 236,
+              "numberOfChildren": 0,
+              "perStay": false,
+              "warranted": true
+            },
+            "tk": {
+              "tkCode": "1RB3",
+              "tkType": "RA",
+              "qualification": "UNQUALIFIED",
+              "codeReservation": "1RB3",
+              "typeCodeReservation": "RA",
+              "codeReponse": "1RB3",
+              "typeCodeReponse": "RA",
+              "rateLevel": {
+                "code": "RB3",
+                "type": "PACKAGE_BB",
+                "packaged": true
+              },
+              "flexibility": {
+                "level": "NOFLEX",
+                "amount": 100.0,
+                "status": "%",
+                "forbidden": "N",
+                "dayBegin": 9999,
+                "dayEnd": 0,
+                "hoursBegin": "00:00",
+                "hoursEnd": "23:59"
+              },
+              "dayUse": false,
+              "familyOffer": false
+            },
+            "planning": {
+              "leftToSale": 1,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "longStay": false,
+            "price": {
+              "currency": "EUR",
+              "tarsPrice": 186.6,
+              "tarsPriceUnitary": 186.6,
+              "tarsDiscount": 186.6,
+              "tarsPostDiscount": 186.6,
+              "netClientTarsPrice": 186.6,
+              "grossPriceExcludingTaxes": 169.636364,
+              "netPriceExcludingTaxes": 169.636364,
+              "tarsNetPriceAndVat": 186.6,
+              "grossPriceIncludingTaxes": 190.2,
+              "netPriceIncludingTaxes": 190.2,
+              "prepayableAmount": 190.2,
+              "excludedTaxesAmount": 3.6,
+              "includedTaxesAmount": 16.963636,
+              "remunerationAmount": 0.0,
+              "los": 0
+            },
+            "availabilityReasons": [],
+            "taxes": {
+              "TCITYC": {
+                "code": "TCITYC",
+                "familyCode": "OTH",
+                "amount": 0.9,
+                "percent": 0,
+                "currency": "EUR",
+                "status": "C",
+                "included": false,
+                "prepayed": true,
+                "vat": false,
+                "scope": "PERSON_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.6,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES03",
+                "totalAmount": 3.6,
+                "totalExcludedAmount": 3.6,
+                "totalIncludedAmount": 0.0
+              },
+              "TCNTRF": {
+                "code": "TCNTRF",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 3.818182,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 3.818182,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 3.818182
+              },
+              "TCNTRR": {
+                "code": "TCNTRR",
+                "familyCode": "VAT",
+                "amount": 0,
+                "percent": 10.0,
+                "currency": "EUR",
+                "status": "%",
+                "included": true,
+                "prepayed": true,
+                "vat": true,
+                "scope": "ROOM_AND_NIGHT",
+                "refundable": false,
+                "effectiveAmount": 13.145455,
+                "effectiveCurrency": "EUR",
+                "calculationRule": "TXES01",
+                "totalAmount": 13.145455,
+                "totalExcludedAmount": 0.0,
+                "totalIncludedAmount": 13.145455
+              }
+            },
+            "available": true,
+            "rank": 4,
+            "attachedProducts": {
+              "IPET": {
+                "product": {
+                  "code": "IPET",
+                  "family": "Z",
+                  "type": "FAMILY",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RAC",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ROOM_PER_STAY",
+                  "category": "CUSTOM",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 2,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 7.0,
+                      "tarsPriceUnitary": 7.0,
+                      "tarsDiscount": 7.0,
+                      "tarsPostDiscount": 7.0,
+                      "netClientTarsPrice": 7.0,
+                      "grossPriceExcludingTaxes": 7.0,
+                      "netPriceExcludingTaxes": 7.0,
+                      "tarsNetPriceAndVat": 7.0,
+                      "grossPriceIncludingTaxes": 7.0,
+                      "netPriceIncludingTaxes": 7.0,
+                      "prepayableAmount": 7.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 0.0,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "P",
+                      "priceStatus": "N",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {}
+                  }
+                ],
+                "inclusionType": "NOT_INCLUDED",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 7.0,
+                  "tarsPriceUnitary": 7.0,
+                  "tarsDiscount": 7.0,
+                  "tarsPostDiscount": 7.0,
+                  "netClientTarsPrice": 7.0,
+                  "grossPriceExcludingTaxes": 7.0,
+                  "netPriceExcludingTaxes": 7.0,
+                  "tarsNetPriceAndVat": 7.0,
+                  "grossPriceIncludingTaxes": 7.0,
+                  "netPriceIncludingTaxes": 7.0,
+                  "prepayableAmount": 7.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 0.0,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {},
+                "saleConditions": []
+              },
+              "MBREAK": {
+                "product": {
+                  "code": "MBREAK",
+                  "family": "H",
+                  "type": "RESTAU",
+                  "orderInResa": 9,
+                  "capacity": {
+                    "maxAdult": 1,
+                    "maxChild": 0,
+                    "maxPax": 0
+                  },
+                  "webOnly": false,
+                  "paying": true,
+                  "numberOfChildren": 0,
+                  "rlCodeDateIn": "RLGENE",
+                  "perStay": false,
+                  "commercialScope": "STAY",
+                  "priceUnit": "PER_ADULT_PER_STAY",
+                  "category": "BREAKFAST",
+                  "warranted": true,
+                  "flagVpcBurn": false
+                },
+                "quantity": 4,
+                "planning": {
+                  "plStatus": "OPEN"
+                },
+                "attachedProductDetails": [
+                  {
+                    "date": [
+                      2023,
+                      6,
+                      27
+                    ],
+                    "price": {
+                      "currency": "EUR",
+                      "tarsPrice": 42.0,
+                      "tarsPriceUnitary": 42.0,
+                      "tarsDiscount": 42.0,
+                      "tarsPostDiscount": 42.0,
+                      "netClientTarsPrice": 42.0,
+                      "grossPriceExcludingTaxes": 38.181818,
+                      "netPriceExcludingTaxes": 38.181818,
+                      "tarsNetPriceAndVat": 42.0,
+                      "grossPriceIncludingTaxes": 42.0,
+                      "netPriceIncludingTaxes": 42.0,
+                      "prepayableAmount": 42.0,
+                      "excludedTaxesAmount": 0.0,
+                      "includedTaxesAmount": 3.818182,
+                      "remunerationAmount": 0.0,
+                      "priceCodeUnite": "X",
+                      "priceStatus": "I",
+                      "los": 1,
+                      "pricePax": 1
+                    },
+                    "taxes": {
+                      "TCNTRF": {
+                        "code": "TCNTRF",
+                        "familyCode": "VAT",
+                        "amount": 0,
+                        "percent": 10.0,
+                        "currency": "EUR",
+                        "status": "%",
+                        "included": true,
+                        "prepayed": true,
+                        "vat": true,
+                        "scope": "ROOM_AND_NIGHT",
+                        "refundable": false,
+                        "effectiveAmount": 3.818182,
+                        "effectiveCurrency": "EUR",
+                        "calculationRule": "TXES01",
+                        "totalAmount": 0,
+                        "totalExcludedAmount": 0,
+                        "totalIncludedAmount": 0
+                      }
+                    }
+                  }
+                ],
+                "inclusionType": "INCLUDED_IN_RATE",
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 42.0,
+                  "tarsPriceUnitary": 42.0,
+                  "tarsDiscount": 42.0,
+                  "tarsPostDiscount": 42.0,
+                  "netClientTarsPrice": 42.0,
+                  "grossPriceExcludingTaxes": 38.181818,
+                  "netPriceExcludingTaxes": 38.181818,
+                  "tarsNetPriceAndVat": 42.0,
+                  "grossPriceIncludingTaxes": 42.0,
+                  "netPriceIncludingTaxes": 42.0,
+                  "prepayableAmount": 42.0,
+                  "excludedTaxesAmount": 0.0,
+                  "includedTaxesAmount": 3.818182,
+                  "remunerationAmount": 0.0,
+                  "los": 0
+                },
+                "taxes": {
+                  "TCNTRF": {
+                    "code": "TCNTRF",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.818182,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 3.818182,
+                    "totalExcludedAmount": 0.0,
+                    "totalIncludedAmount": 3.818182
+                  }
+                },
+                "saleConditions": [
+                  {
+                    "rank": 38,
+                    "code": "PDTPOL",
+                    "indPublication": "2",
+                    "usedPriority": 5
+                  }
+                ]
+              }
+            },
+            "payable": {
+              "amount": 100.0,
+              "code": "OG",
+              "status": "%"
+            },
+            "burnEligibility": true,
+            "roomDetails": [
+              {
+                "tk": {
+                  "tkCode": "1RB3",
+                  "tkType": "RA",
+                  "qualification": "UNQUALIFIED",
+                  "rlCode": "RB3",
+                  "substituted": false,
+                  "rlPackaged": true
+                },
+                "primary": true,
+                "date": [
+                  2023,
+                  6,
+                  27
+                ],
+                "mealPlan": "BB",
+                "planning": {
+                  "leftToSale": 1,
+                  "plStatus": "LEFT_TO_SALE"
+                },
+                "remunerations": [],
+                "price": {
+                  "currency": "EUR",
+                  "tarsPrice": 186.6,
+                  "tarsPriceUnitary": 186.6,
+                  "tarsDiscount": 186.6,
+                  "tarsPostDiscount": 186.6,
+                  "netClientTarsPrice": 186.6,
+                  "grossPriceExcludingTaxes": 169.636364,
+                  "netPriceExcludingTaxes": 169.636364,
+                  "tarsNetPriceAndVat": 186.6,
+                  "grossPriceIncludingTaxes": 190.2,
+                  "netPriceIncludingTaxes": 190.2,
+                  "prepayableAmount": 190.2,
+                  "excludedTaxesAmount": 3.6,
+                  "includedTaxesAmount": 16.963636,
+                  "remunerationAmount": 0.0,
+                  "priceCodeUnite": "P",
+                  "priceStatus": "N",
+                  "los": 1,
+                  "pricePax": 4
+                },
+                "taxes": {
+                  "TCITYC": {
+                    "code": "TCITYC",
+                    "familyCode": "OTH",
+                    "amount": 0.9,
+                    "percent": 0,
+                    "currency": "EUR",
+                    "status": "C",
+                    "included": false,
+                    "prepayed": true,
+                    "vat": false,
+                    "scope": "PERSON_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 3.6,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES03",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  },
+                  "TCNTRR": {
+                    "code": "TCNTRR",
+                    "familyCode": "VAT",
+                    "amount": 0,
+                    "percent": 10.0,
+                    "currency": "EUR",
+                    "status": "%",
+                    "included": true,
+                    "prepayed": true,
+                    "vat": true,
+                    "scope": "ROOM_AND_NIGHT",
+                    "refundable": false,
+                    "effectiveAmount": 13.145455,
+                    "effectiveCurrency": "EUR",
+                    "calculationRule": "TXES01",
+                    "totalAmount": 0,
+                    "totalExcludedAmount": 0,
+                    "totalIncludedAmount": 0
+                  }
+                },
+                "snuAggregate": {
+                  "nbSnuCertificatesUsed": 0
+                },
+                "postIrmaDayInformation": {}
+              }
+            ],
+            "saleConditions": [
+              {
+                "rank": 2,
+                "code": "AHASA1",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 3,
+                "code": "AHASA2",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 4,
+                "code": "AHASA3",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 8,
+                "code": "GUAPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "flagCreditCard": "Y",
+                "levelWaranty": "D",
+                "amount": 100.0,
+                "numberDayLimit": -1,
+                "numberDayBegin": 0,
+                "status": "%"
+              },
+              {
+                "rank": 9,
+                "code": "CANPOL",
+                "indPublication": "2",
+                "usedPriority": 4,
+                "amount": 100.0,
+                "numberDayBegin": 9999,
+                "status": "%"
+              },
+              {
+                "rank": 16,
+                "code": "CINPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 17,
+                "code": "COUPOL",
+                "indPublication": "2",
+                "usedPriority": 6,
+                "limitHour": "12:00"
+              },
+              {
+                "rank": 18,
+                "code": "CHIPOL",
+                "indPublication": "2",
+                "usedPriority": 6
+              },
+              {
+                "rank": 19,
+                "code": "SPECHI",
+                "indPublication": "2",
+                "usedPriority": 6
+              }
+            ],
+            "burnEligibilityVpc": false,
+            "snuAggregate": {
+              "nbSnuCertificatesUsed": 0
+            },
+            "appliedSubstitutions": [],
+            "postIrmaStayInformation": {
+              "averagePriceIncludingTaxes": 190.2,
+              "averagePriceExcludingTaxes": 169.636364,
+              "convertedChildrenAges": [],
+              "effectivePaxCriteria": {
+                "adults": 4,
+                "childrenAges": []
+              },
+              "ada": false
+            },
+            "coBrand": false
+          }
+        ],
+        "criteria": {
+          "dateIn": [
+            2023,
+            6,
+            27
+          ],
+          "los": 1,
+          "roomNumber": 1,
+          "adultNumber": 4,
+          "childrenAges": [],
+          "productCode": "D3CDP",
+          "offerCode": "1RB3",
+          "disabledFamilyOffer": false,
+          "explicitDateInSearch": true
+        },
+        "segmentExtraInfo": {
+          "occupancyUnavailabilities": {
+            "MAX_ADULT": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ],
+            "MAX_OCCUPANCY": [
+              "DFB",
+              "DBC",
+              "DBCOS"
+            ]
+          },
+          "availableFreenightOffers": 0,
+          "availableBwpOffers": 0,
+          "availableSnuOffers": 0,
+          "ada": false,
+          "segmentPlannings": {
+            "hotelPlanning": {
+              "leftToSale": 14,
+              "plStatus": "LEFT_TO_SALE"
+            },
+            "productPlanning": {
+              "D3CDP": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              },
+              "D3COV": {
+                "leftToSale": 1,
+                "plStatus": "LEFT_TO_SALE"
+              }
+            },
+            "rlPlanning": {
+              "RB3": {
+                "plStatus": "OPEN"
+              }
+            },
+            "rlProductPlanning": {
+              "(RB3,D3CDP)": {
+                "plStatus": "OPEN"
+              },
+              "(RB3,D3COV)": {
+                "plStatus": "OPEN"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "duration": 34,
+  "irmaCoreDuration": 14,
+  "irmaClientDuration": 29,
+  "repartitionDuration": 0
+}

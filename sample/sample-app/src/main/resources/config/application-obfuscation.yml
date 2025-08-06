@@ -1,0 +1,340 @@
+wcp.sdk.service.audit.obfuscation.configs:
+  - id: builtin.web
+    filters:
+      - path: httpAuditedRequest.uri
+        expression: (.*)/_bookItems
+    properties:
+      "[httpAuditedRequest.body]":
+        payload-paths:
+          - path: $.order.payment.paymentTransactionId
+            mask: keepLast1
+          - path: $..firstName
+            mask: keepLast2
+          - path: $..lastName
+            mask: keepLast2
+          - path: $..email
+            mask: email
+          - path: $..phone.number
+            mask: keepLast4
+
+  - id: builtin.web
+    filters:
+      - path: httpAuditedRequest.uri
+        expression: (.*)/wcpsamples/trap(.*)
+    properties:
+      "[httpAuditedRequest.params]":
+        map-keys:
+          - key: key1
+            mask: default
+          - key: key2
+            mask: default
+
+  - id: builtin.httpexchanges
+    filters:
+      - path: httpAuditedRequest.uri
+        expression: (.*)/httpbin.org(.*)
+    properties:
+      "[httpAuditedRequest.params]":
+        map-keys:
+          - key: key1
+            mask: default
+          - key: key2
+            mask: DEFAULT
+      "[httpAuditedRequest.uri]":
+        valueMask: paramsUrl
+
+  - id: builtin.web
+    filters:
+      - path: httpAuditedRequest.uri
+        expression: (.*)/basekts/(.*)
+    properties:
+      "[httpAuditedRequest.body]":
+        payload-paths:
+          - path: $..phone.number
+            mask: keepLast4
+      "[httpAuditedRequest.headers]":
+        map-keys:
+          - key: api-key
+            mask: keepLast3
+      "[httpAuditedResponse.body]":
+        contentType: application/json
+        payload-paths:
+          - path: $..phone.number
+            mask: keepLast4
+          - path: $..lastName
+            mask: keepLast2
+          - path: $..email
+            mask: email
+          - path: $..guests
+            mask: keepLast2
+
+  -
+    id: builtin.httpexchanges
+    filters:
+      -
+        path: httpAuditedRequest.uri
+        expression: (.*)/irmaprocess/v3.1/offer(.*)
+    properties:
+      "[httpAuditedRequest.headers]":
+        map-keys:
+          - key: api-key
+            mask: keepFirst3
+      "[httpAuditedRequest.body]":
+        contentType: application/json
+        payload-paths:
+          - path: $.postIrmaRoomCriterias[*].offerCode
+            mask: keepFirst2
+          - path: $.rids[*]
+            mask: keepFirst2
+          - path: $.wdrSearch
+            mask: keepFirst1
+          - path: $.postIrmaRoomCriterias[*].los
+            mask: keepFirst4
+          - path: $.beneficiaire.adresse.email
+            mask: email
+          - path: $.beneficiaire.adresse.telephone.number
+            mask: keepLast4
+      "[httpAuditedResponse.headers]":
+        map-keys:
+          - key: X-B3-TraceId
+            mask: keepLast3
+      "[httpAuditedResponse.payload]":
+        contentType: application/json
+        payload-paths:
+          - path: $.postIrmaOfferHotel.offersByCriteria[*].offers[*].product.code
+            mask: keepFirst2
+          - path: $.postIrmaOfferHotel.offersByCriteria[*].offers[*].price.grossPriceExcludingTaxes
+            mask: keepFirst2
+
+  -
+    id: builtin.web
+    filters:
+      -
+        path: httpAuditedRequest.uri
+        expression: (.*)/irmaprocess/v3.1/offer(.*)
+    properties:
+      "[httpAuditedRequest.headers]":
+        map-keys:
+          - key: api-key
+            mask: keepLast3
+      "[httpAuditedRequest.body]":
+        contentType: application/json
+        payload-paths:
+          - path: $..email
+            mask: email
+          - path: $..telephone.number
+            mask: keepLast4
+      "[httpAuditedResponse.headers]":
+        map-keys:
+          - key: X-B3-TraceId
+            mask: keepLast3
+      "[httpAuditedResponse.body]":
+        contentType: application/json
+        payload-paths:
+          - path: $.postIrmaOfferHotel.offersByCriteria[*].offers[*].product
+            mask: keepFirst2
+
+  -
+    id: builtin.httpexchanges
+    filters:
+      -
+        path: httpAuditedRequest.uri
+        expression: (.*)/service-layer/bookMultiple(.*)
+    properties:
+      "[httpAuditedRequest.headers]":
+        map-keys:
+          - key: api-key
+            mask: keepLast3
+      "[httpAuditedRequest.body]":
+        contentType: application/xml
+        payload-paths:
+          - path: //email
+            mask: email
+          - path: /bookingRequestList/bookingRequests/beneficiaire/adresse/telephone/number
+            mask: keepLast4
+          - path: //telephone/number
+            mask: keepLast4
+          - path: /bookingRequestList/bookingRequests/garantie/numCarteGarantie
+            mask: keepLast4
+      "[httpAuditedResponse.headers]":
+        map-keys:
+          - key: X-B3-TraceId
+            mask: keepLast3
+      "[httpAuditedResponse.payload]":
+        contentType: application/xml
+        payload-paths:
+          - path: /bookingResponseMulti/bookingResponses/numDossier
+            mask: keepFirst3
+          - path: //numReservation
+            mask: keepFirst4
+
+  -
+    id: builtin.web
+    filters:
+      -
+        path: httpAuditedRequest.uri
+        expression: (.*)/service-layer/bookMultiple(.*)
+    properties:
+      "[httpAuditedRequest.headers]":
+        map-keys:
+          - key: api-key
+            mask: keepLast3
+      "[httpAuditedResponse.headers]":
+        map-keys:
+          - key: X-B3-TraceId
+            mask: keepLast3
+      "[httpAuditedResponse.body]":
+        contentType: application/xml
+        payload-paths:
+          - path: /bookingResponseMulti/bookingResponses/numDossier
+            mask: keepFirst3
+          - path: //numReservation
+            mask: keepFirst4
+
+  - id: builtin.web
+    filters:
+      - path: httpAuditedRequest.uri
+        expression: (.*)/audit/obfuscate/web/json(.*)
+    properties:
+      "[httpAuditedRequest.headers]":
+        map-keys:
+          - key: api-key
+            mask: keepLast3
+      "[httpAuditedRequest.params]":
+        map-keys:
+          - key: key1
+            mask: default
+      "[httpAuditedResponse.body]":
+        contentType: application/json
+        payload-paths:
+          - path: $..lastName
+            mask: keepLast2
+          - path: $..firstName
+            mask: keepLast2
+          - path: $..email
+            mask: email
+          - path: $..phone.number
+            mask: keepLast4
+          - path: $..pricing
+            mask: price
+      "[httpAuditedRequest.body]":
+        contentType: application/json
+        payload-paths:
+          - path: $..guests[*].lastName
+            mask: keepFirst2
+          - path: $.order.basket.items[*].guests[?(@.age>18)].firstName
+            mask: keepFirst2
+          - path: $..mainBeneficiary.firstName
+            mask: keepFirst2
+          - path: $..mainBeneficiary.lastName
+            mask: keepFirst2
+          - path: $..mainBeneficiary.phone.number
+            mask: keepFirst4
+          - path: $..email
+            mask: email
+          - path: $..otherTax.amount.detail[1:4]
+            mask: default
+
+  - id: builtin.web
+    filters:
+      - path: httpAuditedRequest.uri
+        expression: (.*)/audit/obfuscate/web/xml(.*)
+    properties:
+      "[httpAuditedRequest.headers]":
+        map-keys:
+          - key: api-key
+            mask: keepLast3
+      "[httpAuditedResponse.body]":
+        contentType: application/xml
+        payload-paths:
+          - path: //nom
+            mask: keepLast2
+          - path: //nomNL
+            mask: keepLast2
+          - path: //number
+            mask: keepLast4
+          - path: //adresse1
+            mask: default
+          - path: //email
+            mask: email
+          - path: //offres
+            mask: default
+      "[httpAuditedRequest.body]":
+        contentType: application/xml
+        payload-paths:
+          - path: //beneficiaire/nom[@name]
+            mask: keepFirst2
+          - path: //beneficiaire/nomNL[position()<3]
+            mask: keepFirst2
+          #          - path: //nom[@name='firstName2']
+          #            mask: name
+          #          - path: //facturation/nomNL[@name='lastName2']
+          #            mask: name
+          - path: //numCarteGarantie
+            mask: default
+          - path: //beneficiaire/adresse/telephone/number
+            mask: keepFirst4
+          - path: //resaAmounts/amount[value>100]/currency
+            mask: price
+          - path: //offres/*
+            mask: default
+
+  - id: builtin.sqs-service
+    filters:
+      - path: queueUrl
+        expression: (.*)/wcp-samples-audit-sqs-local(.*)
+    properties:
+      messageId:
+        valueMask: keepFirst4
+      payload:
+        contentType: application/json
+        payload-paths:
+          - path: $..sqsMessage
+            mask: keepFirst2
+      attributes:
+        map-keys:
+          - key: FirstAttribute
+            mask: default
+
+  - id: builtin.sqs-service
+    filters:
+      - path: queueUrl
+        expression: (.*)/wcp-samples-audit-sqs
+    properties:
+      messageId:
+        valueMask: keepLast4
+      payload:
+        contentType: application/json
+        payload-paths:
+          - path: $..sqsMessage
+            mask: keepLast2
+      attributes:
+        map-keys:
+          - key: FirstAttribute
+            mask: DEFAULT
+
+  - id: builtin.kinesis-service
+    filters:
+      - path: streamName
+        expression: wcp-samples-audit-kinesis-local
+    properties:
+      partitionKey:
+        valueMask: keepFirst4
+      payload:
+        contentType: application/json
+        payload-paths:
+          - path: $..kinesisMessage2
+            mask: keepFirst2
+
+  - id: builtin.kinesis-service
+    filters:
+      - path: streamName
+        expression: wcp-samples-audit-kinesis-stream
+    properties:
+      partitionKey:
+        valueMask: keepLast4
+      payload:
+        contentType: application/json
+        payload-paths:
+          - path: $..kinesisMessage2
+            mask: keepLast2

@@ -1,0 +1,34 @@
+<basket>
+  <id>49387549374893112</id>
+  <items>
+    <item>
+      <offerId>4f8e8637-922b-4248-828e-4ef94bc77e11</offerId>
+      <offerType>HOTEL_STAY</offerType>
+      <comment>My husband is afraid of spiders, make extra sure that none is in the room !</comment>
+      <mainBeneficiary email="sean.astin.pa@gmail.com">
+        <firstName>Sean</firstName>
+        <lastName>Astin</lastName>
+        <phone prefix="33">
+          <number>644857425</number>
+        </phone>
+      </mainBeneficiary>
+    </item>
+    <item>
+      <offerId>4f8e8637-922b-4248-828e-4ef94bc77e12</offerId>
+      <offerType>HOTEL_STAY</offerType>
+      <comment>My husband2 is afraid of spiders, make extra sure that none is in the room !</comment>
+      <mainBeneficiary email="sean2.astin.pa@gmail.com" email2="sean2.astin.pa@gmail2.com">
+        <firstName>Sean2</firstName>
+        <lastName>Astin2</lastName>
+        <phone prefix="33">
+          <number>6448574252</number>
+        </phone>
+      </mainBeneficiary>
+    </item>
+    <item>
+      <offerId>4f8e8637-922b-4248-828e-4ef94bc77e13</offerId>
+      <offerType>HOTEL_STAY</offerType>
+      <comment>My husband2 is afraid of spiders, make extra sure that none is in the room !</comment>
+    </item>
+  </items>
+</basket>

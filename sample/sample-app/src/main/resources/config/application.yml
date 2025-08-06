@@ -1,0 +1,130 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /wcpsamples
+  tomcat:
+    accesslog:
+      enabled: true
+      pattern: "\"traceId\": \"%{X-B3-TraceId}r\",\"remote\": \"%{X-Forwarded-For}i\",\"origin\": \"%{X-WCP-Origin}i\", \"protocol\": \"%H\", \"method\": \"%m\", \"domain\":\"%{Host}i\", \"request\": \"%U%q\", \"duration\": %D, \"httpStatus\": %s, \"bytesReceived\": \"%{Content-Length}i\", \"bytesSent\": \"%b\""
+
+management:
+  tracing:
+    baggage:
+      remote-fields:
+        - X-WCP-Origin
+        - X-B3-TraceId
+
+  endpoint:
+    metrics:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: [ "metrics", "configprops", "env", "health", "info", "threaddump", "logfile", "prometheus" ]
+  info:
+    git:
+      mode: full
+  metrics:
+    enable:
+      http: true
+      jvm: true
+      logback: true
+      process: true
+      system: true
+    distribution:
+      percentiles-histogram:
+        all: true
+      percentiles:
+        all: 0, 0.5, 0.75, 0.95, 0.99, 1.0
+    tags:
+      application: ${spring.application.name}
+
+
+spring:
+  web:
+    resources:
+      add-mappings: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  jmx:
+    enabled: true
+  application:
+    name: WCP Samples
+
+  profiles:
+    # The commented value for `active` can be replaced with valid Spring profiles to load.
+    # Otherwise, it will be filled in by maven when building the JAR file
+    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+    active: #spring.profiles.active#
+
+logging:
+  level:
+    ROOT: WARN
+    org.springframework: INFO
+    com.accor: ERROR
+    com.accor.wcp.sample: INFO
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation: ERROR
+
+application:
+  id: wcpsamples
+  basepath: ${SAMPLES_BASEPATH}
+
+wcp:
+#  web:
+#    rest:
+#      api:
+#        validation:
+#          accept-version:
+#            version: 1
+  sdk:
+    service:
+      audit:
+        http:
+          traceid:
+            header: X-B3-TraceId
+          request:
+            headers:
+              enabled: true
+              names: Accept-Language,Keep-Alive,Referer
+          response:
+            headers:
+              enabled: true
+              names: response1,Response2
+        obfuscate:
+          fields: host,secret,kinesisMessage,sqsMessage,X-B3-TraceId,X-WCP-TraceId,SecondAttribute
+        notification:
+          async: true
+          async.delay-ms: 10000
+          buffer:
+            block: false
+        request-attributes: doubleAttribute,floatAttribute,integerAttribute,stringAttribute,objectAttribute,dateAttribute,_INTERNAL_TTL_
+        ttl:
+          default: 5
+    domain: wcplatform
+    env: ${WCP_ENV}
+    application:
+      id: ${application.id}
+      env: ${ENV}
+    audit:
+      aws:
+        kinesis:
+          stream-names: ${kinesis.streamName}
+sqs:
+  awsRegion: ${AWS_REGION}
+  queueUrl: ${SAMPLES_AUDIT_QUEUE_PATH}
+kinesis:
+  awsRegion: ${AWS_REGION}
+  streamName: ${SAMPLES_AUDIT_KINESIS_PATH}
+sqsdlq:
+  awsRegion: ${AWS_REGION}
+  queueUrl: ${SAMPLES_SQSDLQ_PATH}
+sqsdlq-fifo:
+  awsRegion: ${AWS_REGION}
+  queueUrl: ${SAMPLES_SQSDLQ_FIFO_PATH}
+

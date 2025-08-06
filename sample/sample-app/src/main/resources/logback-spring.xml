@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+
+<configuration scan="true">
+
+  <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+  <logger name="org.apache.http.client" level="ERROR"/>
+  <logger name="com.accor.wcp.sdk" level="DEBUG"/>
+
+  <!-- https://logback.qos.ch/manual/configuration.html#shutdownHook and https://jira.qos.ch/browse/LOGBACK-1090 -->
+  <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+  <springProperty name="aws.account" source="aws.account"/>
+  <springProperty name="application.id" source="application.id"/>
+  <springProperty name="aws.env" source="aws.env"/>
+
+  <appender name="ACCESSLOG" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>{"time":"%d{"yyyy-MM-dd'T'HH:mm:ss,SSSXXX", UTC}","applicationId":"${application.id}","awsAccount":"${aws.account}","env":"${aws.env}","logLineType":"apiCall","operationId":"%X{operationId:-}",%msg,"auditId":"%X{auditId}","executionId":"%X{executionId}","errorCode":"%X{errorCode}","warningCodes":[%X{warningCodes}],"errorDetails":"%X{errorDetails}","warningDetails":[%X{warningDetails}]}%n</pattern>
+    </layout>
+  </appender>
+
+  <appender name="CALLS" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>{"time":"%d{"yyyy-MM-dd'T'HH:mm:ss,SSSXXX",UTC}","applicationId":"${application.id}","awsAccount":"${aws.account}","env":"${aws.env}","logLineType":"ancillaryApiCall",%msg,"auditId":"%X{auditId}","traceId":"%X{traceId}","executionId":"%X{executionId}"}%n
+      </pattern>
+    </layout>
+  </appender>
+
+  <root level="${logging.level.root}">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
+
+  <springProfile name="dev">
+    <logger name="com.accor.wcp.web.rest.config.AccessLogConfig" additivity="false" level="OFF">
+      <appender-ref ref="ACCESSLOG"/>
+    </logger>
+    <logger name="com.accor.wcp.audit.httpexchange.HttpExchangeAuditReportData" additivity="false"
+      level="OFF">
+      <appender-ref ref="CALLS"/>
+    </logger>
+  </springProfile>
+
+  <springProfile name="aws">
+    <logger name="com.accor.wcp.web.rest.config.AccessLogConfig" additivity="false" level="debug">
+      <appender-ref ref="ACCESSLOG"/>
+    </logger>
+    <logger name="com.accor.wcp.audit.httpexchange.HttpExchangeAuditReportData" additivity="false"
+      level="debug">
+      <appender-ref ref="CALLS"/>
+    </logger>
+  </springProfile>
+
+</configuration>
