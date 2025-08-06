@@ -40,6 +40,8 @@
       <awssdk.bom.version>2.32.14</awssdk.bom.version>
       <spring-framework-bom.version>6.2.9</spring-framework-bom.version>
       <commons-beanutils.version>1.9.4</commons-beanutils.version>
+      <camel-spring-boot-starter.version>4.11.0</camel-spring-boot-starter.version>
+      <guava.version>33.4.8-jre</guava.version>
   </properties>
 
   <scm>
@@ -141,9 +143,19 @@
                 <version>${mapstruct.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>${commons-beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
             <dependency>

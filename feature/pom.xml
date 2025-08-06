@@ -19,6 +19,7 @@
         <module>audit</module>
         <module>dynaconfig</module>
         <module>dynacache</module>
+        <module>dlqmanager</module>
     </modules>
 </project>
 
