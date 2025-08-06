@@ -1,6 +1,6 @@
 include:
   - project: welcome-connect-platform/framework/templates/gitlabci
-    ref: "master"
+    ref: "java-17"
     file: lib-build-java-ci.yml
 
 mvn-deploy-snapshot-feat:

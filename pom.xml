@@ -1,74 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.kockpit</groupId>
-  <artifactId>kockpit</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>Kockpit</name>
-
-  <organization>
+    <groupId>org.kockpit</groupId>
+    <artifactId>kockpit</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>Kockpit</name>
-    <url>https://www.kockpit.org</url>
-  </organization>
 
-  <modules>
-      <module>core</module>
-      <module>config</module>
-      <module>feature</module>
-      <module>starter</module>
-      <module>core-application</module>
-      <module>sample</module>
-  </modules>
+    <organization>
+        <name>Kockpit</name>
+        <url>https://www.kockpit.org</url>
+    </organization>
 
-  <properties>
-    <!-- Build properties -->
-    <java.version>17</java.version>
-    <maven.version>3.6.3</maven.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <modules>
+        <module>core</module>
+        <module>config</module>
+        <module>feature</module>
+        <module>starter</module>
+        <module>core-application</module>
+        <module>sample</module>
+    </modules>
 
-      <mockserver-client-java.version>5.15.0</mockserver-client-java.version>
-      <kafka-clients.version>3.8.1</kafka-clients.version>
-      <mapstruct.version>1.6.3</mapstruct.version>
-      <commons-text.version>1.13.0</commons-text.version>
-      <commons-collections4.version>4.4</commons-collections4.version>
-      <amazon-kinesis-client.version>3.0.1</amazon-kinesis-client.version>
-      <lombok.version>1.18.38</lombok.version>
-      <spring-boot-dependencies.version>3.5.4</spring-boot-dependencies.version>
-      <awssdk.bom.version>2.32.14</awssdk.bom.version>
-      <spring-framework-bom.version>6.2.9</spring-framework-bom.version>
-      <commons-beanutils.version>1.9.4</commons-beanutils.version>
-      <camel-spring-boot-starter.version>4.11.0</camel-spring-boot-starter.version>
-      <guava.version>33.4.8-jre</guava.version>
-  </properties>
+    <properties>
+        <!-- Build properties -->
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 
-  <scm>
-    <connection>
-      scm:git:https://gitlab.softfactory-accor.net/welcome-connect-platform/kockpit-projects/kockpit.git
-    </connection>
-    <url>https://gitlab.softfactory-accor.net/welcome-connect-platform/kockpit-projects/kockpit
-    </url>
-    <developerConnection>scm:git:git@gitlab.softfactory-accor.net:welcome-connect-platform/kockpit-projects/kockpit.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
+        <mockserver-client-java.version>5.15.0</mockserver-client-java.version>
+        <kafka-clients.version>3.8.1</kafka-clients.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <commons-text.version>1.13.0</commons-text.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
+        <amazon-kinesis-client.version>3.0.1</amazon-kinesis-client.version>
+        <lombok.version>1.18.38</lombok.version>
+        <spring-boot-dependencies.version>3.5.4</spring-boot-dependencies.version>
+        <awssdk.bom.version>2.32.14</awssdk.bom.version>
+        <spring-framework-bom.version>6.2.9</spring-framework-bom.version>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
+        <camel-spring-boot-starter.version>4.11.0</camel-spring-boot-starter.version>
+        <guava.version>33.4.8-jre</guava.version>
+    </properties>
 
-  <distributionManagement>
-    <snapshotRepository>
-      <id>deployment_snapshot</id> <!-- Software Factory Sonatype Repository Manager-->
-      <url>https://nexus.softfactory-accor.net/repository/maven-snapshots/</url>
-    </snapshotRepository>
-    <repository>
-      <id>deployment_release</id> <!-- Software Factory Sonatype Repository Manager-->
-      <url>https://nexus.softfactory-accor.net/repository/maven-releases/</url>
-    </repository>
-  </distributionManagement>
+    <scm>
+        <connection>
+            scm:git:https://gitlab.softfactory-accor.net/welcome-connect-platform/kockpit-projects/kockpit.git
+        </connection>
+        <url>https://gitlab.softfactory-accor.net/welcome-connect-platform/kockpit-projects/kockpit
+        </url>
+        <developerConnection>
+            scm:git:git@gitlab.softfactory-accor.net:welcome-connect-platform/kockpit-projects/kockpit.git
+        </developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>deployment_snapshot</id> <!-- Software Factory Sonatype Repository Manager-->
+            <url>https://nexus.softfactory-accor.net/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>deployment_release</id> <!-- Software Factory Sonatype Repository Manager-->
+            <url>https://nexus.softfactory-accor.net/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -124,6 +137,7 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>software.amazon.kinesis</groupId>
@@ -175,4 +189,48 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <parameters>true</parameters>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-configuration-processor</artifactId>
+                                <version>${spring-boot-dependencies.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct</artifactId>
+                                <version>${mapstruct.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${mapstruct.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok-mapstruct-binding</artifactId>
+                                <version>0.2.0</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

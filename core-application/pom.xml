@@ -14,7 +14,7 @@
 
   <modules>
     <module>console-api</module>
-      <module>console-ui</module>
+<!--      <module>console-ui</module>-->
   </modules>
 </project>
 
