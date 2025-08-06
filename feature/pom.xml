@@ -20,6 +20,7 @@
         <module>dynaconfig</module>
         <module>dynacache</module>
         <module>dlqmanager</module>
+        <module>darkcanary</module>
     </modules>
 </project>
 
