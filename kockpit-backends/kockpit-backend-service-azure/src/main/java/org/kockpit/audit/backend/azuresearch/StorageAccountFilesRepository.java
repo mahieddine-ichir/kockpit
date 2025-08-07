@@ -24,10 +24,10 @@ public class StorageAccountFilesRepository implements ConfigApiDelegate {
 
     @SneakyThrows
     @Override
-    public ResponseEntity<List<ConfigItem>> getConfig() {
+    public ResponseEntity<List<ConfigItem>> getConfig(String domain, String appId) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try (os) {
-            blobContainerClient.getBlobClient("manifests/rcu-manifest.json")
+            blobContainerClient.getBlobClient("%s/%s-config.json".formatted(domain, appId))
                     .downloadStream(os);
             TypeReference<List<ConfigItem>> typeRef = new TypeReference<>() {};
             return ResponseEntity.ok(objectMapper.readValue(os.toByteArray(), typeRef));
