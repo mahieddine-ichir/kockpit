@@ -1,0 +1,7 @@
+wcp:
+  web:
+    rest:
+      api:
+        header:
+          traceid:
+            retrocompatibilty: false

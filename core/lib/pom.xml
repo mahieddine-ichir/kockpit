@@ -8,11 +8,24 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>lib</artifactId>
     <packaging>pom</packaging>
-    <name>Welcome Connect Platform - SDK</name>
+    <name>Kockpit Platform Engineering - SDK</name>
 
     <modules>
         <module>aws</module>
         <module>rest-api-handler-problem</module>
+        <module>rest-api-filter-contentlanguage</module>
+        <module>rest-api-filter-traceid</module>
+        <module>rest-api-validation-acceptversion</module>
+        <module>rest-api-config-localeresolver</module>
     </modules>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 </project>

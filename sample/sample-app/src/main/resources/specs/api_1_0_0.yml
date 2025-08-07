@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: Welcome Connect - Basket & Order - Basket API
+  title: Kockpit Platform Engineering - - Basket & Order - Basket API
   description: API endpoints for Basket v0
   contact:
     email: DIGITALFACTORY.D3WCO-OpenDistribution.Basket-OrderALL@accor.com

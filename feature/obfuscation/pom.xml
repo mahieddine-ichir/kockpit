@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>kockpit-feature-obfuscation</artifactId>
-    <name>Kockpit - Feature - Obfuscation</name>
+    <name>Kockpit Platform Engineering - Feature - Obfuscation</name>
     <packaging>pom</packaging>
 
     <modules>

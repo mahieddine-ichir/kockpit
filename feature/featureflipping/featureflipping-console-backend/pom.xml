@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>featureflipping-console-backend</artifactId>
-    <name>Welcome Connect Platform - Service - FeatureFlipping - Console Service Backend</name>
+    <name>Kockpit Platform Engineering - Feature - FeatureFlipping - Console Service Backend</name>
     <packaging>jar</packaging>
 
     <dependencies>

@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>featureflipping-application-openfeature</artifactId>
-    <name>Welcome Connect Platform - Service - FeatureFlipping - OpenFeature - Application Integration</name>
+    <name>Kockpit Platform Engineering - Feature - FeatureFlipping - OpenFeature - Application Integration</name>
     <packaging>jar</packaging>
 
     <dependencies>

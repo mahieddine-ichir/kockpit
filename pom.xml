@@ -7,7 +7,7 @@
     <artifactId>kockpit</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Kockpit</name>
+    <name>Kockpit Platform Engineering</name>
 
     <organization>
         <name>Kockpit</name>
@@ -34,7 +34,6 @@
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 
         <mockserver-client-java.version>5.15.0</mockserver-client-java.version>
-        <kafka-clients.version>3.8.1</kafka-clients.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <commons-text.version>1.13.0</commons-text.version>
         <commons-collections4.version>4.4</commons-collections4.version>
@@ -100,6 +99,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test-autoconfigure</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

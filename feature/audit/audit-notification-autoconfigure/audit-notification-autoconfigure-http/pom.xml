@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>audit-notification-autoconfigure-http</artifactId>
-  <name>Welcome Connect Audit - Notification AutoConfigure - Http</name>
+  <name>Kockpit Platform Engineering - Feature - Audit - Notification AutoConfigure - Http</name>
 
   <dependencies>
     <dependency>

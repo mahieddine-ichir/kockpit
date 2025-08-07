@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>kockpit-config</artifactId>
-  <name>Kockpit - Config</name>
+  <name>Kockpit Platform Engineering - Config</name>
   <packaging>pom</packaging>
 
   <modules>

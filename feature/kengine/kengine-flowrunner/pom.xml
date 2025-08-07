@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>kengine-flowrunner</artifactId>
-  <name>Welcome Connect Framework - Kengine Flow Runner</name>
+  <name>Kockpit Platform Engineering - Framework - Kengine Flow Runner</name>
 
   <dependencies>
     <dependency>

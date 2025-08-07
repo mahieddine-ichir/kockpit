@@ -25,7 +25,7 @@ class AuditAutoConfiguration {
   @Bean
   public AuditorService wcpAuditor(
       SdkApplicationProperties sdkApplicationProperties,
-      BuildProperties buildProperties,
+      @Autowired(required = false) BuildProperties buildProperties,
       NotificationAuditReportManager notificationAuditReportManager,
       @Value("${wcp.sdk.service.audit.ttl.default}") Integer defaultAuditTtl) {
     return new WcpAuditor(

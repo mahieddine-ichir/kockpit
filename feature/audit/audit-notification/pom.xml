@@ -9,7 +9,7 @@
 
   <packaging>pom</packaging>
   <artifactId>audit-notification</artifactId>
-  <name>Welcome Connect Audit - Notification</name>
+  <name>Kockpit Platform Engineering - Feature - Audit - Notification</name>
 
   <modules>
     <module>audit-notification-http</module>

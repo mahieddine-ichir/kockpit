@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sdk-console-service-parent</artifactId>
-    <name>Welcome Connect Platform - SDK for Console Service Backend Parent</name>
+    <name>Kockpit Platform Engineering - SDK for Console Service Backend Parent</name>
     <packaging>pom</packaging>
 
     <modules>

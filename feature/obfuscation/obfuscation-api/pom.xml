@@ -9,6 +9,6 @@
     </parent>
 
     <artifactId>obfuscation-api</artifactId>
-    <name>Welcome Connect Platform - Obfuscation - API</name>
+    <name>Kockpit Platform Engineering - Obfuscation - API</name>
 
 </project>

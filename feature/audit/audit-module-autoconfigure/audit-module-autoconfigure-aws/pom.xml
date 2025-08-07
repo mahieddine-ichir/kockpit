@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>audit-module-autoconfigure-aws</artifactId>
-  <name>Welcome Connect Audit - Module AutoConfigure - AWS</name>
+  <name>Kockpit Platform Engineering - Feature - Audit - Module AutoConfigure - AWS</name>
 
   <dependencies>
     <dependency>

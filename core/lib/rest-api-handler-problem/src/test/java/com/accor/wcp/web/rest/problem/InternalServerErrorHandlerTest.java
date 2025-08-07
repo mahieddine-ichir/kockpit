@@ -29,7 +29,7 @@ class InternalServerErrorHandlerTest {
                         .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString())
-                .isEqualTo("{\"type\":\"about:blank\",\"title\":\"Internal Server error\",\"status\":500,\"detail\":\"Unable to process data. Please contact Welcome Connect team.\",\"instance\":\"/nullPointerException\",\"code\":\"TECHNICAL_ERROR\"}");
+                .isEqualTo("{\"type\":\"about:blank\",\"title\":\"Internal Server error\",\"status\":500,\"detail\":\"Unable to process data. Please contact Kockpit Platform Engineering - team.\",\"instance\":\"/nullPointerException\",\"code\":\"TECHNICAL_ERROR\"}");
         assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

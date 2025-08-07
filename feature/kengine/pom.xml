@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>kockpit-feature-kengine</artifactId>
-    <name>Kockpit - Feature - Obfuscation</name>
+    <name>Kockpit Platform Engineering - Feature - For KEngine</name>
     <packaging>pom</packaging>
 
     <modules>

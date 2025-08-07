@@ -5,7 +5,7 @@ import java.util.Map;
 
 public enum WcpError implements ErrorCode {
   TECHNICAL_ERROR(
-      "Internal Server error", 500, "Unable to process data. Please contact Welcome Connect team.");
+      "Internal Server error", 500, "Unable to process data. Please contact Kockpit Platform Engineering - team.");
 
   private final String title;
   private final int status;

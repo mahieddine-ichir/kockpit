@@ -10,12 +10,20 @@
     </parent>
 
     <artifactId>kockpit-starter</artifactId>
-    <name>Kockpit - Starters</name>
+    <name>Kockpit Platform Engineering - Starters</name>
     <packaging>pom</packaging>
 
     <modules>
         <module>starter-full-web</module>
         <module>starter-full-web-no-kengine</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>sdk-config-accor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
 

@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dynaconfig-communication</artifactId>
-    <name>Welcome Connect Platform - Service - DynaConfig - Communication Model / Protocol</name>
+    <name>Kockpit Platform Engineering - Feature - DynaConfig - Communication Model / Protocol</name>
     <packaging>jar</packaging>
 
     <dependencies>

@@ -9,7 +9,7 @@
 
   <packaging>pom</packaging>
   <artifactId>audit-notification-autoconfigure</artifactId>
-  <name>Welcome Connect Audit - Notification AutoConfigure</name>
+  <name>Kockpit Platform Engineering - Feature - Audit - Notification AutoConfigure</name>
 
   <modules>
     <module>audit-notification-autoconfigure-service</module>

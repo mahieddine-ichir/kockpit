@@ -8,10 +8,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>audit-module-kafka</artifactId>
-    <name>Welcome Connect Audit - Module - Kafka</name>
+    <name>Kockpit Platform Engineering - Feature - Audit - Module - Kafka</name>
 
     <properties>
         <avro.version>1.12.0</avro.version>
+        <kafka-clients.version>3.9.1</kafka-clients.version>
     </properties>
 
     <dependencies>

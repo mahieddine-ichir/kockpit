@@ -18,7 +18,7 @@ public class InternalServerErrorHandler {
   private static final String KEY_NAME_CODE = "code";
 
   @Value(
-      "${wcp.web.rest.api.handler.error.details.internal-server-error:Unable to process data. Please contact Welcome Connect team.}")
+      "${wcp.web.rest.api.handler.error.details.internal-server-error:Unable to process data. Please contact Kockpit Platform Engineering - team.}")
   private String internalServerErrorDetail;
 
   @ExceptionHandler({Exception.class, RuntimeException.class})

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.core.env.Environment;
 import org.thepavel.icomponent.InterfaceComponentScan;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 @SpringBootApplication
 @EnableConfigurationProperties(ApplicationProperties.class)
 @InterfaceComponentScan
+@EnableCaching
 public class WcpSampleApplicationApp {
 
   /**

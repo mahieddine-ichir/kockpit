@@ -1,0 +1,7 @@
+wcp:
+  web:
+    rest:
+      api:
+        validation:
+          accept-version:
+            version: 1

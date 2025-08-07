@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>console-service-parent</artifactId>
-    <name>Welcome Connect Platform - Console Service Backend Parent</name>
+    <name>Kockpit Platform Engineering - Console Service Backend Parent</name>
     <packaging>pom</packaging>
 
     <dependencies>

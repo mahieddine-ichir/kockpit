@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sdk-application-service-parent</artifactId>
-    <name>Welcome Connect Platform - SDK for Application Parent</name>
+    <name>Kockpit Platform Engineering - SDK for Application Parent</name>
     <packaging>pom</packaging>
 
     <modules>

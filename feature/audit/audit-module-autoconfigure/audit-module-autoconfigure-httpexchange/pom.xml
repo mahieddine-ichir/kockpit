@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>audit-module-autoconfigure-httpexchange</artifactId>
-    <name>Welcome Connect Audit - Module AutoConfigure - Http Exchange</name>
+    <name>Kockpit Platform Engineering - Feature - Audit - Module AutoConfigure - Http Exchange</name>
 
   <dependencies>
         <dependency>

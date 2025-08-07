@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>aws-request-signing-apache-interceptor2</artifactId>
-    <name>Welcome Connect Libs - AWS - Request Signing Interceptor for AWS SDK2</name>
+    <name>Kockpit Platform Engineering - Libs - AWS - Request Signing Interceptor for AWS SDK2</name>
 
     <!--
     Source: https://github.com/acm19/aws-request-signing-apache-interceptor

@@ -7,6 +7,7 @@ server:
       enabled: true
       pattern: "\"traceId\": \"%{X-B3-TraceId}r\",\"remote\": \"%{X-Forwarded-For}i\",\"origin\": \"%{X-WCP-Origin}i\", \"protocol\": \"%H\", \"method\": \"%m\", \"domain\":\"%{Host}i\", \"request\": \"%U%q\", \"duration\": %D, \"httpStatus\": %s, \"bytesReceived\": \"%{Content-Length}i\", \"bytesSent\": \"%b\""
 
+
 management:
   tracing:
     baggage:
@@ -16,11 +17,12 @@ management:
 
   endpoint:
     metrics:
-      enabled: true
+      access: unrestricted
   endpoints:
     web:
       exposure:
         include: [ "metrics", "configprops", "env", "health", "info", "threaddump", "logfile", "prometheus" ]
+
   info:
     git:
       mode: full

@@ -31,7 +31,7 @@ class FlowExecutionErrorHandlerTest {
     AssertionsForClassTypes.assertThat(problemResponse.getStatusCode())
         .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     AssertionsForClassTypes.assertThat(problemResponse.getBody().getDetail())
-        .isEqualTo("Unable to process data. Please contact Welcome Connect team.");
+        .isEqualTo("Unable to process data. Please contact Kockpit Platform Engineering - team.");
   }
 
   @Test
@@ -44,6 +44,6 @@ class FlowExecutionErrorHandlerTest {
     AssertionsForClassTypes.assertThat(problemResponse.getStatusCode())
         .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     AssertionsForClassTypes.assertThat(problemResponse.getBody().getDetail())
-        .isEqualTo("Unable to process data. Please contact Welcome Connect team.");
+        .isEqualTo("Unable to process data. Please contact Kockpit Platform Engineering - team.");
   }
 }
