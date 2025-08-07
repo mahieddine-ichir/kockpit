@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import ReactJson from 'react-json-view';
 
+
 const ConfigPage = (cfg) => {
     const [config] = useState(cfg);
     return (

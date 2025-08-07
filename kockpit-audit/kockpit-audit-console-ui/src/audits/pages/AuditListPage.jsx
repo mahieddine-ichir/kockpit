@@ -192,25 +192,9 @@ const AuditListPage = ({ domain, env, config }) => {
 
   if (loading) return <div>Loading...</div>;
 
-  /*
-  const fetchPage = (page, pageSize) => {
-    console.info("fetchPage");
-    setLoading(true);
-    if (search) {
-      doSearchAudits();
-    } else {
-      fetchAuditReportsWithPaging(domain, env, pageSize, (page - 1) * pageSize).then((data) => {
-        setAudits(data.items);
-        setLoading(false);
-      });
-    }
-  };
-   */
-
   const handlePageChange = (page, size) => {
     setItemsPerPage(size);
     setCurrentPage(page);
-//    fetchPage(page, size);
   };
 
   function doSearchAudits() {
@@ -219,7 +203,6 @@ const AuditListPage = ({ domain, env, config }) => {
     searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
       setAudits(data.items);
       setTotalCount(data.total_count);
-      //setItemsPerPage(data.size);
       setLoading(false);
     });
   }

@@ -1,0 +1,122 @@
+{
+  "audits": [
+    {
+      "type": "kengine.flows",
+      "events": [
+        {
+          "startTime": 1753497907790,
+          "endTime": 1753497907790,
+          "executionEDTDTO": {
+            "error": "VALID",
+            "executionUUID": "3b3cf389-0f5c-42ba-b6a1-5249d8705962",
+            "registryId": 1988878511,
+            "executionRules": [
+              {
+                "name": "CreateClientFromInput",
+                "error": "VALID"
+              },
+              {
+                "name": "ConsentementMerge",
+                "error": "VALID"
+              },
+              {
+                "name": "AbonnementMerge",
+                "error": "VALID"
+              }
+            ],
+            "rules": {
+              "AbonnementMerge": [
+                {
+                  "name": "isEligibleForAbonnementPredicate",
+                  "actionPredicate": "PREDICATE",
+                  "condition": true
+                },
+                {
+                  "name": "isCliOppositionPredicate",
+                  "actionPredicate": "PREDICATE",
+                  "condition": false
+                },
+                {
+                  "name": "computeAbonnementsAction",
+                  "actionPredicate": "ACTION",
+                  "condition": false
+                }
+              ],
+              "ConsentementMerge": [
+                {
+                  "name": "isEligibleForConsentementPredicate",
+                  "actionPredicate": "PREDICATE",
+                  "condition": true
+                },
+                {
+                  "name": "isCliOppositionPredicate",
+                  "actionPredicate": "PREDICATE",
+                  "condition": false
+                },
+                {
+                  "name": "upsertConsentementsAction",
+                  "actionPredicate": "ACTION",
+                  "condition": false
+                }
+              ],
+              "CreateClientFromInput": [
+                {
+                  "name": "validate_CompteClientAction",
+                  "actionPredicate": "ACTION",
+                  "condition": false
+                },
+                {
+                  "name": "create_CompteClientAction",
+                  "actionPredicate": "ACTION",
+                  "condition": false
+                }
+              ]
+            },
+            "executionName": "COMPTE_CLIENT_CREATE_SUBFLOW"
+          }
+        },
+
+        {
+          "startTime": 1753497907777,
+          "endTime": 1753497907884,
+          "executionEDTDTO": {
+            "error": "VALID",
+            "executionUUID": "262c2922-3374-4e42-8808-c885e0d60339",
+            "registryId": 1988878511,
+            "executionRules": [
+              { "name": "DefaultCivilite", "error": "VALID" },
+              { "name": "CreateLoadExisting", "error": "VALID" },
+              { "name": "CreateCompteClient", "error": "VALID" },
+              { "name": "PrepareCreatedInboxEvent", "error": "VALID" },
+              { "name": "CreateInboxEvent", "error": "VALID" }
+            ],
+            "rules": {
+              "CreateCompteClient": [
+                {
+                  "name": "dispatch_CreateAction",
+                  "actionPredicate": "ACTION"
+                },
+                {
+                  "name": "saveAndFlushCompteClientAction",
+                  "actionPredicate": "ACTION"
+                }
+              ],
+              "CreateInboxEvent": [
+                {
+                  "name": "createIndexEventAction",
+                  "actionPredicate": "ACTION"
+                },
+                {
+                  "name": "triggerOutboxAction",
+                  "actionPredicate": "ACTION"
+                }
+              ]
+            },
+            "executionName": "COMPTE_CLIENT_CREATE"
+          }
+        }
+      ]
+    }
+  ]
+}
+

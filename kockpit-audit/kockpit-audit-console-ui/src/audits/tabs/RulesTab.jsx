@@ -49,7 +49,11 @@ const RulesTab = ({ request }) => {
             )}
           </pre>
                 ) : bpmnXml ? (
-                    <BpmnViewer xml={bpmnXml} />
+                    <div className="overflow-x-auto">
+                        <div style={{ minWidth: '2000px' }}>
+                            <BpmnViewer xml={bpmnXml} />
+                        </div>
+                    </div>
                 ) : (
                     <p>Loading diagram...</p>
                 )}
