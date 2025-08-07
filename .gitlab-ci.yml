@@ -8,6 +8,7 @@ mvn-deploy-snapshot-feat:
   extends:
     - .mvn-deploy-snapshot
     - .mr
+    - .runner-xlarge
 
 mvn-build-mr:
   variables:
@@ -17,3 +18,28 @@ mvn-build-mr:
     policy: pull-push
     paths:
       - $CI_PROJECT_DIR/.m2/repository/
+
+.mvn-job:
+  extends:
+    - .runner-xlarge
+
+.mvn-build:
+  extends:
+    - .runner-xlarge
+    - .mvn-job
+
+.git-report-changes:
+  extends: .runner-small
+
+.mvn-sonar:
+  extends:
+    - .runner-xlarge
+    - .mvn-job
+
+.ms-team-notif:
+  extends: .runner-micro
+
+.mvn-cache:
+  extends:
+    - .mvn-sonar
+    - .runner-xlarge

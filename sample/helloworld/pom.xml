@@ -9,7 +9,7 @@
 
     <artifactId>helloworld</artifactId>
     <name>helloworld</name>
-    <description>Welcome Connect - Helloworld Example</description>
+    <description>Kockpit Platform Engineering - - Helloworld Example</description>
 
     <properties>
         <start-class>com.accor.wcp.helloworld.HelloWorldApplication</start-class>

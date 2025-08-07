@@ -9,7 +9,7 @@
 
     <packaging>pom</packaging>
     <artifactId>console-audit</artifactId>
-    <name>Welcome Connect Audit - Console Audit</name>
+    <name>Kockpit Platform Engineering - Feature - Audit - Console Audit</name>
 
     <modules>
         <module>audit-console-backend</module>

@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>audit-annotation</artifactId>
-  <name>Welcome Connect Audit - Annotations</name>
+  <name>Kockpit Platform Engineering - Feature - Audit - Annotations</name>
 
   <dependencies>
       <dependency>

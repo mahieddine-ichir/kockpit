@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>rest-api-handler-problem</artifactId>
-    <name>Welcome Connect Framework - Rest Api - Handler - Problems with Spring Problem RFC7807</name>
+    <name>Kockpit Platform Engineering - Framework - Rest Api - Handler - Problems with Spring Problem RFC7807</name>
 
     <dependencies>
         <dependency>
@@ -39,31 +39,6 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-test-autoconfigure</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

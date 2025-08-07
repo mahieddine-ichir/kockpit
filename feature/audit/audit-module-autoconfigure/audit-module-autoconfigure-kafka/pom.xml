@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>audit-module-autoconfigure-kafka</artifactId>
-  <name>Welcome Connect Audit - Module AutoConfigure - Kafka</name>
+  <name>Kockpit Platform Engineering - Feature - Audit - Module AutoConfigure - Kafka</name>
 
   <dependencies>
     <dependency>
@@ -21,12 +21,6 @@
       <version>${project.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-clients</artifactId>
-      <version>${kafka-clients.version}</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.springframework.kafka</groupId>
       <artifactId>spring-kafka</artifactId>

@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>audit-module-kengine</artifactId>
-  <name>Welcome Connect Audit - Module - KEngine</name>
+  <name>Kockpit Platform Engineering - Feature - Audit - Module - KEngine</name>
 
   <dependencies>
     <dependency>

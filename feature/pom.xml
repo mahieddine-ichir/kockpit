@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>kockpit-feature</artifactId>
-    <name>Kockpit - Features</name>
+    <name>Kockpit Platform Engineering - Features</name>
     <packaging>pom</packaging>
 
     <modules>

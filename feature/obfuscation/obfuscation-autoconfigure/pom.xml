@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>obfuscation-autoconfigure</artifactId>
-    <name>Welcome Connect Platform - Obfuscation - Spring AutoConfigure</name>
+    <name>Kockpit Platform Engineering - Obfuscation - Spring AutoConfigure</name>
 
   <dependencies>
     <dependency>

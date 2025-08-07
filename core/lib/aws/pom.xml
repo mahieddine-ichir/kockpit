@@ -8,7 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>aws</artifactId>
     <packaging>pom</packaging>
-    <name>Welcome Connect Libs - AWS Utils</name>
+    <name>Kockpit Platform Engineering - Libs - AWS Utils</name>
 
     <modules>
         <module>aws-request-signing-apache-interceptor2</module>

@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>kockpit-core</artifactId>
-  <name>Kockpit - Core</name>
+  <name>Kockpit Platform Engineering - Core</name>
   <packaging>pom</packaging>
 
   <modules>

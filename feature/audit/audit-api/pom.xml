@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>audit-api</artifactId>
-    <name>Welcome Connect Audit - Core</name>
+    <name>Kockpit Platform Engineering - Feature - Audit - Core</name>
 
     <dependencies>
         <dependency>

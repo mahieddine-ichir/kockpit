@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>kockpit-feature-featureflipping</artifactId>
-    <name>Welcome Connect Platform - Service - FeatureFlipping</name>
+    <name>Kockpit Platform Engineering - Feature - FeatureFlipping</name>
     <packaging>pom</packaging>
 
     <modules>

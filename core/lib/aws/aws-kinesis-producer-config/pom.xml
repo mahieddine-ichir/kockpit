@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>aws-kinesis-producer-config</artifactId>
-    <name>Welcome Connect Libs - AWS - Kinesis Producer Config</name>
+    <name>Kockpit Platform Engineering - Libs - AWS - Kinesis Producer Config</name>
 
     <dependencies>
         <dependency>

@@ -162,7 +162,7 @@ Manage a custom body error response
       "type": "about:blank",
       "title": "Internal Server error",
       "status": 500,
-      "detail": "Unable to process data. Please contact Welcome Connect team.",
+      "detail": "Unable to process data. Please contact Kockpit Platform Engineering - team.",
       "instance": "/nullPointerException",
       "code": "TECHNICAL_ERROR"
     }

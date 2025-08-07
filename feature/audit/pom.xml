@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>kockpit-feature-audit</artifactId>
-    <name>Kockpit - Feature - Audit</name>
+    <name>Kockpit Platform Engineering - Feature - Audit</name>
     <packaging>pom</packaging>
 
     <modules>

@@ -10,15 +10,10 @@
 
   <artifactId>starter-full-web-no-kengine</artifactId>
   <packaging>jar</packaging>
-  <name>Welcome Connect Starter - Full - Web without KEngine</name>
+  <name>Kockpit Platform Engineering - Starter - Full - Web without KEngine</name>
   <description>Spring Web, Audit Filter, SDK integration ...</description>
 
-  <!--  swagger-->
   <dependencies>
-<!--    <dependency>-->
-<!--        <groupId>org.kockpit</groupId>-->
-<!--      <artifactId>wcp-rest-api</artifactId>-->
-<!--    </dependency>-->
     <dependency>
         <groupId>org.kockpit</groupId>
       <artifactId>audit-module-autoconfigure-web</artifactId>

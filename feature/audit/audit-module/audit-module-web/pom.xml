@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>audit-module-web</artifactId>
-  <name>Welcome Connect Audit - Module - Web</name>
+  <name>Kockpit Platform Engineering - Feature - Audit - Module - Web</name>
 
   <dependencies>
     <dependency>

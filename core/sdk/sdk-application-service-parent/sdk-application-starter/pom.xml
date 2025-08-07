@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sdk-application-starter</artifactId>
-    <name>Welcome Connect Platform - SDK Application - Core Starter</name>
+    <name>Kockpit Platform Engineering - SDK Application - Core Starter</name>
 
     <dependencies>
         <dependency>

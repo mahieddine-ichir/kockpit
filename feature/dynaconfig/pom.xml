@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>kockpit-feature-dynaconfig</artifactId>
-    <name>Welcome Connect Platform - Service - DynamicConfig</name>
+    <name>Kockpit Platform Engineering - Feature - DynamicConfig</name>
     <packaging>pom</packaging>
 
     <modules>

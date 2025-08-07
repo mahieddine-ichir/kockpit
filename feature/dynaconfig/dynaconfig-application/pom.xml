@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dynaconfig-application</artifactId>
-    <name>Welcome Connect Platform - Service - DynaConfig - Application Integration</name>
+    <name>Kockpit Platform Engineering - Feature - DynaConfig - Application Integration</name>
     <packaging>jar</packaging>
 
     <dependencies>

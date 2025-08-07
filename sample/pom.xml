@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>kockpit-sample</artifactId>
-  <name>Kockpit - Samples</name>
+  <name>Kockpit Platform Engineering - Samples</name>
   <packaging>pom</packaging>
 
   <modules>

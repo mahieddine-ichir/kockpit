@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>kockpit-feature-dynacache</artifactId>
-    <name>Welcome Connect Platform - Service - Dynacache</name>
+    <name>Kockpit Platform Engineering - Feature - Dynacache</name>
     <packaging>pom</packaging>
 
     <modules>

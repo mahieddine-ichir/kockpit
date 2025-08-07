@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>kengine-web</artifactId>
-    <name>Welcome Connect Framework - Kengine web library</name>
+    <name>Kockpit Platform Engineering - Framework - Kengine web library</name>
 
     <dependencies>
         <dependency>

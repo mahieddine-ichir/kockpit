@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sdk-application-communication</artifactId>
-    <name>Welcome Connect Platform - SDK Application - Core Communication</name>
+    <name>Kockpit Platform Engineering - SDK Application - Core Communication</name>
 
     <dependencies>
         <dependency>
@@ -52,15 +52,5 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>
