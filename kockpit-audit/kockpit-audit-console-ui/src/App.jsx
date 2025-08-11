@@ -33,7 +33,6 @@ function App() {
         setEnv(configs[0].env);
     }
 
-    /*
     if (!user) {
         console.log("No user found");
         return (
@@ -45,7 +44,6 @@ function App() {
             </BrowserRouter>
         );
     }
-     */
 
     return (
         <BrowserRouter>
