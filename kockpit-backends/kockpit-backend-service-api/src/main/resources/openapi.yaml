@@ -6,12 +6,23 @@ info:
 
 paths:
 
-  /config:
+  /config/{domain}:
     get:
       operationId: getConfig
       tags:
         - config
         - manifest
+      parameters:
+        - name: domain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: appId
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Successful operation
@@ -19,6 +30,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/config"
+
+  /{domain}/{env}/dyna-config:
+    get:
+      operationId: dynaConfig
+      tags:
+        - dynaConfig
+      parameters:
+        - name: domain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: env
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
 
   /{domain}/{env}/audits:
     get:
@@ -174,8 +209,7 @@ components:
         name:
           type: string
         config:
-          oneOf:
-            - $ref: "#/components/schemas/config_audit"
+          type: object
 
     config_audit:
       type: object
@@ -184,6 +218,22 @@ components:
           type: array
           items:
             type: string
+
+    config_dynaconfig:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: "#/components/schemas/dynaconfig_key"
+
+    dynaconfig_key:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
 
     config_envs:
       type: array

@@ -1,6 +1,5 @@
 package org.kockpit.rules.executor;
 
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.rules.*;
@@ -12,13 +11,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
-@NoArgsConstructor
 public class RuleNodeExecutor<T> {
 
   private KengineLogStore kengineLogStore;
 
   public RuleNodeExecutor(KengineLogStore kengineLogStore) {
     this.kengineLogStore = kengineLogStore;
+  }
+
+  public RuleNodeExecutor() {
   }
 
   @Setter
