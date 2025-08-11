@@ -11,17 +11,20 @@ import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.common.StorageSharedKeyCredential;
 import org.kockpit.audit.backend.ConfigApiDelegate;
 import org.kockpit.audit.backend.DomainApiDelegate;
+import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 @AutoConfiguration
+@Import(SdkApplicationProperties.class)
 public class AzureAutoConfiguration {
 
     @Bean
-    ConfigApiDelegate storageAccountFilesRepository(BlobContainerClient blobContainerClient) {
+    ConfigApiDelegate storageAccountFilesRepository(BlobContainerClient blobContainerClient, SdkApplicationProperties sdkApplicationProperties) {
         return new StorageAccountFilesRepository(
-                blobContainerClient
+                blobContainerClient, sdkApplicationProperties
         );
     }
 
