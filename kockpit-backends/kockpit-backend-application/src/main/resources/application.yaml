@@ -8,6 +8,11 @@ spring:
     name: kockpit-audit-backoffice
 
 kockpit:
+  sdk:
+    domain: rcu
+    env: local
+    appId: any
+
   audit:
     azure:
       storage:

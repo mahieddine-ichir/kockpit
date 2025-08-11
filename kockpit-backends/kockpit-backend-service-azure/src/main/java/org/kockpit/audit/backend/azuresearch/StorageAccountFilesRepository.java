@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.kockpit.audit.backend.ConfigApiDelegate;
 import org.kockpit.audit.backend.ConfigItem;
+import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.http.ResponseEntity;
 
 import java.io.ByteArrayOutputStream;
@@ -18,16 +19,21 @@ public class StorageAccountFilesRepository implements ConfigApiDelegate {
 
     private final BlobContainerClient blobContainerClient;
 
+    private final SdkApplicationProperties sdkApplicationProperties;
+
     private final ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
     @SneakyThrows
     @Override
-    public ResponseEntity<List<ConfigItem>> getConfig(String domain, String appId) {
+    public ResponseEntity<List<ConfigItem>> getConfig() {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try (os) {
-            blobContainerClient.getBlobClient("%s/%s-config.json".formatted(domain, appId))
+            blobContainerClient.getBlobClient("%s/%s-manifest-%s.json".formatted(
+                    sdkApplicationProperties.getDomain(),
+                            sdkApplicationProperties.getDomain(),
+                            sdkApplicationProperties.getEnv()))
                     .downloadStream(os);
             TypeReference<List<ConfigItem>> typeRef = new TypeReference<>() {};
             return ResponseEntity.ok(objectMapper.readValue(os.toByteArray(), typeRef));

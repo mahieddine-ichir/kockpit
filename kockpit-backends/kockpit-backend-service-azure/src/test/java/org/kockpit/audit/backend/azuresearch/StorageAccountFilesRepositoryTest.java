@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kockpit.audit.backend.ConfigItem;
+import org.kockpit.sdk.SdkApplicationProperties;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -32,6 +33,9 @@ class StorageAccountFilesRepositoryTest {
     @MockitoBean
     BlobContainerClient blobContainerClient;
 
+    @MockitoBean
+    SdkApplicationProperties sdkApplicationProperties;
+
     @Test
     void download_file() {
         BlobClient blobClient = Mockito.mock(BlobClient.class);
@@ -44,7 +48,7 @@ class StorageAccountFilesRepositoryTest {
 
         when(blobContainerClient.getBlobClient(Mockito.anyString())).thenReturn(blobClient);
 
-        List<ConfigItem> configItems = storageAccountFilesRepository.getConfig("sample", "api").getBody();
+        List<ConfigItem> configItems = storageAccountFilesRepository.getConfig().getBody();
         log.info("configItems {}", configItems);
 
         configItems.stream().map(ConfigItem::getServices)

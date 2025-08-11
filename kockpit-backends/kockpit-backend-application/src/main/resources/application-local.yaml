@@ -1,3 +1,7 @@
+kockpit:
+  sdk:
+    env: local
+
 AZURESEARCH_INDEX: audit-v2
 AZURESEARCH_ENDPOINT: https://rcu-dev.search.windows.net
 AZURESEARCH_APIKEY: JAlCjsGXNDCnncUtpl1RzqiDO4DRisg8LURymqWX8KAzSeCr0p1w
