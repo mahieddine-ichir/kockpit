@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// const API_BASE = import.meta.env.VITE_API_BASE;
-const API_BASE = 'http://localhost:8080/backend/api';
+const API_BASE = import.meta.env.VITE_API_BASE;
 console.log('API_BASE:', API_BASE);
 
 axios.interceptors.request.use(function (config) {
