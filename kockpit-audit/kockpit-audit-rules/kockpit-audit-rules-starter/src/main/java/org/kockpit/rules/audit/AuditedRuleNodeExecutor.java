@@ -1,9 +1,11 @@
 package org.kockpit.rules.audit;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.annotation.AuditAttributesAnnotationProcessor;
 import org.kockpit.audit.api.AuditorEventService;
 import org.kockpit.audit.api.AuditorKeyValueService;
+import org.kockpit.audit.api.AuditorService;
 import org.kockpit.rules.RuleExecutionException;
 import org.kockpit.rules.RuleNode;
 import org.kockpit.rules.audit.flow.FlowExecutionAuditEvent;
@@ -17,43 +19,22 @@ import static org.kockpit.rules.audit.AuditedRuleNodeExecutorFactory.AUDITTYPE_K
 import static org.kockpit.rules.audit.flow.FlowExecutionKeyValues.getIndexedKeyValues;
 
 @Slf4j
+@RequiredArgsConstructor
 class AuditedRuleNodeExecutor<T> extends RuleNodeExecutor<T> {
 
     private final AuditAttributesAnnotationProcessor auditAttributesAnnotationProcessor;
+    private final AuditorService auditorService;
     private final AuditorEventService auditorEvents;
     private final AuditorKeyValueService auditorKeyValues;
     private final FlowExecutionAuditReportSerializer flowExecutionAuditReportSerializer;
-    private String executionName;
-
-    public AuditedRuleNodeExecutor(
-        AuditAttributesAnnotationProcessor auditAttributesAnnotationProcessor,
-        AuditorEventService auditorEvents,
-        AuditorKeyValueService auditorKeyValues,
-        FlowExecutionAuditReportSerializer flowExecutionAuditReportSerializer
-        ) {
-      super(null);
-      this.auditAttributesAnnotationProcessor = auditAttributesAnnotationProcessor;
-      this.auditorEvents = auditorEvents;
-      this.auditorKeyValues = auditorKeyValues;
-      this.flowExecutionAuditReportSerializer = flowExecutionAuditReportSerializer;
-    }
-
-    public AuditedRuleNodeExecutor(
-        AuditAttributesAnnotationProcessor auditAttributesAnnotationProcessor,
-        AuditorEventService auditorEvents,
-        AuditorKeyValueService auditorKeyValues,
-        FlowExecutionAuditReportSerializer flowExecutionAuditReportSerializer,
-        String executionName) {
-      // fixme super(executionName);
-        this.executionName = executionName;
-      this.auditAttributesAnnotationProcessor = auditAttributesAnnotationProcessor;
-      this.auditorEvents = auditorEvents;
-      this.auditorKeyValues = auditorKeyValues;
-      this.flowExecutionAuditReportSerializer = flowExecutionAuditReportSerializer;
-    }
 
     @Override
     public ExecutionResult execute(List<RuleNode<T>> ruleNodes, T context) {
+        boolean auditStartedHere = false;
+        if (! auditorService.isAuditStarted()) {
+            auditorService.startAudit();
+            auditStartedHere = true;
+        }
       ExecutionResult executionResult = null;
       try {
         executionResult = super.execute(ruleNodes, context);
@@ -63,6 +44,9 @@ class AuditedRuleNodeExecutor<T> extends RuleNodeExecutor<T> {
         throw e;
       } finally {
         audit(context, executionResult);
+        if (auditStartedHere) {
+            auditorService.stopAudit();
+        }
       }
     }
 
@@ -82,7 +66,7 @@ class AuditedRuleNodeExecutor<T> extends RuleNodeExecutor<T> {
       flowExecutionAuditEvent.setEndTime(executionResult.getEndTimestamp());
 
       // todo fixe these
-      flowExecutionAuditEvent.setExecutionName(executionName);
+      //flowExecutionAuditEvent.setExecutionName(executionName);
       /*
       flowExecutionAuditEvent.setExecutionName(getExecutionName());
       flowExecutionAuditEvent.setCreationTimestamp(getCreationTimestamp());

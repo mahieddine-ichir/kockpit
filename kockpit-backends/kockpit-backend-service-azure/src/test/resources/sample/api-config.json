@@ -1,0 +1,44 @@
+[
+  {
+    "domain": "sample",
+    "env": "local",
+    "services": [
+      {
+        "name": "audit",
+        "config": {
+          "columns": [
+            "appId", "requestId", "method", "path", "duration", "start", "status"
+          ]
+        }
+      },
+      {
+        "name": "dyna-config",
+        "config": {
+          "keys": [
+            {
+              "name": "keyString",
+              "value": "any string value"
+            },
+            {
+              "name": "keyBoolean",
+              "value": true
+            },
+            {
+              "name": "keyInt",
+              "value": 1
+            }
+          ]
+        }
+      },
+      {
+        "name": "feature-flipping",
+        "config": {
+          "keys": [
+            {
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
