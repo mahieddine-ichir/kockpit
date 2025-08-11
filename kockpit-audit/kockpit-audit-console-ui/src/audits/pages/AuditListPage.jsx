@@ -108,7 +108,6 @@ const AuditLine = ({columns, audit, onClick}) => {
           className="text-blue-600 hover:text-blue-800 flex items-center space-x-1 font-semibold"
       >
         <EyeIcon className="h-4 w-4"/>
-        <span>View</span>
       </button>
     </td>
   </tr>
