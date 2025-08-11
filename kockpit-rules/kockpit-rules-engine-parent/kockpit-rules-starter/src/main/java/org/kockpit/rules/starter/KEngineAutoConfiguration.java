@@ -20,10 +20,6 @@ import java.util.Optional;
 @AutoConfiguration
 public class KEngineAutoConfiguration {
 
-  KEngineAutoConfiguration() {
-    // No usage
-  }
-
   @Bean
   KEngineFlowRunnerImpl kEngineFlowRunner(
       RuleNodeRegistry registry,

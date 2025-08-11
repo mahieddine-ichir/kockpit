@@ -7,6 +7,7 @@ import org.kockpit.audit.obfuscate.AuditObfuscationSettings;
 import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,8 +27,14 @@ class AuditAutoConfiguration {
     return new AuditPostProcessor(auditModuleIntegrations, auditObfuscationServiceImpl);
   }
 
+  @ConditionalOnMissingBean(AuditReportNotificationService.class)
   @Bean
-  public AuditorService auditor(
+  AuditReportNotificationService auditReportNotificationService() {
+    return new SimpleLogNotificationService();
+  }
+
+  @Bean
+  AuditorService auditor(
           SdkApplicationProperties sdkApplicationProperties,
           BuildProperties buildProperties,
           NotificationAuditReportManager notificationAuditReportManager,
