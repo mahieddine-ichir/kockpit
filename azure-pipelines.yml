@@ -43,7 +43,7 @@ stages:
               javaHomeOption: 'JDKVersion'
               jdkVersionOption: '1.21'
               jdkArchitectureOption: 'x64'
-              goals: 'deploy -Pstime'
+              goals: 'deploy -Pstime,azure'
 
   - stage: Docker
     jobs:
@@ -74,14 +74,14 @@ stages:
               jdkVersionOption: '1.21'
               jdkArchitectureOption: 'x64'
               options: '-DskipTests'
-              goals: 'package'
+              goals: 'package -Pazure'
 
           - task: Docker@2
             displayName: Build and push an image to container registry kockpit-backend-azuresearch
             inputs:
               command: buildAndPush
               repository: 'kockpit-backend-azuresearch'
-              dockerfile: 'kockpit-backends/kockpit-backend-azuresearch/Dockerfile'
+              dockerfile: 'kockpit-backends/kockpit-backend-application/Dockerfile'
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
                 $(tag)
