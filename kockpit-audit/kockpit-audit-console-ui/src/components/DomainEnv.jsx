@@ -4,7 +4,7 @@ import {getConfig} from "../services/api.js";
 function DomainEnv({onConfigLoaded, domainEnvChanged}) {
     const [options, setOptions] = useState([]);
     useEffect(() => {
-        getConfig("rcu", "rcuapi").then(config => {
+        getConfig().then(config => {
             onConfigLoaded(config);
             let opts = config.map(cfg => {
                 return {
