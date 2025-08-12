@@ -1,45 +1,36 @@
 include:
   - project: welcome-connect-platform/framework/templates/gitlabci
-    ref: "java-17"
-    file: lib-build-java-ci.yml
+    ref: "java-21-dynatrace"
+    file: app-build-jib-ci.yml
 
-mvn-deploy-snapshot-feat:
-  when: manual
-  extends:
-    - .mvn-deploy-snapshot
-    - .mr
-    - .runner-xlarge
+variables:
+  CI_JIB_PLATFORMS: "linux/arm64"
 
-mvn-build-mr:
+.runner-xxlarge:
   variables:
-    CACHE_MODE: "true"
-  cache:
-    key: m2-cache
-    policy: pull-push
-    paths:
-      - $CI_PROJECT_DIR/.m2/repository/
+    KUBERNETES_SERVICE_CPU_REQUEST: "200m"
+    KUBERNETES_SERVICE_CPU_LIMIT: "2"
+    KUBERNETES_SERVICE_MEMORY_REQUEST: "2Gi"
+    KUBERNETES_SERVICE_MEMORY_LIMIT: "4Gi"
 
-.mvn-job:
-  extends:
-    - .runner-xlarge
+.k8s-dind:
+  variables:
+    DOCKER_VERSION: 24.0.9
+    # DOCKER_HOST: tcp://docker:2375
+    # @k8s/gitlab-runner : hostAliases: are lost with variabilised DOCKER_VERSION..
+    DOCKER_HOST: tcp://127.0.0.1:2375
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:${DOCKER_VERSION}-dind
 
-.mvn-build:
+.mvn-test:
   extends:
-    - .runner-xlarge
     - .mvn-job
+    - .k8s-dind
+    - .runner-xxlarge
 
-.git-report-changes:
-  extends: .runner-small
-
-.mvn-sonar:
+.mvn-release-prepare:
   extends:
-    - .runner-xlarge
     - .mvn-job
-
-.ms-team-notif:
-  extends: .runner-micro
-
-.mvn-cache:
-  extends:
-    - .mvn-sonar
-    - .runner-xlarge
+    - .k8s-dind
+    - .runner-xxlarge
