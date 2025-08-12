@@ -1,6 +1,6 @@
 include:
   - project: welcome-connect-platform/framework/templates/gitlabci
-    ref: "java-21-dynatrace"
+    ref: "java-21-kockpit"
     file: app-build-jib-ci.yml
 
 variables:
