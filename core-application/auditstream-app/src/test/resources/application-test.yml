@@ -1,0 +1,13 @@
+kengine_table_name: KEngineRegistryDocument
+
+aws:
+  region: eu-west-1
+
+darkcanarytesting:
+  configurations: /darkcanary_testing/samples-config.json
+  console-services:
+    manifest:
+      enabled: false
+
+WCP_ENV: none
+ENV: testit

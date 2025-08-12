@@ -1,0 +1,247 @@
+{
+  "auditReportVersion": "V2_6",
+  "domain": "wcoff",
+  "env": "dev",
+  "appId": "offers-business-api",
+  "version": "1.10.0-SNAPSHOT",
+  "artifact": "business-offers-api-rest",
+  "requestId": "12319c09-df90-414b-ba69-55cb80f76716",
+  "start": "2025-03-05T13:23:57.314012755Z",
+  "end": "2025-03-05T13:23:57.548538679Z",
+  "hostname": "ip-100-64-38-180.eu-west-1.compute.internal",
+  "extensions": null,
+  "audits": [
+    {
+      "type": "builtin.httpexchanges",
+      "events": [
+        {
+          "startTime": 1741181037336,
+          "endTime": 1741181037527,
+          "httpAuditedRequest": {
+            "uri": "http://wiremock-dev:8080/mocks/businessoffers/v1/web/offers/v1/hotels/best-offers",
+            "headers": {
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "X-B3-TraceId": [
+                "9db464f852699c2c94f1642701e864bc"
+              ],
+              "X-B3-SpanId": [
+                "378239a54eece765"
+              ],
+              "X-B3-Sampled": [
+                "1"
+              ],
+              "Accept": [
+                "application/xml, text/xml, application/json, application/yaml, application/*+xml, application/*+json"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "clientId": [
+                "all.accor"
+              ],
+              "Accept-Language": [
+                "en"
+              ],
+              "Content-Length": [
+                "170"
+              ]
+            },
+            "body": "{\"hotelIds\":[\"0911\"],\"dateIn\":[2025,12,1],\"lengthOfStay\":{\"value\":1,\"unit\":\"NIGHT\"},\"adults\":2,\"childrenAges\":[1],\"currency\":\"EUR\",\"countryMarket\":\"FR\",\"concession\":null}",
+            "method": "POST",
+            "params": null
+          },
+          "httpAuditedResponse": {
+            "headers": {
+              "x-dt-tracestate": [
+                "36099946-f954f44f@dt"
+              ],
+              "x-b3-spanid": [
+                "20da1b1dd0a4e7cb"
+              ],
+              "traceresponse": [
+                "00-9db464f852699c2c94f1642701e864bc-a992b998415f9d2c-01"
+              ],
+              "x-b3-traceid": [
+                "9db464f852699c2c94f1642701e864bc"
+              ],
+              "date": [
+                "Wed, 05 Mar 2025 13:23:57 GMT"
+              ],
+              "content-type": [
+                "application/json"
+              ],
+              "content-length": [
+                "1737"
+              ],
+              "x-envoy-upstream-service-time": [
+                "181"
+              ],
+              "server": [
+                "envoy"
+              ]
+            },
+            "payload": "{\"request\":{\"hotelIds\":[\"0911\"],\"dateIn\":\"2025-12-01\",\"lengthOfStay\":{\"value\":1,\"unit\":\"NIGHT\"},\"occupancy\":{\"adults\":2,\"childrenAges\":[1]},\"currency\":\"EUR\",\"countryMarket\":\"FR\",\"concession\":null},\"offers\":[{\"crs\":\"TARS\",\"type\":\"ROOM\",\"availability\":{\"status\":\"AVAILABLE\",\"reasons\":[],\"remaining\":null},\"occupancy\":{\"adults\":2,\"childrenAges\":[1],\"childrenAsAdults\":[],\"babies\":1,\"infants\":1},\"hotel\":{\"id\":\"0911\",\"offersCategories\":[{\"code\":\"DISABILITY_COMPLIANT\",\"subCategories\":[],\"restrictions\":[],\"benefits\":[]},{\"code\":\"FAMILY\",\"subCategories\":[],\"restrictions\":[],\"benefits\":[]}]},\"product\":{\"id\":\"DFB\",\"quantity\":2,\"capacity\":{\"maxAdult\":2,\"maxChild\":2,\"maxPax\":4},\"remaining\":null},\"rate\":{\"id\":\"FMLY\",\"label\":null,\"mealPlan\":\"EUROPEAN_PLAN\",\"productBestOffer\":true,\"pricing\":{\"currency\":\"EUR\",\"main\":{\"amount\":{\"hotelKeeper\":405,\"beforeTax\":null,\"afterTax\":411.5,\"afterFees\":405,\"average\":{\"hotelKeeper\":405,\"beforeTax\":null,\"afterTax\":411.5,\"afterFees\":405},\"vat\":{\"amount\":{\"excluded\":0,\"included\":0},\"detail\":[]},\"fees\":{\"amount\":{\"excluded\":0,\"included\":0},\"detail\":[]},\"otherTax\":{\"amount\":{\"excluded\":6.5,\"included\":0},\"detail\":[{\"code\":\"TCITYC\",\"included\":false,\"onlinePayable\":true,\"refundable\":false,\"applicability\":{\"frequency\":\"PER_NIGHT\",\"unit\":\"PER_PAX\"},\"value\":{\"base\":2.25,\"amount\":2.25,\"totalAmount\":4.5,\"percent\":null}},{\"code\":\"DEPTAX\",\"included\":false,\"onlinePayable\":true,\"refundable\":false,\"applicability\":{\"frequency\":\"PER_NIGHT\",\"unit\":\"PER_PAX\"},\"value\":{\"base\":1,\"amount\":1,\"totalAmount\":2,\"percent\":null}}]},\"payAtTheHotel\":null,\"payOnline\":null},\"categories\":[{\"code\":\"FAMILY\",\"subCategories\":[],\"restrictions\":[],\"benefits\":[]}],\"reference\":null},\"deduction\":[],\"alternative\":null}}}],\"warnings\":[]}",
+            "status": 200
+          }
+        }
+      ],
+      "computeFunctions": null
+    },
+    {
+      "type": "builtin.web",
+      "events": [
+        {
+          "startTime": 1741181037547,
+          "endTime": 1741181037547,
+          "httpAuditedRequest": {
+            "uri": "/web/businessoffers/v1/availabilities/best-offers",
+            "headers": {
+              "x-forwarded-proto": [
+                "https"
+              ],
+              "x-forwarded-port": [
+                "443"
+              ],
+              "host": [
+                "api-dev.wcoff-dev.aws.accor.com"
+              ],
+              "x-amzn-trace-id": [
+                "Root=1-67c8506d-13db316157ab5b954bdfab49"
+              ],
+              "user-agent": [
+                "curl/8.9.1"
+              ],
+              "accept": [
+                "*/*"
+              ],
+              "clientid": [
+                "all.accor"
+              ],
+              "x-b3-traceid": [
+                "044c6fcb604213b541d4227fe9e1ae03"
+              ]
+            },
+            "body": "",
+            "method": "GET",
+            "principal": "anonymousUser",
+            "params": {
+              "countryMarket": [
+                "FR"
+              ],
+              "dateIn": [
+                "2025-12-01"
+              ],
+              "lengthOfStay.unit": [
+                "NIGHT"
+              ],
+              "hotelIds": [
+                "0911"
+              ],
+              "adults": [
+                "2"
+              ],
+              "lengthOfStay.value": [
+                "1"
+              ],
+              "currency": [
+                "EUR"
+              ],
+              "childrenAges": [
+                "1"
+              ]
+            }
+          },
+          "httpAuditedResponse": {
+            "headers": {
+              "Server-Timing": [
+                "traceparent;desc=\"00-9db464f852699c2c94f1642701e864bc-378239a54eece765-01\""
+              ],
+              "Access-Control-Expose-Headers": [
+                "Server-Timing"
+              ],
+              "X-B3-TraceId": [
+                "9db464f852699c2c94f1642701e864bc"
+              ],
+              "X-B3-SpanId": [
+                "7172b32a71b1542f"
+              ]
+            },
+            "body": "{\"bestOffers\":[{\"hotel\":{\"id\":\"0911\"},\"availability\":{\"status\":\"AVAILABLE\",\"reasons\":[]},\"offersCategories\":[],\"offer\":{\"type\":\"ROOM\",\"rate\":{\"id\":\"FMLY\",\"productBestOffer\":true},\"product\":{\"id\":\"DFB\",\"quantity\":2,\"accessible\":false},\"occupancy\":{\"adults\":2,\"childrenAges\":[1],\"childrenAgesAsAdult\":[],\"babies\":1},\"dateIn\":\"2025-12-01\",\"lengthOfStay\":{\"value\":1,\"unit\":\"NIGHT\"},\"mealPlan\":{\"code\":\"EUROPEAN_PLAN\"},\"categories\":[{\"code\":\"FAMILY\",\"tag\":\"Family Offer\",\"description\":\"Includes a 50% discount on the 2nd room with the Family Offer.\",\"additionalTag\":\"For 2 rooms: 50% off the 2nd room included\"}],\"compliances\":[{\"code\":\"DISABILITY_COMPLIANT\",\"description\":\"Disability compliance\"}],\"pricing\":{\"currency\":\"EUR\",\"aggregationType\":\"TOTAL_STAY\",\"formattedAggregationType\":\"/ Stay\",\"taxType\":\"ALL_TAXES_AND_FEES_INCLUDED\",\"formattedTaxType\":\"Taxes and fees included.\",\"deduction\":[],\"main\":{\"amount\":411.50,\"formattedAmount\":\"€412\",\"categories\":[\"FAMILY\"],\"label\":\"This accommodation also has a family offer\"}}}}],\"errors\":[]}",
+            "status": 200
+          },
+          "traceId": null,
+          "origin": null
+        }
+      ],
+      "computeFunctions": null
+    }
+  ],
+  "indexedKeyValues": [
+    {
+      "key": "requestUri",
+      "value": "/web/businessoffers/v1/availabilities/best-offers",
+      "valueInteger": null,
+      "valueFloat": null,
+      "valueDate": null
+    },
+    {
+      "key": "traceId",
+      "value": "",
+      "valueInteger": null,
+      "valueFloat": null,
+      "valueDate": null
+    },
+    {
+      "key": "origin",
+      "value": "",
+      "valueInteger": null,
+      "valueFloat": null,
+      "valueDate": null
+    },
+    {
+      "key": "httpStatus",
+      "value": "200",
+      "valueInteger": 200,
+      "valueFloat": null,
+      "valueDate": null
+    },
+    {
+      "key": "httpMethod",
+      "value": "GET",
+      "valueInteger": null,
+      "valueFloat": null,
+      "valueDate": null
+    },
+    {
+      "key": "principal",
+      "value": "anonymousUser",
+      "valueInteger": null,
+      "valueFloat": null,
+      "valueDate": null
+    },
+    {
+      "key": "X-B3-TraceId",
+      "value": "9db464f852699c2c94f1642701e864bc",
+      "valueInteger": null,
+      "valueFloat": null,
+      "valueDate": null
+    },
+    {
+      "key": "dateIn",
+      "value": "2025-12-01",
+      "valueInteger": null,
+      "valueFloat": null,
+      "valueDate": null
+    },
+    {
+      "key": "duration",
+      "value": "234",
+      "valueInteger": 234,
+      "valueFloat": null,
+      "valueDate": null
+    }
+  ],
+  "ttl": 60
+}

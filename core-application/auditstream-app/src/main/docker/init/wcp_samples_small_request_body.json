@@ -1,0 +1,404 @@
+{
+  "domain": "wcp",
+  "env": "local",
+  "appId": "wcpsamples",
+  "version": "1.12-SNAPSHOT",
+  "artifact": "wcpsamples",
+  "requestId": "8e40bb68-fadf-44df-8b7a-f97682d937f3",
+  "start": "2022-12-12T18:53:02.634150Z",
+  "end": "2021-12-12T18:55:02.634150Z",
+  "hostname": "ip-100-64-7-31.eu-west-1.compute.internal",
+  "ttl": 10,
+  "extensions": [
+    {
+      "executionEDTDTO": {
+        "error": "VALID",
+        "errorMessage": null,
+        "errorDetails": null,
+        "date": 1633099564271,
+        "time": 6697,
+        "executionUUID": "645582db-1f16-4130-9d13-55e275efe3cd",
+        "registryId": -1995035496,
+        "executionRules": [
+          {
+            "error": "VALID",
+            "errorMessage": null,
+            "errorDetails": null,
+            "date": 1633099564271,
+            "time": 9,
+            "name": "BR_QUOT_PRE_ELIGIBILITY",
+            "detail": "BR_QUOT_PRE_ELIGIBILITY"
+          }
+        ],
+        "rules": {
+          "BR_QUOT_PRE_ELIGIBILITY": [
+            {
+              "error": null,
+              "errorMessage": null,
+              "errorDetails": null,
+              "date": 1633099564272,
+              "time": 7,
+              "actionPredicate": "PREDICATE",
+              "condition": true,
+              "name": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE",
+              "detail": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE"
+            }
+          ]
+        },
+        "referential": {
+          "BR_QUOT_PRE_ELIGIBILITY": {
+            "id": "BR_QUOT_PRE_ELIGIBILITY",
+            "name": "BR_QUOT_PRE_ELIGIBILITY",
+            "details": {
+              "code": "BR_QUOT_PRE_ELIGIBILITY",
+              "name": "BR_QUOT_PRE_ELIGIBILITY",
+              "description": "Country-Language-Guarantee policy Eligibility"
+            },
+            "ok": null,
+            "ko": {
+              "id": "BR_QUOT_PRE_ELIGIBILITY_ko",
+              "name": "BR_QUOT_PRE_ELIGIBILITY_ko",
+              "details": {
+                "code": "BR_QUOT_PRE_ELIGIBILITY_ko",
+                "name": "BR_QUOT_PRE_ELIGIBILITY_ko",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_NOT_ELIGIBLE_POLICY",
+                  "name": "ACT_NOT_ELIGIBLE_POLICY",
+                  "description": "Request not eligible due to country, language, guapol policy"
+                }
+              ],
+              "predicates": []
+            },
+            "lastly": null,
+            "actions": [],
+            "predicates": [
+              {
+                "code": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE",
+                "name": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE",
+                "description": "Has (input) valid country language based on specification table (navCountry / navLanguage / guapol)"
+              }
+            ]
+          }
+        },
+        "logs": []
+      },
+      "indexedKeyValues": [],
+      "type": "kengine.flows"
+    },
+    {
+      "key": "quotationId",
+      "value": "ab3860d0-91fa-4227-9de3-c3e90ae3f87d",
+      "indexedKeyValues": [
+        {
+          "key": "quotationId",
+          "value": "ab3860d0-91fa-4227-9de3-c3e90ae3f87d"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "KId",
+      "value": "645582db-1f16-4130-9d13-55e275efe3cd",
+      "indexedKeyValues": [
+        {
+          "key": "KId",
+          "value": "645582db-1f16-4130-9d13-55e275efe3cd"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "KResult",
+      "value": "VALID",
+      "indexedKeyValues": [
+        {
+          "key": "KResult",
+          "value": "VALID"
+        }
+      ],
+      "valueType": "com.accor.kengine.audit.model.ResultStatus",
+      "type": "builtin.kv"
+    },
+    {
+      "startTime": 1633099571073,
+      "httpAuditedRequest": {
+        "uri": "/insurance/v2/purchases",
+        "headers": {
+          "x-forwarded-for": [
+            "176.182.81.20"
+          ],
+          "x-forwarded-proto": [
+            "https"
+          ],
+          "x-forwarded-port": [
+            "443"
+          ],
+          "host": [
+            "api-dev.wcxss-dev.aws.accor.com"
+          ],
+          "x-amzn-trace-id": [
+            "Root=1-61571f2a-55186f645a00b53222e6b6be"
+          ],
+          "content-length": [
+            "837"
+          ],
+          "x-wcp-origin": [
+            "QA test suite"
+          ],
+          "x-mock-match-request-headers": [
+            "Axa_mock_nominal_case"
+          ],
+          "apikey": [
+            "{{wcxss.apimApikey}}"
+          ],
+          "content-type": [
+            "application/json"
+          ],
+          "user-agent": [
+            "PostmanRuntime/7.26.8"
+          ],
+          "accept": [
+            "*/*"
+          ],
+          "cache-control": [
+            "no-cache"
+          ],
+          "accept-encoding": [
+            "gzip, deflate, br"
+          ],
+          "cookie": [
+            "displayZone=france; userLang=en; userPrefLocalization=en"
+          ]
+        },
+        "body": "{}",
+        "method": "POST",
+        "principal": "anonymousUser"
+      },
+      "httpAuditedResponse": {
+        "headers": {
+          "X-WCP-TraceId": [
+            "c35934f6-9443-4696-9c0c-abf847123ab8"
+          ]
+        },
+        "body": "{}",
+        "status": 201
+      },
+      "traceId": "c35934f6-9443-4696-9c0c-abf847123ab8",
+      "origin": "QA test suite",
+      "endTime": 1633099570986,
+      "indexedKeyValues": [],
+      "type": "builtin.web"
+    },
+    {
+      "key": "requestUri",
+      "value": "/insurance/v2/purchases",
+      "indexedKeyValues": [
+        {
+          "key": "requestUri",
+          "value": "/insurance/v2/purchases"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "traceId",
+      "value": "c35934f6-9443-4696-9c0c-abf847123ab8",
+      "indexedKeyValues": [
+        {
+          "key": "traceId",
+          "value": "c35934f6-9443-4696-9c0c-abf847123ab8"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "origin",
+      "value": "QA test suite",
+      "indexedKeyValues": [
+        {
+          "key": "origin",
+          "value": "QA test suite"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "httpStatus",
+      "value": "2222",
+      "indexedKeyValues": [
+        {
+          "key": "doubleAttribute",
+          "value": "0.4843119705020521",
+          "valueInteger": null,
+          "valueFloat": 0.48431197,
+          "valueDate": null
+        },
+        {
+          "key": "floatAttribute",
+          "value": "48593.496",
+          "valueInteger": null,
+          "valueFloat": 48593.496,
+          "valueDate": null
+        },
+        {
+          "key": "integerAttribute",
+          "value": "384739",
+          "valueInteger": 384739,
+          "valueFloat": null,
+          "valueDate": null
+        },
+        {
+          "key": "stringAttribute",
+          "value": "Hello Audit !",
+          "valueInteger": null,
+          "valueFloat": null,
+          "valueDate": null
+        },
+        {
+          "key": "objectAttribute",
+          "value": "org.apache.catalina.util.ParameterMap@715e517c",
+          "valueInteger": null,
+          "valueFloat": null,
+          "valueDate": null
+        },
+        {
+          "key": "dateAttribute",
+          "value": "Fri Feb 25 10:49:34 CET 2022",
+          "valueInteger": null,
+          "valueFloat": null,
+          "valueDate": 1645782574444
+        }
+      ],
+      "valueType": "java.lang.Integer",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "httpMethod",
+      "value": "POST",
+      "indexedKeyValues": [
+        {
+          "key": "httpMethod",
+          "value": "POST"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "key": "principal",
+      "value": "anonymousUser",
+      "indexedKeyValues": [
+        {
+          "key": "principal",
+          "value": "anonymousUser"
+        }
+      ],
+      "valueType": "java.lang.String",
+      "type": "builtin.kv"
+    },
+    {
+      "indexedKeyValues": [],
+      "moduleAuditReports": [
+        {
+          "startTime": 1633099566277,
+          "httpAuditedRequest": {
+            "uri": "https://rec-api.accor.com/contacts/v2.0/users/1234567A?delegate=true&noPostalAddressFilter=false&oldPref=false&reachableFilter=false",
+            "headers": "[Accept:\"application/json\", x-wcp-origin:\"QA test suite\"]",
+            "body": "",
+            "method": "GET"
+          },
+          "httpAuditedResponse": {
+            "headers": "[Date:\"Fri, 01 Oct 2021 14:46:07 GMT\", Content-Type:\"application/json\"]",
+            "payload": "{}",
+            "status": 404
+          },
+          "endTime": 1633099567887,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        },
+        {
+          "startTime": 1633099568076,
+          "httpAuditedRequest": {
+            "uri": "https://rec-api.accor.com/catalog/v1.0/hotels/1312",
+            "headers": "[Accept:\"application/json\", Content-Type:\"application/json\", x-wcp-origin:\"QA test suite\"]",
+            "body": "",
+            "method": "GET"
+          },
+          "httpAuditedResponse": {
+            "headers": "[Date:\"Fri, 01 Oct 2021 14:46:08 GMT\", Content-Type:\"application/json;charset=UTF-8\", proxy-name:\"default\"]",
+            "payload": "{}",
+            "status": 200
+          },
+          "endTime": 1633099568273,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        },
+        {
+          "startTime": 1633099568386,
+          "httpAuditedRequest": {
+            "uri": "https://rec-api.accor.com/catalog/v1.0/hotels/1312/products/accommodations",
+            "headers": "[Accept:\"application/json\", Content-Type:\"application/json\", x-wcp-origin:\"QA test suite\"]",
+            "body": "",
+            "method": "GET"
+          },
+          "httpAuditedResponse": {
+            "headers": "[Date:\"Fri, 01 Oct 2021 14:46:08 GMT\", Content-Type:\"application/json;charset=UTF-8\", apiproxy-revision:\"2\", proxy-name:\"default\"]",
+            "payload": "{}",
+            "status": 200
+          },
+          "endTime": 1633099568471,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        },
+        {
+          "startTime": 1633099568788,
+          "httpAuditedRequest": {
+            "uri": "https://rec-api.accor.com/catalog/v1.0/hotels/1312/facilities/global",
+            "headers": "[Accept:\"application/json\", Content-Type:\"application/json\", Accept-Language:\"en\", clientId:\"all.accor\", apikey:\"eBckJPnEsbtAsFK0samID6cxsF9JPZP6\", User-Agent:\"Java-SDK\", Content-Length:\"0\", X-B3-TraceId:\"7ba13e94dab77b63\", X-B3-SpanId:\"b5d50e66fbcb6641\", X-B3-ParentSpanId:\"7ba13e94dab77b63\", X-B3-Sampled:\"0\", x-mock-match-request-headers:\"Axa_mock_nominal_case\", x-wcp-origin:\"QA test suite\"]",
+            "body": "",
+            "method": "GET"
+          },
+          "httpAuditedResponse": {
+            "headers": "[Date:\"Fri, 01 Oct 2021 14:46:08 GMT\", Content-Type:\"application/json;charset=UTF-8\", Transfer-Encoding:\"chunked\", Connection:\"keep-alive\", Correlation-ID:\"42ec5ea5-1110-44cf-bfc7-7d2dd4fa5b6a\", X-Content-Type-Options:\"nosniff\", X-XSS-Protection:\"1; mode=block\", Cache-Control:\"private, no-cache, no-store\", Pragma:\"no-cache\", Expires:\"0\", Strict-Transport-Security:\"max-age=31536000 ; includeSubDomains\", X-Frame-Options:\"DENY\", vary:\"accept-encoding,Origin\", P3P:\"CP=\"NO P3P POLICY\"\", X-Clacks-Overhead:\"GNU Terry Pratchett\", Referrer-Policy:\"origin\", Server-Timing:\"dtSInfo;desc=\"0\", dtRpid;desc=\"1250735819\"\", Set-Cookie:\"org=dev; Max-Age=900; path=/; SameSite=none; Secure\", \"dtCookie=v_4_srv_5_sn_7D60345E7A613F4FDF82780E6DD84C11_perc_100000_ol_0_mul_1_app-3A_1_rcs-3Acss_0; Path=/; Domain=.accorhotels.ws\", \"TS014fefaa=01b6ac4d28b6e40fa2a19b57623cede44152fdd81ead74aef064b10898d86e7c8ac79fcd2da9c3fd110d9c9b460d6bb9489d8e18d02f7c004cc7cdcc874c8a1d520211f8a7; Path=/\", \"TS01240f0c=01b6ac4d28d072b8d9b3e4e4e47385d4bfe012ef8aad74aef064b10898d86e7c8ac79fcd2da9c3fd110d9c9b460d6bb9489d8e18d0535d67a7e46d679ed81d7377e6a597aedf960bd7c927a4ffdc4b579bc881cde2; path=/; domain=.accorhotels.ws\", apiproxy-name:\"API_WEB__Get_Hotels_Catalogs_v1_0\", apiproxy-revision:\"2\", proxy-name:\"default\"]",
+            "payload": "{}",
+            "status": 200
+          },
+          "endTime": 1633099568903,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        },
+        {
+          "startTime": 1633099569092,
+          "httpAuditedRequest": {
+            "uri": "http://wiremock-dev.xss-dev-apps.local:8081/mock/v1/pricing",
+            "headers": "[Accept:\"application/json\", Content-Type:\"application/json\", x-wcp-origin:\"QA test suite\"]",
+            "body": "{}",
+            "method": "POST"
+          },
+          "httpAuditedResponse": {
+            "headers": "[X-WCP-TraceId:\"8fc60908-e625-414b-9756-4991d563b508\", Connection:\"keep-alive\"]",
+            "payload": "{}",
+            "status": 200
+          },
+          "endTime": 1633099569393,
+          "indexedKeyValues": [],
+          "type": "builtin.httpexchange"
+        }
+      ],
+      "type": "builtin.httpexchanges"
+    }
+  ],
+  "indexedExtensions": null,
+  "originalJsonValue": null
+}

@@ -14,6 +14,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>auditstream-app</module>
         <module>console-api</module>
         <module>console-ui</module>
     </modules>

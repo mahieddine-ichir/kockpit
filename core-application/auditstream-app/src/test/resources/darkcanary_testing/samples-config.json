@@ -1,0 +1,34 @@
+{
+  "appId": "wcpsamples",
+  "domain": "wcplatform",
+  "id": [
+    {
+      "key": "traceId",
+      "type": "header"
+    },
+    {
+      "key": "spanId",
+      "type": "header"
+    }
+  ],
+  "headers": [
+    {
+      "key": "x-wcp-origin",
+      "values": [
+        "WCP-CALLER"
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "uri": "/irmaprocess/v3.1/offers",
+      "method": "get",
+      "environment": "prod"
+    },
+    {
+      "uri": "/api/v3.3/offers",
+      "method": "GET",
+      "environment": "oat"
+    }
+  ]
+}

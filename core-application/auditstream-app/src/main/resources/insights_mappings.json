@@ -1,0 +1,55 @@
+{
+  "properties": {
+    "@timestamp" : {
+      "type" : "date",
+      "format" : "epoch_millis"
+    },
+    "timestamp": {
+      "type": "date"
+    },
+    "httpStatus": {
+      "type": "integer"
+    },
+    "httpMethod": {
+      "type": "keyword"
+    },
+    "requestUri": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "duration": {
+      "type": "long"
+    },
+    "domain": {
+      "type": "keyword"
+    },
+    "env": {
+      "type": "keyword"
+    },
+    "appId": {
+      "type": "keyword"
+    },
+    "start": {
+      "type" : "date",
+      "format" : "epoch_millis"
+    },
+    "end": {
+      "type" : "date",
+      "format" : "epoch_millis"
+    },
+    "version": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    }
+  }
+}

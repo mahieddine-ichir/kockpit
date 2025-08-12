@@ -1,0 +1,19 @@
+server:
+  servlet:
+    context-path: /auditservice/v1
+
+aws:
+  stream_name: auditstream-${ENV}
+  region: eu-west-1
+
+kengine_table_name: ${KENGINE_TABLE_NAME}
+
+logging:
+  level:
+    software.amazon.kinesis.coordinator.assignment: ERROR
+
+darkcanarytesting:
+  console-services:
+    manifest:
+      url: http://console-services-${ENV}.wcplatform-${ENV}-services.local:8080/ihm_api/internal/public/api/services/darkcanary/config
+      refresh_rate_ms: 10_000

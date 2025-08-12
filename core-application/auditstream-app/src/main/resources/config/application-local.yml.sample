@@ -1,0 +1,36 @@
+server:
+  port: 8081
+
+opensearch:
+  endpoint: localhost:9200
+
+logging:
+  level:
+    com.accor.wcp: DEBUG
+
+application:
+  name: auditstream-local
+
+aws:
+  stream_name: auditstream-local
+
+#Only for dev env
+  dynamodb:
+    endpoint: http://localhost:4566
+  sqs:
+    endpoint: http://localhost:4566
+  cloudwatch:
+    endpoint: http://localhost:4566
+  kinesis:
+    endpoint: http://localhost:4566
+  region: eu-west-1
+
+kengine_table_name: KEngineRegistryDocument
+
+WCP_ENV: local
+ENV: local
+
+wcp:
+  sdk:
+    initialization:
+      timeout: PT1S

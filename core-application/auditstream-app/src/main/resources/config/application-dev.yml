@@ -1,0 +1,11 @@
+server:
+  port: 9081
+
+opensearch:
+  endpoints: localhost:9200
+
+logging:
+  level:
+    com.accor.wcp: DEBUG
+
+kengine_table_name: KEngineRegistryDocument-dev

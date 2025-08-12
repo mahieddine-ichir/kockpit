@@ -1,0 +1,877 @@
+{
+  "referential": {
+    "BR_QUOT_CANPOL_ELIGIBILITY": {
+      "id": "BR_QUOT_CANPOL_ELIGIBILITY",
+      "name": "BR_QUOT_CANPOL_ELIGIBILITY",
+      "details": {
+        "code": "BR_QUOT_CANPOL_ELIGIBILITY",
+        "name": "BR_QUOT_CANPOL_ELIGIBILITY",
+        "description": "Compute canpol eligibility"
+      },
+      "ok": null,
+      "ko": {
+        "id": "BR_QUOT_CANPOL_ELIGIBILITY_ko",
+        "name": "BR_QUOT_CANPOL_ELIGIBILITY_ko",
+        "details": {
+          "code": "BR_QUOT_CANPOL_ELIGIBILITY_ko",
+          "name": "BR_QUOT_CANPOL_ELIGIBILITY_ko",
+          "description": null
+        },
+        "ok": null,
+        "ko": null,
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_AXA_QUOTATION_NOT_ELIGIBLE_HETEROGENEOUS_CANPOLS",
+            "name": "ACT_AXA_QUOTATION_NOT_ELIGIBLE_HETEROGENEOUS_CANPOLS",
+            "description": "Request not eligible due to cancellation policies"
+          }
+        ],
+        "predicates": []
+      },
+      "lastly": null,
+      "actions": [],
+      "predicates": [
+        {
+          "code": "PRE_HAS_SAME_CANCELLATION_POLICY",
+          "name": "PRE_HAS_SAME_CANCELLATION_POLICY",
+          "description": "Has same values in cancellation policies"
+        }
+      ]
+    },
+    "BR_QUOT_GET_QUOTATION": {
+      "id": "BR_QUOT_GET_QUOTATION",
+      "name": "BR_QUOT_GET_QUOTATION",
+      "details": {
+        "code": "BR_QUOT_GET_QUOTATION",
+        "name": "BR_QUOT_GET_QUOTATION",
+        "description": "Return quotation info"
+      },
+      "ok": null,
+      "ko": {
+        "id": "BR_QUOT_GET_QUOTATION_ko",
+        "name": "BR_QUOT_GET_QUOTATION_ko",
+        "details": {
+          "code": "BR_QUOT_GET_QUOTATION_ko",
+          "name": "BR_QUOT_GET_QUOTATION_ko",
+          "description": null
+        },
+        "ok": null,
+        "ko": null,
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_QUOT_NOT_FOUND_POLICY",
+            "name": "ACT_QUOT_NOT_FOUND_POLICY",
+            "description": "Quotation not found in repository policy"
+          }
+        ],
+        "predicates": []
+      },
+      "lastly": null,
+      "actions": [
+        {
+          "code": "ACT_CALL_LOAD_QUOTATION",
+          "name": "ACT_CALL_LOAD_QUOTATION",
+          "description": "Load quotation"
+        }
+      ],
+      "predicates": [
+        {
+          "code": "PRE_IS_QUOTATION_FOUND",
+          "name": "PRE_IS_QUOTATION_FOUND",
+          "description": "Is Quotation found in repository ?"
+        }
+      ]
+    },
+    "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY": {
+      "id": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY",
+      "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY",
+      "details": {
+        "code": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY",
+        "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY",
+        "description": "Compute eligibility based on available payment methods"
+      },
+      "ok": {
+        "id": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok",
+        "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok",
+        "details": {
+          "code": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok",
+          "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok",
+          "description": null
+        },
+        "ok": null,
+        "ko": {
+          "id": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok_ko",
+          "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok_ko",
+          "details": {
+            "code": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok_ko",
+            "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ok_ko",
+            "description": null
+          },
+          "ok": null,
+          "ko": null,
+          "lastly": null,
+          "actions": [
+            {
+              "code": "ACT_NOT_ELIGIBLE_PAYMENT_METHOD_DIRECT_LINK",
+              "name": "ACT_NOT_ELIGIBLE_PAYMENT_METHOD_DIRECT_LINK",
+              "description": "Request not eligible due to payment method direct link"
+            }
+          ],
+          "predicates": []
+        },
+        "lastly": null,
+        "actions": [],
+        "predicates": [
+          {
+            "code": "PRE_IS_HAS_PAYMENT_METHOD_WITH_DIRECT_LINK",
+            "name": "PRE_IS_HAS_PAYMENT_METHOD_WITH_DIRECT_LINK",
+            "description": "Has at least one payment method with direct link ?"
+          }
+        ]
+      },
+      "ko": {
+        "id": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ko",
+        "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ko",
+        "details": {
+          "code": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ko",
+          "name": "BR_QUOT_PAYMENT_METHODS_ELIGIBILITY_ko",
+          "description": null
+        },
+        "ok": null,
+        "ko": null,
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_AXA_QUOTATION_NOT_ELIGIBLE_AVAILPAYMTMETHODS_NO_CREDITCARD",
+            "name": "ACT_AXA_QUOTATION_NOT_ELIGIBLE_AVAILPAYMTMETHODS_NO_CREDITCARD",
+            "description": "Request not eligible due to payment methods family"
+          }
+        ],
+        "predicates": []
+      },
+      "lastly": null,
+      "actions": [
+        {
+          "code": "ACT_FILTER_NON_CREDIT_CARD_PAYMENT_FAMILY",
+          "name": "ACT_FILTER_NON_CREDIT_CARD_PAYMENT_FAMILY",
+          "description": "Remove non credit card payment method family from eligibility criteria"
+        }
+      ],
+      "predicates": [
+        {
+          "code": "PRE_IS_CREDIT_CARD_FAMILY_EMPTY",
+          "name": "PRE_IS_CREDIT_CARD_FAMILY_EMPTY",
+          "description": "Is credit card method family empty ?"
+        }
+      ]
+    },
+    "BR_QUOT_FILTER_OFFER": {
+      "id": "BR_QUOT_FILTER_OFFER",
+      "name": "BR_QUOT_FILTER_OFFER",
+      "details": {
+        "code": "BR_QUOT_FILTER_OFFER",
+        "name": "BR_QUOT_FILTER_OFFER",
+        "description": "Remove non selected offer from the quotation"
+      },
+      "ok": {
+        "id": "BR_QUOT_FILTER_OFFER_ok",
+        "name": "BR_QUOT_FILTER_OFFER_ok",
+        "details": {
+          "code": "BR_QUOT_FILTER_OFFER_ok",
+          "name": "BR_QUOT_FILTER_OFFER_ok",
+          "description": null
+        },
+        "ok": null,
+        "ko": {
+          "id": "BR_QUOT_FILTER_OFFER_ok_ko",
+          "name": "BR_QUOT_FILTER_OFFER_ok_ko",
+          "details": {
+            "code": "BR_QUOT_FILTER_OFFER_ok_ko",
+            "name": "BR_QUOT_FILTER_OFFER_ok_ko",
+            "description": null
+          },
+          "ok": null,
+          "ko": null,
+          "lastly": null,
+          "actions": [
+            {
+              "code": "ACT_QUOTATION_SELECTED_OFFER_NOT_FOUND",
+              "name": "ACT_QUOTATION_SELECTED_OFFER_NOT_FOUND",
+              "description": "Selected offer not found in quotation"
+            }
+          ],
+          "predicates": []
+        },
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_FILTER_QUOTATION_OFFERS",
+            "name": "ACT_FILTER_QUOTATION_OFFERS",
+            "description": "Filter non selected offers from context quotation"
+          }
+        ],
+        "predicates": [
+          {
+            "code": "PRE_IS_SELECTED_OFFER_FOUND",
+            "name": "PRE_IS_SELECTED_OFFER_FOUND",
+            "description": "Is selected offer found in quotation ?"
+          }
+        ]
+      },
+      "ko": null,
+      "lastly": null,
+      "actions": [],
+      "predicates": [
+        {
+          "code": "PRE_IS_SELECTED_OFFER_PARAM_PRESENT",
+          "name": "PRE_IS_SELECTED_OFFER_PARAM_PRESENT",
+          "description": "Is selected offer param present ?"
+        }
+      ]
+    },
+    "BR_QUOT_PRE_ELIGIBILITY": {
+      "id": "BR_QUOT_PRE_ELIGIBILITY",
+      "name": "BR_QUOT_PRE_ELIGIBILITY",
+      "details": {
+        "code": "BR_QUOT_PRE_ELIGIBILITY",
+        "name": "BR_QUOT_PRE_ELIGIBILITY",
+        "description": "Country-Language-Guarantee policy Eligibility"
+      },
+      "ok": null,
+      "ko": {
+        "id": "BR_QUOT_PRE_ELIGIBILITY_ko",
+        "name": "BR_QUOT_PRE_ELIGIBILITY_ko",
+        "details": {
+          "code": "BR_QUOT_PRE_ELIGIBILITY_ko",
+          "name": "BR_QUOT_PRE_ELIGIBILITY_ko",
+          "description": null
+        },
+        "ok": null,
+        "ko": null,
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_NOT_ELIGIBLE_POLICY",
+            "name": "ACT_NOT_ELIGIBLE_POLICY",
+            "description": "Request not eligible due to country, language, guapol policy"
+          }
+        ],
+        "predicates": []
+      },
+      "lastly": null,
+      "actions": [],
+      "predicates": [
+        {
+          "code": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE",
+          "name": "PRE_HAS_VALID_COUNTRY_AND_LANGUAGE",
+          "description": "Has (input) valid country language based on specification table (navCountry / navLanguage / guapol)"
+        }
+      ]
+    },
+    "BR_QUOT_GET_LOYALTY_INFO": {
+      "id": "BR_QUOT_GET_LOYALTY_INFO",
+      "name": "BR_QUOT_GET_LOYALTY_INFO",
+      "details": {
+        "code": "BR_QUOT_GET_LOYALTY_INFO",
+        "name": "BR_QUOT_GET_LOYALTY_INFO",
+        "description": "Get loyalty info"
+      },
+      "ok": {
+        "id": "BR_QUOT_GET_LOYALTY_INFO_ok",
+        "name": "BR_QUOT_GET_LOYALTY_INFO_ok",
+        "details": {
+          "code": "BR_QUOT_GET_LOYALTY_INFO_ok",
+          "name": "BR_QUOT_GET_LOYALTY_INFO_ok",
+          "description": null
+        },
+        "ok": null,
+        "ko": null,
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_SET_CONTACTDATA_B2B",
+            "name": "ACT_SET_CONTACTDATA_B2B",
+            "description": "Set contact data to B2B"
+          }
+        ],
+        "predicates": []
+      },
+      "ko": {
+        "id": "BR_QUOT_GET_LOYALTY_INFO_ko",
+        "name": "BR_QUOT_GET_LOYALTY_INFO_ko",
+        "details": {
+          "code": "BR_QUOT_GET_LOYALTY_INFO_ko",
+          "name": "BR_QUOT_GET_LOYALTY_INFO_ko",
+          "description": null
+        },
+        "ok": {
+          "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok",
+          "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok",
+          "details": {
+            "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok",
+            "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok",
+            "description": null
+          },
+          "ok": {
+            "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok",
+            "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok",
+            "details": {
+              "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok",
+              "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok",
+              "description": null
+            },
+            "ok": null,
+            "ko": {
+              "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_ko",
+              "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_ko",
+              "details": {
+                "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_ko",
+                "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_ko",
+                "description": null
+              },
+              "ok": null,
+              "ko": null,
+              "lastly": null,
+              "actions": [
+                {
+                  "code": "ACT_THROW_PRODUCT_CARD_TIER_MAPPING_WARNING",
+                  "name": "ACT_THROW_PRODUCT_CARD_TIER_MAPPING_WARNING",
+                  "description": "Product card tier is supported by axa"
+                }
+              ],
+              "predicates": []
+            },
+            "lastly": {
+              "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly",
+              "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly",
+              "details": {
+                "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly",
+                "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly",
+                "description": null
+              },
+              "ok": {
+                "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ok",
+                "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ok",
+                "details": {
+                  "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ok",
+                  "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ok",
+                  "description": null
+                },
+                "ok": null,
+                "ko": null,
+                "lastly": null,
+                "actions": [
+                  {
+                    "code": "ACT_SET_B2B_CONFIDENCE",
+                    "name": "ACT_SET_B2B_CONFIDENCE",
+                    "description": "Set B2B with 0.5 confidence"
+                  }
+                ],
+                "predicates": []
+              },
+              "ko": {
+                "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ko",
+                "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ko",
+                "details": {
+                  "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ko",
+                  "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ok_lastly_ko",
+                  "description": null
+                },
+                "ok": null,
+                "ko": null,
+                "lastly": null,
+                "actions": [
+                  {
+                    "code": "ACT_SET_B2B_NOCONFIDENCE",
+                    "name": "ACT_SET_B2B_NOCONFIDENCE",
+                    "description": "Set B2B with null confidence"
+                  }
+                ],
+                "predicates": []
+              },
+              "lastly": null,
+              "actions": [],
+              "predicates": [
+                {
+                  "code": "PRE_IS_IBIS_BUSINESS_OR_IBIS_BUSINESS_PLUS",
+                  "name": "PRE_IS_IBIS_BUSINESS_OR_IBIS_BUSINESS_PLUS",
+                  "description": "Does contact have an non expired at dateIn Ibis Business or Ibis Business Plus Card in subscriptions cards"
+                }
+              ]
+            },
+            "actions": [
+              {
+                "code": "ACT_SET_LOYALTY_PRODUCT_CARD_TIER",
+                "name": "ACT_SET_LOYALTY_PRODUCT_CARD_TIER",
+                "description": "Set Loyalty card tier"
+              }
+            ],
+            "predicates": [
+              {
+                "code": "PRE_IS_LOYALTY_CARD_TIER_SUPPORTED",
+                "name": "PRE_IS_LOYALTY_CARD_TIER_SUPPORTED",
+                "description": "Check if product card tier is supported by axa"
+              }
+            ]
+          },
+          "ko": {
+            "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ko",
+            "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ko",
+            "details": {
+              "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ko",
+              "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ok_ko",
+              "description": null
+            },
+            "ok": null,
+            "ko": null,
+            "lastly": null,
+            "actions": [
+              {
+                "code": "ACT_SET_B2B_NOCONFIDENCE",
+                "name": "ACT_SET_B2B_NOCONFIDENCE",
+                "description": "Set B2B with null confidence"
+              }
+            ],
+            "predicates": []
+          },
+          "lastly": null,
+          "actions": [
+            {
+              "code": "ACT_EXTRACT_PMID_FROM_CARD",
+              "name": "ACT_EXTRACT_PMID_FROM_CARD",
+              "description": "Extract PMID from cardNumber"
+            },
+            {
+              "code": "ACT_LOAD_CONTACT",
+              "name": "ACT_LOAD_CONTACT",
+              "description": "Load contact data from WCC"
+            }
+          ],
+          "predicates": [
+            {
+              "code": "PRE_IS_CONTACT_FOUND",
+              "name": "PRE_IS_CONTACT_FOUND",
+              "description": "Is Contact found in WCC ?"
+            }
+          ]
+        },
+        "ko": {
+          "id": "BR_QUOT_GET_LOYALTY_INFO_ko_ko",
+          "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ko",
+          "details": {
+            "code": "BR_QUOT_GET_LOYALTY_INFO_ko_ko",
+            "name": "BR_QUOT_GET_LOYALTY_INFO_ko_ko",
+            "description": null
+          },
+          "ok": null,
+          "ko": null,
+          "lastly": null,
+          "actions": [
+            {
+              "code": "ACT_SET_B2B_NOCONFIDENCE",
+              "name": "ACT_SET_B2B_NOCONFIDENCE",
+              "description": "Set B2B with null confidence"
+            }
+          ],
+          "predicates": []
+        },
+        "lastly": null,
+        "actions": [],
+        "predicates": [
+          {
+            "code": "PRE_HAS_VALID_CARDNUMBER",
+            "name": "PRE_HAS_VALID_CARDNUMBER",
+            "description": "Has valid card number as input ?"
+          }
+        ]
+      },
+      "lastly": null,
+      "actions": [],
+      "predicates": [
+        {
+          "code": "PRE_ISB2B",
+          "name": "PRE_ISB2B",
+          "description": "Is for a B2B request?"
+        }
+      ]
+    },
+    "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY": {
+      "id": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY",
+      "name": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY",
+      "details": {
+        "code": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY",
+        "name": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY",
+        "description": "Compute canpol / guapol eligibility + product filter determination"
+      },
+      "ok": null,
+      "ko": {
+        "id": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_ko",
+        "name": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_ko",
+        "details": {
+          "code": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_ko",
+          "name": "BR_QUOT_CANPOL_GUAPOL_ELIGIBILITY_ko",
+          "description": null
+        },
+        "ok": null,
+        "ko": null,
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_NOT_ELIGIBLE_POLICY",
+            "name": "ACT_NOT_ELIGIBLE_POLICY",
+            "description": "Request not eligible due to country, language, guapol policy"
+          }
+        ],
+        "predicates": []
+      },
+      "lastly": null,
+      "actions": [
+        {
+          "code": "ACT_IDENTIFY_PRODUCT_FILTER",
+          "name": "ACT_IDENTIFY_PRODUCT_FILTER",
+          "description": "Compute guapol and canpol to Identify product filters"
+        }
+      ],
+      "predicates": [
+        {
+          "code": "PRE_HAS_IDENTIFIED_PRODUCT_FILTER",
+          "name": "PRE_HAS_IDENTIFIED_PRODUCT_FILTER",
+          "description": "Has product filter been identified"
+        }
+      ]
+    },
+    "BR_QUOT_ELIG_CALL_AXA": {
+      "id": "BR_QUOT_ELIG_CALL_AXA",
+      "name": "BR_QUOT_ELIG_CALL_AXA",
+      "details": {
+        "code": "BR_QUOT_ELIG_CALL_AXA",
+        "name": "BR_QUOT_ELIG_CALL_AXA",
+        "description": "Call AXA with eligibility request"
+      },
+      "ok": {
+        "id": "BR_QUOT_ELIG_CALL_AXA_ok",
+        "name": "BR_QUOT_ELIG_CALL_AXA_ok",
+        "details": {
+          "code": "BR_QUOT_ELIG_CALL_AXA_ok",
+          "name": "BR_QUOT_ELIG_CALL_AXA_ok",
+          "description": null
+        },
+        "ok": null,
+        "ko": null,
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_CALL_AXA_QUOTATION",
+            "name": "ACT_CALL_AXA_QUOTATION",
+            "description": "Call AXA for quotation"
+          }
+        ],
+        "predicates": []
+      },
+      "ko": {
+        "id": "BR_QUOT_ELIG_CALL_AXA_ko",
+        "name": "BR_QUOT_ELIG_CALL_AXA_ko",
+        "details": {
+          "code": "BR_QUOT_ELIG_CALL_AXA_ko",
+          "name": "BR_QUOT_ELIG_CALL_AXA_ko",
+          "description": null
+        },
+        "ok": null,
+        "ko": null,
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_AXA_QUOTATION_NOT_ENABLED",
+            "name": "ACT_AXA_QUOTATION_NOT_ENABLED",
+            "description": "Axa quotation feature is not active"
+          }
+        ],
+        "predicates": []
+      },
+      "lastly": null,
+      "actions": [],
+      "predicates": [
+        {
+          "code": "PRE_IS_AXA_QUOTATION_FEATURE_ENABLED",
+          "name": "PRE_IS_AXA_QUOTATION_FEATURE_ENABLED",
+          "description": "Is axa quotation feature flipping active"
+        }
+      ]
+    },
+    "BR_QUOT_STORE_QUOTATION": {
+      "id": "BR_QUOT_STORE_QUOTATION",
+      "name": "BR_QUOT_STORE_QUOTATION",
+      "details": {
+        "code": "BR_QUOT_STORE_QUOTATION",
+        "name": "BR_QUOT_STORE_QUOTATION",
+        "description": "Store AXA quotation"
+      },
+      "ok": null,
+      "ko": null,
+      "lastly": null,
+      "actions": [
+        {
+          "code": "ACT_CALL_STORE_QUOTATION",
+          "name": "ACT_CALL_STORE_QUOTATION",
+          "description": "Store quotation"
+        }
+      ],
+      "predicates": []
+    },
+    "BR_QUOT_AXA_PROCESS_RESPONSE": {
+      "id": "BR_QUOT_AXA_PROCESS_RESPONSE",
+      "name": "BR_QUOT_AXA_PROCESS_RESPONSE",
+      "details": {
+        "code": "BR_QUOT_AXA_PROCESS_RESPONSE",
+        "name": "BR_QUOT_AXA_PROCESS_RESPONSE",
+        "description": "Process AXA responses to extract quotation offers"
+      },
+      "ok": {
+        "id": "BR_QUOT_AXA_PROCESS_RESPONSE_ok",
+        "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ok",
+        "details": {
+          "code": "BR_QUOT_AXA_PROCESS_RESPONSE_ok",
+          "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ok",
+          "description": null
+        },
+        "ok": null,
+        "ko": {
+          "id": "BR_QUOT_AXA_PROCESS_RESPONSE_ok_ko",
+          "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ok_ko",
+          "details": {
+            "code": "BR_QUOT_AXA_PROCESS_RESPONSE_ok_ko",
+            "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ok_ko",
+            "description": null
+          },
+          "ok": null,
+          "ko": null,
+          "lastly": null,
+          "actions": [
+            {
+              "code": "ACT_THROW_MULTIPLE_CATEGORIES_OFFERS_RETRIEVED_WARNING",
+              "name": "ACT_THROW_MULTIPLE_CATEGORIES_OFFERS_RETRIEVED_WARNING",
+              "description": "Axa service returned multiple categories offer"
+            }
+          ],
+          "predicates": []
+        },
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_ENRICH_QUOTATION_WITH_CATEGORY_OFFERS",
+            "name": "ACT_ENRICH_QUOTATION_WITH_CATEGORY_OFFERS",
+            "description": "Enrich quotation with the category offers retrieved"
+          },
+          {
+            "code": "ACT_COMPUTE_PAYMENT_DATES",
+            "name": "ACT_COMPUTE_PAYMENT_DATES",
+            "description": "Determine insurance offer payment date"
+          },
+          {
+            "code": "ACT_COMPUTE_CANCELLATION_INFO",
+            "name": "ACT_COMPUTE_CANCELLATION_INFO",
+            "description": "Determine insurance offer cancellation info"
+          },
+          {
+            "code": "ACT_QUOT_HANDLE_LINKS",
+            "name": "ACT_QUOT_HANDLE_LINKS",
+            "description": "Handle url of links in text containing markdowns"
+          },
+          {
+            "code": "ACT_QUOT_HANDLE_LINKS",
+            "name": "ACT_QUOT_HANDLE_LINKS",
+            "description": "Handle url of links in text containing markdowns"
+          }
+        ],
+        "predicates": [
+          {
+            "code": "PRE_IS_AXA_CATEGORY_OFFER_UNIQUE",
+            "name": "PRE_IS_AXA_CATEGORY_OFFER_UNIQUE",
+            "description": "Is axa response contains only one category offer ?"
+          }
+        ]
+      },
+      "ko": {
+        "id": "BR_QUOT_AXA_PROCESS_RESPONSE_ko",
+        "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ko",
+        "details": {
+          "code": "BR_QUOT_AXA_PROCESS_RESPONSE_ko",
+          "name": "BR_QUOT_AXA_PROCESS_RESPONSE_ko",
+          "description": null
+        },
+        "ok": null,
+        "ko": null,
+        "lastly": null,
+        "actions": [
+          {
+            "code": "ACT_NO_CATEGORY_OFFERS_RETRIEVED",
+            "name": "ACT_NO_CATEGORY_OFFERS_RETRIEVED",
+            "description": "Axa service returned no category offer"
+          }
+        ],
+        "predicates": []
+      },
+      "lastly": null,
+      "actions": [],
+      "predicates": [
+        {
+          "code": "PRE_IS_AXA_CATEGORY_OFFER_NOT_EMPTY",
+          "name": "PRE_IS_AXA_CATEGORY_OFFER_NOT_EMPTY",
+          "description": "Is axa response contains at least one category offer"
+        }
+      ]
+    },
+    "BR_QUOT_ELIG_LOAD_HOTEL": {
+      "id": "BR_QUOT_ELIG_LOAD_HOTEL",
+      "name": "BR_QUOT_ELIG_LOAD_HOTEL",
+      "details": {
+        "code": "BR_QUOT_ELIG_LOAD_HOTEL",
+        "name": "BR_QUOT_ELIG_LOAD_HOTEL",
+        "description": "Load hotel data"
+      },
+      "ok": {
+        "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok",
+        "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok",
+        "details": {
+          "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok",
+          "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok",
+          "description": null
+        },
+        "ok": {
+          "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ok",
+          "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ok",
+          "details": {
+            "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ok",
+            "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ok",
+            "description": null
+          },
+          "ok": null,
+          "ko": null,
+          "lastly": null,
+          "actions": [
+            {
+              "code": "ACT_LOAD_HOTEL_FROM_CACHE",
+              "name": "ACT_LOAD_HOTEL_FROM_CACHE",
+              "description": "Load hotel data from cache"
+            }
+          ],
+          "predicates": []
+        },
+        "ko": {
+          "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ko",
+          "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ko",
+          "details": {
+            "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ko",
+            "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_ko",
+            "description": null
+          },
+          "ok": null,
+          "ko": null,
+          "lastly": null,
+          "actions": [
+            {
+              "code": "ACT_LOAD_HOTEL_FROM_CATALOG",
+              "name": "ACT_LOAD_HOTEL_FROM_CATALOG",
+              "description": "Load hotel data from catalog"
+            },
+            {
+              "code": "ACT_LOAD_HOTEL_ACCOMMODATIONS_FROM_CATALOG",
+              "name": "ACT_LOAD_HOTEL_ACCOMMODATIONS_FROM_CATALOG",
+              "description": "Load hotel accommodations from catalog"
+            },
+            {
+              "code": "ACT_LOAD_HOTEL_FACILITIES_FROM_CATALOG",
+              "name": "ACT_LOAD_HOTEL_FACILITIES_FROM_CATALOG",
+              "description": "Load hotel facilities from catalog"
+            },
+            {
+              "code": "ACT_POPULATE_HOTEL_IN_CACHE",
+              "name": "ACT_POPULATE_HOTEL_IN_CACHE",
+              "description": "Populate hotel info cache"
+            }
+          ],
+          "predicates": []
+        },
+        "lastly": {
+          "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly",
+          "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly",
+          "details": {
+            "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly",
+            "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly",
+            "description": null
+          },
+          "ok": null,
+          "ko": {
+            "id": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly_ko",
+            "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly_ko",
+            "details": {
+              "code": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly_ko",
+              "name": "BR_QUOT_ELIG_LOAD_HOTEL_ok_lastly_ko",
+              "description": null
+            },
+            "ok": null,
+            "ko": null,
+            "lastly": null,
+            "actions": [
+              {
+                "code": "ACT_HOTEL_CODE_UNKNOWN_POLICY",
+                "name": "ACT_HOTEL_CODE_UNKNOWN_POLICY",
+                "description": "Hotel code unknown from catalog"
+              }
+            ],
+            "predicates": []
+          },
+          "lastly": null,
+          "actions": [],
+          "predicates": [
+            {
+              "code": "PRE_IS_HOTEL_FOUND",
+              "name": "PRE_IS_HOTEL_FOUND",
+              "description": "Is hotel info found"
+            }
+          ]
+        },
+        "actions": [],
+        "predicates": [
+          {
+            "code": "PRE_IS_HOTEL_IN_CACHE",
+            "name": "PRE_IS_HOTEL_IN_CACHE",
+            "description": "Is hotel in cache"
+          }
+        ]
+      },
+      "ko": null,
+      "lastly": null,
+      "actions": [],
+      "predicates": [
+        {
+          "code": "PRE_IS_HOTEL_CODE_IN_QUOTATION",
+          "name": "PRE_IS_HOTEL_CODE_IN_QUOTATION",
+          "description": "Is hotel code present in quotation"
+        }
+      ]
+    },
+    "BR_QUOT_SET_BI_INFO": {
+      "id": "BR_QUOT_SET_BI_INFO",
+      "name": "BR_QUOT_SET_BI_INFO",
+      "details": {
+        "code": "BR_QUOT_SET_BI_INFO",
+        "name": "BR_QUOT_SET_BI_INFO",
+        "description": "Set BI information"
+      },
+      "ok": null,
+      "ko": null,
+      "lastly": null,
+      "actions": [
+        {
+          "code": "ACT_SET_BI_INFORMATION",
+          "name": "ACT_SET_BI_INFORMATION",
+          "description": "Set BI information in Quotation"
+        }
+      ],
+      "predicates": []
+    }
+  }
+}

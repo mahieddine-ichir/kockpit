@@ -1,0 +1,13 @@
+{
+  "status": 400,
+  "title": "Bad Request",
+  "detail": "See https://developer.accor.com/api-portfolio/business-hotels-offers",
+  "code": "INVALID_INPUT",
+  "fieldErrors": [
+    {
+      "code": "INVALID_INPUT",
+      "input": "countryMarket",
+      "detail": "missing or invalid EN"
+    }
+  ]
+}

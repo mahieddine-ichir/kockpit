@@ -1,0 +1,45 @@
+{
+  "appId": "offers-api",
+  "domain": "wcoff",
+  "id": [
+    {
+      "key": "traceId",
+      "type": "header"
+    },
+    {
+      "key": "spanId",
+      "type": "header"
+    }
+  ],
+  "endpoints": [
+    {
+      "uri": "/irmaprocess/v3.1/offers",
+      "method": "get",
+      "environment": "prod"
+    },
+    {
+      "uri": "/api/v3.3/offers",
+      "method": "GET",
+      "environment": "oat"
+    }
+  ],
+  "watch": [
+    {
+      "v1": "request.hotelId",
+      "v2": "request.hotelId",
+      "operator": "equals_ignore-case"
+    },
+    {
+      "v1": "offers[*]",
+      "v2": "offers[*]"
+    },
+    {
+      "v1": "offers[*].availability.status",
+      "v2": "offers[*].status"
+    },
+    {
+      "v1": "offers[?(@.type=ROOM)].hotel.id",
+      "v2": "offers[?(@.type=ROOM)].id"
+    }
+  ]
+}
