@@ -1,0 +1,98 @@
+application:
+  name: ${STREAM_APPLICATION_NAME:auditstream}-${ENV:default}
+  dynamodb_table_name:
+    kengine: ${kengine_table_name}
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+wcp:
+  sdk:
+    initialization:
+      timeout: PT10S
+    service:
+      audit:
+        http:
+          traceid:
+            header: X-B3-TraceId
+        ttl:
+          default: 3
+    domain: wcplatform
+    env: ${WCP_ENV}
+    application:
+      id: auditstream
+      env: ${ENV}
+
+
+opensearch:
+  index_suffix: auditdata
+  index_mapping_file: audit_mappings.json
+  endpoint: localhost:9200
+  aws:
+    service_name: es
+    region: eu-west-1
+
+  insights:
+    index: insights
+    index_suffix: insights
+    index_mapping_file: insights_mappings.json
+    insight_data: httpStatus, httpMethod, requestUri, duration
+
+  dark_canary:
+    index: darkcanary
+    index_suffix: darkcanary
+    index_mapping_file: darkcanary_mappings.json
+
+management:
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: [ "metrics", "configprops", "env", "health", "info", "threaddump", "logfile", "prometheus" ]
+
+spring:
+  web:
+    resources:
+      add-mappings: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  jmx:
+    enabled: true
+  application:
+    name: WCP Service AuditStream
+
+logging:
+  level:
+    root: WARN
+    org:
+      springframework: ERROR
+    com.accor.wcp: INFO
+
+rest-template:
+  connectTimout: 10000ms
+  readTimeout: 10000ms
+
+darkcanarytesting:
+  configurations: /darkcanary_testing/samples-config-default.json
+  # sec min hr day_of_month mon day_of_week
+  defaults:
+    call-rate: 0.1
+    max-ttl-days: 7
+    run-time-intervals:
+      - hour: 9-18
+        day: MON-FRI
+
+  console-services:
+    manifest:
+      enabled: true
+      url: http://localhost:8082/ihm_api/internal/public/api/services/darkcanary/config
+      refresh_rate_ms: 30_000
+

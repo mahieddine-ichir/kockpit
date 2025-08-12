@@ -1,0 +1,31 @@
+server:
+  port: 9081
+
+opensearch:
+  endpoint: localhost:9200
+
+logging:
+  level:
+    com.accor.wcp: DEBUG
+
+application:
+  name: auditstream-localawspro
+
+aws:
+  stream_name: auditstream-pro
+
+#Only for dev env
+#  dynamodb:
+#    endpoint: http://localhost:4566
+#  sqs:
+#    endpoint: http://localhost:4566
+#  cloudwatch:
+#    endpoint: http://localhost:4566
+#  kinesis:
+#    endpoint: http://localhost:4566
+  region: eu-west-1
+
+kengine_table_name: KEngineRegistryDocument-localawspro
+consumer:
+  poll:
+    max-records: 250

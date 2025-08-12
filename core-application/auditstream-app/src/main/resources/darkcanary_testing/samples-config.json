@@ -1,0 +1,56 @@
+{
+  "appId": "wcpsamples",
+  "domain": "wcp",
+  "id": [
+    {
+      "key": "x-b3-traceid",
+      "type": "header"
+    }
+  ],
+  "endpoints": [
+    {
+      "uri": "/wcpsamples/darkcanary/offer",
+      "method": "get",
+      "environment": "local"
+    },
+    {
+      "uri": "/wcpsamples/darkcanary/offer/v2",
+      "method": "get",
+      "environment": "local"
+    }
+  ],
+  "includes": [
+    {
+      "left": "$.request.hotelId",
+      "right": "$.request.hotelId"
+    },
+    {
+      "left": "$.offers.*",
+      "right": "$.offers.*"
+    },
+    {
+      "left": "$.offers[*].availability.status",
+      "right": "$.offers[*].status"
+    },
+    {
+      "left": "$.offers[?(@.type=='ROOM')].hotel.id",
+      "right": "$.offers[?(@.type=='ROOM')].id"
+    },
+    {
+      "left": "$.firstName",
+      "right": "$.firstName"
+    },
+    {
+      "left": "$.phoneNumber.number",
+      "right": "$.phoneNumber.number"
+    },
+    {
+      "left": "$.loyaltyPoints",
+      "right": "$.loyaltyPoints"
+    },
+    {
+      "left": "$.profile.subscription",
+      "right": "$.profile.subscription"
+    }
+  ]
+}

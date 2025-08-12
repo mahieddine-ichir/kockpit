@@ -1,0 +1,73 @@
+{
+  "bestOffers": [
+    {
+      "hotel": {
+        "id": "0911"
+      },
+      "availability": {
+        "status": "AVAILABLE",
+        "reasons": []
+      },
+      "offersCategories": [],
+      "offer": {
+        "type": "ROOM",
+        "rate": {
+          "id": "FMLY",
+          "productBestOffer": true
+        },
+        "product": {
+          "id": "DFB",
+          "quantity": 2,
+          "accessible": false
+        },
+        "occupancy": {
+          "adults": 2,
+          "childrenAges": [
+            1
+          ],
+          "childrenAgesAsAdult": [],
+          "babies": 1
+        },
+        "dateIn": "2025-12-01",
+        "lengthOfStay": {
+          "value": 1,
+          "unit": "NIGHT"
+        },
+        "mealPlan": {
+          "code": "EUROPEAN_PLAN"
+        },
+        "categories": [
+          {
+            "code": "FAMILY",
+            "tag": "Family Offer",
+            "description": "Includes a 50% discount on the 2nd room with the Family Offer.",
+            "additionalTag": "For 2 rooms: 50% off the 2nd room included"
+          }
+        ],
+        "compliances": [
+          {
+            "code": "DISABILITY_COMPLIANT",
+            "description": "Disability compliance"
+          }
+        ],
+        "pricing": {
+          "currency": "EUR",
+          "aggregationType": "TOTAL_STAY",
+          "formattedAggregationType": "/ Stay",
+          "taxType": "ALL_TAXES_AND_FEES_INCLUDED",
+          "formattedTaxType": "Taxes and fees included.",
+          "deduction": [],
+          "main": {
+            "amount": 411.5,
+            "formattedAmount": "€412",
+            "categories": [
+              "FAMILY"
+            ],
+            "label": "This accommodation also has a family offer"
+          }
+        }
+      }
+    }
+  ],
+  "errors": []
+}

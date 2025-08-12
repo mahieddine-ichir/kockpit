@@ -1,0 +1,26 @@
+<configuration>
+    <include resource="/org/springframework/boot/logging/logback/base.xml"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <root level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="software.amazon.kinesis.metrics.CloudWatchMetricsPublisher" level="OFF"/>
+    <logger name="software.amazon.kinesis.leases.dynamodb.DynamoDBLeaseCoordinator" level="OFF"/>
+    <logger name="software.amazon.kinesis.leases.dynamodb.DynamoDBLeaseRenewer" level="OFF"/>
+    <logger name="software.amazon.kinesis.retrieval.polling.PrefetchRecordsPublisher" level="OFF"/>
+    <logger name="software.amazon.kinesis.coordinator.DeterministicShuffleShardSyncLeaderDecider" level="OFF"/>
+    <logger name="software.amazon.kinesis.coordinator.PeriodicShardSyncManager" level="OFF"/>
+
+    <logger name="io.netty.channel.DefaultChannelPipeline" level="ERROR"/>
+
+    <logger name="software.amazon.kinesis.coordinator.Scheduler" level="INFO"/>
+    <logger name="com.accor" level="INFO"/>
+
+</configuration>

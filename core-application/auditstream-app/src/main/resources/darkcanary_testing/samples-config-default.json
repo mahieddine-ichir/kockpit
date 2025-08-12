@@ -1,0 +1,22 @@
+{
+  "appId": "wcpsamples",
+  "domain": "wcp",
+  "id": [
+    {
+      "key": "x-b3-traceid",
+      "type": "header"
+    }
+  ],
+  "endpoints": [
+    {
+      "uri": "/wcpsamples/darkcanary/offer",
+      "method": "get",
+      "environment": "local"
+    },
+    {
+      "uri": "/wcpsamples/darkcanary/offer/v2",
+      "method": "get",
+      "environment": "local"
+    }
+  ]
+}

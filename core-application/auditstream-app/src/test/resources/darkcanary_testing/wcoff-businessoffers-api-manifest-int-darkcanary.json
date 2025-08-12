@@ -1,0 +1,43 @@
+{
+  "headers": [
+    {
+      "key": "x-wcp-origin",
+      "values": [
+        "WCP-CALLER"
+      ]
+    },
+    {
+      "key": "apikey",
+      "values": [
+        "l7xx221e5083b05c4a019fba78ccd8746a31"
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "environment": "int",
+      "method": "get",
+      "targetUri": "https://dev-api.accor.com/businessoffers/v1/best-offers",
+      "uri": "/web/businessoffers/v1/availabilities/best-offers"
+    },
+    {
+      "environment": "int",
+      "method": "post",
+      "targetUri": "https://dev-api.accor.com/businessoffers/v1/best-offers",
+      "uri": "/web/businessoffers/v1/availabilities/best-offers"
+    }
+  ],
+  "excludes": [],
+  "appId": "offers-business-api",
+  "testingSource": "remote",
+  "callRate": 1,
+  "includes": [],
+  "id": [
+    {
+      "type": "header",
+      "key": "x-b3-traceid"
+    }
+  ],
+  "label": "WCP DK Offer",
+  "strict": true
+}
