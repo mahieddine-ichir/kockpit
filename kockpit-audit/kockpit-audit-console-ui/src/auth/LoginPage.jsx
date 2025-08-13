@@ -32,7 +32,6 @@ const LoginPage = () => {
                         </div>
                         <div className="space-y-5">
                             <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">Login</label>
                                 <input
                                     id="username"
                                     name="username"
@@ -52,16 +51,8 @@ const LoginPage = () => {
                                     required
                                     className="block w-full rounded-lg border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:border-slate-800 focus:ring-2 focus:ring-slate-800 px-4 py-3 text-sm transition-all"
                                     placeholder="••••••••"
+                                    onKeyUp={handleLogin}
                                 />
-                            </div>
-                            <div className="flex items-center">
-                                <input
-                                    id="remember-me"
-                                    name="remember-me"
-                                    type="checkbox"
-                                    className="h-4 w-4 rounded border-slate-300 text-slate-800 focus:ring-slate-800"
-                                />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-600">Remember this device</label>
                             </div>
                             <div>
                                 <button
