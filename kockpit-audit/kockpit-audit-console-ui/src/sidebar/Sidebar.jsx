@@ -1,18 +1,44 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import {
+    ArrowLeftStartOnRectangleIcon,
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
     CogIcon,
     DocumentTextIcon,
     UserIcon
 } from '@heroicons/react/24/outline';
+import {useAuth} from "../auth/AuthContext.jsx";
+
+const UserInfo = ({collapsed, currentUser, logout}) => {
+    return (
+        <div className="flex items-center space-x-3">
+            <div className="h-11 w-11 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-lg border-2 border-blue-500">
+                <UserIcon className="h-6 w-6 text-white" />
+            </div>
+            {collapsed ? null :
+                        <div className="flex-1 min-w-0">
+                            <p className="text-base font-semibold text-white truncate">{currentUser.name}</p>
+                        </div>
+            }
+            {currentUser ?
+                <div className="flex items-center space-x-2">
+                    <ArrowLeftStartOnRectangleIcon className="h-6 w-6 text-white"
+                                                   onClick={logout}
+                    />
+                </div> : null
+            }
+
+        </div>
+    )
+}
 
 const Sidebar = ({ collapsed, setCollapsed, config }) => {
   const navigate = useNavigate();
   const currentUser = {
     name: JSON.parse(localStorage.getItem("token")).username || ''
   };
+  const auth = useAuth();
 
   let asLabel = (arg) => {
       let label = arg[0].toUpperCase();
@@ -27,6 +53,10 @@ const Sidebar = ({ collapsed, setCollapsed, config }) => {
       }
       return label.trim();
   };
+
+  const logout = () => {
+      auth.logout();
+  }
 
   let navItems = [];
   console.log(`sideBar ${JSON.stringify(config)}`);
@@ -87,24 +117,8 @@ const Sidebar = ({ collapsed, setCollapsed, config }) => {
                   />
               </nav>
           </div>
-
         <div className="border-t border-slate-700 p-4 bg-slate-800/70">
-          {collapsed ? (
-              <div className="flex justify-center">
-                <div className="h-11 w-11 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-lg border-2 border-blue-500">
-                  <UserIcon className="h-6 w-6 text-white" />
-                </div>
-              </div>
-          ) : (
-              <div className="flex items-center space-x-3">
-                <div className="h-11 w-11 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-lg border-2 border-blue-500">
-                  <UserIcon className="h-6 w-6 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-base font-semibold text-white truncate">{currentUser.name}</p>
-                </div>
-              </div>
-          )}
+            <UserInfo collapsed={collapsed} currentUser={currentUser} logout={logout} />
         </div>
       </div>
   );
