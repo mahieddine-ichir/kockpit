@@ -55,12 +55,10 @@ spring:
   web:
     resources:
       add-mappings: false
-  mvc:
-    throw-exception-if-no-handler-found: true
   jmx:
     enabled: true
   application:
-    name: WCPlatform Console Services endpoints
+    name: Kockpit Console API Services endpoints
   opensearch:
     rest:
       uris: ${search.opensearch-endpoint}

@@ -62,12 +62,10 @@ spring:
   web:
     resources:
       add-mappings: false
-  mvc:
-    throw-exception-if-no-handler-found: true
   jmx:
     enabled: true
   application:
-    name: WCP Service AuditStream
+    name: Kockpit Audit Stream
 
 logging:
   level:
