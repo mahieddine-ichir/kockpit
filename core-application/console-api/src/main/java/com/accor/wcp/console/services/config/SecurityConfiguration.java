@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,6 +23,17 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) ->
+                web.ignoring()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**")
+                        .requestMatchers("/actuator/**")
+                        .requestMatchers("/swagger-ui/**")
+                        .requestMatchers("/swagger-resources/**")
+                        .requestMatchers("/v3/api-docs/**");
+    }
 
   private final ServiceManager serviceManager;
 

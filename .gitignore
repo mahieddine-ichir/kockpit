@@ -126,3 +126,5 @@ fabric.properties
 /core-application/console-ui/node_modules/
 /core-application/console-ui/.angular/
 /core-application/console-ui/wcplatform-all-in-one-dist/
+/core-application/console-api/src/main/resources/config/application-local.yml
+/core-application/auditstream-app/src/main/resources/config/application-local.yml
