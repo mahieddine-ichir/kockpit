@@ -1,7 +1,6 @@
 package org.kockpit.audit.notification.eventhubs;
 
 import com.azure.messaging.eventhubs.EventData;
-import com.azure.messaging.eventhubs.EventHubProducerClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditReport.AuditJsonReport;
@@ -14,9 +13,7 @@ import java.util.List;
  */
 @Slf4j
 @RequiredArgsConstructor
-class EventHubsAuditReportNotificationService implements AuditReportNotificationService {
-
-  private final EventHubProducerClient producerClient;
+class MockAuditReportNotificationService implements AuditReportNotificationService {
 
   @Override
   public void notify(List<AuditJsonReport> auditReports) {
@@ -31,7 +28,6 @@ class EventHubsAuditReportNotificationService implements AuditReportNotification
     List<EventData> allEvents = auditReports.stream().map(auditJsonReport -> new EventData(auditJsonReport.getAuditJson()))
             .toList();
 
-    log.trace("Publishing events to EventHubs {}", allEvents);
-    producerClient.send(allEvents);
+    log.info("Publishing events to EventHubs {}", allEvents);
   }
 }
