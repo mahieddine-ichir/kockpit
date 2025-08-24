@@ -1,5 +1,6 @@
 package org.kockpit.audit.stream.api;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public interface AuditConsumer extends Consumer<AuditReport> {
@@ -8,4 +9,6 @@ public interface AuditConsumer extends Consumer<AuditReport> {
     void stop();
 
     void onError(Throwable throwable);
+
+    void accept(List<AuditReport> auditReports);
 }
