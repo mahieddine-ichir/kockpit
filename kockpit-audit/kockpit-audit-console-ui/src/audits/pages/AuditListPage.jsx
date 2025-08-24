@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
-import {EyeIcon} from '@heroicons/react/24/outline';
+import {EyeIcon,ChartPieIcon,ListBulletIcon} from '@heroicons/react/24/outline';
 import {AdjustmentsHorizontalIcon, MagnifyingGlassIcon} from '@heroicons/react/20/solid';
 import {useNavigate} from 'react-router-dom';
 import StatusBadge from '../../components/StatusBadge.jsx';
 import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import Pagination from '../../components/Pagination.jsx';
 import CopyButton from "../../components/CopyButton.jsx";
+import Dashboard from "./Dashboard.jsx";
 
 function formatLabel(col) {
   let label = '';
@@ -152,6 +153,8 @@ const AuditListPage = ({ domain, env, config }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
+  const [activeTab, setActiveTab] = useState('dashboard');
+
   const navigate = useNavigate();
 
   let columns = [];
@@ -223,6 +226,45 @@ const AuditListPage = ({ domain, env, config }) => {
           </div>
         </div>
         <div className="mb-8">
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8">
+              <button
+                  onClick={() => setActiveTab('dashboard')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                      activeTab === 'dashboard'
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <ChartPieIcon className="h-5 w-5" />
+                  <span>Dashboard</span>
+                </div>
+              </button>
+              <button
+                  onClick={() => setActiveTab('list')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                      activeTab === 'list'
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <ListBulletIcon className="h-5 w-5" />
+                  <span>List Audits</span>
+                </div>
+              </button>
+            </nav>
+          </div>
+        </div>
+        {activeTab === 'dashboard' ? (
+            <Dashboard  audits={audits}
+                        getHttStatus={getHttStatus}
+                        getMethod={getMethod}
+            />
+        ) : (
+            <>
+        <div className="mb-8">
           <div className="bg-white rounded-2xl shadow-lg px-8 py-6 flex flex-col gap-6 border-l-4 border-blue-600/20 border-slate-100">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="relative flex-1">
@@ -289,6 +331,9 @@ const AuditListPage = ({ domain, env, config }) => {
               totalItems={totalCount}
           />
         </div>
+
+                </>
+          )}
       </div>
   );
 }
