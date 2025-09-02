@@ -44,3 +44,4 @@ build/
 **/src/**/application-pro.yaml
 /manifests/
 /kockpit-backends/kockpit-backend-azuresearch/src/main/resources/application-local-pro.yaml
+data

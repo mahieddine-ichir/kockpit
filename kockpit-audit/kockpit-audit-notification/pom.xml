@@ -15,6 +15,7 @@
     <modules>
         <module>kockpit-audit-notification-starter-eventhubs</module>
         <module>kockpit-audit-notification-starter-console</module>
+        <module>kockpit-audit-notification-starter-kinesis</module>
     </modules>
 
     <dependencies>
@@ -23,13 +24,6 @@
             <artifactId>kockpit-audit-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-obfuscation-autoconfigure</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
--->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
