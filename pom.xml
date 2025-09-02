@@ -20,7 +20,8 @@
 		<module>kockpit-audit</module>
 		<module>kockpit-rules</module>
 		<module>kockpit-backends</module>
-    </modules>
+		<module>kockpit-audit/kockpit-audit-notification/kockpit-audit-notification-starter-kinesis</module>
+	</modules>
 
 	<profiles>
 		<profile>
