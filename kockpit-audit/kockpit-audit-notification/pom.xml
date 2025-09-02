@@ -23,13 +23,15 @@
             <artifactId>kockpit-audit-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-<!--
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-obfuscation-autoconfigure</artifactId>
+            <artifactId>kockpit-audit-api-impl</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
--->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
