@@ -1,7 +1,9 @@
-package com.example.insightsstreamingapp.controller;
+package com.example.insightsdashboardapi.controller;
 
-import com.example.insightsstreamingapp.service.InsightsService;
-import com.example.insightsstreamingapp.dto.*;
+import com.example.insightsdashboardapi.dto.DashboardSummaryDto;
+import com.example.insightsdashboardapi.dto.FiltersDto;
+import com.example.insightsdashboardapi.dto.PieChartDataDto;
+import com.example.insightsdashboardapi.service.InsightsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

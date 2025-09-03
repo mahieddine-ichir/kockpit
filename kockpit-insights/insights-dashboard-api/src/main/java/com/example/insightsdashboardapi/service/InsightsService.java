@@ -1,20 +1,22 @@
-package com.example.insightsstreamingapp.service;
+package com.example.insightsdashboardapi.service;
 
-import com.example.insightsstreamingapp.dto.*;
+import com.example.insightsdashboardapi.dto.DashboardSummaryDto;
+import com.example.insightsdashboardapi.dto.FiltersDto;
+import com.example.insightsdashboardapi.dto.PieChartDataDto;
 import lombok.extern.slf4j.Slf4j;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.RangeQueryBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.opensearch.action.search.SearchRequest;
 import org.opensearch.action.search.SearchResponse;
 import org.opensearch.client.RequestOptions;
+import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.index.query.RangeQueryBuilder;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.opensearch.search.sort.SortOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Instant;
