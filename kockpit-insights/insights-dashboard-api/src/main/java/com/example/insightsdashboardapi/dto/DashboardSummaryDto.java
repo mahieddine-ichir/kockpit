@@ -1,4 +1,4 @@
-package com.example.insightsstreamingapp.dto;
+package com.example.insightsdashboardapi.dto;
 
 import lombok.Builder;
 import lombok.Data;

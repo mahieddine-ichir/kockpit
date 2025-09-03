@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_BASE = 'http://localhost:8080/backend/api';
 console.log('API_BASE:', API_BASE);
 
-const API_BASEE = 'http://localhost:8081/api/insights/dashboard';
+const API_BASEE = 'http://localhost:8082/api/insights/dashboard';
 
 
 axios.interceptors.request.use(function (config) {
