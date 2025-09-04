@@ -5,6 +5,7 @@ import com.accor.wcp.sdk.service.cache.communication.CacheStatisticsMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.cache.management.CacheStatisticsMXBean;
 import javax.management.MBeanServer;
@@ -27,7 +28,8 @@ public class JSR107CacheHandler implements CacheHandler {
 
   @Override
   public void reload(String cacheName) {
-    cacheManager.getCache(cacheName).clear();
+      Cache<Object, Object> cache = cacheManager.getCache(cacheName);
+      cache.clear();
   }
 
   public List<CacheStatisticsMessage> getCacheStatistics() {
@@ -83,7 +85,7 @@ public class JSR107CacheHandler implements CacheHandler {
         cacheStatisticsMXBean.clear();
       }
     } catch (Exception e) {
-      log.error("Error resetting cache statistics.");
+      log.error("Error resetting cache statistics (error={})", e.getMessage(), e);
     }
   }
 }

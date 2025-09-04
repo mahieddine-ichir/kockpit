@@ -48,7 +48,7 @@ class StateManager implements ManagedInstanceListener {
     instanceCacheState.setCacheMetrics(
         message.entrySet().stream()
             .map(o -> CacheMetric.builder().name(o.getKey()).value(o.getValue()).build())
-            .collect(Collectors.toList()));
+            .toList());
   }
 
   CacheState getCacheState(String domain, String env, String applicationId, String cacheName) {

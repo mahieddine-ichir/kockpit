@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HistoCommandManager {
+class HistoCommandManager {
 
   private final Map<String, Map<String, CacheCommand>> histoCommands = new HashMap<>();
 

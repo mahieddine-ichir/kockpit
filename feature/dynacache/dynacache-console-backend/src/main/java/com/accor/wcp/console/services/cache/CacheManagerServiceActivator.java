@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class CacheManagerServiceActivator implements WCPConsoleServiceActivator {
+class CacheManagerServiceActivator implements WCPConsoleServiceActivator {
 
   private final StateManager stateManager;
   private final ObjectMapper objectMapper;

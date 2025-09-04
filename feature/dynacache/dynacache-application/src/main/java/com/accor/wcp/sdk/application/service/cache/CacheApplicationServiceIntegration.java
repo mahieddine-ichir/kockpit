@@ -13,10 +13,12 @@ import com.accor.wcp.sdk.service.cache.communication.CacheResetStatsMessageRespo
 import com.accor.wcp.sdk.service.cache.communication.CacheStatisticsMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -28,107 +30,109 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CacheApplicationServiceIntegration implements ServiceApplicationIntegration {
 
-  private final App2WCPConsoleCommunicationService app2WCPConsoleCommunicationService;
+    public static final String SERVICE_CACHE_ID = "cache";
 
-  private final CacheHandler cacheHandler;
+    private final App2WCPConsoleCommunicationService app2WCPConsoleCommunicationService;
 
-  private CommandManager<ServiceMessageNotification> commandManager;
+    private final CacheHandler cacheHandler;
 
-  private ObjectMapper objectMapper;
+    private CommandManager<ServiceMessageNotification> commandManager;
 
-  @PostConstruct
-  void init() {
-    Map<String, CommandExecutor<ServiceMessageNotification>> commandsMap = new HashMap<>();
-    CommandExecutor<ServiceMessageNotification> invalidateNotification =
-        this::invalidateNotification;
-    CommandExecutor<ServiceMessageNotification> resetStatsNotification =
-        this::resetStatsNotification;
-    commandsMap.put(CacheReloadMessageRequestDto.class.getName(), invalidateNotification);
-    commandsMap.put(CacheResetStatsMessageRequestDto.class.getName(), resetStatsNotification);
+    private ObjectMapper objectMapper;
 
-    commandManager =
-        new CommandManager<>(
-            CacheServiceMessageNotificationCommandTypeAccessor.create(), commandsMap);
+    @PostConstruct
+    void init() {
+        Map<String, CommandExecutor<ServiceMessageNotification>> commandsMap = new HashMap<>();
+        CommandExecutor<ServiceMessageNotification> invalidateNotification =
+                this::invalidateNotification;
+        CommandExecutor<ServiceMessageNotification> resetStatsNotification =
+                this::resetStatsNotification;
+        commandsMap.put(CacheReloadMessageRequestDto.class.getName(), invalidateNotification);
+        commandsMap.put(CacheResetStatsMessageRequestDto.class.getName(), resetStatsNotification);
 
-    objectMapper = new ObjectMapper();
-  }
+        commandManager =
+                new CommandManager<>(
+                        CacheServiceMessageNotificationCommandTypeAccessor.create(), commandsMap);
 
-  private void resetStatsNotification(ServiceMessageNotification notification) {
-    app2WCPConsoleCommunicationService.ack(getServiceId(), notification.getMessageId());
-    CacheResetStatsMessageResponseDto message =
-        getMessage(notification, CacheResetStatsMessageResponseDto.class);
-    CacheOperationResult result = CacheOperationResult.DONE;
-    String errorMessage = null;
-
-    // Invalidate cache
-    log.info("Handle reset stats cache request {}", message);
-    try {
-      cacheHandler.resetStats(message.getCache());
-    } catch (Exception e) {
-      errorMessage = e.getMessage();
-      result = CacheOperationResult.ERROR;
+        objectMapper = new ObjectMapper();
     }
 
-    // Send response to service
-    CacheResetStatsMessageResponseDto cacheResetStatsMessageResponseDto =
-        CacheResetStatsMessageResponseDto.builder()
-            .result(result)
-            .cache(message.getCache())
-            .errorMessage(errorMessage)
-            .build();
-    app2WCPConsoleCommunicationService.notifyResponse(
-        getServiceId(), notification.getMessageId(), cacheResetStatsMessageResponseDto);
-  }
+    private void resetStatsNotification(ServiceMessageNotification notification) {
+        app2WCPConsoleCommunicationService.ack(getServiceId(), notification.getMessageId());
+        CacheResetStatsMessageResponseDto message =
+                getMessage(notification, CacheResetStatsMessageResponseDto.class);
+        CacheOperationResult result = CacheOperationResult.DONE;
+        String errorMessage = null;
 
-  private void invalidateNotification(ServiceMessageNotification notification) {
-    app2WCPConsoleCommunicationService.ack(getServiceId(), notification.getMessageId());
-    CacheReloadMessageRequestDto message =
-        getMessage(notification, CacheReloadMessageRequestDto.class);
-    CacheOperationResult result = CacheOperationResult.DONE;
-    String errorMessage = null;
+        // Invalidate cache
+        log.info("Handle reset stats cache request {}", message);
+        try {
+            cacheHandler.resetStats(message.getCache());
+        } catch (Exception e) {
+            errorMessage = e.getMessage();
+            result = CacheOperationResult.ERROR;
+        }
 
-    // Invalidate cache
-    log.info("Handle invalidation cache request {}", message);
-    try {
-      cacheHandler.reload(message.getCache());
-    } catch (Exception e) {
-      errorMessage = e.getMessage();
-      result = CacheOperationResult.ERROR;
+        // Send response to service
+        CacheResetStatsMessageResponseDto cacheResetStatsMessageResponseDto =
+                CacheResetStatsMessageResponseDto.builder()
+                        .result(result)
+                        .cache(message.getCache())
+                        .errorMessage(errorMessage)
+                        .build();
+        app2WCPConsoleCommunicationService.notifyResponse(
+                getServiceId(), notification.getMessageId(), cacheResetStatsMessageResponseDto);
     }
 
-    // Send response to service
-    CacheReloadMessageResponseDto cacheInvalidationMessageResponseDto =
-        CacheReloadMessageResponseDto.builder()
-            .result(result)
-            .cache(message.getCache())
-            .errorMessage(errorMessage)
-            .build();
-    app2WCPConsoleCommunicationService.notifyResponse(
-        getServiceId(), notification.getMessageId(), cacheInvalidationMessageResponseDto);
-  }
+    private void invalidateNotification(ServiceMessageNotification notification) {
+        app2WCPConsoleCommunicationService.ack(getServiceId(), notification.getMessageId());
+        CacheReloadMessageRequestDto message =
+                getMessage(notification, CacheReloadMessageRequestDto.class);
+        CacheOperationResult result = CacheOperationResult.DONE;
+        String errorMessage = null;
 
-  private <T> T getMessage(ServiceMessageNotification notification, Class<T> type) {
-    return objectMapper.convertValue(notification.getMessage(), type);
-  }
+        // Invalidate cache
+        log.info("Handle invalidation cache request {}", message);
+        try {
+            cacheHandler.reload(message.getCache());
+        } catch (Exception e) {
+            errorMessage = e.getMessage();
+            result = CacheOperationResult.ERROR;
+        }
 
-  @Override
-  public String getServiceId() {
-    return "cache";
-  }
+        // Send response to service
+        CacheReloadMessageResponseDto cacheInvalidationMessageResponseDto =
+                CacheReloadMessageResponseDto.builder()
+                        .result(result)
+                        .cache(message.getCache())
+                        .errorMessage(errorMessage)
+                        .build();
+        app2WCPConsoleCommunicationService.notifyResponse(
+                getServiceId(), notification.getMessageId(), cacheInvalidationMessageResponseDto);
+    }
 
-  @Override
-  public void notification(ServiceMessageNotification notification) {
-    log.info("Notification for cache: {}", notification);
-    commandManager.execute(notification);
-  }
+    private <T> T getMessage(ServiceMessageNotification notification, Class<T> type) {
+        return objectMapper.convertValue(notification.getMessage(), type);
+    }
 
-  @SneakyThrows
-  @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
-  public void scheduleFixedRateTask() {
-    List<CacheStatisticsMessage> cacheStatisticsMessages = cacheHandler.getCacheStatistics();
-    cacheStatisticsMessages.parallelStream()
-        .forEach(
-            cacheStatisticsMessage ->
-                app2WCPConsoleCommunicationService.notify("cache", cacheStatisticsMessage));
-  }
+    @Override
+    public String getServiceId() {
+        return SERVICE_CACHE_ID;
+    }
+
+    @Override
+    public void notification(ServiceMessageNotification notification) {
+        log.info("Notification for cache: {}", notification);
+        commandManager.execute(notification);
+    }
+
+    @SneakyThrows
+    @Scheduled(fixedRateString = "${wcp.sdk.service.cache.schedule.rate.seconds:60}", timeUnit = TimeUnit.SECONDS)
+    public void scheduleFixedRateTask() {
+        List<CacheStatisticsMessage> cacheStatisticsMessages = cacheHandler.getCacheStatistics();
+        cacheStatisticsMessages.parallelStream()
+                .forEach(
+                        cacheStatisticsMessage ->
+                                app2WCPConsoleCommunicationService.notify(SERVICE_CACHE_ID, cacheStatisticsMessage));
+    }
 }
