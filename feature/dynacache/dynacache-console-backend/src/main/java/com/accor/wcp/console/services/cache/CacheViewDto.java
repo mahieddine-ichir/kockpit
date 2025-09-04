@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 
 @Data
-public class CacheViewDto {
+class CacheViewDto {
 
   List<InstanceCacheState> instanceCacheStates;
   List<String> columns;

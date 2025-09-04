@@ -44,6 +44,7 @@ public class CacheConfiguration {
       cache.clear();
     } else {
       cm.createCache(cacheName, jcacheConfiguration);
+      cm.enableStatistics(cacheName, true);
     }
   }
 

@@ -7,6 +7,8 @@ import com.accor.wcp.flow.FlowContextContainer;
 import com.accor.wcp.flow.FlowRunner;
 import com.accor.wcp.sample.sampleflow.flow.context.OperationContext;
 import jakarta.validation.constraints.NotBlank;
+
+import javax.cache.Cache;
 import javax.cache.CacheManager;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OperationFlowController {
   private final FlowRunner flowRunner;
 
-  private CacheManager cacheManager;
+  private final CacheManager cacheManager;
 
   public OperationFlowController(@Lazy FlowRunner flowRunner, CacheManager cacheManager) {
 
@@ -41,6 +43,17 @@ public class OperationFlowController {
     cacheManager.getCache(SAMPLES_INFO_CACHE).get("cacheMiss");
     return ResponseEntity.ok("cache miss");
   }
+
+    @GetMapping(value = "/cacheGet")
+    public ResponseEntity<String> cacheGet() {
+        Cache<Object, Object> cache = cacheManager.getCache(SAMPLES_INFO_CACHE);
+        String cacheGetKey = "cacheGet";
+        if (!cache.containsKey(cacheGetKey)) {
+          cache.put(cacheGetKey, 1);
+      }
+        cache.get(cacheGetKey);
+        return ResponseEntity.ok("cache get");
+    }
 
   private String execute(String op, String a, String b) {
     FlowContextContainer contextContainer = new FlowContextContainer();
