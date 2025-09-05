@@ -10,6 +10,6 @@ import java.util.List;
 public class SimpleLogNotificationService implements AuditReportNotificationService {
     @Override
     public void notify(List<AuditReport.AuditJsonReport> auditReport) {
-      auditReport.forEach(auditJsonReport -> log.info(auditJsonReport.toString()));
+      auditReport.forEach(auditJsonReport -> log.trace(auditJsonReport.toString()));
     }
 }
