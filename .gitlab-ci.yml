@@ -34,3 +34,10 @@ variables:
     - .mvn-job
     - .k8s-dind
     - .runner-xxlarge
+
+dependencies:prepare:
+  rules:
+    - when: never
+dependencies:wiz-scan:
+  rules:
+    - when: never
