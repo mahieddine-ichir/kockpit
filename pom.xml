@@ -33,18 +33,24 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 
+        <avro.version>1.12.0</avro.version>
+        <kafka-clients.version>3.9.1</kafka-clients.version>
         <mockserver-client-java.version>5.15.0</mockserver-client-java.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <commons-text.version>1.13.0</commons-text.version>
+        <commons-lang.version>3.18.0</commons-lang.version>
         <commons-collections4.version>4.4</commons-collections4.version>
+        <commons-io.version>2.20.0</commons-io.version>
         <amazon-kinesis-client.version>3.1.1</amazon-kinesis-client.version>
         <lombok.version>1.18.38</lombok.version>
         <spring-boot-dependencies.version>3.5.4</spring-boot-dependencies.version>
         <awssdk.bom.version>2.32.22</awssdk.bom.version>
-        <spring-framework-bom.version>6.2.9</spring-framework-bom.version>
-        <commons-beanutils.version>1.9.4</commons-beanutils.version>
+        <spring-framework-bom.version>6.2.10</spring-framework-bom.version>
+        <commons-beanutils.version>1.11.0</commons-beanutils.version>
+        <commons-beanutils-core.version>1.8.3</commons-beanutils-core.version>
         <camel-spring-boot-starter.version>4.11.0</camel-spring-boot-starter.version>
         <guava.version>33.4.8-jre</guava.version>
+        <json-smart.version>2.5.2</json-smart.version>
     </properties>
 
     <scm>
@@ -69,6 +75,12 @@
             <url>https://nexus.softfactory-accor.net/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
+    <repositories>
+        <repository>
+            <id>confluent-external-repo</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -116,6 +128,61 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.squareup.okio</groupId>
+                <artifactId>okio-jvm</artifactId>
+                <version>3.9.1</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.ion</groupId>
+                <artifactId>ion-java</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-wiremock</artifactId>
+                <version>4.1.5</version>
+            </dependency>
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-avro-serializer</artifactId>
+                <version>7.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>aws-core</artifactId>
+                <version>${awssdk.bom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.charleskorn.kaml</groupId>
+                <artifactId>kaml</artifactId>
+                <version>0.55.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.80</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>2.19.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>2.13.16</version>
+            </dependency>
+            <dependency>
+                <groupId>net.minidev</groupId>
+                <artifactId>json-smart</artifactId>
+                <version>${json-smart.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
                 <version>${spring-framework-bom.version}</version>
@@ -132,11 +199,10 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot-dependencies.version}</version>
+                <version>3.5.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -159,6 +225,16 @@
                 <version>${commons-text.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
@@ -174,11 +250,15 @@
                 <version>${commons-beanutils.version}</version>
             </dependency>
             <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils-core</artifactId>
+                <version>${commons-beanutils-core.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.mock-server</groupId>
                 <artifactId>mockserver-netty</artifactId>
@@ -191,6 +271,11 @@
                 <version>${mockserver-client-java.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.27.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -199,6 +284,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
+                <version>3.4.6</version>
                 <configuration>
                     <!-- we don't want jib to execute by default -->
                     <skip>true</skip>
