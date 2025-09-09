@@ -181,32 +181,6 @@
         </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>aws-core</artifactId>
-                <version>${awssdk.bom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>auth</artifactId>
-            </dependency>
-            <!-- CVE-2023-1370 FIX -->
-            <dependency>
-                <groupId>net.minidev</groupId>
-                <artifactId>json-smart</artifactId>
-                <version>2.5.0</version>
-            </dependency>
-            <!-- CVE-2023-28118 FIX -->
-            <dependency>
-                <groupId>com.charleskorn.kaml</groupId>
-                <artifactId>kaml</artifactId>
-                <version>0.55.0</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>

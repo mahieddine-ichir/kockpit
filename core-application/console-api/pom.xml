@@ -12,7 +12,6 @@
     <properties>
         <spring-security-oauth2.version>6.5.2</spring-security-oauth2.version>
         <nimbus-jose-jwt.version>9.47</nimbus-jose-jwt.version>
-
         <testcontainers.version>1.20.4</testcontainers.version>
     </properties>
 
@@ -215,12 +214,6 @@
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>auth</artifactId>
-            </dependency>
-            <!-- CVE-2023-1370 FIX -->
-            <dependency>
-                <groupId>net.minidev</groupId>
-                <artifactId>json-smart</artifactId>
-                <version>2.5.1</version>
             </dependency>
             <!-- CVE-2023-28118 FIX -->
             <dependency>
