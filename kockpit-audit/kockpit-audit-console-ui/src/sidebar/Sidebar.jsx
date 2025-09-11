@@ -110,7 +110,7 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
               </nav>
           </div>
         <div className="border-t border-slate-700 p-4 bg-slate-800/70">
-            <UserInfo collapsed={collapsed} currentUser={user} logout={logout} />
+            <UserInfo collapsed={collapsed} currentUser={user?.clientPrincipal?.userDetails} logout={logout} />
         </div>
       </div>
   );

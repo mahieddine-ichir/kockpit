@@ -33,7 +33,7 @@ function App() {
     }
 
     function onConfigLoaded(configs) {
-        console.log(`configs ${configs} loaded`);
+        console.log(`configs ${JSON.stringify(configs)} loaded`);
         setConfigs(configs);
         setConfig(configs[0]);
 
