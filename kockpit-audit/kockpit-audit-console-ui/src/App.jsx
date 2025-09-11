@@ -57,6 +57,8 @@ function App() {
                             <DomainEnv domainEnvChanged={onDomainEnvChanged} onConfigLoaded={onConfigLoaded} />
                         </div>
                         <div className='screens-section-container'>
+                    {
+                        config && user ?
                             <div className="flex">
                                 <div
                                     className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
@@ -66,7 +68,8 @@ function App() {
                                         <Route path="*" element={<Navigate to="/audits" replace={true}/>}/>
                                     </Routes>
                                 </div>
-                            </div>
+                            </div> : null
+                    }
                         </div>
                     </div>
                 </div>
