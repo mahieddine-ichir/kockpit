@@ -5,6 +5,10 @@
       "allowedRoles": [
         "support"
       ]
+    },
+    {
+      "route": "/logout",
+      "redirect": "/.auth/logout"
     }
   ],
   "responseOverrides": {
