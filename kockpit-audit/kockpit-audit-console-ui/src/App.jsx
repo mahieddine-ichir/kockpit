@@ -4,7 +4,6 @@ import './index.css';
 import Sidebar from "./sidebar/Sidebar.jsx";
 import AuditListPage from "./audits/pages/AuditListPage.jsx";
 import DetailsPage from "./audits/pages/DetailsPage.jsx";
-import LoginPage from './auth/LoginPage.jsx';
 import DomainEnv from "./components/DomainEnv.jsx";
 
 
@@ -45,12 +44,7 @@ function App() {
                                 <div
                                     className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
                                     <Routes>
-                                        <Route path="/login" element={<LoginPage />} />
-                                        {
-                                            config?
-                                            <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} />} />
-                                                : null
-                                        }
+                                        <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} />} />
                                         <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env}/>} />
                                         <Route path="*" element={<Navigate to="/audits" replace={true}/>}/>
                                     </Routes>
