@@ -8,7 +8,7 @@ import {
     DocumentTextIcon,
     UserIcon
 } from '@heroicons/react/24/outline';
-import {useAuth} from "../auth/AuthContext.jsx";
+import {logout} from "../services/api.js";
 
 const UserInfo = ({collapsed, currentUser, logout}) => {
     return (
@@ -33,42 +33,34 @@ const UserInfo = ({collapsed, currentUser, logout}) => {
     )
 }
 
-const Sidebar = ({ collapsed, setCollapsed, config }) => {
+let asLabel = (arg) => {
+    let label = arg[0].toUpperCase();
+    for (let i = 1; i < arg.length; i++) {
+        if (arg[i].match(/[\\-]/) != null) {
+            label += ' ';
+            i++;
+            label += arg[i].toUpperCase();
+        } else {
+            label += arg[i];
+        }
+    }
+    return label.trim();
+};
+
+const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
   const navigate = useNavigate();
-  const currentUser = {
-    name: JSON.parse(localStorage.getItem("token")).username || ''
-  };
-  const auth = useAuth();
-
-  let asLabel = (arg) => {
-      let label = arg[0].toUpperCase();
-      for (let i = 1; i < arg.length; i++) {
-          if (arg[i].match(/[\\-]/) != null) {
-              label += ' ';
-              i++;
-              label += arg[i].toUpperCase();
-          } else {
-              label += arg[i];
-          }
-      }
-      return label.trim();
-  };
-
-  const logout = () => {
-      auth.logout();
-  }
 
   let navItems = [];
-  console.log(`sideBar ${JSON.stringify(config)}`);
-    if (config['services']) {
-        navItems = config['services']
-            .map(service => {
-                return {
-                    name: service.name,
-                    label: service.label ? service.label : asLabel(service.name)
-                }
-            });
-    }
+  console.log(`sideBar config => ${JSON.stringify(config)}`);
+  if (config['services']) {
+      navItems = config['services']
+          .map(service => {
+              return {
+                  name: service.name,
+                  label: service.label ? service.label : asLabel(service.name)
+              }
+          });
+  }
 
   return (
       <div className={`bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700 text-white h-screen fixed flex flex-col transition-all duration-300 ease-in-out shadow-2xl rounded-r-2xl ${collapsed ? 'w-20' : 'w-64'}`} style={{ minWidth: collapsed ? '5rem' : '16rem' }}>
@@ -118,7 +110,7 @@ const Sidebar = ({ collapsed, setCollapsed, config }) => {
               </nav>
           </div>
         <div className="border-t border-slate-700 p-4 bg-slate-800/70">
-            <UserInfo collapsed={collapsed} currentUser={currentUser} logout={logout} />
+            <UserInfo collapsed={collapsed} currentUser={user} logout={logout} />
         </div>
       </div>
   );
