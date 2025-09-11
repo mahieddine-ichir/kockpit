@@ -97,32 +97,54 @@ stages:
                 $(tag)
 
   - stage: FrontDev
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/frontdev')
     jobs:
       - job: ui
         steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '21.x'
+            displayName: 'Install Node.js'
+
+          - script: |
+              npm ci
+              npm run build -- --mode dev
+              cp ./staticwebapp.config.json ./dist/
+
           - task: AzureStaticWebApp@0
             displayName: 'Deploy front to DEV'
             inputs:
               azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_dev)
               cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
-              app_location: '.'
-              api_location: '' # Api source code path relative to cwd
-              output_location: 'dist' # Built app content directory relative to app_location - optional
-              app_build_command: 'npm run build -- --mode dev'
+              skip_app_build: true
+              skip_api_build: true
+              app_location: '/dist'
+              api_location: ''
+              output_location: ''
 
   - stage: FrontPro
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/pro')
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/frontpro')
     jobs:
       - job: ui
         steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '21.x'
+            displayName: 'Install Node.js'
+
+          - script: |
+              npm ci
+              npm run build -- --mode dev
+              cp ./staticwebapp.config.json ./dist/
+
           - task: AzureStaticWebApp@0
             displayName: 'Deploy front to PRO'
             inputs:
               azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_pro)
               cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
-              app_location: '.'
-              api_location: '' # Api source code path relative to cwd
-              output_location: 'dist' # Built app content directory relative to app_location - optional
-              app_build_command: 'npm run build'
+              skip_app_build: true
+              skip_api_build: true
+              app_location: '/dist'
+              api_location: ''
+              output_location: ''
 
