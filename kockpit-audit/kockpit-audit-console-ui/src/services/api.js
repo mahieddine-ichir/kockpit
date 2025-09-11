@@ -3,20 +3,8 @@ import axios from 'axios';
 const API_BASE = import.meta.env.VITE_API_BASE;
 console.log('API_BASE:', API_BASE);
 
-axios.interceptors.request.use(function (config) {
-  const creds = localStorage.getItem('creds');
-  config.headers.Authorization = `Basic ${creds}`;
-  return config;
-});
-
 export const authenticate = async (username, password) => {
-  console.log(`Authenticating user ${username} on ${API_BASE}/me`);
-  const response = await axios.get(`${API_BASE}/me`, {
-    auth: {
-      username: username,
-      password: password
-    }
-  });
+  const response = await axios.get(`/.auth/me`);
   return response.data;
 }
 
