@@ -18,7 +18,7 @@ const UserInfo = ({collapsed, currentUser, logout}) => {
             </div>
             {collapsed ? null :
                         <div className="flex-1 min-w-0">
-                            <p className="text-base font-semibold text-white truncate">{currentUser.name}</p>
+                            <p className="text-base font-semibold text-white truncate">{currentUser}</p>
                         </div>
             }
             {currentUser ?
@@ -49,7 +49,8 @@ let asLabel = (arg) => {
 
 const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
   const navigate = useNavigate();
-
+  const currentUser = user?.["clientPrincipal"]?.["userDetails"];
+  console.log(`currentUser ${currentUser}`)
   let navItems = [];
   console.log(`sideBar config => ${JSON.stringify(config)}`);
   if (config['services']) {
@@ -110,7 +111,7 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
               </nav>
           </div>
         <div className="border-t border-slate-700 p-4 bg-slate-800/70">
-            <UserInfo collapsed={collapsed} currentUser={user?.clientPrincipal?.userDetails} logout={logout} />
+            <UserInfo collapsed={collapsed} currentUser={currentUser} logout={logout} />
         </div>
       </div>
   );
