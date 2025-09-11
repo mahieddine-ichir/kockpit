@@ -13,13 +13,14 @@ function App() {
     const [env, setEnv] = useState(null);
     const [configs, setConfigs] = useState({});
     const [config, setConfig] = useState();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [user, setUser] = useState('');
 
     useEffect(() => {
         login().then(logged => {
             console.log(`logged ${JSON.stringify(logged)}`)
             setUser(logged);
+            setLoading(false);
         })
     }, []);
 
@@ -29,7 +30,6 @@ function App() {
         setEnv(env);
 
         setConfig(configs.find(cfg => cfg.env === env));
-        setLoading(false);
     }
 
     function onConfigLoaded(configs) {
@@ -39,8 +39,6 @@ function App() {
 
         setDomain(configs[0].domain);
         setEnv(configs[0].env);
-
-        setLoading(false);
     }
 
     if (loading) return <div>Loading ...</div>;
@@ -50,7 +48,7 @@ function App() {
         <div className="App">
                 <div className="screens-container">
                     {
-                        config ?
+                        user ?
                             <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} config={config} user={user} />
                             : null
                     }
