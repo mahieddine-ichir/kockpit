@@ -13,7 +13,6 @@ const LoginPage = () => {
     function handleLogin() {
         console.log("authenticating ... ")
         authenticate(username, password).then(value => {
-            localStorage.setItem('creds', btoa(`${username}:${password}`));
             login(value);
             navigate('/audits');
         }).catch(error => {
