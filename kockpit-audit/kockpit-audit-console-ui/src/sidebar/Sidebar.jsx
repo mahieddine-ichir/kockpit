@@ -63,6 +63,12 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
           });
   }
 
+  const logoutUser = () => {
+      logout().then(() => {
+         navigate("/login");
+      });
+  };
+
   return (
       <div className={`bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700 text-white h-screen fixed flex flex-col transition-all duration-300 ease-in-out shadow-2xl rounded-r-2xl ${collapsed ? 'w-20' : 'w-64'}`} style={{ minWidth: collapsed ? '5rem' : '16rem' }}>
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
@@ -111,7 +117,7 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
               </nav>
           </div>
         <div className="border-t border-slate-700 p-4 bg-slate-800/70">
-            <UserInfo collapsed={collapsed} currentUser={currentUser} logout={logout} />
+            <UserInfo collapsed={collapsed} currentUser={currentUser} logout={logoutUser} />
         </div>
       </div>
   );
