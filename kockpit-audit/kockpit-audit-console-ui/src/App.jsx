@@ -18,7 +18,7 @@ function App() {
 
     useEffect(() => {
         login().then(logged => {
-            console.log(`logged ${logged}`)
+            console.log(`logged ${JSON.stringify(logged)}`)
             setUser(logged);
         })
     }, []);
