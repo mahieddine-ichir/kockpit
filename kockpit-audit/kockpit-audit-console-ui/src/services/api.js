@@ -28,6 +28,20 @@ export const getConfig = async () => {
 
 export const login = async() => {
     console.log(`login on ${import.meta.env.MODE}`)
+    if (import.meta.env.MODE === 'development') {
+        return {
+            "clientPrincipal": {
+                "identityProvider": "aad",
+                "userId": "123456789",
+                "userDetails": "johndoe@mousquetaires.com",
+                "userRoles": [
+                    "support",
+                    "anonymous",
+                    "authenticated"
+                ]
+            }
+        };
+    }
     const response = await axios.get("/.auth/me");
     return response.data;
 }

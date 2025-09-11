@@ -23,9 +23,7 @@ const UserInfo = ({collapsed, currentUser, logout}) => {
             }
             {currentUser ?
                 <div className="flex items-center space-x-2">
-                    <ArrowLeftStartOnRectangleIcon className="h-6 w-6 text-white"
-                                                   onClick={logout}
-                    />
+                    <ArrowLeftStartOnRectangleIcon className="h-6 w-6 text-white" onClick={logout} />
                 </div> : null
             }
 
