@@ -48,7 +48,7 @@ function App() {
         <div className="App">
                 <div className="screens-container">
                     {
-                        user ?
+                        config && user ?
                             <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} config={config} user={user} />
                             : null
                     }
