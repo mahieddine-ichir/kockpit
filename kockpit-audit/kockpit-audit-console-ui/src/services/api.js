@@ -47,6 +47,6 @@ export const login = async() => {
 }
 
 export const logout = async() => {
-    const response = await axios.get("/.auth/logout");
+    const response = await axios.get("/logout");
     return response.data;
 }
