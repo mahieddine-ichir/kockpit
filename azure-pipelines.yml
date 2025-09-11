@@ -19,6 +19,7 @@ variables:
 
 stages:
   - stage: Build
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
     jobs:
       - job: build
         continueOnError: false
@@ -48,6 +49,7 @@ stages:
               goals: 'deploy -Pstime,azure'
 
   - stage: Docker
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
     jobs:
       - job: image
         continueOnError: false
@@ -109,6 +111,7 @@ stages:
             displayName: 'Install Node.js'
 
           - script: |
+              cd kockpit-console-ui
               npm ci
               npm run build -- --mode dev
               cp ./staticwebapp.config.json ./dist/
@@ -135,6 +138,7 @@ stages:
             displayName: 'Install Node.js'
 
           - script: |
+              kockpit-console-ui
               npm ci
               npm run build -- --mode dev
               cp ./staticwebapp.config.json ./dist/
