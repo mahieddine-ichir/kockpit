@@ -4,13 +4,11 @@ import './index.css';
 import Sidebar from "./sidebar/Sidebar.jsx";
 import AuditListPage from "./audits/pages/AuditListPage.jsx";
 import DetailsPage from "./audits/pages/DetailsPage.jsx";
-import {useAuth} from './auth/AuthContext.jsx';
 import LoginPage from './auth/LoginPage.jsx';
 import DomainEnv from "./components/DomainEnv.jsx";
 
 
 function App() {
-    const { user } = useAuth();
     const [collapsed, setCollapsed] = useState(false);
     const [domain, setDomain] = useState(null);
     const [env, setEnv] = useState(null);
@@ -33,27 +31,11 @@ function App() {
         setEnv(configs[0].env);
     }
 
-    if (!user) {
-        console.log("No user found");
-        return (
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="*" element={<Navigate to="/login" replace={true} />} />
-                </Routes>
-            </BrowserRouter>
-        );
-    }
-
     return (
         <BrowserRouter>
         <div className="App">
                 <div className="screens-container">
-                    {
-                        user?
-                            <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} config={config} />
-                            : null
-                    }
+                    <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} config={config} />
                     <div>
                         <div className="flex justify-end p-2">
                             <DomainEnv domainEnvChanged={onDomainEnvChanged} onConfigLoaded={onConfigLoaded} />
