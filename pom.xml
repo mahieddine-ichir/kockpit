@@ -43,7 +43,7 @@
         <commons-io.version>2.20.0</commons-io.version>
         <amazon-kinesis-client.version>3.1.1</amazon-kinesis-client.version>
         <lombok.version>1.18.38</lombok.version>
-        <spring-boot-dependencies.version>3.5.4</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>3.5.5</spring-boot-dependencies.version>
         <awssdk.bom.version>2.32.22</awssdk.bom.version>
         <spring-framework-bom.version>6.2.10</spring-framework-bom.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
@@ -51,6 +51,15 @@
         <camel-spring-boot-starter.version>4.11.0</camel-spring-boot-starter.version>
         <guava.version>33.4.8-jre</guava.version>
         <json-smart.version>2.5.2</json-smart.version>
+        <okio-jvm.version>3.9.1</okio-jvm.version>
+        <ion-java.version>1.0.2</ion-java.version>
+        <spring-cloud-contract-wiremock.version>4.1.5</spring-cloud-contract-wiremock.version>
+        <kafka-avro-serializer.version>7.7.1</kafka-avro-serializer.version>
+        <kaml.version>0.55.0</kaml.version>
+        <bcprov-jdk18on.version>1.80</bcprov-jdk18on.version>
+        <jackson-datatype-jsr310.version>2.19.2</jackson-datatype-jsr310.version>
+        <scala-library.version>2.13.16</scala-library.version>
+        <commons-compress.version>1.27.1</commons-compress.version>
     </properties>
 
     <scm>
@@ -130,22 +139,22 @@
             <dependency>
                 <groupId>com.squareup.okio</groupId>
                 <artifactId>okio-jvm</artifactId>
-                <version>3.9.1</version>
+                <version>${okio-jvm.version}</version>
             </dependency>
             <dependency>
                 <groupId>software.amazon.ion</groupId>
                 <artifactId>ion-java</artifactId>
-                <version>1.0.2</version>
+                <version>${ion-java.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-contract-wiremock</artifactId>
-                <version>4.1.5</version>
+                <version>${spring-cloud-contract-wiremock.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-avro-serializer</artifactId>
-                <version>7.7.1</version>
+                <version>${kafka-avro-serializer.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.avro</groupId>
@@ -160,22 +169,22 @@
             <dependency>
                 <groupId>com.charleskorn.kaml</groupId>
                 <artifactId>kaml</artifactId>
-                <version>0.55.0</version>
+                <version>${kaml.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk18on</artifactId>
-                <version>1.80</version>
+                <version>${bcprov-jdk18on.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>2.19.2</version>
+                <version>${jackson-datatype-jsr310.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
-                <version>2.13.16</version>
+                <version>${scala-library.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.minidev</groupId>
@@ -199,7 +208,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.5.5</version>
+                <version>${spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -274,7 +283,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
-                <version>1.27.1</version>
+                <version>${commons-compress.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
