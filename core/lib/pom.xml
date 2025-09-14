@@ -17,6 +17,14 @@
         <module>rest-api-filter-traceid</module>
         <module>rest-api-validation-acceptversion</module>
         <module>rest-api-config-localeresolver</module>
+        <module>rest-api-config-accesslog</module>
+        <module>rest-api-config-datetimeformat</module>
+        <module>rest-api-config-locale</module>
+        <module>rest-api-config-jackson</module>
+        <module>rest-api-config-security</module>
+        <module>rest-api-config-tomcat</module>
+        <module>rest-api-handler-jsonparseur</module>
+        <module>rest-api</module>
     </modules>
 
     <dependencies>
