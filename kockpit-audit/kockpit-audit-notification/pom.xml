@@ -13,8 +13,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>kockpit-audit-notification-starter-eventhubs</module>
         <module>kockpit-audit-notification-starter-console</module>
+        <module>kockpit-audit-notification-starter-eventhubs</module>
+        <module>kockpit-audit-notification-starter-kafka</module>
     </modules>
 
     <dependencies>

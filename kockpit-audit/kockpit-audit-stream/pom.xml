@@ -13,10 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>kockpit-audit-stream-api</module>
-        <module>kockpit-audit-stream-starter-eventhub</module>
         <module>kockpit-audit-stream-starter-console</module>
         <module>kockpit-audit-stream-starter-slf4j</module>
-        <module>kockpit-audit-stream-starter-azure-search</module>
         <module>kockpit-audit-stream-starter-opensearch</module>
         <!-- Applications -->
         <module>kockpit-audit-stream-application</module>

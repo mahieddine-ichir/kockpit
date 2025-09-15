@@ -1,0 +1,5 @@
+kockpit:
+  audit.stream.opensearch.index_name: audits
+logging:
+  level:
+    org.kockpit: DEBUG
