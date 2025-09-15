@@ -10,6 +10,7 @@ import org.opensearch.client.RestClient;
 import org.opensearch.client.RestClientBuilder;
 import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -22,15 +23,33 @@ import java.util.List;
 @EnableScheduling
 public class OpensearchAuditConsumerConfiguration {
 
+    @Bean("opensearch-object-mapper")
+    public ObjectMapper opensearchObjectMapper() {
+        return new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .registerModule(new JavaTimeModule());
+    }
+
+    @Bean("opensearch-index-manager")
+    public IndexManager opensearchIndexManager(
+            RestHighLevelClient restHighLevelClient,
+            @Qualifier("opensearch-object-mapper") ObjectMapper objectMapper
+    ) {
+        return new OpensearchIndexManager(restHighLevelClient, objectMapper);
+    }
+
     @Bean("opensearch")
     public AuditConsumer auditConsumer(
             RestHighLevelClient restHighLevelClient,
-            AuditReportMapper auditReportMapper
+            AuditReportMapper auditReportMapper,
+            @Qualifier("opensearch-object-mapper") ObjectMapper objectMapper,
+            @Qualifier("opensearch-index-manager") IndexManager indexManager
     ) {
-        return new OpensearchIndexer(restHighLevelClient, auditReportMapper,
-                new ObjectMapper()
-                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                        .registerModule(new JavaTimeModule())
+        return new OpensearchIndexer(
+                restHighLevelClient,
+                auditReportMapper,
+                objectMapper,
+                indexManager
         );
     }
 

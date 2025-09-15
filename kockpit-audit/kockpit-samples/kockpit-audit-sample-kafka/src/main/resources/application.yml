@@ -11,6 +11,8 @@ spring:
 
 kockpit:
   sdk:
+    domain: test-app
+    env: local
     service:
       audit:
         notification:

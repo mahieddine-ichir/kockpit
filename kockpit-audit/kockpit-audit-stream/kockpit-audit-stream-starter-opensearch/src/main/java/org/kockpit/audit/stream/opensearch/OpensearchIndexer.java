@@ -1,7 +1,6 @@
 package org.kockpit.audit.stream.opensearch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import org.opensearch.action.index.IndexRequest;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.common.xcontent.XContentType;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.ArrayList;
@@ -36,12 +34,7 @@ public class OpensearchIndexer implements AuditConsumer {
 
     private final ObjectMapper objectMapper;
 
-    @Value("${kockpit.audit.stream.opensearch.index_name}")
-    private String index;
-
-    @PostConstruct
-    void initIndex() {
-    }
+    private final IndexManager indexManager;
 
     @Override
     public void start() {
@@ -95,7 +88,13 @@ public class OpensearchIndexer implements AuditConsumer {
 
     @SneakyThrows
     private IndexRequest toIndexRequest(SearchAuditReport searchAuditReport) {
-        return new IndexRequest(index).source(objectMapper.writeValueAsBytes(searchAuditReport), XContentType.JSON);
+        String writeAlias = indexManager.getWriteAlias(
+                searchAuditReport.getDomain(),
+                searchAuditReport.getEnv(),
+                searchAuditReport.getTtl()
+        );
+        return new IndexRequest(writeAlias)
+                .source(objectMapper.writeValueAsBytes(searchAuditReport), XContentType.JSON);
     }
 
 }

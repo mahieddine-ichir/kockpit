@@ -1,0 +1,40 @@
+{
+  "policy": {
+    "description": "rollover and delete",
+    "ism_template": {
+      "index_patterns": ["${index_patterns}"],
+      "priority": 100
+    },
+    "default_state": "hot",
+    "schema_version": "${version}",
+    "states": [
+      {
+        "name": "hot",
+        "actions": [
+          {
+            "rollover": {
+              "min_index_age": "${rollover_min_index_age}",
+              "min_size": "${rollover_min_size}"
+            }
+          }
+        ],
+        "transitions": [
+          {
+            "state_name": "delete",
+            "conditions": {
+              "min_index_age": "${delete_min_index_age}"
+            }
+          }
+        ]
+      },
+      {
+        "name": "delete",
+        "actions": [
+          {
+            "delete": {}
+          }
+        ]
+      }
+    ]
+  }
+}
