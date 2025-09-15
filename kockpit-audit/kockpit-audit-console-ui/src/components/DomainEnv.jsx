@@ -5,6 +5,7 @@ function DomainEnv({onConfigLoaded, domainEnvChanged}) {
     const [options, setOptions] = useState([]);
     useEffect(() => {
         getConfig().then(config => {
+            console.log("loading config ... ")
             onConfigLoaded(config);
             let opts = config.map(cfg => {
                 return {
