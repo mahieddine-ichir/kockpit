@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumer;
-import org.kockpit.audit.stream.api.AuditReport;
+import org.kockpit.audit.stream.api.model.AuditReport;
+import org.kockpit.audit.stream.opensearch.model.SearchAuditReport;
 import org.opensearch.action.bulk.BulkItemResponse;
 import org.opensearch.action.bulk.BulkRequest;
 import org.opensearch.action.bulk.BulkResponse;
@@ -67,20 +68,23 @@ public class OpensearchIndexer implements AuditConsumer {
         if (auditReports.isEmpty()) {
             return;
         }
-        log.info("Start indexing {} reports", auditReports.size());
+        log.debug("Start indexing {} reports", auditReports.size());
+        Long now = System.currentTimeMillis();
         // defensive copy
         AuditReport[] copy = Arrays.copyOf(auditReports.toArray(), auditReports.size(), AuditReport[].class);
         auditReports.clear();
 
-        BulkRequest request = Arrays.stream(copy).map(auditReportMapper::map)
+        BulkRequest request = Arrays.stream(copy)
+                .map(auditReportMapper::map)
                 .map(this::toIndexRequest)
                 .collect(BulkRequest::new, BulkRequest::add, (bulkRequest, bulkRequest2) -> bulkRequest.add(bulkRequest2.requests()));
 
-        toSearchAuditReport(request);
+        bulkRequest(request);
+        log.debug("indexing took {} ms", System.currentTimeMillis() - now);
     }
 
     @SneakyThrows
-    private void toSearchAuditReport(BulkRequest bulkRequest) {
+    private void bulkRequest(BulkRequest bulkRequest) {
         BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
         if (bulkResponse.hasFailures()) {
             Stream.of(bulkResponse.getItems())

@@ -9,10 +9,6 @@ spring:
       - ${BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: ${spring.application.name}
-      properties:
-        security.protocol: SASL_SSL
-        sasl.mechanism: PLAIN
-        sasl.jaas.config: ${SASL_JASS_CONFIG}
 
 management:
   endpoint:
@@ -25,9 +21,6 @@ kockpit:
     stream:
       kafka:
         topics: audit
-      azure:
-        search:
-          endpoint: ${AZURESEARCH_ENDPOINT:http://localhost}
-          index_name: ${AZURESEARCH_INDEX:audit}
-          api_key: ${AZURESEARCH_APIKEY:anykey}
-          scheduler_ms: 10000
+      opensearch:
+        endpoint: ${OPENSEARCH_ENDPOINT:http://localhost:9200}
+
