@@ -14,7 +14,7 @@ variables:
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
   dockerRegistryServiceConnection: 'dc378648-6636-4f5b-937e-0ae584b11c7d'
-  tag: 'latest'
+  tag: 'opensearch'
   DEPLOYMENT_KEY: '$(DEPLOYMENT_KEY_$(Build.SourceBranchName))'
 
 stages:
