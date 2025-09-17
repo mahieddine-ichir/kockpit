@@ -17,9 +17,8 @@ public class AzureSearchAuditConsumerConfiguration {
 
     @Bean("azure-search")
     public AuditConsumer auditConsumer(SearchClient searchClient,
-                                       SearchIndexClient searchIndexClient,
-                                       AuditReportMapper auditReportMapper) {
-        return new AzureSearchIndexer(searchClient, searchIndexClient, auditReportMapper);
+                                       SearchIndexClient searchIndexClient) {
+        return new AzureSearchIndexer(searchClient, searchIndexClient);
     }
 
     @Bean

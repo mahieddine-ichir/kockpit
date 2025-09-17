@@ -31,8 +31,6 @@ public class OpensearchIndexer implements AuditConsumer {
 
     private final RestHighLevelClient restHighLevelClient;
 
-    private final AuditReportMapper auditReportMapper;
-
     private final ObjectMapper objectMapper;
 
     @Value("${kockpit.audit.stream.opensearch.index_name}")
@@ -72,7 +70,7 @@ public class OpensearchIndexer implements AuditConsumer {
         AuditReport[] copy = Arrays.copyOf(auditReports.toArray(), auditReports.size(), AuditReport[].class);
         auditReports.clear();
 
-        BulkRequest request = Arrays.stream(copy).map(auditReportMapper::map)
+        BulkRequest request = Arrays.stream(copy)
                 .map(this::toIndexRequest)
                 .collect(BulkRequest::new, BulkRequest::add, (bulkRequest, bulkRequest2) -> bulkRequest.add(bulkRequest2.requests()));
 
@@ -90,8 +88,8 @@ public class OpensearchIndexer implements AuditConsumer {
     }
 
     @SneakyThrows
-    private IndexRequest toIndexRequest(SearchAuditReport searchAuditReport) {
-        return new IndexRequest(index).source(objectMapper.writeValueAsBytes(searchAuditReport), XContentType.JSON);
+    private IndexRequest toIndexRequest(AuditReport auditReport) {
+        return new IndexRequest(index).source(objectMapper.writeValueAsBytes(auditReport), XContentType.JSON);
     }
 
 }

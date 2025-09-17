@@ -6,12 +6,23 @@ info:
 
 paths:
 
-  /config:
+  /config/{domain}:
     get:
       operationId: getConfig
       tags:
         - config
         - manifest
+      parameters:
+        - name: domain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: appId
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Successful operation

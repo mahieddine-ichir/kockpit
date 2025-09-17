@@ -24,10 +24,9 @@ public class OpensearchAuditConsumerConfiguration {
 
     @Bean("opensearch")
     public AuditConsumer auditConsumer(
-            RestHighLevelClient restHighLevelClient,
-            AuditReportMapper auditReportMapper
+            RestHighLevelClient restHighLevelClient
     ) {
-        return new OpensearchIndexer(restHighLevelClient, auditReportMapper,
+        return new OpensearchIndexer(restHighLevelClient,
                 new ObjectMapper()
                         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                         .registerModule(new JavaTimeModule())
