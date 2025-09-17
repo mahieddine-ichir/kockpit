@@ -29,14 +29,13 @@ public class AzureSearchIndexer implements AuditConsumer {
 
     private final SearchIndexClient searchIndexClient;
 
-    private final AuditReportMapper auditReportMapper;
 
     @Value("${kockpit.audit.stream.azure.search.index_name}")
     private String index;
 
     @PostConstruct
     void initIndex() {
-        List<SearchField> searchFields = SearchIndexClient.buildSearchFields(SearchAuditReport.class, null);
+        List<SearchField> searchFields = SearchIndexClient.buildSearchFields(AuditReport.class, null);
         SearchIndex searchIndex = searchIndexClient.getIndex(index);
         List<SearchField> fields = searchFields.stream().filter(searchField ->
                 searchIndex.getFields().stream().noneMatch(sf -> sf.getName().equals(searchField.getName()))
@@ -82,11 +81,9 @@ public class AzureSearchIndexer implements AuditConsumer {
         AuditReport[] copy = Arrays.copyOf(auditReports.toArray(), auditReports.size(), AuditReport[].class);
         auditReports.clear();
 
-        List<SearchAuditReport> searchReports = Arrays.stream(copy)
-                .map(auditReportMapper::map)
-                .toList();
+        List<AuditReport> searchReports = Arrays.stream(copy).toList();
 
-        IndexDocumentsBatch<SearchAuditReport> batch = new IndexDocumentsBatch<>();
+        IndexDocumentsBatch<AuditReport> batch = new IndexDocumentsBatch<>();
         batch.addUploadActions(searchReports);
 
         IndexDocumentsResult indexDocumentsResult = searchClient.indexDocuments(batch);
