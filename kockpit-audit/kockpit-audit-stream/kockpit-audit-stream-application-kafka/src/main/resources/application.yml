@@ -22,5 +22,5 @@ kockpit:
       kafka:
         topics: audit
       opensearch:
-        endpoint: ${OPENSEARCH_ENDPOINT:http://localhost:9200}
-
+        endpoints: ${OPENSEARCH_ENDPOINTS:http://localhost:9200}
+        index_suffix: audit-data
