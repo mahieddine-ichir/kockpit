@@ -1,57 +1,35 @@
-package org.kockpit.audit.stream.opensearch;
+package org.kockpit.audit.backend.opensearch;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
-import org.kockpit.audit.stream.api.AuditConsumer;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestClientBuilder;
 import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
 @AutoConfiguration
-@EnableScheduling
-public class OpensearchAuditConsumerConfiguration {
+public class OpensearchAutoConfiguration {
 
-    @Bean("opensearch-object-mapper")
+    @Bean
+    OpensearchRepository opensearchRepository(RestHighLevelClient restHighLevelClient) {
+        return new OpensearchRepository(restHighLevelClient);
+    }
+
+    @Bean("opensearch-objectMapper")
     public ObjectMapper opensearchObjectMapper() {
         return new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .registerModule(new JavaTimeModule());
-    }
-
-    @Bean("opensearch-index-manager")
-    public IndexManager opensearchIndexManager(
-            RestHighLevelClient restHighLevelClient,
-            @Qualifier("opensearch-object-mapper") ObjectMapper objectMapper
-    ) {
-        return new OpensearchIndexManager(restHighLevelClient, objectMapper);
-    }
-
-    @Bean("opensearch")
-    public AuditConsumer auditConsumer(
-            RestHighLevelClient restHighLevelClient,
-            AuditReportMapper auditReportMapper,
-            @Qualifier("opensearch-object-mapper") ObjectMapper objectMapper,
-            @Qualifier("opensearch-index-manager") IndexManager indexManager
-    ) {
-        return new OpensearchIndexer(
-                restHighLevelClient,
-                auditReportMapper,
-                objectMapper,
-                indexManager
-        );
     }
 
     @Bean
