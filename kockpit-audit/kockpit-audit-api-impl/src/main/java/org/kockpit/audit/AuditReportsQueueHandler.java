@@ -54,12 +54,12 @@ class AuditReportsQueueHandler {
         if (auditReportsBlockingQueue.isEmpty()) {
             return;
         }
-        log.trace("Process buffer of size: {}", auditReportsBlockingQueue.size());
+        log.info("Process buffer of size: {}", auditReportsBlockingQueue.size());
         long currentTimeMillis = System.currentTimeMillis();
         List<AuditReport> auditReports = new ArrayList<>();
         auditReportsBlockingQueue.drainTo(auditReports);
 
-        log.trace("Processed buffer of size: {} in {} ms", auditReportsBlockingQueue.size(), System.currentTimeMillis() - currentTimeMillis);
+        log.info("Processed buffer of size: {} in {} ms", auditReportsBlockingQueue.size(), System.currentTimeMillis() - currentTimeMillis);
         this.processAuditsReports(auditReports);
     }
 
