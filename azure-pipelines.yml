@@ -11,6 +11,7 @@ trigger:
   - frontpro
 
 variables:
+  BRANCH_NAME: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
   dockerRegistryServiceConnection: 'KockpitServiceConnection-$(BRANCH_NAME)'
