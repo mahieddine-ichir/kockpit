@@ -81,10 +81,10 @@ stages:
               goals: 'package -Pazure'
 
           - task: Docker@2
-            displayName: Build and push an image to container registry kockpit-backend-azuresearch
+            displayName: Build and push an image to container registry kockpit-backend-opensearch
             inputs:
               command: buildAndPush
-              repository: 'kockpit-backend-azuresearch'
+              repository: 'kockpit-backend-opensearch'
               dockerfile: 'kockpit-backends/kockpit-backend-application/Dockerfile'
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
