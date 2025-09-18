@@ -1,12 +1,12 @@
 package org.kockpit.audit.stream.opensearch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumer;
-import org.kockpit.audit.stream.api.AuditReport;
+import org.kockpit.audit.stream.api.model.AuditReport;
+import org.kockpit.audit.stream.opensearch.model.SearchAuditReport;
 import org.opensearch.action.bulk.BulkItemResponse;
 import org.opensearch.action.bulk.BulkRequest;
 import org.opensearch.action.bulk.BulkResponse;
@@ -14,7 +14,6 @@ import org.opensearch.action.index.IndexRequest;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.common.xcontent.XContentType;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.ArrayList;
@@ -31,14 +30,11 @@ public class OpensearchIndexer implements AuditConsumer {
 
     private final RestHighLevelClient restHighLevelClient;
 
+    private final AuditReportMapper auditReportMapper;
+
     private final ObjectMapper objectMapper;
 
-    @Value("${kockpit.audit.stream.opensearch.index_name}")
-    private String index;
-
-    @PostConstruct
-    void initIndex() {
-    }
+    private final IndexManager indexManager;
 
     @Override
     public void start() {
@@ -65,20 +61,23 @@ public class OpensearchIndexer implements AuditConsumer {
         if (auditReports.isEmpty()) {
             return;
         }
-        log.info("Start indexing {} reports", auditReports.size());
+        log.debug("Start indexing {} reports", auditReports.size());
+        Long now = System.currentTimeMillis();
         // defensive copy
         AuditReport[] copy = Arrays.copyOf(auditReports.toArray(), auditReports.size(), AuditReport[].class);
         auditReports.clear();
 
         BulkRequest request = Arrays.stream(copy)
+                .map(auditReportMapper::map)
                 .map(this::toIndexRequest)
                 .collect(BulkRequest::new, BulkRequest::add, (bulkRequest, bulkRequest2) -> bulkRequest.add(bulkRequest2.requests()));
 
-        toSearchAuditReport(request);
+        bulkRequest(request);
+        log.debug("indexing took {} ms", System.currentTimeMillis() - now);
     }
 
     @SneakyThrows
-    private void toSearchAuditReport(BulkRequest bulkRequest) {
+    private void bulkRequest(BulkRequest bulkRequest) {
         BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
         if (bulkResponse.hasFailures()) {
             Stream.of(bulkResponse.getItems())
@@ -88,8 +87,14 @@ public class OpensearchIndexer implements AuditConsumer {
     }
 
     @SneakyThrows
-    private IndexRequest toIndexRequest(AuditReport auditReport) {
-        return new IndexRequest(index).source(objectMapper.writeValueAsBytes(auditReport), XContentType.JSON);
+    private IndexRequest toIndexRequest(SearchAuditReport searchAuditReport) {
+        String writeAlias = indexManager.getWriteAlias(
+                searchAuditReport.getDomain(),
+                searchAuditReport.getEnv(),
+                searchAuditReport.getTtl()
+        );
+        return new IndexRequest(writeAlias)
+                .source(objectMapper.writeValueAsBytes(searchAuditReport), XContentType.JSON);
     }
 
 }
