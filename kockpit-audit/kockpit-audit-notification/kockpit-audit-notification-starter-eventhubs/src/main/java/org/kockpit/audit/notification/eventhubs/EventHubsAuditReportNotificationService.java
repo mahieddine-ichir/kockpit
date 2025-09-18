@@ -2,6 +2,7 @@ package org.kockpit.audit.notification.eventhubs;
 
 import com.azure.messaging.eventhubs.EventData;
 import com.azure.messaging.eventhubs.EventHubProducerClient;
+import com.azure.messaging.eventhubs.models.SendOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditReport.AuditJsonReport;
@@ -30,8 +31,8 @@ class EventHubsAuditReportNotificationService implements AuditReportNotification
     // sample events in an array
     List<EventData> allEvents = auditReports.stream().map(auditJsonReport -> new EventData(auditJsonReport.getAuditJson()))
             .toList();
-
-    log.trace("Publishing events to EventHubs {}", allEvents);
-    producerClient.send(allEvents);
+//      long currentTimeMillis = System.currentTimeMillis();
+      producerClient.send(allEvents);
+//      System.out.println("Time to send " + allEvents.size() + " events: " + (System.currentTimeMillis() - currentTimeMillis));
   }
 }

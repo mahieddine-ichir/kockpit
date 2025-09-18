@@ -49,10 +49,10 @@ public class NotificationAuditReportManager {
   }
 
   @Scheduled(
-      fixedDelayString = "${kockpit.sdk.service.audit.notification.async.delay_ms:10000}",
+      fixedDelayString = "${kockpit.sdk.service.audit.notification.async-delay-ms:10000}",
       timeUnit = TimeUnit.MILLISECONDS)
   public void notifyBufferedAudit() {
-    log.trace("(scheduler) Notify buffered audit reports");
-    this.auditReportsQueueHandler.doProcess();
+    log.info("(scheduler) Notify buffered audit reports");
+    this.auditReportsQueueHandler.doProcessBlocking();
   }
 }
