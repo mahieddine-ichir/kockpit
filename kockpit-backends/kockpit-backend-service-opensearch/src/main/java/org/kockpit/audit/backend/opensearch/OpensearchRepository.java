@@ -51,6 +51,7 @@ public class OpensearchRepository implements DomainApiDelegate {
         List<String> texts = Optional.ofNullable(query)
                 .map(q -> Arrays.stream(q.split(" ")).toList())
                 .orElse(new ArrayList<>());
+
         QueryBuilder queryBuilder = constructQuery(texts);
         SearchSourceBuilder searchSourceBuilder =
                 new SearchSourceBuilder()

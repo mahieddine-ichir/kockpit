@@ -3,22 +3,19 @@ package org.kockpit.audit.backend.opensearch;
 import lombok.experimental.UtilityClass;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
-import java.util.List;
+
+import static org.opensearch.index.query.QueryBuilders.multiMatchQuery;
 
 @UtilityClass
 class SearchQueryHelper {
 
-    private static final List<String> searchFields = List.of();
-
     static QueryBuilder constructQuery(Collection<String> texts) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         if (!CollectionUtils.isEmpty(texts)) {
-            searchFields.forEach(s -> boolQueryBuilder.should()
-                    .add(QueryBuilders.termsQuery(s, texts)));
+            texts.forEach(text -> boolQueryBuilder.should(multiMatchQuery(text, "*")));
         }
         return boolQueryBuilder;
     }
