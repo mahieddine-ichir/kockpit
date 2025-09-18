@@ -8,7 +8,6 @@
         <artifactId>kockpit-backends</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>kockpit-backend-service-azure</artifactId>
     <dependencyManagement>
         <dependencies>
@@ -21,7 +20,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.kockpit</groupId>
@@ -47,6 +45,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
