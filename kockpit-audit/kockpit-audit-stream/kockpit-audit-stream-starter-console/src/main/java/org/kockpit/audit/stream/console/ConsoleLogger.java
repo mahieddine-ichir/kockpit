@@ -1,7 +1,7 @@
 package org.kockpit.audit.stream.console;
 
 import org.kockpit.audit.stream.api.AuditConsumer;
-import org.kockpit.audit.stream.api.AuditReport;
+import org.kockpit.audit.stream.api.model.AuditReport;
 
 public class ConsoleLogger implements AuditConsumer {
 

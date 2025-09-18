@@ -10,35 +10,59 @@ import org.opensearch.client.RestClient;
 import org.opensearch.client.RestClientBuilder;
 import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 @AutoConfiguration
 @EnableScheduling
 public class OpensearchAuditConsumerConfiguration {
 
+    @Bean("opensearch-object-mapper")
+    public ObjectMapper opensearchObjectMapper() {
+        return new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .registerModule(new JavaTimeModule());
+    }
+
+    @Bean("opensearch-index-manager")
+    public IndexManager opensearchIndexManager(
+            RestHighLevelClient restHighLevelClient,
+            @Qualifier("opensearch-object-mapper") ObjectMapper objectMapper
+    ) {
+        return new OpensearchIndexManager(restHighLevelClient, objectMapper);
+    }
+
     @Bean("opensearch")
     public AuditConsumer auditConsumer(
-            RestHighLevelClient restHighLevelClient
+            RestHighLevelClient restHighLevelClient,
+            AuditReportMapper auditReportMapper,
+            @Qualifier("opensearch-object-mapper") ObjectMapper objectMapper,
+            @Qualifier("opensearch-index-manager") IndexManager indexManager
     ) {
-        return new OpensearchIndexer(restHighLevelClient,
-                new ObjectMapper()
-                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                        .registerModule(new JavaTimeModule())
+        return new OpensearchIndexer(
+                restHighLevelClient,
+                auditReportMapper,
+                objectMapper,
+                indexManager
         );
     }
 
     @Bean
     RestHighLevelClient azureSearchIndexer(
-            @Value("${kockpit.audit.stream.opensearch.endpoint}") String endpoint,
+            @Value("${kockpit.audit.stream.opensearch.endpoints}") String endpoints,
             @Autowired(required = false) List<HttpRequestInterceptor> interceptors
     ) {
-        RestClientBuilder builder = RestClient.builder(HttpHost.create(endpoint));
+        HttpHost[] httpHosts = Arrays.stream(endpoints.split(","))
+                .map(HttpHost::create)
+                .toArray(HttpHost[]::new);
+        RestClientBuilder builder = RestClient.builder(httpHosts);
         if (! CollectionUtils.isEmpty(interceptors)) {
             interceptors.forEach(interceptor -> builder.setHttpClientConfigCallback(hacb -> hacb.addInterceptorLast(interceptor)));
         }

@@ -3,6 +3,7 @@ package org.kockpit.rules.audit;
 import org.kockpit.audit.annotation.AuditAttributesAnnotationProcessor;
 import org.kockpit.audit.api.AuditorEventService;
 import org.kockpit.audit.api.AuditorKeyValueService;
+import org.kockpit.audit.api.AuditorService;
 import org.kockpit.rules.DetailHandler;
 import org.kockpit.rules.audit.flow.serializer.ExecutionEDTDTOConverter;
 import org.kockpit.rules.audit.flow.serializer.FlowExecutionAuditReportSerializer;
@@ -25,6 +26,7 @@ class KEngineAuditExtensionAutoConfiguration {
       matchIfMissing = true)
   AuditedRuleNodeExecutorFactory auditedRuleNodeExecutorFactory(
       AuditAttributesAnnotationProcessor auditAttributesAnnotationProcessor,
+      AuditorService auditorService,
       AuditorEventService auditorEventService,
       AuditorKeyValueService auditorKeyValueService,
       RuleNodeRegistry<?> registry,
@@ -32,6 +34,7 @@ class KEngineAuditExtensionAutoConfiguration {
       SdkApplicationProperties sdkApplicationProperties) {
     return new AuditedRuleNodeExecutorFactory(
         auditAttributesAnnotationProcessor,
+        auditorService,
         auditorEventService,
         auditorKeyValueService,
         new FlowExecutionAuditReportSerializer(

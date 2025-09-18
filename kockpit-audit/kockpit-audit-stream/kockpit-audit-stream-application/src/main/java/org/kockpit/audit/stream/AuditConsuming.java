@@ -9,7 +9,7 @@ import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumer;
-import org.kockpit.audit.stream.api.AuditReport;
+import org.kockpit.audit.stream.api.model.AuditReport;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.Disposable;

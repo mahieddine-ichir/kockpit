@@ -1,3 +1,7 @@
+kockpit:
+  sdk:
+    env: dev
+
 AZURESEARCH_INDEX: audit-v2
 AZURESEARCH_ENDPOINT: https://rcu-dev.search.windows.net
 AZURESEARCH_APIKEY: JAlCjsGXNDCnncUtpl1RzqiDO4DRisg8LURymqWX8KAzSeCr0p1w
@@ -7,4 +11,9 @@ STORAGE_KEY: 91hs5gcFadHXXTYQDtMshqd9K3OJvehRjeL2tiiaAbnIUiLtG5Wd4MK77SZXVQyZvTP
 STORAGE_ACCOUNT: kockpitreferential
 STORAGE_CONTAINER: referential
 STORAGE_BLOB: manifests
+logging:
+  level:
+    org.springframework.security: warn
+    org.kockpit: debug
+
 

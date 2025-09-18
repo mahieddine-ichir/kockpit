@@ -2,7 +2,7 @@ package org.kockpit.audit.stream.slf4j;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumer;
-import org.kockpit.audit.stream.api.AuditReport;
+import org.kockpit.audit.stream.api.model.AuditReport;
 
 @Slf4j
 public class Slf4jLogger implements AuditConsumer {

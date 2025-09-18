@@ -26,7 +26,7 @@ public class InMemoryConfigRepository implements ConfigApiDelegate {
     }
 
     @Override
-    public ResponseEntity<List<ConfigItem>> getConfig(String domain, String appId) {
+    public ResponseEntity<List<ConfigItem>> getConfig() {
         return ResponseEntity.ok(configItems);
     }
 }
