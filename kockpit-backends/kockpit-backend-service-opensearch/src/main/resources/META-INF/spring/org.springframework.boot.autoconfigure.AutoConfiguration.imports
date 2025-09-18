@@ -1,1 +1,1 @@
-com.example.kockpitbackendserviceopensearch.OpenSearchAutoConfiguration
+org.kockpit.audit.backend.opensearch.OpenSearchAutoConfiguration
