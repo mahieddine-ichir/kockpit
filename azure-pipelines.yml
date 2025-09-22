@@ -78,7 +78,7 @@ stages:
               jdkVersionOption: '1.21'
               jdkArchitectureOption: 'x64'
               options: '-DskipTests'
-              goals: 'package -Pazure'
+              goals: 'package -Pazure,opensearch'
 
           - task: Docker@2
             displayName: Build and push an image to container registry kockpit-backend-opensearch
