@@ -128,3 +128,12 @@ fabric.properties
 /core-application/console-ui/wcplatform-all-in-one-dist/
 /core-application/console-api/src/main/resources/config/application-local.yml
 /core-application/auditstream-app/src/main/resources/config/application-local.yml
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/codeStyles/Project.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/.gitignore
+/.idea/compiler.xml
+/.idea/encodings.xml
+/.idea/jarRepositories.xml
+/.idea/misc.xml
+/.idea/vcs.xml
