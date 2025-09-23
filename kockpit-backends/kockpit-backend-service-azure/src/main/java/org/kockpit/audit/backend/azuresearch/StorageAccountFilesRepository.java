@@ -6,14 +6,18 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.backend.ConfigApiDelegate;
 import org.kockpit.audit.backend.ConfigItem;
 import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.http.ResponseEntity;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 public class StorageAccountFilesRepository implements ConfigApiDelegate {
 
@@ -28,15 +32,29 @@ public class StorageAccountFilesRepository implements ConfigApiDelegate {
     @SneakyThrows
     @Override
     public ResponseEntity<List<ConfigItem>> getConfig() {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try (os) {
-            blobContainerClient.getBlobClient("%s/%s-manifest-%s.json".formatted(
-                    sdkApplicationProperties.getDomain(),
-                            sdkApplicationProperties.getDomain(),
-                            sdkApplicationProperties.getEnv()))
-                    .downloadStream(os);
+        List<ConfigItem> list = blobContainerClient.listBlobs()
+                .stream()
+                .filter(blobContainer -> blobContainer.getName().endsWith(".json"))
+                .map(blobItem -> blobContainerClient.getBlobClient(blobItem.getName()))
+                .map(blobClient -> {
+                    log.debug("Reading blob {}", blobClient.getBlobName());
+                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    blobClient.downloadStream(os);
+
+                    return read(os);
+                })
+                .flatMap(Collection::stream)
+                .toList();
+
+        return ResponseEntity.ok(list);
+    }
+
+    List<ConfigItem> read(ByteArrayOutputStream os) {
+        try {
             TypeReference<List<ConfigItem>> typeRef = new TypeReference<>() {};
-            return ResponseEntity.ok(objectMapper.readValue(os.toByteArray(), typeRef));
+            return objectMapper.readValue(os.toByteArray(), typeRef);
+        } catch (Exception e) {
+            return Collections.emptyList();
         }
     }
 }
