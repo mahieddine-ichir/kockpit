@@ -42,21 +42,33 @@ public class OpensearchRepository implements DomainApiDelegate {
 
     @Override
     public ResponseEntity<Page> listAudits(String domain, String env, Integer start, Integer size) {
-        return this.searchAudits(null, domain, env, start, size);
+        return this.searchAudits(  domain, env,null,null,  start, size);
     }
 
     @SneakyThrows
     @Override
-    public ResponseEntity<Page> searchAudits(@Nullable String query, String domain, String env, Integer start, Integer size) {
+    public ResponseEntity<Page> searchAudits(String domain, String env, String query, String status, Integer start, Integer size) {
+        return this.searchAuditsWithFilters(query, status, domain, env, start, size);
+    }
+
+    @SneakyThrows
+    public ResponseEntity<Page> searchAuditsWithFilters(
+            @Nullable String query,
+            @Nullable String status,
+            String domain,
+            String env,
+            Integer start,
+            Integer size) {
+
         List<String> texts = Optional.ofNullable(query)
                 .map(q -> Arrays.stream(q.split(" ")).toList())
                 .orElse(new ArrayList<>());
 
-        QueryBuilder queryBuilder = constructQuery(texts);
+        QueryBuilder queryBuilder = constructQuery(texts, status);
         SearchSourceBuilder searchSourceBuilder =
                 new SearchSourceBuilder()
                         .query(queryBuilder)
-                        .sort(new FieldSortBuilder("start").order(SortOrder.DESC)) // todo get from input
+                        .sort(new FieldSortBuilder("start").order(SortOrder.DESC))
                         .trackTotalHits(true)
                         .from(start)
                         .size(size);
@@ -65,13 +77,12 @@ public class OpensearchRepository implements DomainApiDelegate {
                 .source(searchSourceBuilder)
                 .indices(getAuditAliasName(domain, index, env));
 
-        SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT)
-                .getHits();
+        SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT).getHits();
 
         return ResponseEntity.ok(Page.builder()
-                        .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
-                        .size((long) hits.getHits().length)
-                        .items(fromHits(hits))
+                .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
+                .size((long) hits.getHits().length)
+                .items(fromHits(hits))
                 .build());
     }
 
