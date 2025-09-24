@@ -6,12 +6,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.backend.DomainApiDelegate;
 import org.kockpit.audit.backend.Page;
-import org.opensearch.OpenSearchStatusException;
 import org.opensearch.action.search.SearchRequest;
 import org.opensearch.action.search.SearchResponse;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.core.rest.RestStatus;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
@@ -44,21 +42,33 @@ public class OpensearchRepository implements DomainApiDelegate {
 
     @Override
     public ResponseEntity<Page> listAudits(String domain, String env, Integer start, Integer size) {
-        return this.searchAudits(null, domain, env, start, size);
+        return this.searchAudits(  domain, env,null,null,  start, size);
     }
 
     @SneakyThrows
     @Override
-    public ResponseEntity<Page> searchAudits(@Nullable String query, String domain, String env, Integer start, Integer size) {
+    public ResponseEntity<Page> searchAudits(String domain, String env, String query, String status, Integer start, Integer size) {
+        return this.searchAuditsWithFilters(query, status, domain, env, start, size);
+    }
+
+    @SneakyThrows
+    public ResponseEntity<Page> searchAuditsWithFilters(
+            @Nullable String query,
+            @Nullable String status,
+            String domain,
+            String env,
+            Integer start,
+            Integer size) {
+
         List<String> texts = Optional.ofNullable(query)
                 .map(q -> Arrays.stream(q.split(" ")).toList())
                 .orElse(new ArrayList<>());
 
-        QueryBuilder queryBuilder = constructQuery(texts);
+        QueryBuilder queryBuilder = constructQuery(texts, status);
         SearchSourceBuilder searchSourceBuilder =
                 new SearchSourceBuilder()
                         .query(queryBuilder)
-                        .sort(new FieldSortBuilder("start").order(SortOrder.DESC)) // todo get from input
+                        .sort(new FieldSortBuilder("start").order(SortOrder.DESC))
                         .trackTotalHits(true)
                         .from(start)
                         .size(size);
@@ -67,27 +77,13 @@ public class OpensearchRepository implements DomainApiDelegate {
                 .source(searchSourceBuilder)
                 .indices(getAuditAliasName(domain, index, env));
 
-        try {
-            SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT)
-                    .getHits();
+        SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT).getHits();
 
-            return ResponseEntity.ok(Page.builder()
-                    .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
-                    .size((long) hits.getHits().length)
-                    .items(fromHits(hits))
-                    .build());
-        } catch (Exception e) {
-            log.error("Failed to search opensearch results", e);
-            if (e instanceof OpenSearchStatusException openSearchStatusException) {
-                if (openSearchStatusException.status() == RestStatus.NOT_FOUND) {
-                    return ResponseEntity.ok(Page.builder().build());
-                } else {
-                    throw e;
-                }
-            } else {
-                throw e;
-            }
-        }
+        return ResponseEntity.ok(Page.builder()
+                .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
+                .size((long) hits.getHits().length)
+                .items(fromHits(hits))
+                .build());
     }
 
     @SneakyThrows
