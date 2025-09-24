@@ -34,7 +34,7 @@ public class StorageAccountFilesRepository implements ConfigApiDelegate {
     public ResponseEntity<List<ConfigItem>> getConfig() {
         List<ConfigItem> list = blobContainerClient.listBlobs()
                 .stream()
-                .filter(blobContainer -> blobContainer.getName().endsWith(".json"))
+                .filter(blobItem -> blobItem.getName().endsWith(".json"))
                 .map(blobItem -> blobContainerClient.getBlobClient(blobItem.getName()))
                 .map(blobClient -> {
                     log.debug("Reading blob {}", blobClient.getBlobName());
