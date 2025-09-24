@@ -1,7 +1,11 @@
 package org.kockpit.audit.backend.azuresearch;
 
+import com.azure.core.http.rest.PagedIterable;
+import com.azure.core.http.rest.PagedResponse;
+import com.azure.core.util.IterableStream;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.models.BlobItem;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -39,13 +43,25 @@ class StorageAccountFilesRepositoryTest {
     @Test
     void download_file() {
         BlobClient blobClient = Mockito.mock(BlobClient.class);
-
         Mockito.doAnswer(invocation -> {
             OutputStream outputStream = invocation.getArgument(0);
             outputStream.write(this.getClass().getResourceAsStream("/sample/api-config.json").readAllBytes());
             return null;
         }).when(blobClient).downloadStream(Mockito.any(OutputStream.class));
 
+        BlobItem blobItem = Mockito.mock(BlobItem.class);
+        when(blobItem.getName()).thenReturn("api-config.json");
+        PagedResponse<BlobItem> pagedResponse = Mockito.mock(PagedResponse.class);
+
+        List<BlobItem> blobItems = List.of(blobItem);
+        when(pagedResponse.getValue()).thenReturn(blobItems);
+        when(pagedResponse.getElements()).thenReturn(IterableStream.of(blobItems));
+
+        PagedIterable<BlobItem> blobClients = new PagedIterable<>(() -> pagedResponse);
+
+        blobClients.stream().forEach(blobItem1 -> log.info("{}", blobItem1));
+
+        when(blobContainerClient.listBlobs()).thenReturn(blobClients);
         when(blobContainerClient.getBlobClient(Mockito.anyString())).thenReturn(blobClient);
 
         List<ConfigItem> configItems = storageAccountFilesRepository.getConfig().getBody();
