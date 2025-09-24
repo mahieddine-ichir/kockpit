@@ -3,19 +3,27 @@ package org.kockpit.audit.backend.opensearch;
 import lombok.experimental.UtilityClass;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 
 import static org.opensearch.index.query.QueryBuilders.multiMatchQuery;
+import static org.opensearch.index.query.QueryBuilders.termQuery;
 
 @UtilityClass
 class SearchQueryHelper {
 
-    static QueryBuilder constructQuery(Collection<String> texts) {
+    static QueryBuilder constructQuery(Collection<String> texts, String status) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         if (!CollectionUtils.isEmpty(texts)) {
             texts.forEach(text -> boolQueryBuilder.should(multiMatchQuery(text, "*")));
+        }
+
+        if (StringUtils.hasText(status)) {
+            boolQueryBuilder.must(QueryBuilders.matchQuery("indexedKeyValues.key", "httpStatus"));
+            boolQueryBuilder.must(QueryBuilders.matchQuery("indexedKeyValues.value", status));
         }
         return boolQueryBuilder;
     }
@@ -64,7 +72,7 @@ class SearchQueryHelper {
         .collect(Collectors.groupingBy(SearchQuery::getName))
         .forEach(
             (fieldName, fieldSearchQueries) -> {
-              // All searchQueries with same name have same subtype..
+              // All searchQueries with same name have same subtype.
               if (fieldSearchQueries.get(0).getSubtype() != null
                   && fieldSearchQueries
                       .get(0)

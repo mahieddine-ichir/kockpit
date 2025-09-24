@@ -118,7 +118,7 @@ const HttpStatus = ({statusFilter, setStatusFilter}) => {
   const options = ["200", "201", "204", "404", "401", "403", "500"];
   return (<select
       value={statusFilter}
-      onChange={(e) => setStatusFilter(e)}
+      onChange={setStatusFilter}
       className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
   >
     <option value="">All Statuses</option>
@@ -132,8 +132,8 @@ const HttpMethod = ({httpMethodFilter, setHttpMethodFilter}) => {
   const options = ["GET", "POST",  "PUT", "DELETE", "PATCH"];
   return (<select
       value={httpMethodFilter}
-      onChange={(e) => setHttpMethodFilter(e)}
-      className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+      onChange={setHttpMethodFilter}
+      className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:border-blue-500 shadow-sm"
   >
     <option value="">All Methods</option>
     {options.map(opt => (
@@ -169,11 +169,11 @@ const AuditListPage = ({ domain, env, config }) => {
 
   useEffect(() => {
     loadAll(domain, env);
-  }, [domain, env, currentPage, itemsPerPage]);
+  }, [domain, env, currentPage, itemsPerPage, statusFilter]);
 
   function loadAll(domain, env) {
     setLoading(true);
-    if (search) {
+    if (search || statusFilter) {
       doSearchAudits();
     } else {
       fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
@@ -197,20 +197,40 @@ const AuditListPage = ({ domain, env, config }) => {
   };
 
   function doSearchAudits() {
-    if (!search || search.trim().length <= 0) return;
     setLoading(true);
-    searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
-      setAudits(data.items);
-      setTotalCount(data.total_count);
-      setLoading(false);
-    });
+    searchAudits(search, statusFilter, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
+        .then(data => {
+          setAudits(data.items);
+          setTotalCount(data.total_count);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Search failed:', error);
+          setLoading(false);
+        });
   }
+
+
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       doSearchAudits();
     }
   }
+
+  const handleStatusFilterChange = (e) => {
+    setStatusFilter(e.target.value);
+    setCurrentPage(1);
+  }
+
+  const handleHttpMethodFilterChange = (e) => {
+    setHttpMethodFilter(e.target.value);
+    setCurrentPage(1);
+  }
+
+  const filteredAudits = audits.filter(audit =>
+      httpMethodFilter ? getMethod(audit) === httpMethodFilter : audit
+  );
 
   return (
       <div className="px-2 py-2 sm:px-2 lg:px-2 bg-slate-50 min-h-screen">
@@ -248,8 +268,8 @@ const AuditListPage = ({ domain, env, config }) => {
             <span className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 rounded-md text-xs font-medium mr-2">
               <AdjustmentsHorizontalIcon className="h-4 w-4 mr-1" /> Filters
             </span>
-              <HttpStatus statusFilter={statusFilter} setStatusFilter={e => setStatusFilter(e.target.value)} />
-              <HttpMethod httpMethodFilter={httpMethodFilter} setHttpMethodFilter={e => setHttpMethodFilter(e.target.value)} />
+              <HttpStatus statusFilter={statusFilter} setStatusFilter={handleStatusFilterChange} />
+              <HttpMethod httpMethodFilter={httpMethodFilter} setHttpMethodFilter={handleHttpMethodFilterChange} />
             </div>
           </div>
         </div>
@@ -269,9 +289,7 @@ const AuditListPage = ({ domain, env, config }) => {
             </thead>
             <tbody className="divide-y divide-slate-100">
             {
-              audits
-                  .filter(audit => statusFilter ? getHttStatus(audit) === statusFilter : audit)
-                  .filter(audit => httpMethodFilter ? getMethod(audit) === httpMethodFilter : audit)
+              filteredAudits
                   .map(audit => (
                       <AuditLine audit={audit} columns={columns} key={audit.id} onClick={handleViewDetails} />
                   ))
