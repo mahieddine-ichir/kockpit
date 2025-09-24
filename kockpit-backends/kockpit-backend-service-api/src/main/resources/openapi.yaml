@@ -138,7 +138,12 @@ paths:
       parameters:
         - name: query
           in: query
-          required: true
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
           schema:
             type: string
         - name: domain
