@@ -23,7 +23,6 @@ kockpit:
         account: ${STORAGE_ACCOUNT}
         key: ${STORAGE_KEY}
         container: ${STORAGE_CONTAINER}
-        blob: ${STORAGE_BLOB}
 
 management:
   endpoint:
