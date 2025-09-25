@@ -1,15 +1,19 @@
 package org.kockpit.audit.backend.opensearch;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.backend.DomainApiDelegate;
 import org.kockpit.audit.backend.Page;
+import org.kockpit.audit.backend.SearchTerm;
+import org.opensearch.OpenSearchStatusException;
 import org.opensearch.action.search.SearchRequest;
 import org.opensearch.action.search.SearchResponse;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.core.rest.RestStatus;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
@@ -21,12 +25,10 @@ import org.opensearch.search.sort.SortOrder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
 import static org.kockpit.audit.backend.opensearch.AuditReportHelper.getAuditAliasName;
 import static org.kockpit.audit.backend.opensearch.SearchQueryHelper.constructQuery;
 
@@ -42,33 +44,24 @@ public class OpensearchRepository implements DomainApiDelegate {
 
     @Override
     public ResponseEntity<Page> listAudits(String domain, String env, Integer start, Integer size) {
-        return this.searchAudits(  domain, env,null,null,  start, size);
+        return this.searchAudits(null, domain, env, start, size);
     }
 
     @SneakyThrows
     @Override
-    public ResponseEntity<Page> searchAudits(String domain, String env, String query, String status, Integer start, Integer size) {
-        return this.searchAuditsWithFilters(query, status, domain, env, start, size);
-    }
+    public ResponseEntity<Page> searchAuditsPost(String domain, String env, List<@Valid SearchTerm> searchTerms, Integer start, Integer size) {
+        log.debug("Search terms {}", searchTerms);
+        BoolQueryBuilder rootBoolQueryBuilder = new BoolQueryBuilder();
+        searchTerms.stream()
+                .filter(searchTerm -> nonNull(searchTerm.getValue()) && nonNull(searchTerm.getPath()))
+                .forEach(searchTerm -> rootBoolQueryBuilder
+                        .must(QueryBuilders.matchQuery(searchTerm.getPath(), searchTerm.getValue()))
+                );
 
-    @SneakyThrows
-    public ResponseEntity<Page> searchAuditsWithFilters(
-            @Nullable String query,
-            @Nullable String status,
-            String domain,
-            String env,
-            Integer start,
-            Integer size) {
-
-        List<String> texts = Optional.ofNullable(query)
-                .map(q -> Arrays.stream(q.split(" ")).toList())
-                .orElse(new ArrayList<>());
-
-        QueryBuilder queryBuilder = constructQuery(texts, status);
         SearchSourceBuilder searchSourceBuilder =
                 new SearchSourceBuilder()
-                        .query(queryBuilder)
-                        .sort(new FieldSortBuilder("start").order(SortOrder.DESC))
+                        .query(rootBoolQueryBuilder)
+                        .sort(new FieldSortBuilder("start").order(SortOrder.DESC)) // todo get from input
                         .trackTotalHits(true)
                         .from(start)
                         .size(size);
@@ -77,13 +70,70 @@ public class OpensearchRepository implements DomainApiDelegate {
                 .source(searchSourceBuilder)
                 .indices(getAuditAliasName(domain, index, env));
 
-        SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT).getHits();
+        try {
+            SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT)
+                    .getHits();
 
-        return ResponseEntity.ok(Page.builder()
-                .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
-                .size((long) hits.getHits().length)
-                .items(fromHits(hits))
-                .build());
+            return ResponseEntity.ok(Page.builder()
+                    .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
+                    .size((long) hits.getHits().length)
+                    .items(fromHits(hits))
+                    .build());
+        } catch (Exception e) {
+            log.error("Failed to search opensearch results", e);
+            if (e instanceof OpenSearchStatusException openSearchStatusException) {
+                if (openSearchStatusException.status() == RestStatus.NOT_FOUND) {
+                    return ResponseEntity.ok(Page.builder().build());
+                } else {
+                    throw e;
+                }
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    @SneakyThrows
+    @Override
+    public ResponseEntity<Page> searchAudits(@Nullable String query, String domain, String env, Integer start, Integer size) {
+        List<String> texts = Optional.ofNullable(query)
+                .map(q -> Arrays.stream(q.split(" ")).toList())
+                .orElse(new ArrayList<>());
+
+        QueryBuilder queryBuilder = constructQuery(texts);
+        SearchSourceBuilder searchSourceBuilder =
+                new SearchSourceBuilder()
+                        .query(queryBuilder)
+                        .sort(new FieldSortBuilder("start").order(SortOrder.DESC)) // todo get from input
+                        .trackTotalHits(true)
+                        .from(start)
+                        .size(size);
+
+        SearchRequest searchRequest = new SearchRequest()
+                .source(searchSourceBuilder)
+                .indices(getAuditAliasName(domain, index, env));
+
+        try {
+            SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT)
+                    .getHits();
+
+            return ResponseEntity.ok(Page.builder()
+                    .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
+                    .size((long) hits.getHits().length)
+                    .items(fromHits(hits))
+                    .build());
+        } catch (Exception e) {
+            log.error("Failed to search opensearch results", e);
+            if (e instanceof OpenSearchStatusException openSearchStatusException) {
+                if (openSearchStatusException.status() == RestStatus.NOT_FOUND) {
+                    return ResponseEntity.ok(Page.builder().build());
+                } else {
+                    throw e;
+                }
+            } else {
+                throw e;
+            }
+        }
     }
 
     @SneakyThrows
