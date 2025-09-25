@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
+import {advancedSearchAudits, fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
 import {EyeIcon} from '@heroicons/react/24/outline';
 import {AdjustmentsHorizontalIcon, MagnifyingGlassIcon} from '@heroicons/react/20/solid';
 import {useNavigate} from 'react-router-dom';
@@ -7,6 +7,7 @@ import StatusBadge from '../../components/StatusBadge.jsx';
 import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import Pagination from '../../components/Pagination.jsx';
 import CopyButton from "../../components/CopyButton.jsx";
+import SearchTerm from "./components/SearchTerm.jsx";
 
 function formatLabel(col) {
   let label = '';
@@ -114,11 +115,12 @@ const AuditLine = ({columns, audit, onClick}) => {
   )
 }
 
+
 const HttpStatus = ({statusFilter, setStatusFilter}) => {
   const options = ["200", "201", "204", "404", "401", "403", "500"];
   return (<select
       value={statusFilter}
-      onChange={setStatusFilter}
+      onChange={(e) => setStatusFilter(e)}
       className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
   >
     <option value="">All Statuses</option>
@@ -132,8 +134,8 @@ const HttpMethod = ({httpMethodFilter, setHttpMethodFilter}) => {
   const options = ["GET", "POST",  "PUT", "DELETE", "PATCH"];
   return (<select
       value={httpMethodFilter}
-      onChange={setHttpMethodFilter}
-      className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:border-blue-500 shadow-sm"
+      onChange={(e) => setHttpMethodFilter(e)}
+      className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
   >
     <option value="">All Methods</option>
     {options.map(opt => (
@@ -152,7 +154,9 @@ const AuditListPage = ({ domain, env, config }) => {
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
+  const [searchTerms, setSearchTerms] = useState([]);
 
+  let searchColumns = [];
   let columns = [];
   let label = '';
   if (config['services']) {
@@ -165,15 +169,16 @@ const AuditListPage = ({ domain, env, config }) => {
             label: formatLabel(column)
           }
         });
+    searchColumns = thisConfig.config['search_columns'];
   }
 
   useEffect(() => {
     loadAll(domain, env);
-  }, [domain, env, currentPage, itemsPerPage, statusFilter]);
+  }, [domain, env, currentPage, itemsPerPage]);
 
   function loadAll(domain, env) {
     setLoading(true);
-    if (search || statusFilter) {
+    if (search) {
       doSearchAudits();
     } else {
       fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
@@ -197,20 +202,22 @@ const AuditListPage = ({ domain, env, config }) => {
   };
 
   function doSearchAudits() {
-    setLoading(true);
-    searchAudits(search, statusFilter, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
-        .then(data => {
+      if (searchTerms.length > 0) {
+          setLoading(true);
+          advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
+              setAudits(data.items);
+              setTotalCount(data.total_count);
+              setLoading(false);
+          });
+      } else if (search || search.trim().length > 0) {
+          setLoading(true);
+          searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
           setAudits(data.items);
           setTotalCount(data.total_count);
           setLoading(false);
-        })
-        .catch(error => {
-          console.error('Search failed:', error);
-          setLoading(false);
         });
+      }
   }
-
-
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -218,21 +225,31 @@ const AuditListPage = ({ domain, env, config }) => {
     }
   }
 
-  const handleStatusFilterChange = (e) => {
-    setStatusFilter(e.target.value);
-    setCurrentPage(1);
+    let addTerm = (searchTerm, text) => {
+      let existing = searchTerms.find(kv => kv.name === searchTerm.name);
+      if (existing) {
+          existing.value = text;
+      } else {
+          let newEl = {
+              name: searchTerm.name,
+              path: searchTerm.path,
+              value: text
+          };
+          setSearchTerms([...searchTerms, newEl]);
+      }
+    };
+
+  let clearTerm = (searchTerm) => {
+      let index = searchTerm.indexOf(searchTerm);
+      if (index > -1) {
+          setSearchTerms([
+              ...searchTerms.slice(0, index),
+              ...searchTerms.slice(index+1)
+          ]);
+      }
   }
 
-  const handleHttpMethodFilterChange = (e) => {
-    setHttpMethodFilter(e.target.value);
-    setCurrentPage(1);
-  }
-
-  const filteredAudits = audits.filter(audit =>
-      httpMethodFilter ? getMethod(audit) === httpMethodFilter : audit
-  );
-
-  return (
+    return (
       <div className="px-2 py-2 sm:px-2 lg:px-2 bg-slate-50 min-h-screen">
         <div className="flex items-center mb-5">
           <div className="h-10 w-1 rounded bg-blue-600 mr-4" />
@@ -268,9 +285,19 @@ const AuditListPage = ({ domain, env, config }) => {
             <span className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 rounded-md text-xs font-medium mr-2">
               <AdjustmentsHorizontalIcon className="h-4 w-4 mr-1" /> Filters
             </span>
-              <HttpStatus statusFilter={statusFilter} setStatusFilter={handleStatusFilterChange} />
-              <HttpMethod httpMethodFilter={httpMethodFilter} setHttpMethodFilter={handleHttpMethodFilterChange} />
+              <HttpStatus statusFilter={statusFilter} setStatusFilter={e => setStatusFilter(e.target.value)} />
+              <HttpMethod httpMethodFilter={httpMethodFilter} setHttpMethodFilter={e => setHttpMethodFilter(e.target.value)} />
             </div>
+              <div className="flex flex-wrap gap-4 items-center mt-2">
+                  {
+                      searchColumns.map(searchTerm => (
+                          <SearchTerm term={searchTerm}
+                                      setTerm={(text) => addTerm(searchTerm, text)}
+                                      clearTerm={() => clearTerm(searchTerm)}
+                          />
+                      ))
+                  }
+              </div>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -289,7 +316,9 @@ const AuditListPage = ({ domain, env, config }) => {
             </thead>
             <tbody className="divide-y divide-slate-100">
             {
-              filteredAudits
+              audits
+                  .filter(audit => statusFilter ? getHttStatus(audit) === statusFilter : audit)
+                  .filter(audit => httpMethodFilter ? getMethod(audit) === httpMethodFilter : audit)
                   .map(audit => (
                       <AuditLine audit={audit} columns={columns} key={audit.id} onClick={handleViewDetails} />
                   ))

@@ -131,6 +131,47 @@ paths:
                 type: object
 
   /{domain}/{env}/audits/_search:
+    post:
+      operationId: searchAuditsPost
+      tags:
+        - audits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/searchTerms"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/page"
+      parameters:
+        - name: domain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: env
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start
+          description: number of elements to skip
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          description: number of items to return
+          in: query
+          schema:
+            type: integer
+            default: 50
+
     get:
       operationId: searchAudits
       tags:
@@ -180,6 +221,21 @@ paths:
 
 components:
   schemas:
+    searchTerms:
+      type: array
+      items:
+        $ref: "#/components/schemas/searchTerm"
+
+    searchTerm:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        value:
+          type: object
+
     config:
       type: array
       items:
