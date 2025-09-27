@@ -6,10 +6,12 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.backend.DomainApiDelegate;
 import org.kockpit.audit.backend.Page;
+import org.opensearch.OpenSearchStatusException;
 import org.opensearch.action.search.SearchRequest;
 import org.opensearch.action.search.SearchResponse;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.core.rest.RestStatus;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
@@ -77,13 +79,27 @@ public class OpensearchRepository implements DomainApiDelegate {
                 .source(searchSourceBuilder)
                 .indices(getAuditAliasName(domain, index, env));
 
-        SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT).getHits();
+        try {
+            SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT)
+                    .getHits();
 
-        return ResponseEntity.ok(Page.builder()
-                .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
-                .size((long) hits.getHits().length)
-                .items(fromHits(hits))
-                .build());
+            return ResponseEntity.ok(Page.builder()
+                    .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
+                    .size((long) hits.getHits().length)
+                    .items(fromHits(hits))
+                    .build());
+        } catch (Exception e) {
+            log.error("Failed to search opensearch results", e);
+            if (e instanceof OpenSearchStatusException openSearchStatusException) {
+                if (openSearchStatusException.status() == RestStatus.NOT_FOUND) {
+                    return ResponseEntity.ok(Page.builder().build());
+                } else {
+                    throw e;
+                }
+            } else {
+                throw e;
+            }
+        }
     }
 
     @SneakyThrows

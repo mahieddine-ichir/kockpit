@@ -23,7 +23,8 @@ function HttpExchangeTab({ request }) {
     let exchanges = [];
     exchangesAudits?.forEach(audit => {
         audit?.events?.forEach(exchange => {
-            exchanges.push(JSON.parse(exchange));
+            const body = typeof exchange === 'string' ? JSON.parse(exchange) : exchange;
+            exchanges.push(body);
         })
     });
 

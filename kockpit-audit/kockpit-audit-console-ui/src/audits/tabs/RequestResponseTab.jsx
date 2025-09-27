@@ -58,8 +58,6 @@ const RequestResponseTab = ({ request }) => {
         }
       })[0]['httpAuditedResponse']
 
-  console.log(httpAuditedResponse);
-
   return (
     <div className="space-y-6">
       <div className="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -95,9 +93,10 @@ const RequestResponseTab = ({ request }) => {
             {renderHeadersTable(httpAuditedResponse?.headers)}
           </div>
           <div>
-            <h4 className="text-sm font-medium text-gray-500">Payload</h4>
+            <h4 className="text-sm font-medium text-gray-500">Payload <CopyButton value={httpAuditedResponse?.body}/>
+            </h4>
             <pre className="mt-1 text-sm text-gray-900 bg-gray-50 p-2 rounded overflow-x-auto">
-              {prettyPrintBody(httpAuditedResponse?.payload)}
+              {prettyPrintBody(httpAuditedResponse?.body)}
             </pre>
           </div>
         </div>
