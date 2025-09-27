@@ -24,6 +24,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -42,16 +43,16 @@ class StorageAccountFilesRepositoryTest {
 
     @Test
     void download_file() {
-        BlobClient blobClient = Mockito.mock(BlobClient.class);
+        BlobClient blobClient = mock(BlobClient.class);
         Mockito.doAnswer(invocation -> {
             OutputStream outputStream = invocation.getArgument(0);
             outputStream.write(this.getClass().getResourceAsStream("/sample/api-config.json").readAllBytes());
             return null;
         }).when(blobClient).downloadStream(Mockito.any(OutputStream.class));
 
-        BlobItem blobItem = Mockito.mock(BlobItem.class);
+        BlobItem blobItem = mock(BlobItem.class);
         when(blobItem.getName()).thenReturn("api-config.json");
-        PagedResponse<BlobItem> pagedResponse = Mockito.mock(PagedResponse.class);
+        PagedResponse<BlobItem> pagedResponse = mock(PagedResponse.class);
 
         List<BlobItem> blobItems = List.of(blobItem);
         when(pagedResponse.getValue()).thenReturn(blobItems);
