@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
+import {advancedSearchAudits, fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
 import {EyeIcon} from '@heroicons/react/24/outline';
 import {AdjustmentsHorizontalIcon, MagnifyingGlassIcon} from '@heroicons/react/20/solid';
 import {useNavigate} from 'react-router-dom';
@@ -7,6 +7,7 @@ import StatusBadge from '../../components/StatusBadge.jsx';
 import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import Pagination from '../../components/Pagination.jsx';
 import CopyButton from "../../components/CopyButton.jsx";
+import SearchTerm from "./components/SearchTerm.jsx";
 
 function formatLabel(col) {
   let label = '';
@@ -152,7 +153,9 @@ const AuditListPage = ({ domain, env, config }) => {
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
+  const [searchTerms, setSearchTerms] = useState([]);
 
+  let searchColumns = [];
   let columns = [];
   let label = '';
   if (config['services']) {
@@ -165,6 +168,7 @@ const AuditListPage = ({ domain, env, config }) => {
             label: formatLabel(column)
           }
         });
+    searchColumns = thisConfig.config['search_columns'];
   }
 
   useEffect(() => {
@@ -197,6 +201,21 @@ const AuditListPage = ({ domain, env, config }) => {
   };
 
   function doSearchAudits() {
+      if (searchTerms.length > 0) {
+          setLoading(true);
+          advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
+              setAudits(data.items);
+              setTotalCount(data.total_count);
+              setLoading(false);
+          });
+      } else if (search || search.trim().length > 0) {
+          setLoading(true);
+          searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
+          setAudits(data.items);
+          setTotalCount(data.total_count);
+          setLoading(false);
+        });
+      }
     setLoading(true);
     searchAudits(search, statusFilter, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
         .then(data => {
@@ -209,8 +228,6 @@ const AuditListPage = ({ domain, env, config }) => {
           setLoading(false);
         });
   }
-
-
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -233,6 +250,31 @@ const AuditListPage = ({ domain, env, config }) => {
   );
 
   return (
+    let addTerm = (searchTerm, text) => {
+      let existing = searchTerms.find(kv => kv.name === searchTerm.name);
+      if (existing) {
+          existing.value = text;
+      } else {
+          let newEl = {
+              name: searchTerm.name,
+              path: searchTerm.path,
+              value: text
+          };
+          setSearchTerms([...searchTerms, newEl]);
+      }
+    };
+
+  let clearTerm = (searchTerm) => {
+      let index = searchTerm.indexOf(searchTerm);
+      if (index > -1) {
+          setSearchTerms([
+              ...searchTerms.slice(0, index),
+              ...searchTerms.slice(index+1)
+          ]);
+      }
+  }
+
+    return (
       <div className="px-2 py-2 sm:px-2 lg:px-2 bg-slate-50 min-h-screen">
         <div className="flex items-center mb-5">
           <div className="h-10 w-1 rounded bg-blue-600 mr-4" />
@@ -271,6 +313,16 @@ const AuditListPage = ({ domain, env, config }) => {
               <HttpStatus statusFilter={statusFilter} setStatusFilter={handleStatusFilterChange} />
               <HttpMethod httpMethodFilter={httpMethodFilter} setHttpMethodFilter={handleHttpMethodFilterChange} />
             </div>
+              <div className="flex flex-wrap gap-4 items-center mt-2">
+                  {
+                      searchColumns.map(searchTerm => (
+                          <SearchTerm term={searchTerm}
+                                      setTerm={(text) => addTerm(searchTerm, text)}
+                                      clearTerm={() => clearTerm(searchTerm)}
+                          />
+                      ))
+                  }
+              </div>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
