@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-backends</artifactId>
+        <artifactId>kockpit-backend-service-storage</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>kockpit-backend-service-azure</artifactId>
+    <artifactId>kockpit-backend-service-storage-azure</artifactId>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-backend-service-api</artifactId>
+            <artifactId>kockpit-backend-service-storage-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -46,6 +46,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-audit-sdk</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

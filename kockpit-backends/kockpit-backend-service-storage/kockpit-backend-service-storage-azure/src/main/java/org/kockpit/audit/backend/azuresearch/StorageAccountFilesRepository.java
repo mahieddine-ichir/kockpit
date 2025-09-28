@@ -7,10 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.kockpit.audit.backend.ConfigApiDelegate;
-import org.kockpit.audit.backend.ConfigItem;
-import org.kockpit.sdk.SdkApplicationProperties;
-import org.springframework.http.ResponseEntity;
+import org.kockpit.backend.services.storage.ConfigApiService;
+import org.kockpit.backend.services.storage.ConfigItem;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
@@ -19,11 +17,9 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class StorageAccountFilesRepository implements ConfigApiDelegate {
+public class StorageAccountFilesRepository implements ConfigApiService {
 
     private final BlobContainerClient blobContainerClient;
-
-    private final SdkApplicationProperties sdkApplicationProperties;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -31,8 +27,8 @@ public class StorageAccountFilesRepository implements ConfigApiDelegate {
 
     @SneakyThrows
     @Override
-    public ResponseEntity<List<ConfigItem>> getConfig() {
-        List<ConfigItem> list = blobContainerClient.listBlobs()
+    public List<ConfigItem> getConfig() {
+        return blobContainerClient.listBlobs()
                 .stream()
                 .filter(blobItem -> blobItem.getName().endsWith(".json"))
                 .map(blobItem -> blobContainerClient.getBlobClient(blobItem.getName()))
@@ -45,8 +41,6 @@ public class StorageAccountFilesRepository implements ConfigApiDelegate {
                 })
                 .flatMap(Collection::stream)
                 .toList();
-
-        return ResponseEntity.ok(list);
     }
 
     List<ConfigItem> read(ByteArrayOutputStream os) {
