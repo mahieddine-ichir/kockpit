@@ -43,6 +43,11 @@ public class StorageAccountFilesRepository implements ConfigApiService {
                 .toList();
     }
 
+    @Override
+    public ConfigItem save(ConfigItem configItem) {
+        throw new RuntimeException("not implemented");
+    }
+
     List<ConfigItem> read(ByteArrayOutputStream os) {
         try {
             TypeReference<List<ConfigItem>> typeRef = new TypeReference<>() {};
