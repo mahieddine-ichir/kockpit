@@ -16,6 +16,7 @@
         <module>kockpit-backend-service-inmemory</module>
         <module>kockpit-backend-authentication-basic</module>
 		<module>kockpit-backend-application</module>
+        <module>kockpit-backend-service-storage-local</module>
         <module>kockpit-backend-service-storage</module>
     </modules>
 

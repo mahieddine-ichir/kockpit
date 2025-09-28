@@ -16,6 +16,12 @@ export const searchAudits = async (query, status, domain, env, size, start) => {
     return response.data;
 };
 
+// deprecated use paging one
+export const advancedSearchAudits = async (terms, domain, env, size, start) => {
+  const response = await axios.post(`${API_BASE}/${domain}/${env}/audits/_search?size=${size}&start=${start}`, terms);
+  return response.data;
+};
+
 // fixme remove deprecated
 export const fetchAuditReportsWithPaging = async (domain, env, size, start) => {
   const response = await axios.get(`${API_BASE}/${domain}/${env}/audits?size=${size}&start=${start}`);
