@@ -18,6 +18,7 @@ import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.opensearch.search.sort.FieldSortBuilder;
 import org.opensearch.search.sort.SortOrder;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
@@ -72,14 +73,21 @@ public class OpensearchRepository implements SearchService {
         return runQuery(boolQueryBuilder, domain, env, start, size);
     }
 
+    @Override
+    public Page searchByQuery(String domain, String env, String query, Integer start, Integer size) {
+        return this.searchAudits(domain, env, query, null, start, size);
+    }
+
     @SneakyThrows
     @Override
     public Page searchAudits(String domain, String env, String query, List<SearchTerm> searchTerms, Integer start, Integer size) {
         log.debug("Search terms {}", searchTerms);
         BoolQueryBuilder rootBoolQueryBuilder = new BoolQueryBuilder();
-        searchTerms.stream()
-                .filter(searchTerm -> nonNull(searchTerm.getValue()) && nonNull(searchTerm.getPath()))
-                .forEach(searchTerm -> buildQuery(searchTerm, rootBoolQueryBuilder));
+        if (!CollectionUtils.isEmpty(searchTerms)) {
+            searchTerms.stream()
+                    .filter(searchTerm -> nonNull(searchTerm.getValue()) && nonNull(searchTerm.getPath()))
+                    .forEach(searchTerm -> buildQuery(searchTerm, rootBoolQueryBuilder));
+        }
 
         Optional.ofNullable(query)
                 .map(q -> Arrays.stream(q.split(" ")).toList())
