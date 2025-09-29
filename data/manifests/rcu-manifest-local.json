@@ -1,0 +1,32 @@
+[
+  {
+    "domain": "rcu",
+    "env": "local",
+    "services": [
+      {
+        "name": "audit",
+        "config": {
+          "columns": [
+            "appId", "requestId", "method", "path", "duration", "start", "status"
+          ],
+          "search_columns": [
+            {
+              "name": "gbid",
+              "type": "number",
+              "path": "audits.events.httpAuditedResponse.body"
+            }
+          ]
+        }
+      },
+      {
+        "name": "feature-flipping",
+        "config": {
+          "keys": [
+            {
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
