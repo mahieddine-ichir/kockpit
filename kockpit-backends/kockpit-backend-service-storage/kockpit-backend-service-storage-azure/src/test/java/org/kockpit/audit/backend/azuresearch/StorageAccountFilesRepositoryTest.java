@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kockpit.audit.backend.ConfigItem;
+import org.kockpit.backend.services.storage.ConfigItem;
 import org.kockpit.sdk.SdkApplicationProperties;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ class StorageAccountFilesRepositoryTest {
         when(blobContainerClient.listBlobs()).thenReturn(blobClients);
         when(blobContainerClient.getBlobClient(Mockito.anyString())).thenReturn(blobClient);
 
-        List<ConfigItem> configItems = storageAccountFilesRepository.getConfig().getBody();
+        List<ConfigItem> configItems = storageAccountFilesRepository.getConfig();
         log.info("configItems {}", configItems);
 
         configItems.stream().map(ConfigItem::getServices)
