@@ -145,4 +145,23 @@ public class SearchApi {
         return ResponseEntity.ok(page);
     }
 
+    @GetMapping("/_search")
+    ResponseEntity<Page> searchAuditsGet(
+            @Parameter(name = "domain", description = "", required = true, in = ParameterIn.PATH)
+            @PathVariable("domain") String domain,
+            @Parameter(name = "env", description = "", required = true, in = ParameterIn.PATH)
+            @PathVariable("env") String env,
+            @Parameter(name = "query", description = "", in = ParameterIn.QUERY)
+            @RequestParam(value = "query", required = false) String query,
+            @Parameter(name = "status", description = "", in = ParameterIn.QUERY)
+            @RequestParam(value = "status", required = false) String status,
+            @Parameter(name = "start", description = "number of elements to skip", in = ParameterIn.QUERY)
+            @RequestParam(value = "start", required = false, defaultValue = "0") Integer start,
+            @Parameter(name = "size", description = "number of items to return", in = ParameterIn.QUERY)
+            @RequestParam(value = "size", required = false, defaultValue = "50") Integer size
+            ) {
+        Page page = searchService.searchByQuery(domain, env, query, start, size);
+        return ResponseEntity.ok(page);
+    }
+
 }
