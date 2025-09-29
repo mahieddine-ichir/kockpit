@@ -1,5 +1,5 @@
 kockpit:
   audit:
     opensearch:
-      index: audit-data
+      index: ${INDEX_NAME}
       endpoints: ${OPENSEARCH_ENDPOINTS}

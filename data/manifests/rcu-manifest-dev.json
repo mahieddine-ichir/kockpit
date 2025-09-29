@@ -11,6 +11,11 @@
           ],
           "search_columns": [
             {
+              "name": "start",
+              "type": "date",
+              "path": "."
+            },
+            {
               "name": "gbid",
               "type": "number",
               "path": "audits.events.httpAuditedResponse.body"
