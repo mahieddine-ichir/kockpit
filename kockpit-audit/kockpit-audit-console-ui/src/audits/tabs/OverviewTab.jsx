@@ -21,23 +21,27 @@ const OverviewTab = ({ request }) => {
   console.log('Audits:', request?.audits);
   console.log('Web audit events:', request['audits']?.find(audit => audit.type === 'builtin.web')?.events);
   let events = request['audits']?.find(audit => audit.type === 'builtin.web')?.events;
-  let httpAuditedRequest = events
-      .map(event => {
-        if (typeof event === "string") {
-          return JSON.parse(event);
-        } else {
-          return event;
-        }
-      })[0]['httpAuditedRequest']
+  let httpAuditedRequest = []
+  let httpAuditedResponse = []
+  if (events) {
+      httpAuditedRequest = events
+          .map(event => {
+              if (typeof event === "string") {
+                  return JSON.parse(event);
+              } else {
+                  return event;
+              }
+          })[0]['httpAuditedRequest']
 
-  let httpAuditedResponse = events
-      .map(event => {
-        if (typeof event === "string") {
-          return JSON.parse(event);
-        } else {
-          return event;
-        }
-      })[0]['httpAuditedResponse']
+      httpAuditedResponse = events
+            .map(event => {
+                if (typeof event === "string") {
+                    return JSON.parse(event);
+                } else {
+                    return event;
+                }
+            })[0]['httpAuditedResponse']
+    }
 
   console.log(httpAuditedRequest);
 

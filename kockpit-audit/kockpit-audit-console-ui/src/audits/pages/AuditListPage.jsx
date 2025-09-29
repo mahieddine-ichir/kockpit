@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {advancedSearchAudits, fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
 import {EyeIcon} from '@heroicons/react/24/outline';
-import {AdjustmentsHorizontalIcon, MagnifyingGlassIcon} from '@heroicons/react/20/solid';
+import {MagnifyingGlassIcon} from '@heroicons/react/20/solid';
 import {useNavigate} from 'react-router-dom';
 import StatusBadge from '../../components/StatusBadge.jsx';
 import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import Pagination from '../../components/Pagination.jsx';
 import CopyButton from "../../components/CopyButton.jsx";
 import SearchTerm from "./components/SearchTerm.jsx";
-import searchTerm from "./components/SearchTerm.jsx";
 
 function formatLabel(col) {
   let label = '';
@@ -116,6 +115,28 @@ const AuditLine = ({columns, audit, onClick}) => {
   )
 }
 
+const Filters = ({filters, onSelectedFilter, value}) => {
+    const selectFilter = (selected) => {
+        let selectedFilter = filters.find(val => val.name === selected);
+        if (!selectedFilter) {
+            return;
+        }
+        if (selectedFilter) {
+            onSelectedFilter(selectedFilter);
+        }
+    }
+    return (
+        <select
+            value={value?.name}
+            onChange={(e) => selectFilter(e.target.value)}
+            className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+    >
+        <option>-- select filter --</option>
+        {filters.map(opt => (
+            <option key={opt.name} value={opt.name}>{opt.name}</option>
+        ))}
+    </select>)
+}
 
 const HttpStatus = ({title, statusFilter, setStatusFilter, options}) => {
   return (<select
@@ -175,9 +196,11 @@ const AuditListPage = ({ domain, env, config }) => {
   const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
   const [searchTerms, setSearchTerms] = useState([]);
+  const [filter, setFilter] = useState([]);
 
   let searchColumns = [];
   let columns = [];
+  let filters = [];
   let label = '';
   if (config['services']) {
     let thisConfig = config['services'].find(service => service.name === 'audit');
@@ -190,11 +213,14 @@ const AuditListPage = ({ domain, env, config }) => {
           }
         });
     searchColumns = thisConfig.config['search_columns'];
+    if (thisConfig.config['saved_filters']) {
+        filters = thisConfig.config['saved_filters'];
+    }
   }
 
   useEffect(() => {
     loadData();
-  }, [domain, env, currentPage, itemsPerPage]);
+  }, [domain, env, currentPage, itemsPerPage, searchTerms]);
 
   const handleViewDetails = (audit) => {
     navigate(`/audits/${audit.id}`);
@@ -208,9 +234,9 @@ const AuditListPage = ({ domain, env, config }) => {
   };
 
   function loadData() {
-      console.log("load data ...");
       if (searchTerms.length > 0) {
           setLoading(true);
+          console.info(`load data, searchTerms ${JSON.stringify(searchTerms)}`);
           advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
               setAudits(data.items);
               setTotalCount(data.total_count);
@@ -218,13 +244,14 @@ const AuditListPage = ({ domain, env, config }) => {
           });
       } else if (search || search.trim().length > 0) {
           setLoading(true);
+          console.info(`load data, search ${JSON.stringify(search)}`);
           searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
               setAudits(data.items);
               setTotalCount(data.total_count);
               setLoading(false);
           });
       } else {
-          console.log(`loading all ${domain}, ${env}, ${itemsPerPage}, ${(currentPage - 1) * itemsPerPage}`);
+          console.log(`loading all data: ${domain}, ${env}, ${itemsPerPage}, ${(currentPage - 1) * itemsPerPage}`);
           fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
               .then((data) => {
                   if (data && data.items && data.items.length > 0) {
@@ -239,35 +266,6 @@ const AuditListPage = ({ domain, env, config }) => {
                   setLoading(false);
               });
       }
-/*
-      if (search) {
-          doSearchAudits()
-      } else {
-          fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
-              .then((data) => {
-                  setAudits(data.items);
-                  setTotalCount(data.total_count);
-                  setLoading(false);
-              });
-      }
-
-      console.log("search Audits");
-      if (searchTerms.length > 0) {
-          setLoading(true);
-          advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
-              setAudits(data.items);
-              setTotalCount(data.total_count);
-              setLoading(false);
-          });
-      } else if (search || search.trim().length > 0) {
-          setLoading(true);
-          searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
-          setAudits(data.items);
-          setTotalCount(data.total_count);
-          setLoading(false);
-        });
-      }
- */
   }
 
   const handleKeyPress = (event) => {
@@ -281,6 +279,7 @@ const AuditListPage = ({ domain, env, config }) => {
       let existing = searchTerms.find(kv => kv.name === searchTerm.name);
       if (existing) {
           existing.value = text;
+          loadData();
       } else {
           let newEl = {
               name: searchTerm.name,
@@ -301,12 +300,29 @@ const AuditListPage = ({ domain, env, config }) => {
       }
   }
 
+  let onSelectedFilter = (filter) => {
+      if (!filters) {
+          return;
+      }
+      console.log(`selecting filter ${JSON.stringify(filter)}`)
+      filter.filters.map(searchTerm => {
+          addTerm({
+              name: searchTerm.name,
+              path: searchTerm.path
+          }, searchTerm.values);
+      })
+
+      setFilter(filter);
+  }
+
     return (
       <div className="px-2 py-2 sm:px-2 lg:px-2 bg-slate-50 min-h-screen">
         <div className="flex items-center mb-5">
           <div className="h-10 w-1 rounded bg-blue-600 mr-4" />
           <div>
-            <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Audits</h1>
+            <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Audits
+                {filters? <Filters filters={filters} onSelectedFilter={onSelectedFilter} value={filter} /> : null}
+            </h1>
             <p className="mt-1 text-base text-slate-500">{label}</p>
           </div>
         </div>
