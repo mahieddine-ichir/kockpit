@@ -17,7 +17,7 @@ kockpit:
 
   audit:
     opensearch:
-      index: audit_data
+      index: audit-data
       endpoints: http://localhost:9200
     azure:
       storage:
