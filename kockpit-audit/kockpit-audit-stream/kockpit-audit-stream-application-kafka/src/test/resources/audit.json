@@ -13,7 +13,7 @@
   "indexedKeyValues":[
     {"key":"requestUri", "value":"/rcu/v2/compteClients", "valueInteger":null,"valueFloat":null,"valueDate":null},
     {"key":"origin","value":"","valueInteger":null,"valueFloat":null,"valueDate":null},
-    {"key":"httpStatus","value":"201","valueInteger":201,"valueFloat":null,"valueDate":null},
+    {"key":"httpStatus","value":"404","valueInteger":201,"valueFloat":null,"valueDate":null},
     {"key":"httpMethod","value":"POST","valueInteger":null,"valueFloat":null,"valueDate":null},
     {"key":"principal","value":"anonymousUser","valueInteger":null,"valueFloat":null,"valueDate":null},
     {"key":"duration","value":"4911","valueInteger":4911,"valueFloat":null,"valueDate":null}

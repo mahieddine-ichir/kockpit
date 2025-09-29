@@ -2,7 +2,7 @@
 set -e
 
 echo "Waiting for OpenSearch to start..."
-until curl -s http://opensearch:9200 >/dev/null; do
+until curl -s http://localhost:9200 >/dev/null; do
   sleep 5
 done
 
