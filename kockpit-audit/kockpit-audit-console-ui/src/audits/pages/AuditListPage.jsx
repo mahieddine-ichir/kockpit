@@ -8,6 +8,7 @@ import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import Pagination from '../../components/Pagination.jsx';
 import CopyButton from "../../components/CopyButton.jsx";
 import SearchTerm from "./components/SearchTerm.jsx";
+import searchTerm from "./components/SearchTerm.jsx";
 
 function formatLabel(col) {
   let label = '';
@@ -115,40 +116,60 @@ const AuditLine = ({columns, audit, onClick}) => {
   )
 }
 
-const HttpStatus = ({statusFilter, setStatusFilter}) => {
-  const options = ["200", "201", "204", "404", "401", "403", "500"];
+
+const HttpStatus = ({title, statusFilter, setStatusFilter, options}) => {
   return (<select
       value={statusFilter}
-      onChange={setStatusFilter}
+      onChange={(e) => setStatusFilter(e.target.value)}
       className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
   >
-    <option value="">All Statuses</option>
+    <option value="">{title}</option>
     {options.map(opt => (
         <option key={opt} value={opt}>{opt}</option>
     ))}
   </select>)
 }
 
-const HttpMethod = ({httpMethodFilter, setHttpMethodFilter}) => {
-  const options = ["GET", "POST",  "PUT", "DELETE", "PATCH"];
+const HttpMethod = ({title, httpMethodFilter, setHttpMethodFilter, options}) => {
   return (<select
       value={httpMethodFilter}
-      onChange={setHttpMethodFilter}
-      className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:border-blue-500 shadow-sm"
+      onChange={(e) => setHttpMethodFilter(e.target.value)}
+      className="min-w-[120px] rounded-lg border border-slate-200 py-2 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
   >
-    <option value="">All Methods</option>
+    <option value="">{title}s</option>
     {options.map(opt => (
         <option key={opt} value={opt}>{opt}</option>
     ))}
   </select>)
 }
+
+const SearchTermFactory = ({searchTerm, setTerm, clearTerm}) => {
+    if (searchTerm.name === 'httpStatus') {
+        return (<HttpStatus
+                title={searchTerm.name}
+                options={searchTerm.options}
+                setStatusFilter={option => setTerm(searchTerm, option)}
+            />
+        )
+    } else if (searchTerm.name === 'httpMethod') {
+        return (<HttpMethod
+                title={searchTerm.name}
+                options={searchTerm.options} setHttpMethodFilter={option => setTerm(searchTerm, option)}
+            />
+        )
+    } else {
+        return (<SearchTerm term={searchTerm}
+                    setTerm={(text) => setTerm(searchTerm, text)}
+                    clearTerm={() => clearTerm(searchTerm)}
+        />)
+    }
+}
+
 
 const AuditListPage = ({ domain, env, config }) => {
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [httpMethodFilter, setHttpMethodFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
@@ -172,22 +193,8 @@ const AuditListPage = ({ domain, env, config }) => {
   }
 
   useEffect(() => {
-    loadAll(domain, env);
-  }, [domain, env, currentPage, itemsPerPage, statusFilter]);
-
-  function loadAll(domain, env) {
-    setLoading(true);
-    if (search || statusFilter) {
-      doSearchAudits();
-    } else {
-      fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
-          .then((data) => {
-            setAudits(data.items);
-            setTotalCount(data.total_count);
-            setLoading(false);
-          });
-    }
-  }
+    loadData();
+  }, [domain, env, currentPage, itemsPerPage]);
 
   const handleViewDetails = (audit) => {
     navigate(`/audits/${audit.id}`);
@@ -200,7 +207,51 @@ const AuditListPage = ({ domain, env, config }) => {
     setCurrentPage(page);
   };
 
-  function doSearchAudits() {
+  function loadData() {
+      console.log("load data ...");
+      if (searchTerms.length > 0) {
+          setLoading(true);
+          advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
+              setAudits(data.items);
+              setTotalCount(data.total_count);
+              setLoading(false);
+          });
+      } else if (search || search.trim().length > 0) {
+          setLoading(true);
+          searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
+              setAudits(data.items);
+              setTotalCount(data.total_count);
+              setLoading(false);
+          });
+      } else {
+          console.log(`loading all ${domain}, ${env}, ${itemsPerPage}, ${(currentPage - 1) * itemsPerPage}`);
+          fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
+              .then((data) => {
+                  if (data && data.items && data.items.length > 0) {
+                        console.log(`loaded ${data.items.length} items`)
+                      setAudits(data.items);
+                      setTotalCount(data.total_count);
+                    } else {
+                        console.log(`no data found!`)
+                      //setAudits([]);
+                      //setTotalCount(0);
+                  }
+                  setLoading(false);
+              });
+      }
+/*
+      if (search) {
+          doSearchAudits()
+      } else {
+          fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
+              .then((data) => {
+                  setAudits(data.items);
+                  setTotalCount(data.total_count);
+                  setLoading(false);
+              });
+      }
+
+      console.log("search Audits");
       if (searchTerms.length > 0) {
           setLoading(true);
           advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
@@ -216,41 +267,17 @@ const AuditListPage = ({ domain, env, config }) => {
           setLoading(false);
         });
       }
-    setLoading(true);
-    searchAudits(search, statusFilter, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
-        .then(data => {
-          setAudits(data.items);
-          setTotalCount(data.total_count);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Search failed:', error);
-          setLoading(false);
-        });
+ */
   }
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      doSearchAudits();
+      loadData();
     }
   }
 
-  const handleStatusFilterChange = (e) => {
-    setStatusFilter(e.target.value);
-    setCurrentPage(1);
-  }
-
-  const handleHttpMethodFilterChange = (e) => {
-    setHttpMethodFilter(e.target.value);
-    setCurrentPage(1);
-  }
-
-  const filteredAudits = audits.filter(audit =>
-      httpMethodFilter ? getMethod(audit) === httpMethodFilter : audit
-  );
-
-  return (
     let addTerm = (searchTerm, text) => {
+      console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)}`);
       let existing = searchTerms.find(kv => kv.name === searchTerm.name);
       if (existing) {
           existing.value = text;
@@ -265,7 +292,7 @@ const AuditListPage = ({ domain, env, config }) => {
     };
 
   let clearTerm = (searchTerm) => {
-      let index = searchTerm.indexOf(searchTerm);
+      let index = searchTerms.indexOf(searchTerm);
       if (index > -1) {
           setSearchTerms([
               ...searchTerms.slice(0, index),
@@ -299,7 +326,7 @@ const AuditListPage = ({ domain, env, config }) => {
                     className="block w-full pl-10 pr-24 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base transition-all shadow-sm"
                 />
                 <button
-                    onClick={doSearchAudits}
+                    onClick={loadData}
                     className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
                 >
                   Search
@@ -307,19 +334,11 @@ const AuditListPage = ({ domain, env, config }) => {
               </div>
             </div>
             <div className="flex flex-wrap gap-4 items-center mt-2">
-            <span className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 rounded-md text-xs font-medium mr-2">
-              <AdjustmentsHorizontalIcon className="h-4 w-4 mr-1" /> Filters
-            </span>
-              <HttpStatus statusFilter={statusFilter} setStatusFilter={handleStatusFilterChange} />
-              <HttpMethod httpMethodFilter={httpMethodFilter} setHttpMethodFilter={handleHttpMethodFilterChange} />
             </div>
               <div className="flex flex-wrap gap-4 items-center mt-2">
                   {
                       searchColumns.map(searchTerm => (
-                          <SearchTerm term={searchTerm}
-                                      setTerm={(text) => addTerm(searchTerm, text)}
-                                      clearTerm={() => clearTerm(searchTerm)}
-                          />
+                          <SearchTermFactory searchTerm={searchTerm} setTerm={addTerm} clearTerm={clearTerm} />
                       ))
                   }
               </div>
@@ -340,11 +359,10 @@ const AuditListPage = ({ domain, env, config }) => {
               <HeaderLine columns={columns}/>
             </thead>
             <tbody className="divide-y divide-slate-100">
-            {
-              filteredAudits
-                  .map(audit => (
+            { audits ?
+              audits.map(audit => (
                       <AuditLine audit={audit} columns={columns} key={audit.id} onClick={handleViewDetails} />
-                  ))
+              )) : null
             }
             </tbody>
           </table>
