@@ -4,27 +4,14 @@ server:
     context-path: /backend/api
 
 spring:
-  profiles:
-    active: opensearch
   application:
-    name: kockpit-audit-backoffice
+    name: kockpit-backoffice
 
 kockpit:
   sdk:
     domain: rcu
-    env: rec
-    appId: any
-
-  audit:
-    opensearch:
-      index: audit-data
-      endpoints: http://localhost:9200
-    azure:
-      storage:
-        endpoint: ${STORAGE_ENDPOINT}
-        account: ${STORAGE_ACCOUNT}
-        key: ${STORAGE_KEY}
-        container: ${STORAGE_CONTAINER}
+    env: local
+    appId: backend-application
 
 management:
   endpoint:

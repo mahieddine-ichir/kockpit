@@ -1,0 +1,5 @@
+kockpit:
+  audit:
+    opensearch:
+      index: audit-data
+      endpoints: ${OPENSEARCH_ENDPOINTS}
