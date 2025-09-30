@@ -3,6 +3,9 @@ on:
   push:
     branches: ["accor"]
 
+env:
+  working_dir: ./core-application/console-ui
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,6 +28,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
+          cache-dependency-path: ./core-application/console-ui/package-lock.json
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
