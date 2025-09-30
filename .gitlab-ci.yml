@@ -1,43 +1,19 @@
 include:
   - project: welcome-connect-platform/framework/templates/gitlabci
-    ref: "java-21-kockpit"
-    file: app-build-jib-ci.yml
+    ref: "java-17"
+    file: lib-build-java-ci.yml
 
-variables:
-  CI_JIB_PLATFORMS: "linux/arm64"
-
-.runner-xxlarge:
-  variables:
-    KUBERNETES_SERVICE_CPU_REQUEST: "200m"
-    KUBERNETES_SERVICE_CPU_LIMIT: "2"
-    KUBERNETES_SERVICE_MEMORY_REQUEST: "2Gi"
-    KUBERNETES_SERVICE_MEMORY_LIMIT: "4Gi"
-
-.k8s-dind:
-  variables:
-    DOCKER_VERSION: 24.0.9
-    # DOCKER_HOST: tcp://docker:2375
-    # @k8s/gitlab-runner : hostAliases: are lost with variabilised DOCKER_VERSION..
-    DOCKER_HOST: tcp://127.0.0.1:2375
-    DOCKER_TLS_CERTDIR: ""
-  services:
-    - docker:${DOCKER_VERSION}-dind
-
-.mvn-test:
+mvn-deploy-snapshot-feat:
+  when: manual
   extends:
-    - .mvn-job
-    - .k8s-dind
-    - .runner-xxlarge
+    - .mvn-deploy-snapshot
+    - .mr
 
-.mvn-release-prepare:
-  extends:
-    - .mvn-job
-    - .k8s-dind
-    - .runner-xxlarge
-
-dependencies:prepare:
-  rules:
-    - when: never
-dependencies:wiz-scan:
-  rules:
-    - when: never
+mvn-build-mr:
+  variables:
+    CACHE_MODE: "true"
+  cache:
+    key: m2-cache
+    policy: pull-push
+    paths:
+      - $CI_PROJECT_DIR/.m2/repository/
