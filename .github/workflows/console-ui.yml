@@ -3,13 +3,13 @@ on:
   push:
     branches: ["accor"]
 
-defaults:
-  run:
-    working-directory: core-application/console-ui
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./core-application/console-ui
+
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
