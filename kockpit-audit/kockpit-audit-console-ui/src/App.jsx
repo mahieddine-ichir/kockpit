@@ -5,8 +5,9 @@ import Sidebar from "./sidebar/Sidebar.jsx";
 import AuditListPage from "./audits/pages/AuditListPage.jsx";
 import DetailsPage from "./audits/pages/DetailsPage.jsx";
 import DomainEnv from "./components/DomainEnv.jsx";
-import {getToken, login} from "./services/api.js";
 import {useMsal} from "@azure/msal-react";
+import {loginRequest} from "./authConfig.js";
+import {login} from "./services/api.js";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -20,15 +21,20 @@ function App() {
 
     useEffect(() => {
         login().then(logged => {
-            console.log(`logged ${JSON.stringify(logged)}`)
+            console.log(`logged as ${JSON.stringify(logged)}`)
             setUser(logged);
             setLoading(false);
 
             // get access token
-            getToken(instance, accounts)
-                .then(token => {
-                    console.log(`Access token ${token}`);
-                });
+            console.log("Getting access token ...")
+            instance.acquireTokenSilent({
+                ...loginRequest,
+                account: accounts[0],
+            }).then((response) => {
+                console.log("response: ", response.accessToken);
+                //callMsGraph(response.accessToken).then((response) => setGraphData(response));
+            });
+
         })
     }, []);
 
