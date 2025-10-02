@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+const API_BASE = 'http://localhost:8080/backend/api';
 console.log('API_BASE:', API_BASE);
 
 // deprecated use paging one
@@ -31,6 +31,12 @@ export const getConfig = async () => {
   const response = await axios.get(`${API_BASE}/config`);
   return response.data;
 }
+
+export const createConfig = async (configItem) => {
+    const response = await axios.post(`${API_BASE}/config`, configItem);
+    return response.data;
+}
+
 
 export const login = async() => {
     console.log(`login on ${import.meta.env.MODE}`)

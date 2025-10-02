@@ -6,6 +6,7 @@ import AuditListPage from "./audits/pages/AuditListPage.jsx";
 import DetailsPage from "./audits/pages/DetailsPage.jsx";
 import DomainEnv from "./components/DomainEnv.jsx";
 import {login} from "./services/api.js";
+import ConfigPage from "./Config/ConfigPage.jsx";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -63,6 +64,7 @@ function App() {
                                     className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
                                     <Routes>
                                         <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} />} />
+                                        <Route path='/config' element={<ConfigPage configs={configs} />} />
                                         <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env}/>} />
                                         <Route path="*" element={<Navigate to="/audits" replace={true}/>}/>
                                     </Routes>
