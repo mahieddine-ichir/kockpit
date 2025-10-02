@@ -33,7 +33,7 @@ function App() {
             }).then((response) => {
                 console.log("response: ", response.accessToken);
                 //callMsGraph(response.accessToken).then((response) => setGraphData(response));
-            });
+            }).catch((error) => console.log(`error getting access token ${error}`));
 
         })
     }, []);
