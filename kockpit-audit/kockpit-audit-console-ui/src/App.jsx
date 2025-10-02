@@ -5,7 +5,8 @@ import Sidebar from "./sidebar/Sidebar.jsx";
 import AuditListPage from "./audits/pages/AuditListPage.jsx";
 import DetailsPage from "./audits/pages/DetailsPage.jsx";
 import DomainEnv from "./components/DomainEnv.jsx";
-import {login} from "./services/api.js";
+import {getToken, login} from "./services/api.js";
+import {useMsal} from "@azure/msal-react";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -15,12 +16,19 @@ function App() {
     const [config, setConfig] = useState();
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState('');
+    const { instance, accounts } = useMsal();
 
     useEffect(() => {
         login().then(logged => {
             console.log(`logged ${JSON.stringify(logged)}`)
             setUser(logged);
             setLoading(false);
+
+            // get access token
+            getToken(instance, accounts)
+                .then(token => {
+                    console.log(`Access token ${token}`);
+                });
         })
     }, []);
 
