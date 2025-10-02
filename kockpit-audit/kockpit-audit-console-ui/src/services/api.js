@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {loginRequest} from "../authConfig.js";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 console.log('API_BASE:', API_BASE);
@@ -44,6 +45,14 @@ export const login = async() => {
     }
     const response = await axios.get("/.auth/me");
     return response.data;
+}
+
+export const getToken = (instance, accounts) => {
+    return instance
+        .acquireTokenSilent({
+            ...loginRequest,
+            account: accounts[0],
+        })
 }
 
 export const logout = async() => {
