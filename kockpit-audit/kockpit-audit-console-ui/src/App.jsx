@@ -27,13 +27,20 @@ function App() {
 
             // get access token
             console.log("Getting access token ...")
-            instance.acquireTokenSilent({
-                ...loginRequest,
-                account: accounts[0],
-            }).then((response) => {
-                console.log("response: ", response.accessToken);
-                //callMsGraph(response.accessToken).then((response) => setGraphData(response));
-            }).catch((error) => console.log(`error getting access token ${error}`));
+            instance.loginRedirect(loginRequest)
+                .then(res => {
+                    console.log(res);
+                    instance.acquireTokenSilent({
+                        ...loginRequest,
+                        account: accounts[0],
+                    }).then((response) => {
+                        console.log("response: ", response.accessToken);
+                        //callMsGraph(response.accessToken).then((response) => setGraphData(response));
+                    }).catch((error) => console.log(`error getting access token ${error}`));
+                })
+                .catch(e => {
+                    console.log(e);
+                });
 
         })
     }, []);
