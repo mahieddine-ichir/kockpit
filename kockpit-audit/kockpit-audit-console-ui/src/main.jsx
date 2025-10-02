@@ -4,14 +4,11 @@ import {MsalProvider} from '@azure/msal-react';
 import App from './App.jsx'
 import {msalConfig} from './authConfig';
 import React from 'react';
-import ReactDOM from 'react-dom';
-
+import {createRoot} from 'react-dom/client'
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-
-root.render(
+createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <MsalProvider instance={msalInstance}>
             <App />
