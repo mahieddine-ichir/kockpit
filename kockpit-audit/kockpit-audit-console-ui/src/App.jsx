@@ -25,6 +25,7 @@ function App() {
             setUser(logged);
             setLoading(false);
 
+            /*
             // get access token
             console.log("Getting access token ...")
             instance.loginRedirect(loginRequest)
@@ -41,6 +42,7 @@ function App() {
                 .catch(e => {
                     console.log(e);
                 });
+             */
 
         })
     }, []);
