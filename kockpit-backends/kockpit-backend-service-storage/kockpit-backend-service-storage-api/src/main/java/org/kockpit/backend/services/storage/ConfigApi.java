@@ -29,17 +29,17 @@ public class ConfigApi {
      * @return Successful operation (status code 200)
      */
     @Operation(
-        operationId = "getConfig",
-        tags = { "config", "manifest" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = {
-                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ConfigItem.class)))
-            })
-        }
+            operationId = "getConfig",
+            tags = { "config", "manifest" },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful operation", content = {
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ConfigItem.class)))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            produces = { "application/json" }
     )
     ResponseEntity<List<ConfigItem>> getConfig() {
         return ResponseEntity.ok(configApiService.getConfig());

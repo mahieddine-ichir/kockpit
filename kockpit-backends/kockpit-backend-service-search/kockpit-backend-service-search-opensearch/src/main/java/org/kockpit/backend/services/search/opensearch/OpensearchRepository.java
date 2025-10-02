@@ -106,6 +106,16 @@ public class OpensearchRepository implements SearchService {
             } else {
                 buildQuery(key, List.of(searchTerm.getValue()), rootBoolQueryBuilder);
             }
+            } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
+                if (searchTerm.getValue() instanceof List<?> values && values.size() == 2) {
+                    Object from = values.get(0);
+                    Object to = values.get(1);
+                    rootBoolQueryBuilder.must(
+                            rangeQuery(searchTerm.getName())
+                                    .from(from != null ? from : null)
+                                    .to(to != null ? to : null)
+                    );
+                }
         } else {
             rootBoolQueryBuilder.must(matchQuery(searchTerm.getPath(), searchTerm.getValue()));
         }
