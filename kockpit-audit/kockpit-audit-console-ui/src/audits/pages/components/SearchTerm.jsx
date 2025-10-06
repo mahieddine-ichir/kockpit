@@ -1,34 +1,47 @@
-import React, {useEffect, useState} from "react";
-import {XMarkIcon} from "@heroicons/react/20/solid/index.js";
+import React, {useEffect, useRef, useState} from "react";
 
 const SearchTerm = ({term, setTerm, clearTerm}) => {
     const [text, setText] = useState('');
+    const timeoutRef = useRef(null);
+
     useEffect(() => {
-        if (text.length > 0) {
-            setTerm(text);
-        } else {
-            clearTerm();
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
         }
-    }, [text]);
+
+        timeoutRef.current = setTimeout(() => {
+            if (text && text.length > 0) {
+                let valueToSend = text;
+                if (term.type === 'number') {
+                    valueToSend = Number(text);
+                }
+                setTerm(valueToSend);
+            } else {
+                clearTerm();
+            }
+        }, 300);
+
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, [text, term.type]);
 
     return (
-        <div className="relative flex">
-              <span className="absolute inset-y-0 left-1 pl-1 flex items-center pointer-events-none">
-                  {term.name}
-              </span>
+        <div className="space-y-2">
+            <label className="block text-sm font-medium text-slate-700">
+                {term.name}
+            </label>
             <input
-                type="text"
+                type={term.type === 'number' ? 'number' : 'text'}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="block w-full pl-10 py-1 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base transition-all shadow-sm"
+                placeholder={`Enter ${term.name.toLowerCase()}...`}
+                className="block w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-colors shadow-sm"
             />
-            <span className="absolute inset-y-0 right-2 pl-1 flex items-center pointer-events-none"
-                  onClick={() => setText('')}
-            >
-                <XMarkIcon className="h-5 w-5 text-slate-400" />
-            </span>
         </div>
-    )
+    );
 }
 
 export default SearchTerm;

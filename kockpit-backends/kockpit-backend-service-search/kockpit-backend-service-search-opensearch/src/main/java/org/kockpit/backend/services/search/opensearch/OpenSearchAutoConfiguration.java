@@ -3,6 +3,7 @@ package org.kockpit.backend.services.search.opensearch;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
 import org.opensearch.client.RestClient;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @AutoConfiguration
+@Slf4j
 public class OpenSearchAutoConfiguration {
 
     @Bean
@@ -25,6 +27,12 @@ public class OpenSearchAutoConfiguration {
             RestHighLevelClient restHighLevelClient,
             @Value("${kockpit.audit.opensearch.index}") String index
     ) {
+        log.info(
+"""
+    \n
+    - Opensearch index: {}
+""", index);
+
         return new OpensearchRepository(restHighLevelClient, index);
     }
 
@@ -43,6 +51,12 @@ public class OpenSearchAutoConfiguration {
         HttpHost[] httpHosts = Arrays.stream(endpoints.split(","))
                 .map(HttpHost::create)
                 .toArray(HttpHost[]::new);
+        log.info(
+"""
+    \n
+    - Opensearch endpoints list: {}
+""", endpoints);
+
         RestClientBuilder builder = RestClient.builder(httpHosts);
         if (! CollectionUtils.isEmpty(interceptors)) {
             interceptors.forEach(interceptor -> builder.setHttpClientConfigCallback(hacb -> hacb.addInterceptorLast(interceptor)));

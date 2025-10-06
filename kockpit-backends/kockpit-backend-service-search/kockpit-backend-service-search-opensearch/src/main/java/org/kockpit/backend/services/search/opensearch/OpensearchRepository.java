@@ -21,10 +21,7 @@ import org.opensearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -105,6 +102,15 @@ public class OpensearchRepository implements SearchService {
                 buildQuery(key, values, rootBoolQueryBuilder);
             } else {
                 buildQuery(key, List.of(searchTerm.getValue()), rootBoolQueryBuilder);
+            }
+        } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
+            if ("start".equals(searchTerm.getName())) {
+                log.info("Searching from {}", new Date((long) searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(searchTerm.getPath()).from(searchTerm.getValue()));
+            }
+            if ("end".equals(searchTerm.getName())) {
+                log.info("Searching to {}", new Date((long) searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(searchTerm.getPath()).to(searchTerm.getValue()));
             }
         } else {
             rootBoolQueryBuilder.must(matchQuery(searchTerm.getPath(), searchTerm.getValue()));
