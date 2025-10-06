@@ -5,22 +5,22 @@ function DomainEnv({onConfigLoaded, domainEnvChanged}) {
     const [options, setOptions] = useState([]);
     useEffect(() => {
         getConfig().then(config => {
-            console.log("loading config ... ")
             onConfigLoaded(config);
-            let opts = config.map(cfg => {
-                return {
-                    env: cfg.env,
-                    domain: cfg.domain
-                }
-            });
+            let opts = [];
+            config.forEach(cfg => cfg.configs.forEach(_cfg => {
+                console.log(`cfg ${JSON.stringify(_cfg)}`);
+                opts.push({
+                    name: cfg.name,
+                    domain: _cfg.domain,
+                    env: _cfg.env
+                });
+            }));
             setOptions(opts);
-        }).catch(err => {
-            console.log(`error ${err.response.status}: ${err.response.statusText}`);
-        });
+        }).catch(e => console.log('error loading config: '+e?.message || 'Failed to load config'))
     }, []);
 
     function onChange(e) {
-        console.log(`Domain changed ${e.target.value}`);
+        console.log(`Domain changed ${JSON.stringify(e.target.value)}`);
         let split = e.target.value.split('/');
         domainEnvChanged(split[0].trim(), split[1].trim());
     }
@@ -33,8 +33,8 @@ function DomainEnv({onConfigLoaded, domainEnvChanged}) {
                     style={{ minHeight: '44px' }}
                 >
                     {
-                        options.map(option => (
-                            <option key={option.domain+option.env}>{option.domain} / {option.env}</option>
+                        options.map((option, index) => (
+                            <option key={option.domain+option.env+index} value={option.domain + '/' + option.env}>{option.domain} / {option.env} ({option.name})</option>
                         ))
                     }
                 </select>
