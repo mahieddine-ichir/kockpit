@@ -5,25 +5,13 @@ server:
 
 spring:
   application:
-    name: kockpit-audit-backoffice
+    name: kockpit-backoffice
 
 kockpit:
   sdk:
     domain: rcu
     env: local
-    appId: any
-
-  audit:
-    opensearch:
-      index: ${INDEX_NAME}
-      endpoints: ${OPENSEARCH_ENDPOINTS}
-    azure:
-      storage:
-        endpoint: ${STORAGE_ENDPOINT}
-        account: ${STORAGE_ACCOUNT}
-        key: ${STORAGE_KEY}
-        container: ${STORAGE_CONTAINER}
-        blob: ${STORAGE_BLOB}
+    appId: backend-application
 
 management:
   endpoint:
@@ -33,3 +21,4 @@ management:
   endpoints:
     web:
       base-path: /backend/actuator
+

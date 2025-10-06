@@ -6,6 +6,7 @@ import AuditListPage from "./audits/pages/AuditListPage.jsx";
 import DetailsPage from "./audits/pages/DetailsPage.jsx";
 import DomainEnv from "./components/DomainEnv.jsx";
 import {login} from "./services/api.js";
+import ConfigPage from "./Config/ConfigPage.jsx";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -18,7 +19,6 @@ function App() {
 
     useEffect(() => {
         login().then(logged => {
-            console.log(`logged ${JSON.stringify(logged)}`)
             setUser(logged);
             setLoading(false);
         })
@@ -29,16 +29,21 @@ function App() {
         setDomain(domain);
         setEnv(env);
 
-        setConfig(configs.find(cfg => cfg.env === env));
+        configs.forEach((cfg) => {
+            cfg.configs.forEach(_cfg => {
+                if (_cfg.env === env && _cfg.domain === domain) {
+                    setConfig(_cfg);
+                }
+            });
+        });
     }
 
     function onConfigLoaded(configs) {
-        console.log(`configs ${JSON.stringify(configs)} loaded`);
         setConfigs(configs);
         setConfig(configs[0]);
 
-        setDomain(configs[0].domain);
-        setEnv(configs[0].env);
+        setDomain(configs[0].configs[0].domain);
+        setEnv(configs[0].configs[0].env);
     }
 
     if (loading) return <div>Loading ...</div>;
@@ -64,6 +69,7 @@ function App() {
                                     className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
                                     <Routes>
                                         <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} />} />
+                                        <Route path='/config' element={<ConfigPage configs={configs} />} />
                                         <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env}/>} />
                                         <Route path="*" element={<Navigate to="/audits" replace={true}/>}/>
                                     </Routes>

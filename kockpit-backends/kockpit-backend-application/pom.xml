@@ -35,7 +35,12 @@
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-backend-service-api</artifactId>
+            <artifactId>kockpit-backend-service-search-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-backend-service-storage-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -51,7 +56,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-backend-service-opensearch</artifactId>
+                    <artifactId>kockpit-backend-service-search-opensearch</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
@@ -61,17 +66,17 @@
             <dependencies>
                 <dependency>
                     <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-backend-service-azure</artifactId>
+                    <artifactId>kockpit-backend-service-storage-azure</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
         </profile>
         <profile>
-            <id>local</id>
+            <id>filesystem</id>
             <dependencies>
                 <dependency>
                     <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-backend-service-inmemory</artifactId>
+                    <artifactId>kockpit-backend-service-storage-filesystem</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
@@ -84,7 +89,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>org.kockpit.audit.backend.KockpitAuditBackendApplication</mainClass>
+                    <mainClass>org.kockpit.backend.KockpitAuditBackendApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

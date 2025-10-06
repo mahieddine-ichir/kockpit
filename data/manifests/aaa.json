@@ -1,0 +1,85 @@
+[
+  {
+    "domain": "rcu",
+    "env": "dev",
+    "services": [
+      {
+        "name": "audit",
+        "config": {
+          "columns": [
+            "appId", "requestId", "method", "path", "start", "duration", "status"
+          ],
+          "search_columns": [
+            {
+              "name": "start",
+              "type": "date",
+              "path": "."
+            },
+            {
+              "name": "end",
+              "type": "date",
+              "path": "."
+            },
+            {
+              "name": "gbid",
+              "type": "number",
+              "path": "audits.events.httpAuditedResponse.body"
+            },
+            {
+              "name": "rowId"
+            },
+            {
+              "name": "httpStatus",
+              "type": "options",
+              "options": [200, 201, 400, 500],
+              "path": "indexedKeyValues.httpStatus"
+            },
+            {
+              "name": "httpMethod",
+              "type": "options",
+              "options": ["GET", "POST"],
+              "path": "indexedKeyValues.httpMethod"
+            }
+          ],
+          "saved_filters": [
+            {
+              "name": "created / notFound",
+              "filters": [
+                {
+                  "name": "httpStatus",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 201, 404 ]
+                }
+              ]
+            },
+            {
+              "name": "500 / POST",
+              "filters": [
+                {
+                  "name": "httpStatus",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 500 ]
+                },
+                {
+                  "name": "httpMethod",
+                  "path": "indexedKeyValues.httpMethod",
+                  "values": [ "POST" ]
+                }
+              ]
+            },
+            {
+              "name": "500",
+              "filters": [
+                {
+                  "name": "httpStatus",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 500 ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
