@@ -66,10 +66,12 @@ class StorageAccountFilesRepositoryTest {
         when(blobContainerClient.listBlobs()).thenReturn(blobClients);
         when(blobContainerClient.getBlobClient(Mockito.anyString())).thenReturn(blobClient);
 
-        List<Manifest> configItems = storageAccountFilesRepository.getConfig();
-        log.info("configItems {}", configItems);
+        List<Manifest> manifests = storageAccountFilesRepository.getConfig();
+        log.info("configItems {}", manifests);
 
-        configItems.stream().map(ConfigItem::getServices)
+        manifests.stream()
+                .flatMap(manifest -> manifest.getConfigs().stream())
+                .map(ConfigItem::getServices)
                 .flatMap(List::stream)
                 .filter(service -> service.getName().equals("audit"))
                 .findFirst()
@@ -83,7 +85,9 @@ class StorageAccountFilesRepositoryTest {
                     }
                 }, Assertions::fail);
 
-        configItems.stream().map(ConfigItem::getServices)
+        manifests.stream()
+                .flatMap(manifest -> manifest.getConfigs().stream())
+                .map(ConfigItem::getServices)
                 .flatMap(List::stream)
                 .filter(service -> service.getName().equals("dyna-config"))
                 .findFirst()
