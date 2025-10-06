@@ -89,7 +89,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>org.kockpit.audit.backend.KockpitAuditBackendApplication</mainClass>
+                    <mainClass>org.kockpit.backend.KockpitAuditBackendApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
