@@ -41,7 +41,7 @@ public class ConfigApi {
             method = RequestMethod.GET,
             produces = { "application/json" }
     )
-    ResponseEntity<List<ConfigItem>> getConfig() {
+    ResponseEntity<List<Manifest>> getConfig() {
         return ResponseEntity.ok(configApiService.getConfig());
     }
 

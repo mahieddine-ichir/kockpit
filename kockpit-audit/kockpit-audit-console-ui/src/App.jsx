@@ -19,7 +19,6 @@ function App() {
 
     useEffect(() => {
         login().then(logged => {
-            console.log(`logged ${JSON.stringify(logged)}`)
             setUser(logged);
             setLoading(false);
         })
@@ -30,15 +29,21 @@ function App() {
         setDomain(domain);
         setEnv(env);
 
-        setConfig(configs.find(cfg => cfg.env === env));
+        configs.forEach((cfg) => {
+            cfg.configs.forEach(_cfg => {
+                if (_cfg.env === env && _cfg.domain === domain) {
+                    setConfig(_cfg);
+                }
+            });
+        });
     }
 
     function onConfigLoaded(configs) {
         setConfigs(configs);
         setConfig(configs[0]);
 
-        setDomain(configs[0].domain);
-        setEnv(configs[0].env);
+        setDomain(configs[0].configs[0].domain);
+        setEnv(configs[0].configs[0].env);
     }
 
     if (loading) return <div>Loading ...</div>;
