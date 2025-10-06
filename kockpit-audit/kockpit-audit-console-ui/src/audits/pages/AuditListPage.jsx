@@ -412,7 +412,7 @@ const AuditListPage = ({ domain, env, config }) => {
       let existing = searchTerms.find(kv => kv.name === searchTerm.name);
       if (existing) {
           existing.value = text;
-          loadData();
+          // fixme loadData(); -> executes reload on every search, should use the Search button
       } else {
           let newEl = {
               name: searchTerm.name,

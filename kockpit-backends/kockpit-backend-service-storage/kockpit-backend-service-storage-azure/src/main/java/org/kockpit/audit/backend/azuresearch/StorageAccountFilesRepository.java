@@ -9,9 +9,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.backend.services.storage.ConfigApiService;
 import org.kockpit.backend.services.storage.ConfigItem;
+import org.kockpit.backend.services.storage.Manifest;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class StorageAccountFilesRepository implements ConfigApiService {
 
     @SneakyThrows
     @Override
-    public List<ConfigItem> getConfig() {
+    public List<Manifest> getConfig() {
         return blobContainerClient.listBlobs()
                 .stream()
                 .filter(blobItem -> blobItem.getName().endsWith(".json"))
@@ -37,9 +37,12 @@ public class StorageAccountFilesRepository implements ConfigApiService {
                     ByteArrayOutputStream os = new ByteArrayOutputStream();
                     blobClient.downloadStream(os);
 
-                    return read(os);
+                    List<ConfigItem> read = read(os);
+                    Manifest manifest = new Manifest();
+                    manifest.setConfigs(read);
+                    manifest.setName(blobClient.getBlobName());
+                    return manifest;
                 })
-                .flatMap(Collection::stream)
                 .toList();
     }
 

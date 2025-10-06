@@ -8,14 +8,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.backend.services.storage.ConfigApiService;
 import org.kockpit.backend.services.storage.ConfigItem;
+import org.kockpit.backend.services.storage.Manifest;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -30,14 +30,12 @@ public class FileSystemRepository implements ConfigApiService {
 
     @SneakyThrows
     @Override
-    public List<ConfigItem> getConfig() {
+    public List<Manifest> getConfig() {
         log.debug("loading config from {}", localFilePath);
-        List<ConfigItem> list = Files.list(Path.of(localFilePath))
+        return Files.list(Path.of(localFilePath))
                 .map(this::read)
-                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
                 .toList();
-
-        return list;
     }
 
     @SneakyThrows
@@ -47,12 +45,17 @@ public class FileSystemRepository implements ConfigApiService {
         return configItem;
     }
 
-    private List<ConfigItem> read(Path path) {
+    private Manifest read(Path path) {
         try {
             TypeReference<List<ConfigItem>> typeRef = new TypeReference<>() {};
-            return objectMapper.readValue(new FileInputStream(path.toFile()), typeRef);
+            List<ConfigItem> configItems = objectMapper.readValue(new FileInputStream(path.toFile()), typeRef);
+            Manifest manifest = new Manifest();
+            manifest.setConfigs(configItems);
+            manifest.setName(path.toFile().getName());
+            return manifest;
         } catch (Exception e) {
-            return Collections.emptyList();
+            log.error("error reading config from {}", localFilePath, e);
+            return null;
         }
     }
 }

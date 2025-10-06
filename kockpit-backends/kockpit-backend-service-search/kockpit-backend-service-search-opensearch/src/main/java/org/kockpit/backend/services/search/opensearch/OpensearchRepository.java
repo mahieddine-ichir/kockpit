@@ -21,10 +21,7 @@ import org.opensearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -106,16 +103,15 @@ public class OpensearchRepository implements SearchService {
             } else {
                 buildQuery(key, List.of(searchTerm.getValue()), rootBoolQueryBuilder);
             }
-            } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
-                if (searchTerm.getValue() instanceof List<?> values && values.size() == 2) {
-                    Object from = values.get(0);
-                    Object to = values.get(1);
-                    rootBoolQueryBuilder.must(
-                            rangeQuery(searchTerm.getName())
-                                    .from(from != null ? from : null)
-                                    .to(to != null ? to : null)
-                    );
-                }
+        } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
+            if ("start".equals(searchTerm.getName())) {
+                log.info("Searching from {}", new Date((long) searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(searchTerm.getPath()).from(searchTerm.getValue()));
+            }
+            if ("end".equals(searchTerm.getName())) {
+                log.info("Searching to {}", new Date((long) searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(searchTerm.getPath()).to(searchTerm.getValue()));
+            }
         } else {
             rootBoolQueryBuilder.must(matchQuery(searchTerm.getPath(), searchTerm.getValue()));
         }
