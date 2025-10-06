@@ -13,6 +13,7 @@ import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.core.rest.RestStatus;
 import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
@@ -88,8 +89,15 @@ public class OpensearchRepository implements SearchService {
 
         Optional.ofNullable(query)
                 .map(q -> Arrays.stream(q.split(" ")).toList())
-                .ifPresent(texts ->
-                        texts.forEach(text -> rootBoolQueryBuilder.should(multiMatchQuery(text, "*"))));
+                .ifPresent(texts -> texts.forEach(text -> {
+                    if (text.contains("*")) {
+                        // fixme through searchTerm?
+                        rootBoolQueryBuilder.should(wildcardQuery("audits.events.httpAuditedRequest.body", text));
+                        rootBoolQueryBuilder.should(wildcardQuery("audits.events.httpAuditedResponse.body", text));
+                    } else {
+                        rootBoolQueryBuilder.should(multiMatchQuery(text, "*"));
+                    }
+                }));
 
         return runQuery(rootBoolQueryBuilder, domain, env, start, size);
     }
