@@ -13,7 +13,6 @@ import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.core.rest.RestStatus;
 import org.opensearch.index.query.BoolQueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
@@ -79,7 +78,6 @@ public class OpensearchRepository implements SearchService {
     @SneakyThrows
     @Override
     public Page searchAudits(String domain, String env, String query, List<SearchTerm> searchTerms, Integer start, Integer size) {
-        log.debug("Search terms {}", searchTerms);
         BoolQueryBuilder rootBoolQueryBuilder = new BoolQueryBuilder();
         if (!CollectionUtils.isEmpty(searchTerms)) {
             searchTerms.stream()
@@ -88,7 +86,8 @@ public class OpensearchRepository implements SearchService {
         }
 
         Optional.ofNullable(query)
-                .map(q -> Arrays.stream(q.split(" ")).toList())
+                .map(String::toLowerCase)
+                .map(q -> Arrays.stream(q.split(" ")))
                 .ifPresent(texts -> texts.forEach(text -> {
                     if (text.contains("*")) {
                         // fixme through searchTerm?

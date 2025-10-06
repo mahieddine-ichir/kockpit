@@ -1,11 +1,9 @@
-package org.kockpit.audit.backend;
+package org.kockpit.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = {
-        "org.kockpit.backend",
-})
+@SpringBootApplication
 public class KockpitAuditBackendApplication {
 
     public static void main(String[] args) {

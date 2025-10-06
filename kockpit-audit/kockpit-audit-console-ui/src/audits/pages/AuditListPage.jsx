@@ -453,9 +453,9 @@ const AuditListPage = ({ domain, env, config }) => {
       setFilter(filter);
   }
 
-    const otherFilters = searchColumns.filter(sc => !(sc.type === 'date' && (sc.name === 'start' || sc.name === 'end')));
-    const hasDateFilters = searchColumns.some(sc => sc.type === 'date' && (sc.name === 'start' || sc.name === 'end'));
-    const hasOtherFilters = otherFilters.length > 0;
+    const otherFilters = searchColumns?.filter(sc => !(sc.type === 'date' && (sc.name === 'start' || sc.name === 'end')));
+    const hasDateFilters = searchColumns?.some(sc => sc.type === 'date' && (sc.name === 'start' || sc.name === 'end'));
+    const hasOtherFilters = otherFilters?.length > 0;
 
     return (
         <div className="px-2 py-2 sm:px-2 lg:px-2 bg-slate-50 min-h-screen">

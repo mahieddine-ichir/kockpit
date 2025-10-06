@@ -17,9 +17,9 @@ function formatFriendlyDate(dateString) {
 }
 
 const OverviewTab = ({ request }) => {
-  console.log('Full request data:', request);
-  console.log('Audits:', request?.audits);
-  console.log('Web audit events:', request['audits']?.find(audit => audit.type === 'builtin.web')?.events);
+  //console.log('Full request data:', request);
+  //console.log('Audits:', request?.audits);
+  //console.log('Web audit events:', request['audits']?.find(audit => audit.type === 'builtin.web')?.events);
   let events = request['audits']?.find(audit => audit.type === 'builtin.web')?.events;
   let httpAuditedRequest = []
   let httpAuditedResponse = []
@@ -42,8 +42,6 @@ const OverviewTab = ({ request }) => {
                 }
             })[0]['httpAuditedResponse']
     }
-
-  console.log(httpAuditedRequest);
 
   function traceId(request) {
     return request['indexedKeyValues'] ?
