@@ -1,26 +1,49 @@
-[
-  {
-    "domain": "rcu",
-    "env": "local",
-    "services": [
-      {
-        "name": "audit",
-        "config": {
-          "columns": [
-            "appId", "requestId", "method", "path", "duration", "start", "status"
-          ],
-          "search_columns": []
-        }
+[ {
+  "domain" : "rcu",
+  "env" : "local",
+  "services" : [ {
+    "name" : "audit",
+    "config" : {
+      "columns" : [ "appId", "requestId", "method", "path", "duration", "start", "status" ],
+      "search_columns" : [ ]
+    }
+  }, {
+    "name" : "feature-flipping",
+    "config" : {
+      "ff.darkcanary.enabled" : {
+        "key" : "ff.darkcanary.enabled",
+        "enabled" : false,
+        "comment" : "Enable dark themejgyuuyggyug",
+        "expiration" : "2025-10-07"
       },
-      {
-        "name": "feature-flipping",
-        "config": {
-          "keys": [
-            {
-            }
-          ]
-        }
+      "ff.payment.beta.enabled" : {
+        "key" : "ff.payment.beta.enabled",
+        "enabled" : true,
+        "comment" : "Paymentchanges3",
+        "expiration" : "2025-10-01"
+      },
+      "ff.aiassistant.enabled" : {
+        "key" : "ff.aiassistant.enabled",
+        "enabled" : true,
+        "comment" : "mjsbjbssssshhsss",
+        "expiration" : null
+      },
+      "application.client.apim.aps.timeout" : {
+        "key" : "application.client.apim.aps.timeout",
+        "value" : "1017",
+        "comment" : "Timeout for client",
+        "enabled" : false
+      },
+      "application.client.apim.aps.x-custom-header" : {
+        "key" : "application.client.apim.aps.x-custom-header",
+        "value" : "custsssom2hjbjjjj",
+        "comment" : "Custom header"
+      },
+      "application.client.axa.basepath" : {
+        "key" : "application.client.axa.basepath",
+        "value" : "jnjnk",
+        "comment" : "Base path for AXA API"
       }
-    ]
-  }
-]
+    }
+  } ]
+} ]
