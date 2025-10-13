@@ -80,6 +80,7 @@ public class OpensearchRepository implements SearchService {
     public Page searchAudits(String domain, String env, String query, List<SearchTerm> searchTerms, Integer start, Integer size) {
         BoolQueryBuilder rootBoolQueryBuilder = new BoolQueryBuilder();
         if (!CollectionUtils.isEmpty(searchTerms)) {
+            log.debug("Search terms {}", searchTerms);
             searchTerms.stream()
                     .filter(searchTerm -> nonNull(searchTerm.getValue()) && nonNull(searchTerm.getPath()))
                     .forEach(searchTerm -> buildQuery(searchTerm, rootBoolQueryBuilder));
@@ -103,12 +104,12 @@ public class OpensearchRepository implements SearchService {
 
     private void buildQuery(SearchTerm searchTerm, BoolQueryBuilder rootBoolQueryBuilder) {
         if (searchTerm.getPath().startsWith("indexedKeyValues")) {
-            String key = searchTerm.getPath().substring("indexedKeyValues".length());
+            String key = searchTerm.getPath().substring("indexedKeyValues".length() + 1);
             if (searchTerm.getValue() instanceof List<?> values) {
-                log.debug("Searching terms of list {}", values);
-                buildQuery(key, values, rootBoolQueryBuilder);
+                log.debug("Searching terms {} of list {}", key, values);
+                buildQueryForIndexedKeyValues(key, values, rootBoolQueryBuilder);
             } else {
-                buildQuery(key, List.of(searchTerm.getValue()), rootBoolQueryBuilder);
+                buildQueryForIndexedKeyValues(key, List.of(searchTerm.getValue()), rootBoolQueryBuilder);
             }
         } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
             if ("start".equals(searchTerm.getName())) {
@@ -124,15 +125,11 @@ public class OpensearchRepository implements SearchService {
         }
     }
 
-    private void buildQuery(String name, List<?> values, BoolQueryBuilder rootBoolQueryBuilder) {
-        if (values.size() == 1) {
-            rootBoolQueryBuilder.must(matchQuery("indexedKeyValues.key", name))
-                    .must(matchQuery("indexedKeyValues.value", values.get(0)));
-        } else {
-            rootBoolQueryBuilder
-                    .must(matchQuery("indexedKeyValues.key", name))
-                    .must(termsQuery("indexedKeyValues.value", values));
-        }
+    private void buildQueryForIndexedKeyValues(String name, List<?> values, BoolQueryBuilder rootBoolQueryBuilder) {
+        log.debug("Searching {} in [{}]", name, values);
+        rootBoolQueryBuilder
+                .must(matchQuery("indexedKeyValues.key.keyword", name))
+                .must(termsQuery("indexedKeyValues.value.keyword", values));
     }
 
     private Page runQuery(BoolQueryBuilder rootBoolQueryBuilder, String domain, String env, Integer start, Integer size) throws Exception {
