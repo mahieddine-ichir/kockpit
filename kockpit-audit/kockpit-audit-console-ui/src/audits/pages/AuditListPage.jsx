@@ -132,7 +132,7 @@ const Filters = ({filters, onSelectedFilter, value}) => {
                 onChange={(e) => selectFilter(e.target.value)}
                 className="min-w-[180px] rounded-xl border border-slate-300 py-2.5 pl-10 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm hover:border-slate-400 transition-colors"
             >
-                <option value=""> Saved Filters</option>
+                <option value="">-- Saved Filters --</option>
                 {filters.map(opt => (
                     <option key={opt.name} value={opt.name}>{opt.name}</option>
                 ))}
@@ -196,20 +196,20 @@ const ActiveFilters = ({ searchTerms, clearTerm, clearAll }) => {
             <span className="text-sm font-medium text-blue-800 flex items-center">
               Active Filters:
           </span>
-
             {searchTerms.map((term, index) => (
                 <span
                     key={`${term.name}-${index}`}
                     className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium"
                 >
-                  <span className="font-semibold">{term.name}:</span> {term.value}
+                    <span className="font-semibold">{term.name}:</span>
+                    {term.value.join(" | ")}
                     <button
                         onClick={() => clearTerm(term)}
                         className="hover:bg-blue-200 rounded-full p-0.5 transition-colors"
                     >
-                      <XMarkIcon className="h-3 w-3" />
-                  </button>
-              </span>
+                        <XMarkIcon className="h-3 w-3" />
+                    </button>
+                </span>
             ))}
             <button
                 onClick={clearAll}
@@ -388,7 +388,6 @@ const AuditListPage = ({ domain, env, config }) => {
           fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
               .then((data) => {
                   if (data && data.items && data.items.length > 0) {
-                        console.log(`loaded ${data.items.length} items`)
                       setAudits(data.items);
                       setTotalCount(data.total_count);
                     } else {
@@ -409,18 +408,12 @@ const AuditListPage = ({ domain, env, config }) => {
 
     let addTerm = (searchTerm, text) => {
       console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)}`);
-      let existing = searchTerms.find(kv => kv.name === searchTerm.name);
-      if (existing) {
-          existing.value = text;
-          // fixme loadData(); -> executes reload on every search, should use the Search button
-      } else {
-          let newEl = {
-              name: searchTerm.name,
-              path: searchTerm.path,
-              value: text
-          };
-          setSearchTerms([...searchTerms, newEl]);
-      }
+      let newEl = {
+          name: searchTerm.name,
+          path: searchTerm.path,
+          value: text
+      };
+      setSearchTerms([...searchTerms, newEl]);
     };
 
   let clearTerm = (searchTerm) => {
@@ -443,13 +436,14 @@ const AuditListPage = ({ domain, env, config }) => {
           return;
       }
       console.log(`selecting filter ${JSON.stringify(filter)}`)
-      filter.filters.map(searchTerm => {
-          addTerm({
-              name: searchTerm.name,
-              path: searchTerm.path
-          }, searchTerm.values);
-      })
-
+      let terms = filter.filters.map(st => {
+          return {
+              name: st.name,
+              path: st.path,
+              value: st.values
+          }
+      });
+      setSearchTerms(terms);
       setFilter(filter);
   }
 
