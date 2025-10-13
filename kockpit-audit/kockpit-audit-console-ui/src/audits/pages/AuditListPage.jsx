@@ -190,6 +190,14 @@ const SearchTermFactory = ({searchTerm, setTerm, clearTerm}) => {
 const ActiveFilters = ({ searchTerms, clearTerm, clearAll }) => {
     if (searchTerms.length === 0) return null;
 
+    let displayText = (textOrArray) => {
+        if (Array.isArray(textOrArray)) {
+            return textOrArray.join(" | ")
+        } else {
+            return textOrArray;
+        }
+    }
+
     return (
         <div className="flex flex-wrap items-center gap-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
             <CheckCircleIcon className="h-4 w-4 text-blue-800" />
@@ -202,7 +210,9 @@ const ActiveFilters = ({ searchTerms, clearTerm, clearAll }) => {
                     className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium"
                 >
                     <span className="font-semibold">{term.name}:</span>
-                    {term.value.join(" | ")}
+                    {
+                        displayText(term.value)
+                    }
                     <button
                         onClick={() => clearTerm(term)}
                         className="hover:bg-blue-200 rounded-full p-0.5 transition-colors"
