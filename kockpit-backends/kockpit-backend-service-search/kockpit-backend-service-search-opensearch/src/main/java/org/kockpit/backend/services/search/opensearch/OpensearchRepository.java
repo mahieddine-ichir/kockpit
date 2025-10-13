@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.kockpit.backend.services.search.opensearch.AuditReportHelper.getAuditAliasName;
 import static org.opensearch.index.query.QueryBuilders.*;
@@ -82,7 +83,7 @@ public class OpensearchRepository implements SearchService {
         if (!CollectionUtils.isEmpty(searchTerms)) {
             log.debug("Search terms {}", searchTerms);
             searchTerms.stream()
-                    .filter(searchTerm -> nonNull(searchTerm.getValue()) && nonNull(searchTerm.getPath()))
+                    .filter(searchTerm -> nonNull(searchTerm.getValue()))
                     .forEach(searchTerm -> buildQuery(searchTerm, rootBoolQueryBuilder));
         }
 
@@ -103,8 +104,9 @@ public class OpensearchRepository implements SearchService {
     }
 
     private void buildQuery(SearchTerm searchTerm, BoolQueryBuilder rootBoolQueryBuilder) {
-        if (searchTerm.getPath().startsWith("indexedKeyValues")) {
-            String key = searchTerm.getPath().substring("indexedKeyValues".length() + 1);
+        String path = isNull(searchTerm.getPath()) ? searchTerm.getName() : searchTerm.getPath();
+        if (path.startsWith("indexedKeyValues")) {
+            String key = path.substring("indexedKeyValues".length() + 1);
             if (searchTerm.getValue() instanceof List<?> values) {
                 log.debug("Searching terms {} of list {}", key, values);
                 buildQueryForIndexedKeyValues(key, values, rootBoolQueryBuilder);
@@ -114,14 +116,14 @@ public class OpensearchRepository implements SearchService {
         } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
             if ("start".equals(searchTerm.getName())) {
                 log.info("Searching from {}", new Date((long) searchTerm.getValue()));
-                rootBoolQueryBuilder.must(rangeQuery(searchTerm.getPath()).from(searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(path).from(searchTerm.getValue()));
             }
             if ("end".equals(searchTerm.getName())) {
                 log.info("Searching to {}", new Date((long) searchTerm.getValue()));
-                rootBoolQueryBuilder.must(rangeQuery(searchTerm.getPath()).to(searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(path).to(searchTerm.getValue()));
             }
         } else {
-            rootBoolQueryBuilder.must(matchQuery(searchTerm.getPath(), searchTerm.getValue()));
+            rootBoolQueryBuilder.must(matchQuery(path, searchTerm.getValue()));
         }
     }
 
