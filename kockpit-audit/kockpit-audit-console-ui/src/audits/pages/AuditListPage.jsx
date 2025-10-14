@@ -2,12 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {advancedSearchAudits, fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
 import {EyeIcon, XMarkIcon,BookmarkIcon, CheckCircleIcon,FunnelIcon  } from '@heroicons/react/24/outline';
 import {MagnifyingGlassIcon} from '@heroicons/react/20/solid';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import StatusBadge from '../../components/StatusBadge.jsx';
 import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import Pagination from '../../components/Pagination.jsx';
 import CopyButton from "../../components/CopyButton.jsx";
 import SearchTerm from "./components/SearchTerm.jsx";
+import qs from 'query-string';
 
 function formatLabel(col) {
   let label = '';
@@ -327,9 +328,22 @@ const AuditListPage = ({ domain, env, config }) => {
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
-  const [searchTerms, setSearchTerms] = useState([]);
+  const location = useLocation();
+  const parseSearchTermsFromURL = () => {
+        if (queryParams.filters) {
+            try {
+                return JSON.parse(decodeURIComponent(queryParams.filters));
+            } catch (error) {
+                console.error('Error parsing filters from URL:', error);
+                return [];
+            }
+        }
+        return [];
+  };
+  const queryParams = qs.parse(location.search);
+  const [searchTerms, setSearchTerms] = useState(parseSearchTermsFromURL());
   const [filter, setFilter] = useState([]);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(queryParams.showFilters === 'true');
 
   let searchColumns = [];
   let columns = [];
@@ -350,6 +364,23 @@ const AuditListPage = ({ domain, env, config }) => {
         filters = thisConfig.config['saved_filters'];
     }
   }
+
+    useEffect(() => {
+        const params = {
+            ...(search && { search }),
+            ...(currentPage > 1 && { page: currentPage }),
+            ...(itemsPerPage !== 25 && { perPage: itemsPerPage }),
+            ...(searchTerms.length > 0 && { filters: encodeURIComponent(JSON.stringify(searchTerms)) }),
+            ...(showFilters && { showFilters: 'true' })
+        };
+
+        const newSearch = qs.stringify(params);
+        const currentSearch = location.search.slice(1);
+
+        if (newSearch !== currentSearch) {
+            navigate(`${location.pathname}?${newSearch}`, { replace: true });
+        }
+    }, [search, currentPage, itemsPerPage, searchTerms, showFilters, navigate, location]);
 
   useEffect(() => {
     loadData();
@@ -411,7 +442,10 @@ const AuditListPage = ({ domain, env, config }) => {
       console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)}`);
       let existing = searchTerms.find(kv => kv.name === searchTerm.name);
       if (existing) {
-          existing.value = text;
+          const updatedTerms = searchTerms.map(term =>
+              term.name === searchTerm.name ? { ...term, value: text } : term
+          );
+          setSearchTerms(updatedTerms);
           // fixme loadData(); -> executes reload on every search, should use the Search button
       } else {
           let newEl = {
@@ -443,12 +477,13 @@ const AuditListPage = ({ domain, env, config }) => {
           return;
       }
       console.log(`selecting filter ${JSON.stringify(filter)}`)
-      filter.filters.map(searchTerm => {
+      setSearchTerms([]);
+      filter.filters.forEach(searchTerm => {
           addTerm({
               name: searchTerm.name,
               path: searchTerm.path
           }, searchTerm.values);
-      })
+      });
 
       setFilter(filter);
   }

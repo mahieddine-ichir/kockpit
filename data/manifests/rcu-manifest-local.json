@@ -12,7 +12,7 @@
     "config" : {
       "ff.darkcanary.enabled" : {
         "key" : "ff.darkcanary.enabled",
-        "enabled" : false,
+        "enabled" : true,
         "comment" : "Enable dark themejgyuuyggyug",
         "expiration" : "2025-10-07"
       },
@@ -36,7 +36,7 @@
       },
       "application.client.apim.aps.x-custom-header" : {
         "key" : "application.client.apim.aps.x-custom-header",
-        "value" : "custsssom2hjbjjjj",
+        "value" : "uhui",
         "comment" : "Custom header"
       },
       "application.client.axa.basepath" : {
