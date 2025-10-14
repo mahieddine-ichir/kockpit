@@ -3,6 +3,10 @@ server:
   servlet:
     context-path: /backend/api
 
+springdoc:
+  api-docs:
+    path: /api-docs
+
 spring:
   application:
     name: kockpit-backoffice
