@@ -38,7 +38,7 @@ class AuditAutoConfiguration {
           SdkApplicationProperties sdkApplicationProperties,
           BuildProperties buildProperties,
           NotificationAuditReportManager notificationAuditReportManager,
-          @Value("${kockpit.sdk.service.audit.ttl_ms:5}") Integer defaultAuditTtl) {
+          @Value("${kockpit.sdk.service.audit.ttl_default_in_days:5}") Integer defaultAuditTtl) {
     return new KockpitAuditor(
         sdkApplicationProperties.getDomain(),
         sdkApplicationProperties.getEnv(),

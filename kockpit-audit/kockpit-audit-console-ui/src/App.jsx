@@ -41,11 +41,15 @@ function App() {
     }
 
     function onConfigLoaded(configs) {
+        console.log(`config loaded ${JSON.stringify(configs)}`);
         setConfigs(configs);
-        setConfig(configs[0]);
 
-        setDomain(configs[0].configs[0].domain);
-        setEnv(configs[0].configs[0].env);
+        const cfg = configs[0].configs[0];
+        console.log(`default ${JSON.stringify(cfg)}`);
+
+        setConfig(cfg);
+        setDomain(cfg.domain);
+        setEnv(cfg.env);
     }
 
     if (loading) return <div>Loading ...</div>;

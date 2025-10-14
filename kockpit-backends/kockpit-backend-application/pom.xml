@@ -53,6 +53,9 @@
     <profiles>
         <profile>
             <id>opensearch</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.kockpit</groupId>
