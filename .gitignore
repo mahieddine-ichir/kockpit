@@ -45,3 +45,4 @@ build/
 /manifests/
 /kockpit-backends/kockpit-backend-azuresearch/src/main/resources/application-local-pro.yaml
 kockpit-backends/kockpit-backend-application/src/main/resources/application-mic.yaml
+/data/tmp/
