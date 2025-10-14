@@ -6,6 +6,8 @@ server:
 spring:
   application:
     name: kockpit-backoffice
+  profiles:
+    include: opensearch
 
 kockpit:
   sdk:
