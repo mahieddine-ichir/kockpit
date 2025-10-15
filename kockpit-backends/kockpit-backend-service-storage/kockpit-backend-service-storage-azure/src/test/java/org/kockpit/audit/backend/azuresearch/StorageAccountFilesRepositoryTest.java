@@ -66,7 +66,7 @@ class StorageAccountFilesRepositoryTest {
         when(blobContainerClient.listBlobs()).thenReturn(blobClients);
         when(blobContainerClient.getBlobClient(Mockito.anyString())).thenReturn(blobClient);
 
-        List<Manifest> manifests = storageAccountFilesRepository.getConfig();
+        List<Manifest> manifests = storageAccountFilesRepository.list();
         log.info("configItems {}", manifests);
 
         manifests.stream()

@@ -4,12 +4,7 @@ import java.util.List;
 
 public interface ConfigApiService {
 
-    List<Manifest> getConfig();
+    List<Manifest> list();
 
     ConfigItem save(ConfigItem configItem);
-
-    Object getFeatureFlipping(String domain, String env);
-    Object updateFeatureFlag(String domain, String env, String key, Object value);
-
-    List<FeatureFlippingHistory> getHistory(String domain, String env);
 }

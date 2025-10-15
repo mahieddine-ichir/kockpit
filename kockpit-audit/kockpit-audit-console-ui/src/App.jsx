@@ -76,7 +76,7 @@ function App() {
                                     <Routes>
                                         <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} />} />
                                         <Route path='/config' element={<ConfigPage configs={configs} />} />
-                                        <Route path='/feature-flipping' element={<FeatureFlippingPage domain={domain} env={env}/>} />
+                                        <Route path='/feature-flipping' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
                                         <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env}/>} />
                                         <Route path="*" element={<Navigate to="/audits" replace={true}/>}/>
                                     </Routes>
