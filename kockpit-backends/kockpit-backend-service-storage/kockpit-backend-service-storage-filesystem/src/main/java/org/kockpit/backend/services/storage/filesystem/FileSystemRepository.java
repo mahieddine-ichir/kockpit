@@ -3,6 +3,8 @@ package org.kockpit.backend.services.storage.filesystem;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +28,14 @@ public class FileSystemRepository implements ConfigApiService {
 
     private final ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+            .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @SneakyThrows
     @Override
-    public List<Manifest> getConfig() {
-        log.debug("loading config from {}", localFilePath);
+    public List<Manifest> list() {
+        log.trace("loading config from {}", localFilePath);
         return Files.list(Path.of(localFilePath))
                 .map(this::read)
                 .filter(Objects::nonNull)

@@ -11,6 +11,14 @@
           ],
           "search_columns": [
             {
+              "name": "appId",
+              "type": "options",
+              "options": [
+                "orchestrator",
+                "rcu-api"
+              ]
+            },
+            {
               "name": "start",
               "type": "date",
               "path": "."
@@ -39,6 +47,44 @@
               "type": "options",
               "options": ["GET", "POST"],
               "path": "indexedKeyValues.httpMethod"
+            }
+          ],
+          "saved_filters": [
+            {
+              "name": "erreur 5xx",
+              "filters": [
+                {
+                  "name": "5xx",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 500 ]
+                }
+              ]
+            },
+            {
+              "name": "500 / POST|PUT",
+              "filters": [
+                {
+                  "name": "POST / PUT",
+                  "path": "indexedKeyValues.httpMethod",
+                  "values": [ "POST", "PUT" ]
+                },
+                {
+                  "name": "4xx / 5xx",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 400, 401, 404, 500 ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "feature-flipping",
+        "config": {
+          "keys": [
+            {
+              "key": "solace.publish.enable",
+              "enabled": true
             }
           ]
         }

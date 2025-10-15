@@ -43,37 +43,37 @@
           ],
           "saved_filters": [
             {
-              "name": "created / notFound",
+              "name": "500 / POST|PUT",
               "filters": [
                 {
-                  "name": "httpStatus",
+                  "name": "POST / PUT",
+                  "path": "indexedKeyValues.httpMethod",
+                  "values": [ "POST", "PUT" ]
+                },
+                {
+                  "name": "4xx / 5xx",
                   "path": "indexedKeyValues.httpStatus",
-                  "values": [ 201, 404 ]
+                  "values": [ 400, 401, 404, 500 ]
                 }
               ]
             },
             {
-              "name": "500 / POST",
+              "name": "POST/PUT",
               "filters": [
-                {
-                  "name": "httpStatus",
-                  "path": "indexedKeyValues.httpStatus",
-                  "values": [ 500 ]
-                },
                 {
                   "name": "httpMethod",
                   "path": "indexedKeyValues.httpMethod",
-                  "values": [ "POST" ]
+                  "values": [ "POST", "PUT" ]
                 }
               ]
             },
             {
-              "name": "500",
+              "name": "4xx / 5xx",
               "filters": [
                 {
                   "name": "httpStatus",
                   "path": "indexedKeyValues.httpStatus",
-                  "values": [ 500 ]
+                  "values": [ 400, 401, 404, 500 ]
                 }
               ]
             }
