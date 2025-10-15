@@ -1,45 +1,86 @@
-import React, { useEffect, useState } from "react";
-import { getFeatureFlags, updateFeatureFlag, getFeatureHistory } from "../services/api.js";
-import { RefreshCcw, Edit, Save, X, CheckCircle, CircleSlash, Clock } from "lucide-react";
+import React, {useEffect, useState} from "react";
+import {getFeatureHistory, updateFeatureFlag} from "../services/api.js";
+import {CheckCircle, CircleSlash, Clock, Edit, RefreshCcw, Save, X} from "lucide-react";
 
-const FeatureFlippingPage = ({ domain, env }) => {
-    const [flags, setFlags] = useState([]);
-    const [loading, setLoading] = useState(true);
+const StateButtonForFlag = ({flag, toggle}) => {
+    const [enabled, setEnabled] = useState(flag.enabled);
+    function handleToggle(flag) {
+        flag.enabled = !flag.enabled;
+        setEnabled(flag.enabled);
+        toggle(flag);
+    }
+
+    return (
+        <div className="flex flex-col gap-3">
+            <button
+                onClick={() => handleToggle(flag)}
+                className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold w-fit ${
+                    enabled
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                }`}
+            >
+                {flag.enabled ? (
+                    <CheckCircle className="h-4 w-4" />
+                ) : (
+                    <CircleSlash className="h-4 w-4" />
+                )}
+                {enabled ? "ENABLED" : "DISABLED"}
+            </button>
+        {flag.expiration && (
+            <div className="text-xs text-slate-500">
+                Expiration:{" "}
+                <span className="text-slate-700">{flag.expiration}</span>
+            </div>
+        )}
+        {flag.comment && (
+            <div className="text-sm text-slate-600">
+                {flag.comment}
+            </div>
+        )}
+    </div>
+    )
+};
+
+const FeatureFlippingPage = ({ domain, env, config }) => {
+    const [loading, setLoading] = useState(false);
     const [editingKey, setEditingKey] = useState(null);
     const [history, setHistory] = useState([]);
     const [activeTab, setActiveTab] = useState("properties");
     const [originalFlag, setOriginalFlag] = useState(null);
 
-    useEffect(() => { loadFlags(); loadHistory(); }, [domain, env]);
-
-    async function loadFlags() {
-        setLoading(true);
-        try {
-            const data = await getFeatureFlags(domain, env);
-            setFlags(Object.entries(data || {}).map(([key, value]) => ({ key, ...value })));
-        } finally { setLoading(false); }
+    let flags = [];
+    if (config['services']) {
+        let service = config['services'].find(service => service.name === 'feature-flipping');
+        if (service['config']) {
+            flags = service['config'].keys;
+        }
     }
 
-    async function loadHistory() {
+    useEffect(() => {
+    }, [domain, env, config]);
+
+    const loadFlags = () => {}
+
+    function loadHistory() {
         try {
-            const data = await getFeatureHistory(domain, env);
-            setHistory(data || []);
+            getFeatureHistory(domain, env)
+                .then(data => setHistory(data || []));
         } catch (e) { console.error("Error loading history", e); }
     }
 
-    async function handleToggle(flag) {
-        const updated = { ...flag, enabled: !flag.enabled };
-        setFlags(flags.map(f => (f.key === flag.key ? updated : f)));
-        await updateFeatureFlag(domain, env, updated);
-        await loadHistory();
+    const handleToggle = (flag) => {
+        updateFeatureFlag(domain, env, flag)
+            .then(resp => console.log(resp))
+            .catch(err => flag.enabled = !flag.enabled);
     }
 
-    async function handleSave(flag) {
-        await updateFeatureFlag(domain, env, flag);
+    function handleSave(flag) {
+        //await updateFeatureFlag(domain, env, flag);
         setEditingKey(null);
         setOriginalFlag(null);
         loadFlags();
-        await loadHistory();
+        //await loadHistory();
     }
 
     return (
@@ -56,7 +97,6 @@ const FeatureFlippingPage = ({ domain, env }) => {
                     >
                         <RefreshCcw className="h-4 w-4" /> Refresh
                     </button>
-                    {/*//add later refresh ico*/}
                 </div>
 
                 <div className="flex gap-3 border-b border-slate-200">
@@ -77,47 +117,26 @@ const FeatureFlippingPage = ({ domain, env }) => {
 
                 {activeTab === "properties" && (
                     <div className="space-y-4">
-                        {loading && (
-                            <div className="text-center py-12 text-slate-500 animate-pulse">
-                                Loading feature propert...
+                        {flags.map(flag => (
+                            <div key={flag.key}
+                                 className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all p-5 space-y-4">
+                            <div>
+                            <span className="text-xs uppercase tracking-wide text-slate-400">Feature Key</span>
+                            <div className="font-mono text-slate-800 font-semibold break-all text-sm">
+                                {flag.key}
                             </div>
-                        )}
-
-                        {!loading &&
-                            flags.map(flag => (
-                                <div
-                                    key={flag.key}
-                                    className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all p-5 space-y-4"
-                                >
-                                    <div>
-                                        <span className="text-xs uppercase tracking-wide text-slate-400">Feature Key</span>
-                                        <div className="font-mono text-slate-800 font-semibold break-all text-sm">
-                                            {flag.key}
-                                        </div>
-                                    </div>
-                                    <div className="border-t border-slate-100 pt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            </div>
+                                <div className="border-t border-slate-100 pt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {editingKey === flag.key ? (
                                             <div className="flex flex-col gap-3">
-                                                {typeof flag.value !== "undefined" && (
-                                                    <div>
-                                                        <label className="block text-xs text-slate-500 mb-1">Value</label>
-                                                        <input
-                                                            type="text"
-                                                            value={flag.value ?? ""}
-                                                            onChange={e =>
-                                                                setFlags(flags.map(f => f.key === flag.key ? { ...f, value: e.target.value } : f))
-                                                            }
-                                                            className="w-full border border-slate-300 rounded-lg px-2 py-1 text-sm"
-                                                        />
-                                                    </div>
-                                                )}
                                                 <div>
                                                     <label className="block text-xs text-slate-500 mb-1">Expiration Date</label>
                                                     <input
                                                         type="date"
                                                         value={flag.expiration || ""}
                                                         onChange={e =>
-                                                            setFlags(flags.map(f => f.key === flag.key ? { ...f, expiration: e.target.value } : f))
+                                                            console.log("onChange: "+e.target.value)
+                                                            //setFlags(flags.map(f => f.key === flag.key ? { ...f, expiration: e.target.value } : f))
                                                         }
                                                         className="w-full border border-slate-300 rounded-lg px-2 py-1 text-sm"
                                                     />
@@ -128,50 +147,15 @@ const FeatureFlippingPage = ({ domain, env }) => {
                                                         type="text"
                                                         value={flag.comment || ""}
                                                         onChange={e =>
-                                                            setFlags(flags.map(f => f.key === flag.key ? { ...f, comment: e.target.value } : f))
+                                                            console.log("onChange: "+e.target.value)
+                                                            //setFlags(flags.map(f => f.key === flag.key ? { ...f, comment: e.target.value } : f))
                                                         }
                                                         className="w-full border border-slate-300 rounded-lg px-2 py-1 text-sm"
                                                     />
                                                 </div>
                                             </div>
                                         ) : (
-                                            <div className="flex flex-col gap-3">
-                                                {typeof flag.enabled !== "undefined" ? (
-                                                    <button
-                                                        onClick={() => handleToggle(flag)}
-                                                        className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold w-fit ${
-                                                            flag.enabled
-                                                                ? "bg-green-100 text-green-700"
-                                                                : "bg-red-100 text-red-700"
-                                                        }`}
-                                                    >
-                                                        {flag.enabled ? (
-                                                            <CheckCircle className="h-4 w-4" />
-                                                        ) : (
-                                                            <CircleSlash className="h-4 w-4" />
-                                                        )}
-                                                        {flag.enabled ? "ENABLED" : "DISABLED"}
-                                                    </button>
-                                                ) : (
-                                                    typeof flag.value !== "undefined" && (
-                                                        <div>
-                                                            <span className="text-xs text-slate-500 mr-1">Value:</span>
-                                                            <span className="font-mono text-sm bg-slate-100 px-2 py-1 rounded">
-                                {String(flag.value)}
-                              </span>
-                                                        </div>
-                                                    )
-                                                )}
-                                                {flag.expiration && (
-                                                    <div className="text-xs text-slate-500">
-                                                        Expiration:{" "}
-                                                        <span className="text-slate-700">{flag.expiration}</span>
-                                                    </div>
-                                                )}
-                                                <div className="text-sm text-slate-600">
-                                                    {flag.comment || <span className="italic text-slate-400">No comment</span>}
-                                                </div>
-                                            </div>
+                                            <StateButtonForFlag flag={flag} toggle={handleToggle} />
                                         )}
 
                                         <div className="flex md:justify-end gap-2 items-start mt-2 md:mt-0">

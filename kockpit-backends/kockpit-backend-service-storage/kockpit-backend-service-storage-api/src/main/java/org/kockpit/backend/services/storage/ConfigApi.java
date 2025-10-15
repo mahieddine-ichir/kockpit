@@ -5,19 +5,12 @@
  */
 package org.kockpit.backend.services.storage;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,70 +19,14 @@ public class ConfigApi {
 
     private final ConfigApiService configApiService;
 
-    /**
-     * GET /config
-     *
-     * @return Successful operation (status code 200)
-     */
-    @Operation(
-            operationId = "getConfig",
-            tags = { "config", "manifest" },
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successful operation", content = {
-                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ConfigItem.class)))
-                    })
-            }
-    )
-    @RequestMapping(
-            method = RequestMethod.GET,
-            produces = { "application/json" }
-    )
-    ResponseEntity<List<Manifest>> getConfig() {
-        return ResponseEntity.ok(configApiService.getConfig());
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<Manifest>> list() {
+        return ResponseEntity.ok(configApiService.list());
     }
 
     @PostMapping
-    ResponseEntity<ConfigItem> createConfig(@RequestBody ConfigItem configItem) {
+    ResponseEntity<ConfigItem> create(@RequestBody ConfigItem configItem) {
         ConfigItem created = configApiService.save(configItem);
         return ResponseEntity.ok(created);
     }
-
-    @GetMapping("/{domain}/{env}/feature-flipping")
-    ResponseEntity<Object> getFeatureFlipping(
-            @PathVariable String domain,
-            @PathVariable String env
-    ) {
-        return ResponseEntity.ok(configApiService.getFeatureFlipping(domain, env));
-    }
-
-//    @PutMapping("/{domain}/{env}/feature-flipping/{key}")
-//    ResponseEntity<Object> updateFeatureFlag(
-//            @PathVariable String domain,
-//            @PathVariable String env,
-//            @PathVariable String key,
-//            @RequestBody Object value
-//    ) {
-//        return ResponseEntity.ok(configApiService.updateFeatureFlag(domain, env, key, value));
-//    }
-
-
-    @PutMapping("/{domain}/{env}/feature-flipping/{key}")
-    public ResponseEntity<Object> updateFeatureFlag(
-            @PathVariable String domain,
-            @PathVariable String env,
-            @PathVariable String key,
-            @RequestBody Map<String, Object> flag
-    ) {
-        Object result = configApiService.updateFeatureFlag(domain, env, key, flag);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/{domain}/{env}/feature-flipping/history")
-    public ResponseEntity<List<FeatureFlippingHistory>> getHistory(
-            @PathVariable String domain,
-            @PathVariable String env
-    ) {
-        return ResponseEntity.ok(configApiService.getHistory(domain, env));
-    }
-
 }

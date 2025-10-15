@@ -27,7 +27,7 @@ public class StorageAccountFilesRepository implements ConfigApiService {
 
     @SneakyThrows
     @Override
-    public List<Manifest> getConfig() {
+    public List<Manifest> list() {
         return blobContainerClient.listBlobs()
                 .stream()
                 .filter(blobItem -> blobItem.getName().endsWith(".json"))
