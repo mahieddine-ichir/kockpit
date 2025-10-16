@@ -1,5 +1,9 @@
 {
   "properties" : {
+    "id": {
+      "type": "keyword",
+      "index": false
+    },
     "@timestamp" : {
       "type" : "date",
       "format" : "epoch_millis"
@@ -10,10 +14,6 @@
     "artifact" : {
       "type" : "keyword",
       "index" : false
-    },
-    "compressedOriginalJsonValue" : {
-      "type" : "object",
-      "enabled" : false
     },
     "domain" : {
       "type" : "keyword",
@@ -32,33 +32,6 @@
     "hostname" : {
       "type" : "keyword"
     },
-    "indexedExtensions" : {
-      "properties" : {
-        "indexedKeyValues" : {
-          "type" : "nested",
-          "properties" : {
-            "key" : {
-              "type" : "keyword"
-            },
-            "value" : {
-              "type" : "keyword",
-              "doc_values" : false
-            },
-            "valueInteger" : {
-              "type" : "integer",
-              "doc_values" : false
-            },
-            "valueFloat" : {
-              "type" : "float",
-              "doc_values" : false
-            },
-            "valueDate" : {
-              "type" : "date"
-            }
-          }
-        }
-      }
-    },
     "requestId" : {
       "type" : "object",
       "enabled" : false
@@ -66,6 +39,40 @@
     "version" : {
       "type" : "keyword",
       "index" : false
+    },
+    "indexedKeyValues" : {
+      "type" : "nested",
+      "properties" : {
+        "key": {
+          "type": "keyword"
+        },
+        "value": {
+          "type": "keyword",
+          "doc_values": false
+        },
+        "valueInteger": {
+          "type": "integer",
+          "doc_values": false
+        },
+        "valueFloat": {
+          "type": "float",
+          "doc_values": false
+        },
+        "valueDate": {
+          "type": "date"
+        }
+      }
+    },
+    "audits": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "keyword"
+        },
+        "events": {
+          "type": "object"
+        }
+      }
     }
   }
 }
