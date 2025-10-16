@@ -1,5 +1,6 @@
 package org.kockpit.audit.backend.azuresearch;
 
+import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -11,7 +12,9 @@ import org.kockpit.backend.services.storage.ConfigApiService;
 import org.kockpit.backend.services.storage.ConfigItem;
 import org.kockpit.backend.services.storage.Manifest;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,9 +49,16 @@ public class StorageAccountFilesRepository implements ConfigApiService {
                 .toList();
     }
 
+    @SneakyThrows
     @Override
     public ConfigItem save(ConfigItem configItem) {
-        throw new RuntimeException("not implemented");
+        // fixme get filename from API
+        BlobClient blobClient = blobContainerClient.getBlobClient("%s-%s-%d.json".formatted(configItem.getDomain(), configItem.getEnv(), Instant.now().getEpochSecond()));
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            objectMapper.writeValue(os, configItem);
+            blobClient.upload(new ByteArrayInputStream(os.toByteArray()), os.size());
+        }
+        return configItem;
     }
 
     List<ConfigItem> read(ByteArrayOutputStream os) {
