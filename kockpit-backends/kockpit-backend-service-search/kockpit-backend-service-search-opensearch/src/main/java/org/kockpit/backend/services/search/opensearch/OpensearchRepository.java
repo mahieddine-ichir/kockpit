@@ -3,6 +3,7 @@ package org.kockpit.backend.services.search.opensearch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.search.join.ScoreMode;
 import org.kockpit.backend.services.search.Page;
 import org.kockpit.backend.services.search.SearchService;
 import org.kockpit.backend.services.search.SearchTerm;
@@ -13,6 +14,7 @@ import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.core.rest.RestStatus;
 import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.NestedQueryBuilder;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
@@ -106,13 +108,17 @@ public class OpensearchRepository implements SearchService {
     private void buildQuery(SearchTerm searchTerm, BoolQueryBuilder rootBoolQueryBuilder) {
         String path = isNull(searchTerm.getPath()) ? searchTerm.getName() : searchTerm.getPath();
         if (path.startsWith("indexedKeyValues")) {
+            BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
             String key = path.substring("indexedKeyValues".length() + 1);
             if (searchTerm.getValue() instanceof List<?> values) {
                 log.debug("Searching terms {} of list {}", key, values);
-                buildQueryForIndexedKeyValues(key, values, rootBoolQueryBuilder);
+                buildQueryForIndexedKeyValues(key, values, boolQueryBuilder);
             } else {
-                buildQueryForIndexedKeyValues(key, List.of(searchTerm.getValue()), rootBoolQueryBuilder);
+                buildQueryForIndexedKeyValues(key, List.of(searchTerm.getValue()), boolQueryBuilder);
             }
+            NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
+            rootBoolQueryBuilder.must(nestedQueryBuilder);
+
         } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
             if ("start".equals(searchTerm.getName())) {
                 log.info("Searching from {}", new Date((long) searchTerm.getValue()));
@@ -123,15 +129,19 @@ public class OpensearchRepository implements SearchService {
                 rootBoolQueryBuilder.must(rangeQuery(path).to(searchTerm.getValue()));
             }
         } else {
-            rootBoolQueryBuilder.must(matchQuery(path, searchTerm.getValue()));
+            if (searchTerm.getValue() instanceof List<?> values) {
+                rootBoolQueryBuilder.must(termsQuery(path, values));
+            } else {
+                rootBoolQueryBuilder.must(matchQuery(path, searchTerm.getValue()));
+            }
         }
     }
 
     private void buildQueryForIndexedKeyValues(String name, List<?> values, BoolQueryBuilder rootBoolQueryBuilder) {
         log.debug("Searching {} in [{}]", name, values);
         rootBoolQueryBuilder
-                .must(matchQuery("indexedKeyValues.key.keyword", name))
-                .must(termsQuery("indexedKeyValues.value.keyword", values));
+                .must(matchQuery("indexedKeyValues.key", name))
+                .must(termsQuery("indexedKeyValues.value", values));
     }
 
     private Page runQuery(BoolQueryBuilder rootBoolQueryBuilder, String domain, String env, Integer start, Integer size) throws Exception {
@@ -147,6 +157,7 @@ public class OpensearchRepository implements SearchService {
             SearchRequest searchRequest = new SearchRequest()
                     .source(searchSourceBuilder)
                     .indices(getAuditAliasName(domain, index, env));
+
             SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT)
                     .getHits();
 
