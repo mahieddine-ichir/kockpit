@@ -132,9 +132,9 @@ const Filters = ({filters, onSelectedFilter, value}) => {
                 onChange={(e) => selectFilter(e.target.value)}
                 className="min-w-[180px] rounded-xl border border-slate-300 py-2.5 pl-10 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm hover:border-slate-400 transition-colors"
             >
-                <option value="">-- Saved Filters --</option>
+                <option key='none' value="" selected={true}>-- Saved Filters --</option>
                 {filters.map(opt => (
-                    <option key={opt.name} value={opt.name}>{opt.name}</option>
+                    <option key={opt.name} value={opt.name} selected={opt.name === value.name}>{opt.name}</option>
                 ))}
             </select>
             <BookmarkIcon className="h-4 w-4 text-slate-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -338,15 +338,17 @@ const AuditListPage = ({ domain, env, config }) => {
   const [totalCount, setTotalCount] = useState(0);
   const navigate = useNavigate();
   const [searchTerms, setSearchTerms] = useState([]);
-  const [filter, setFilter] = useState([]);
+  const [filter, setFilter] = useState({});
   const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState([]);
 
   let searchColumns = [];
   let columns = [];
-  let filters = [];
+  //let filters = [];
   let label = '';
+    let thisConfig;
   if (config['services']) {
-    let thisConfig = config['services'].find(service => service.name === 'audit');
+    thisConfig = config['services'].find(service => service.name === 'audit');
     label = thisConfig.label;
     columns = thisConfig.config.columns
         .map(column => {
@@ -356,10 +358,15 @@ const AuditListPage = ({ domain, env, config }) => {
           }
         });
     searchColumns = thisConfig.config['search_columns'];
-    if (thisConfig.config['saved_filters']) {
-        filters = thisConfig.config['saved_filters'];
-    }
+
   }
+
+  useEffect(() => {
+      if (thisConfig.config['saved_filters']) {
+          //filters = thisConfig.config['saved_filters'];
+          setFilters(thisConfig.config['saved_filters']);
+      }
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -438,7 +445,7 @@ const AuditListPage = ({ domain, env, config }) => {
 
     let clearAllFilters = () => {
         setSearchTerms([]);
-        setFilter([]);
+        setFilter({});
     }
 
   let onSelectedFilter = (filter) => {
