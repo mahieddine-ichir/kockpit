@@ -42,7 +42,7 @@ public class OpensearchRepository implements SearchService {
     @Override
     public Object getAudit(String domain, String env, String id) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-        boolQueryBuilder.must(matchQuery("id.keyword", id)); // fixme mappings
+        boolQueryBuilder.must(matchQuery("id", id));
         boolQueryBuilder.must(matchQuery("env", env));
         boolQueryBuilder.must(matchQuery("domain", domain));
 
