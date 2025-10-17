@@ -1,0 +1,18 @@
+[
+  {
+    "domain": "rcu",
+    "env": "oat",
+    "services": [
+      {
+        "name": "audit",
+        "config": {
+          "columns": [
+            "appId", "requestId", "method", "path", "duration", "start", "status"
+          ],
+          "search_columns": [],
+          "saved_filters": []
+        }
+      }
+    ]
+  }
+]
