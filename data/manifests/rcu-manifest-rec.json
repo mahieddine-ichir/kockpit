@@ -1,0 +1,83 @@
+[
+  {
+    "domain": "rcu",
+    "env": "rec",
+    "services": [
+      {
+        "name": "audit",
+        "config": {
+          "columns": [
+            "appId", "requestId", "method", "path", "duration", "start", "status"
+          ],
+          "search_columns": [
+            {
+              "name": "appId",
+              "type": "options",
+              "options": [
+                "orchestrator",
+                "rcu-api"
+              ]
+            },
+            {
+              "name": "start",
+              "type": "date",
+              "path": "."
+            },
+            {
+              "name": "end",
+              "type": "date",
+              "path": "."
+            },
+            {
+              "name": "gbid",
+              "type": "number",
+              "path": "audits.events.httpAuditedResponse.body"
+            },
+            {
+              "name": "rowId"
+            },
+            {
+              "name": "httpStatus",
+              "type": "options",
+              "options": [200, 201, 400, 500],
+              "path": "indexedKeyValues.httpStatus"
+            },
+            {
+              "name": "httpMethod",
+              "type": "options",
+              "options": ["GET", "POST"],
+              "path": "indexedKeyValues.httpMethod"
+            }
+          ],
+          "saved_filters": [
+            {
+              "name": "erreur 5xx",
+              "filters": [
+                {
+                  "name": "5xx",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 500 ]
+                }
+              ]
+            },
+            {
+              "name": "500 / POST|PUT",
+              "filters": [
+                {
+                  "name": "POST / PUT",
+                  "path": "indexedKeyValues.httpMethod",
+                  "values": [ "POST", "PUT" ]
+                },
+                {
+                  "name": "4xx / 5xx",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 400, 401, 404, 500 ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
