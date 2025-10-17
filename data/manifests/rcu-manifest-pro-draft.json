@@ -1,0 +1,80 @@
+[
+  {
+    "domain" : "rcu",
+    "env" : "pro",
+    "services" : [
+      {
+        "name" : "audit",
+        "config" : {
+          "columns" : [ "appId", "requestId", "method", "path", "duration", "start", "status" ],
+          "search_columns" : [ ],
+          "saved_filters": [
+            {
+              "name": "rcu-api, Create en erreur",
+              "filters": [
+                {
+                  "path": "appId",
+                  "values": [ "rcu-api" ]
+                },
+                {
+                  "name": "method",
+                  "path": "indexedKeyValues.httpMethod",
+                  "values": [ "POST", "PUT" ]
+                },
+                {
+                  "name": "status",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 400, 401, 404, 500 ]
+                }
+              ]
+            },
+            {
+              "name": "rcu-api, OK",
+              "filters": [
+                {
+                  "name": "appId",
+                  "values": [ "rcu-api" ]
+                },
+                {
+                  "name": "method",
+                  "path": "indexedKeyValues.httpMethod",
+                  "values": [ "POST" ]
+                },
+                {
+                  "name": "status",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 200, 201 ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name" : "feature-flipping",
+        "config" : {
+          "keys": [
+            {
+              "key" : "ff.darkcanary.enabled",
+              "enabled" : false,
+              "comment" : "Enable dark canary",
+              "expiration" : "2025-10-07"
+            },
+            {
+              "key" : "ff.payment.beta.enabled",
+              "enabled" : true,
+              "comment" : "enable payment (beta version)",
+              "expiration" : "2025-10-01"
+            },
+            {
+              "key" : "ff.aiassistant.enabled",
+              "enabled" : true,
+              "comment" : "Key without expiration",
+              "expiration" : null
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

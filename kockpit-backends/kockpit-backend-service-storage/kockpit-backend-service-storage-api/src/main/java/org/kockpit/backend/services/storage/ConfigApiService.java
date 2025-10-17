@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ConfigApiService {
 
-    List<Manifest> getConfig();
+    List<Manifest> list();
 
     ConfigItem save(ConfigItem configItem);
 }
