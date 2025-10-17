@@ -62,3 +62,18 @@ export const logout = async() => {
     const response = await axios.get("/logout");
     return response.data;
 }
+
+export const getFeatureFlags = async (domain, env) => {
+    const response = await axios.get(`${API_BASE}/${domain}/${env}/feature-flipping`);
+    return response.data;
+};
+
+export const updateFeatureFlag = async (domain, env, flag) => {
+    const response = await axios.put(`${API_BASE}/${domain}/${env}/feature-flipping?key=${flag.key}`, flag);
+    return response.data;
+};
+
+export const getFeatureHistory = async (domain, env) => {
+    const response = await axios.get(`${API_BASE}/${domain}/${env}/feature-flipping/history`);
+    return response.data;
+};

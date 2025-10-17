@@ -1,15 +1,53 @@
 [
   {
-    "domain": "rcu",
-    "env": "local",
-    "services": [
+    "domain" : "rcu",
+    "env" : "local",
+    "services" : [
       {
-        "name": "audit",
-        "config": {
-          "columns": [
-            "appId", "requestId", "method", "path", "duration", "start", "status"
-          ],
-          "search_columns": []
+        "name" : "audit",
+        "config" : {
+          "columns" : [ "appId", "requestId", "method", "path", "duration", "start", "status" ],
+          "search_columns" : [ ],
+          "saved_filters": [
+            {
+              "name": "rcu-api, Create en erreur",
+              "filters": [
+                {
+                  "path": "appId",
+                  "values": [ "rcu-api" ]
+                },
+                {
+                  "name": "method",
+                  "path": "indexedKeyValues.httpMethod",
+                  "values": [ "POST", "PUT" ]
+                },
+                {
+                  "name": "status",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 400, 401, 404, 500 ]
+                }
+              ]
+            },
+            {
+              "name": "rcu-api, OK",
+              "filters": [
+                {
+                  "name": "appId",
+                  "values": [ "rcu-api" ]
+                },
+                {
+                  "name": "method",
+                  "path": "indexedKeyValues.httpMethod",
+                  "values": [ "POST" ]
+                },
+                {
+                  "name": "status",
+                  "path": "indexedKeyValues.httpStatus",
+                  "values": [ 200, 201 ]
+                }
+              ]
+            }
+          ]
         }
       },
       {

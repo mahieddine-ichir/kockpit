@@ -7,6 +7,8 @@ import DetailsPage from "./audits/pages/DetailsPage.jsx";
 import DomainEnv from "./components/DomainEnv.jsx";
 import {login} from "./services/api.js";
 import ConfigPage from "./Config/ConfigPage.jsx";
+import FeatureFlippingPage from "./feature-flipping/feature.jsx";
+
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -39,11 +41,15 @@ function App() {
     }
 
     function onConfigLoaded(configs) {
+        console.log(`config loaded ${JSON.stringify(configs)}`);
         setConfigs(configs);
-        setConfig(configs[0]);
 
-        setDomain(configs[0].configs[0].domain);
-        setEnv(configs[0].configs[0].env);
+        const cfg = configs[0].configs[0];
+        console.log(`default ${JSON.stringify(cfg)}`);
+
+        setConfig(cfg);
+        setDomain(cfg.domain);
+        setEnv(cfg.env);
     }
 
     if (loading) return <div>Loading ...</div>;
@@ -70,6 +76,7 @@ function App() {
                                     <Routes>
                                         <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} />} />
                                         <Route path='/config' element={<ConfigPage configs={configs} />} />
+                                        <Route path='/feature-flipping' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
                                         <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env}/>} />
                                         <Route path="*" element={<Navigate to="/audits" replace={true}/>}/>
                                     </Routes>

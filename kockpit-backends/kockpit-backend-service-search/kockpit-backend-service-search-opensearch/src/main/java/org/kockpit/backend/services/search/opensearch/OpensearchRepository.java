@@ -3,6 +3,7 @@ package org.kockpit.backend.services.search.opensearch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.search.join.ScoreMode;
 import org.kockpit.backend.services.search.Page;
 import org.kockpit.backend.services.search.SearchService;
 import org.kockpit.backend.services.search.SearchTerm;
@@ -13,6 +14,7 @@ import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.core.rest.RestStatus;
 import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.NestedQueryBuilder;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.kockpit.backend.services.search.opensearch.AuditReportHelper.getAuditAliasName;
 import static org.opensearch.index.query.QueryBuilders.*;
@@ -41,7 +44,7 @@ public class OpensearchRepository implements SearchService {
     @Override
     public Object getAudit(String domain, String env, String id) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-        boolQueryBuilder.must(matchQuery("id.keyword", id)); // fixme mappings
+        boolQueryBuilder.must(matchQuery("id", id));
         boolQueryBuilder.must(matchQuery("env", env));
         boolQueryBuilder.must(matchQuery("domain", domain));
 
@@ -80,8 +83,9 @@ public class OpensearchRepository implements SearchService {
     public Page searchAudits(String domain, String env, String query, List<SearchTerm> searchTerms, Integer start, Integer size) {
         BoolQueryBuilder rootBoolQueryBuilder = new BoolQueryBuilder();
         if (!CollectionUtils.isEmpty(searchTerms)) {
+            log.debug("Search terms {}", searchTerms);
             searchTerms.stream()
-                    .filter(searchTerm -> nonNull(searchTerm.getValue()) && nonNull(searchTerm.getPath()))
+                    .filter(searchTerm -> nonNull(searchTerm.getValue()))
                     .forEach(searchTerm -> buildQuery(searchTerm, rootBoolQueryBuilder));
         }
 
@@ -102,37 +106,42 @@ public class OpensearchRepository implements SearchService {
     }
 
     private void buildQuery(SearchTerm searchTerm, BoolQueryBuilder rootBoolQueryBuilder) {
-        if (searchTerm.getPath().startsWith("indexedKeyValues")) {
-            String key = searchTerm.getPath().substring("indexedKeyValues".length());
+        String path = isNull(searchTerm.getPath()) ? searchTerm.getName() : searchTerm.getPath();
+        if (path.startsWith("indexedKeyValues")) {
+            BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+            String key = path.substring("indexedKeyValues".length() + 1);
             if (searchTerm.getValue() instanceof List<?> values) {
-                log.debug("Searching terms of list {}", values);
-                buildQuery(key, values, rootBoolQueryBuilder);
+                log.debug("Searching terms {} of list {}", key, values);
+                buildQueryForIndexedKeyValues(key, values, boolQueryBuilder);
             } else {
-                buildQuery(key, List.of(searchTerm.getValue()), rootBoolQueryBuilder);
+                buildQueryForIndexedKeyValues(key, List.of(searchTerm.getValue()), boolQueryBuilder);
             }
+            NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
+            rootBoolQueryBuilder.must(nestedQueryBuilder);
+
         } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
             if ("start".equals(searchTerm.getName())) {
                 log.info("Searching from {}", new Date((long) searchTerm.getValue()));
-                rootBoolQueryBuilder.must(rangeQuery(searchTerm.getPath()).from(searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(path).from(searchTerm.getValue()));
             }
             if ("end".equals(searchTerm.getName())) {
                 log.info("Searching to {}", new Date((long) searchTerm.getValue()));
-                rootBoolQueryBuilder.must(rangeQuery(searchTerm.getPath()).to(searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(path).to(searchTerm.getValue()));
             }
         } else {
-            rootBoolQueryBuilder.must(matchQuery(searchTerm.getPath(), searchTerm.getValue()));
+            if (searchTerm.getValue() instanceof List<?> values) {
+                rootBoolQueryBuilder.must(termsQuery(path, values));
+            } else {
+                rootBoolQueryBuilder.must(matchQuery(path, searchTerm.getValue()));
+            }
         }
     }
 
-    private void buildQuery(String name, List<?> values, BoolQueryBuilder rootBoolQueryBuilder) {
-        if (values.size() == 1) {
-            rootBoolQueryBuilder.must(matchQuery("indexedKeyValues.key", name))
-                    .must(matchQuery("indexedKeyValues.value", values.get(0)));
-        } else {
-            rootBoolQueryBuilder
-                    .must(matchQuery("indexedKeyValues.key", name))
-                    .must(termsQuery("indexedKeyValues.value", values));
-        }
+    private void buildQueryForIndexedKeyValues(String name, List<?> values, BoolQueryBuilder rootBoolQueryBuilder) {
+        log.debug("Searching {} in [{}]", name, values);
+        rootBoolQueryBuilder
+                .must(matchQuery("indexedKeyValues.key", name))
+                .must(termsQuery("indexedKeyValues.value", values));
     }
 
     private Page runQuery(BoolQueryBuilder rootBoolQueryBuilder, String domain, String env, Integer start, Integer size) throws Exception {
@@ -148,6 +157,7 @@ public class OpensearchRepository implements SearchService {
             SearchRequest searchRequest = new SearchRequest()
                     .source(searchSourceBuilder)
                     .indices(getAuditAliasName(domain, index, env));
+
             SearchHits hits = client.search(searchRequest, RequestOptions.DEFAULT)
                     .getHits();
 
