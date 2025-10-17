@@ -13,7 +13,7 @@
               "name": "rcu-api, Create en erreur",
               "filters": [
                 {
-                  "path": "appId",
+                  "name": "appId",
                   "values": [ "rcu-api" ]
                 },
                 {
