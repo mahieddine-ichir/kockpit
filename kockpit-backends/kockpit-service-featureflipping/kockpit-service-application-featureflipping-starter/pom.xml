@@ -8,19 +8,8 @@
         <artifactId>kockpit-service-featureflipping</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
+    <artifactId>kockpit-service-application-featureflipping-starter</artifactId>
 
-    <artifactId>kockpit-service-backend-featureflipping-storageaccount</artifactId>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.azure</groupId>
-                <artifactId>azure-sdk-bom</artifactId>
-                <version>1.2.33</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.kockpit</groupId>
@@ -28,17 +17,13 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.azure</groupId>
-            <artifactId>azure-storage-blob</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
     </dependencies>
+
 </project>
