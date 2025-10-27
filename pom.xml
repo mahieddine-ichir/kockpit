@@ -20,6 +20,8 @@
 		<module>kockpit-audit</module>
 		<module>kockpit-rules</module>
 		<module>kockpit-backends</module>
+        <module>kockpit-samples</module>
+        <module>kockpit-samples/kockpit-sample-all</module>
     </modules>
 
 	<profiles>
