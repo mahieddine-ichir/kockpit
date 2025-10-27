@@ -1,0 +1,7 @@
+
+kockpit:
+  sdk:
+    domain: rcu
+    env: local
+  feature-flipping:
+    local_directory: ${user.home}/IdeaProjects/kockpit/data/feature-flipping

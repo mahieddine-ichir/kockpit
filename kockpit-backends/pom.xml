@@ -16,9 +16,6 @@
         <module>kockpit-backend-service-storage</module>
         <module>kockpit-backend-service-search</module>
         <module>kockpit-service-featureflipping</module>
-        <module>kockpit-service-featureflipping/kockpit-service-backend-featureflipping-api</module>
-        <module>kockpit-service-featureflipping/kockpit-service-backend-featureflipping-storageaccount</module>
-        <module>kockpit-service-featureflipping/kockpit-service-backend-featureflipping-filesystem</module>
     </modules>
 
 </project>
