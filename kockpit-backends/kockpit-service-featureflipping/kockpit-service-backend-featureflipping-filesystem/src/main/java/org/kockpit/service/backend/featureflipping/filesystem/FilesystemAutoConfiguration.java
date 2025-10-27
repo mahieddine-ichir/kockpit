@@ -11,9 +11,9 @@ public class FilesystemAutoConfiguration {
 
     @Bean
     public FeatureFlippingService filesystemFeatureFlippingRepository(
-            @Value("${kockpit.featureflipping.local_directory}") String localDirectory,
+            @Value("${kockpit.feature-flipping.local_directory}") String localDirectory,
             ObjectMapper objectMapper
     ) {
-        return new FilesystemFeatureFlippingRepository(localDirectory, objectMapper);
+        return new FileSystemFeatureFlippingRepository(localDirectory, objectMapper);
     }
 }

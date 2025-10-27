@@ -1,0 +1,12 @@
+
+kockpit:
+  feature-flipping:
+    client:
+      scheduling: PT10S
+
+server:
+  servlet:
+    context-path: /sample-app
+logging:
+  level:
+    org.kockpit: TRACE

@@ -10,12 +10,13 @@ import org.kockpit.service.featureflipping.api.FeatureFlippingService;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FilesystemFeatureFlippingRepository implements FeatureFlippingService {
+public class FileSystemFeatureFlippingRepository implements FeatureFlippingService {
 
     private final String localDirectory;
     private final ObjectMapper objectMapper;
@@ -40,12 +41,8 @@ public class FilesystemFeatureFlippingRepository implements FeatureFlippingServi
     @SneakyThrows
     @Override
     public FeatureFlippingDto update(String domain, String env, FeatureFlippingDto featureFlippingDto) {
-        File directory = Paths.get(localDirectory, domain, env).toFile();
-        if (! directory.exists() && !directory.mkdirs()) {
-            log.error("Cannot create directory {}", directory.getAbsolutePath());
-        }
-        File file = Paths.get(directory.getAbsolutePath(), "%s_%s.json".formatted(featureFlippingDto.getKey()
-                , Instant.now().toEpochMilli())).toFile();
+        File directory = getDirectory(domain, env);
+        File file = Paths.get(directory.getAbsolutePath(), "%s.json".formatted(featureFlippingDto.getKey())).toFile();
         objectMapper.writeValue(file, featureFlippingDto);
         return featureFlippingDto;
     }
@@ -54,6 +51,20 @@ public class FilesystemFeatureFlippingRepository implements FeatureFlippingServi
     @Override
     public List<FeatureFlippingHistory> getHistory(String domain, String env) {
         return List.of();
+    }
+
+    @Override
+    public List<FeatureFlippingDto> findAll(String domain, String env) {
+        File directory = getDirectory(domain, env);
+        return Stream.of(Objects.requireNonNull(directory.listFiles()))
+                .filter(file -> !file.isDirectory())
+                .map(this::readSource)
+                .toList();
+    }
+
+    @SneakyThrows
+    private FeatureFlippingDto readSource(File file) {
+        return objectMapper.readValue(file, FeatureFlippingDto.class);
     }
 
     /*
@@ -110,5 +121,13 @@ public class FilesystemFeatureFlippingRepository implements FeatureFlippingServi
         }
     }
      */
+
+    private File getDirectory(String domain, String env) {
+        File directory = Paths.get(localDirectory, domain, env).toFile();
+        if (! directory.exists() && !directory.mkdirs()) {
+            log.error("Cannot create directory {}", directory.getAbsolutePath());
+        }
+        return directory;
+    }
 
 }
