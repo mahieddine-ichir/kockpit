@@ -21,7 +21,8 @@
 		<module>kockpit-rules</module>
 		<module>kockpit-backends</module>
         <module>kockpit-samples</module>
-        <module>kockpit-samples/kockpit-sample-all</module>
+        <module>kockpit-core</module>
+        <module>kockpit-core-applications</module>
     </modules>
 
 	<profiles>

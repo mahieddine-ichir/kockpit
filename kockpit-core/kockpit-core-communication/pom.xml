@@ -5,17 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit</artifactId>
+        <artifactId>kockpit-core</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>kockpit-samples</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>kockpit-audit-sample-app</module>
-        <module>kockpit-audit-sample-basic</module>
-        <module>kockpit-audit-sample-kafka</module>
-        <module>kockpit-audit-sample-eventhub</module>
-        <module>kockpit-sample-all</module>
-    </modules>
+
+    <artifactId>kockpit-core-communication</artifactId>
 
 </project>
