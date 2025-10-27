@@ -8,14 +8,13 @@
         <artifactId>kockpit</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>kockpit-samples</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>kockpit-core</artifactId>
+    <name>core</name>
     <modules>
-        <module>kockpit-audit-sample-app</module>
-        <module>kockpit-audit-sample-basic</module>
-        <module>kockpit-audit-sample-kafka</module>
-        <module>kockpit-audit-sample-eventhub</module>
-        <module>kockpit-sample-all</module>
+        <module>kockpit-core-communication</module>
     </modules>
+    <packaging>pom</packaging>
+
+
 
 </project>
