@@ -1,18 +1,33 @@
 name: Build package
 on:
   push:
-    branches: ["dev"]
+    branches: ["release"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Maven Central Repository
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           server-id: central
+
       - name: Build
         run: mvn clean install
+
+      - name: Create Release
+        id: create_release
+        uses: comnoco/create-release@v2
+        env:
+          # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: true
