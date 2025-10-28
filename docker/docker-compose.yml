@@ -1,6 +1,7 @@
-version: "3.8"
-
 services:
+  kafka:
+    image: apache/kafka
+    container_name: kafka
   opensearch:
     image: opensearchproject/opensearch:3.2.0
     container_name: opensearch
@@ -16,8 +17,8 @@ services:
     ports:
       - "9200:9200"
     volumes:
-      - opensearch-data:/usr/share/opensearch/data
-      - ./opensearch/data:/init-data
+      - ./opensearch/data:/usr/share/opensearch/data
+      - ./opensearch/scripts:/init-data
       - ./opensearch/scripts:/docker-entrypoint-init.d
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200"]
@@ -35,4 +36,4 @@ services:
       - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
 
 volumes:
-  opensearch-data:
+  opensearch:

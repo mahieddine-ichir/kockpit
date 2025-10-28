@@ -29,6 +29,7 @@ class AuditReportsQueueHandler {
     private final LinkedBlockingQueue<AuditReport> auditReportsBlockingQueue;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
+            .addMixIn(AuditReport.class, AuditReportJacksonConfigMixIn.class)
             .registerModule(new JavaTimeModule());
 
     private final int bufferFreeThreshold;
@@ -81,20 +82,20 @@ class AuditReportsQueueHandler {
     public void processSingle(AuditReport auditReport) {
         AuditReport process = auditPostProcessor.process(auditReport);
         if (process == null) {
+            log.warn("AuditReport {} is null upon processing", auditReport);
             return;
         }
         auditReportNotificationServices.forEach(auditReportNotificationService -> auditReportNotificationService.notify(List.of(mapToAuditJsonReport(process))));
     }
 
     private AuditReport.AuditJsonReport mapToAuditJsonReport(AuditReport auditReport) {
-        String json;
         try {
-            json = objectMapper.writeValueAsString(auditReport);
+            String json = objectMapper.writeValueAsString(auditReport);
+            return new InternalAuditJsonReport(auditReport, json);
         } catch (JsonProcessingException e) {
             log.error("Error serializing Audit object {} to json. Error: {}", auditReport, e.getMessage(), e);
             return null;
         }
-        return new InternalAuditJsonReport(auditReport, json);
     }
 
     @Getter

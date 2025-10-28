@@ -1,5 +1,6 @@
 package org.kockpit.rules.audit;
 
+import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.annotation.AuditAttributesAnnotationProcessor;
 import org.kockpit.audit.api.AuditorEventService;
 import org.kockpit.audit.api.AuditorKeyValueService;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
 @AutoConfiguration
+@Slf4j
 class KEngineAuditExtensionAutoConfiguration {
 
   @Bean
@@ -32,6 +34,7 @@ class KEngineAuditExtensionAutoConfiguration {
       RuleNodeRegistry<?> registry,
       DetailHandler detailHandler,
       SdkApplicationProperties sdkApplicationProperties) {
+      log.trace("enable AuditedRuleNodeExecutorFactory");
     return new AuditedRuleNodeExecutorFactory(
         auditAttributesAnnotationProcessor,
         auditorService,

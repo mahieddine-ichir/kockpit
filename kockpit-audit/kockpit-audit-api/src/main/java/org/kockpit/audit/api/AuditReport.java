@@ -32,6 +32,7 @@ public class AuditReport {
   private final List<IndexedKeyValue> indexedKeyValues = synchronizedList(new ArrayList<>());
   private final List<AuditIndexedKeyValuesComputeFunction> indexedKeyValuesComputeFunctions =
       synchronizedList(new ArrayList<>());
+
   private final Map<String, Audit> audits = new ConcurrentHashMap<>();
 
   @Data

@@ -1,5 +1,6 @@
 package org.kockpit.rules.starter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.kockpit.rules.DefaultDetailHandler;
 import org.kockpit.rules.DetailHandler;
 import org.kockpit.rules.executor.*;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoConfiguration
+@Slf4j
 public class KEngineAutoConfiguration {
 
   @Bean
@@ -53,6 +55,7 @@ public class KEngineAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean(KEngineRuleNodeExecutorFactory.class)
   KEngineRuleNodeExecutorFactory defaultRuleNodeExecutorFactory() {
+      log.trace("enable DefaultKEngineRuleNodeExecutorFactory");
     return new DefaultKEngineRuleNodeExecutorFactory();
   }
 }

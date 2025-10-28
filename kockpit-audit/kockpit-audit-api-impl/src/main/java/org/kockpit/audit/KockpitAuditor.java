@@ -56,6 +56,7 @@ class KockpitAuditor implements AuditorService {
   }
 
   public void startAudit(Integer ttl) {
+      log.trace("Start audit (ttl = {})", ttl);
     AuditReportContainer.resetReport();
     String auditId = UUID.randomUUID().toString();
     AuditReportContainer.setAuditReport(
