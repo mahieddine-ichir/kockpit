@@ -18,16 +18,14 @@ jobs:
           server-id: central
 
       - name: Build
-        run: mvn clean install
+        run: mvn clean package
 
       - name: Create Release
-        id: create_release
-        uses: comnoco/create-release@v2
-        env:
-          # This token is provided by Actions, you do not need to create your own token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
           prerelease: true
+          title: "Development Build"
+          files: |
+            *.jar
