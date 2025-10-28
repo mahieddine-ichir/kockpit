@@ -1,5 +1,6 @@
 package org.kockpit.audit;
 
+import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.Audit;
 import org.kockpit.audit.api.AuditModuleIntegration;
 import org.kockpit.audit.api.AuditReport;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.groupingBy;
 
+@Slf4j
 public class AuditPostProcessor {
 
   private final Map<String, List<AuditModuleIntegration>> moduleIntegrationsByType;
@@ -39,11 +41,12 @@ public class AuditPostProcessor {
 
   private void processAuditModule(Audit audit) {
     if (!moduleIntegrationsByType.containsKey(audit.getType())) {
+        log.warn("Audit {} do not contain a type -> skip", audit);
       return;
     }
     List<AuditModuleIntegration> auditModuleIntegrations =
         moduleIntegrationsByType.get(audit.getType());
-    auditModuleIntegrations.forEach(
-        auditModuleIntegration -> auditModuleIntegration.postProcessAuditEvents(audit.getEvents()));
+    auditModuleIntegrations.forEach(auditModuleIntegration ->
+            auditModuleIntegration.postProcessAuditEvents(audit.getEvents()));
   }
 }

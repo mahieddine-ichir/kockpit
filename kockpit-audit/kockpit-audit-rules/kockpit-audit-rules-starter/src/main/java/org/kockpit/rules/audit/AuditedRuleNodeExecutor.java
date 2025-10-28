@@ -45,7 +45,7 @@ class AuditedRuleNodeExecutor<T> extends RuleNodeExecutor<T> {
       } finally {
         audit(context, executionResult);
         if (auditStartedHere) {
-            auditorService.stopAudit();
+            auditorService.stopAuditAndNotify();
         }
       }
     }
@@ -65,7 +65,7 @@ class AuditedRuleNodeExecutor<T> extends RuleNodeExecutor<T> {
       flowExecutionAuditEvent.setStartTime(executionResult.getStartTimestamp());
       flowExecutionAuditEvent.setEndTime(executionResult.getEndTimestamp());
 
-      // todo fixe these
+      // todo fixme these
       //flowExecutionAuditEvent.setExecutionName(executionName);
       /*
       flowExecutionAuditEvent.setExecutionName(getExecutionName());

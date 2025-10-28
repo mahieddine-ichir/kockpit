@@ -23,12 +23,11 @@ class KockpitAuditorEvent implements AuditorEventService {
         AuditReportContainer.getAuditReport()
             .getAuditsMap()
             .computeIfAbsent(
-                type,
-                s ->
-                    new AuditImpl(
+                type, s -> new AuditImpl(
                         s,
                         synchronizedList(new ArrayList<>()),
-                        synchronizedList(new ArrayList<>())));
+                        synchronizedList(new ArrayList<>()))
+            );
   }
 
   @Override
