@@ -1,7 +1,7 @@
 name: Build package
 on:
   push:
-    branches: ["release"]
+    branches: [ "release" ]
 
 jobs:
   build:
