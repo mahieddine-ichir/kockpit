@@ -26,7 +26,6 @@
         <module>kockpit-audit-stream</module>
         <module>kockpit-audit-notification</module>
         <module>kockpit-obfuscation</module>
-        <module>kockpit-audit-samples</module>
     </modules>
 
 </project>

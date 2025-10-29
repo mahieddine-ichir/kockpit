@@ -8,7 +8,7 @@
         <artifactId>kockpit-samples</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>kockpit-audit-sample-app</artifactId>
+    <artifactId>kockpit-samples-audit-eventhub</artifactId>
 
     <dependencies>
         <dependency>
@@ -17,22 +17,7 @@
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-audit-notification-starter-console</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-audit-web-starter</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-rules-starter</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-audit-rules-starter</artifactId>
+            <artifactId>kockpit-audit-notification-starter-eventhubs</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -41,6 +26,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -56,5 +42,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
