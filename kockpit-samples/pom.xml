@@ -11,7 +11,11 @@
     <artifactId>kockpit-samples</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>kockpit-samples-all</module>
         <module>kockpit-samples-audit-rules</module>
+        <module>kockpit-samples-audit-basic</module>
+        <module>kockpit-samples-audit-eventhub</module>
+        <module>kockpit-samples-audit-kafka</module>
     </modules>
 
 </project>
