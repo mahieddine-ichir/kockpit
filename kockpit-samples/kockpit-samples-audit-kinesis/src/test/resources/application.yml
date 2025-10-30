@@ -1,0 +1,16 @@
+
+spring:
+  application:
+    name: app-sample-kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+
+kockpit:
+  sdk:
+    domain: test-app
+    env: local
+    service:
+      audit:
+        notification:
+          topic: audit
+
