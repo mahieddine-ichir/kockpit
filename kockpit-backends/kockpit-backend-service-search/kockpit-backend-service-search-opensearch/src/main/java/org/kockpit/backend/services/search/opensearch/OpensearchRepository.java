@@ -43,8 +43,9 @@ public class OpensearchRepository implements SearchService {
     @SneakyThrows
     @Override
     public Object getAudit(String domain, String env, String id) {
+        log.trace("load audit for domain {}, env {}, id {}", domain, env, id);
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-        boolQueryBuilder.must(matchQuery("id.keyword", id));
+        boolQueryBuilder.must(matchQuery("id", id));
         boolQueryBuilder.must(matchQuery("env", env));
         boolQueryBuilder.must(matchQuery("domain", domain));
 
