@@ -2,14 +2,18 @@ package org.kockpit.audit.notification.kinesis;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditReportNotificationService;
+import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.core.KafkaTemplate;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.http.SdkHttpClient;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
+import software.amazon.awssdk.services.kinesis.model.PutRecordsRequestEntry;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
@@ -21,34 +25,53 @@ public class KinesisAuditServiceAutoConfiguration {
 
   @Bean
   AuditReportNotificationService eventHubAuditReportNotificationService(
-          KinesisAsyncClient kinesisClient,
-          @Value("${kockpit.sdk.service.audit.notification.topic}") String topic) {
-    return new KinesisAuditReportNotificationService(kinesisClient);
+          SdkApplicationProperties sdkApplicationProperties,
+          RecordPartitioner recordPartitioner,
+          RecordTransformer recordTransformer,
+          KinesisAsyncClient kinesisClient
+  ) {
+      String streamName = "auditstream-" + sdkApplicationProperties.getEnv();
+      return new KinesisAuditReportNotificationService(
+              kinesisClient, streamName, recordPartitioner, recordTransformer
+      );
+  }
+
+  @Bean
+  RecordPartitioner recordPartitioner() {
+      return new RecordPartitioner();
+  }
+
+  @ConditionalOnMissingBean(RecordTransformer.class)
+  @Bean
+  RecordTransformer identityTransformer(RecordPartitioner recordPartitioner) {
+      return auditJsonReport -> {
+          String partitionKey = recordPartitioner.computePartitionKey(auditJsonReport);
+          return PutRecordsRequestEntry.builder()
+                  .partitionKey(partitionKey)
+                  .data(SdkBytes.fromByteArray(auditJsonReport.getAuditJson().getBytes()))
+                  .build();
+      };
   }
 
   @Bean
   KinesisAsyncClient kinesisAsyncClient(
-          @Value("${}") String region
+          AwsCredentialsProvider awsCredentialsProvider,
+          @Value("${kockpit.service.aws.region}") String regionString
   ) {
-      String roleSessionName = "wcpaudit-clientapp-session-" + Math.random();
-      AwsCredentialsProvider stsProvider =
-              roleCredentialsProvider(roleArn, roleSessionName, region);
-
-      kinesisClient =
-              KinesisClientUtil.createKinesisAsyncClient(
-                      KinesisAsyncClient.builder()
-                              .credentialsProvider(stsProvider)
-                              //
-                              // .httpClientBuilder(NettyNioAsyncHttpClient.builder()
-                              //                                      .maxConcurrency(10)
-                              //                                      .maxPendingConnectionAcquires(1000))
-                              .region(region));
+      Region region = Region.of(regionString);
+      return KinesisClientUtil.createKinesisAsyncClient(
+              KinesisAsyncClient.builder()
+                      .credentialsProvider(awsCredentialsProvider)
+                      .region(region));
   }
 
   @Bean
   AwsCredentialsProvider roleCredentialsProvider(
-          String roleArn, String roleSessionName, Region region) {
-
+          @Value("${kockpit.service.aws.role-arn}") String roleArn,
+          @Value("${kockpit.service.aws.region}") String regionString
+  ) {
+      String roleSessionName = "kockpitaudit-clientapp-session-" + Math.random();
+      Region region = Region.of(regionString);
       AssumeRoleRequest assumeRoleRequest =
               AssumeRoleRequest.builder()
                       .roleArn(roleArn)
@@ -64,9 +87,7 @@ public class KinesisAuditServiceAutoConfiguration {
                         .refreshRequest(assumeRoleRequest)
                         .asyncCredentialUpdateEnabled(true)
                         .build();
-        log.info(
-                "Initializing sts role credential provider: "
-                        + stsAssumeRoleCredentialsProvider.prefetchTime().toString());
+        log.info("Initializing sts role credential provider: {}", stsAssumeRoleCredentialsProvider.prefetchTime());
         return stsAssumeRoleCredentialsProvider;
     }
 }
