@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: kockpit-audit-stream
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+kockpit:
+  audit:
+    stream:
+      kinesis: todo
