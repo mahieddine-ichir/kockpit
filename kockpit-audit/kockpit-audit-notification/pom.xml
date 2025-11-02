@@ -16,6 +16,7 @@
         <module>kockpit-audit-notification-starter-console</module>
         <module>kockpit-audit-notification-starter-eventhubs</module>
         <module>kockpit-audit-notification-starter-kafka</module>
+        <module>kockpit-audit-notification-starter-kinesis</module>
     </modules>
 
     <dependencies>
