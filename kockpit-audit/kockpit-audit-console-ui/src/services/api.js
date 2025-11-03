@@ -68,8 +68,8 @@ export const getFeatureFlags = async (domain, env) => {
     return response.data;
 };
 
-export const updateFeatureFlag = async (domain, env, flag) => {
-    const response = await axios.put(`${API_BASE}/${domain}/${env}/feature-flipping?key=${flag.key}`, flag);
+export const updateFeatureFlag = async (domain, env, appId, flag) => {
+    const response = await axios.put(`${API_BASE}/${domain}/${env}/${appId}/feature-flipping?key=${flag.key}`, flag);
     return response.data;
 };
 

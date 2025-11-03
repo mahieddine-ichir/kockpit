@@ -1,7 +1,6 @@
 package org.kockpit.sample.api.featureflipping;
 
 import lombok.RequiredArgsConstructor;
-import org.kockpit.service.featureflipping.FeatureFlippingEvaluatorService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

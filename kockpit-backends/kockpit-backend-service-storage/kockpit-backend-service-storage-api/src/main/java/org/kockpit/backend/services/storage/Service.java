@@ -7,6 +7,8 @@ public class Service {
 
   private String name;
 
+  private String appId;
+
   private Object config;
 }
 
