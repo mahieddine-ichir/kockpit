@@ -3,5 +3,10 @@ kockpit:
   sdk:
     domain: rcu
     env: local
-  feature-flipping:
-    local_directory: ${user.home}/IdeaProjects/kockpit/data/feature-flipping
+    appId: sample-app
+    filesystem:
+      local_directory: ${user.home}/IdeaProjects/kockpit/data/feature-flipping
+
+logging:
+  level:
+    org.kockpit: trace
