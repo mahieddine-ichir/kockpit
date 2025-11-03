@@ -10,35 +10,35 @@ const instance = axios.create({
 
 // deprecated use paging one
 export const searchAudits = async (query, domain, env, size, start) => {
-  const response = await instance.get(`${API_BASE}/${domain}/${env}/audits/_search?query=${query}&size=${size}&start=${start}`);
+  const response = await instance.get(`/${domain}/${env}/audits/_search?query=${query}&size=${size}&start=${start}`);
   return response.data;
 };
 
 // deprecated use paging one
 export const advancedSearchAudits = async (terms, domain, env, size, start) => {
-  const response = await instance.post(`${API_BASE}/${domain}/${env}/audits/_search?size=${size}&start=${start}`, terms);
+  const response = await instance.post(`/${domain}/${env}/audits/_search?size=${size}&start=${start}`, terms);
   return response.data;
 };
 
 // fixme remove deprecated
 export const fetchAuditReportsWithPaging = async (domain, env, size, start) => {
-  const response = await instance.get(`${API_BASE}/${domain}/${env}/audits?size=${size}&start=${start}`);
+  const response = await instance.get(`/${domain}/${env}/audits?size=${size}&start=${start}`);
   return response.data;
 };
 
 export const fetchAuditById = async (id, domain, env) => {
-  const response = await instance.get(`${API_BASE}/${domain}/${env}/audits/${id}`);
+  const response = await instance.get(`/${domain}/${env}/audits/${id}`);
   return response.data;
 };
 
 export const getConfig = async () => {
   console.log(`Fetching config from ${API_BASE}/config`);
-  const response = await instance.get(`${API_BASE}/config`);
+  const response = await instance.get(`/config`);
   return response.data;
 }
 
 export const createConfig = async (configItem) => {
-    const response = await instance.post(`${API_BASE}/config`, configItem);
+    const response = await instance.post(`/config`, configItem);
     return response.data;
 }
 
@@ -69,16 +69,16 @@ export const logout = async() => {
 }
 
 export const getFeatureFlags = async (domain, env) => {
-    const response = await instance.get(`${API_BASE}/${domain}/${env}/feature-flipping`);
+    const response = await instance.get(`/${domain}/${env}/feature-flipping`);
     return response.data;
 };
 
 export const updateFeatureFlag = async (domain, env, flag) => {
-    const response = await instance.put(`${API_BASE}/${domain}/${env}/feature-flipping?key=${flag.key}`, flag);
+    const response = await instance.put(`/${domain}/${env}/feature-flipping?key=${flag.key}`, flag);
     return response.data;
 };
 
 export const getFeatureHistory = async (domain, env) => {
-    const response = await instance.get(`${API_BASE}/${domain}/${env}/feature-flipping/history`);
+    const response = await instance.get(`/${domain}/${env}/feature-flipping/history`);
     return response.data;
 };
