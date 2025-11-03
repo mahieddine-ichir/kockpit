@@ -28,7 +28,7 @@ export const fetchAuditById = async (id, domain, env) => {
 
 export const getConfig = async () => {
   console.log(`Fetching config from ${API_BASE}/config`);
-  const response = await axios.get(`${API_BASE}/config`);
+  const response = await axios.get(`${API_BASE}/config`, { withCredentials: true });
   return response.data;
 }
 
