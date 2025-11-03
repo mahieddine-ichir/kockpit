@@ -13,9 +13,8 @@
     <artifactId>kockpit-service-featureflipping</artifactId>
     <modules>
         <module>kockpit-service-featureflipping-api</module>
-        <module>kockpit-service-backend-featureflipping-filesystem</module>
-        <module>kockpit-service-backend-featureflipping-storageaccount</module>
-        <module>kockpit-service-application-featureflipping-starter</module>
+        <module>kockpit-service-application-featureflipping-starter-storageaccount</module>
+        <module>kockpit-service-application-featureflipping-starter-filesystem</module>
     </modules>
 
 </project>
