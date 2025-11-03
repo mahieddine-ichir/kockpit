@@ -59,12 +59,12 @@ export const login = async() => {
             }
         };
     }
-    const response = await instance.get("/.auth/me");
+    const response = await axios.get("/.auth/me");
     return response.data;
 }
 
 export const logout = async() => {
-    const response = await instance.get("/logout");
+    const response = await axios.get("/logout");
     return response.data;
 }
 
