@@ -50,7 +50,6 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
   const currentUser = user?.["clientPrincipal"]?.["userDetails"];
   console.log(`currentUser ${currentUser}`)
   let navItems = [];
-  console.log(`sideBar config => ${JSON.stringify(config)}`);
   if (config['services']) {
       navItems = config['services']
           .map(service => {
