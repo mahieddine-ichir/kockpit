@@ -30,4 +30,8 @@ public class Message {
     public Message(String id, String type, String domain, String env, String appId, Object body) {
         this(id, type, domain, env, appId, System.currentTimeMillis(), Map.of(), body);
     }
+
+    public Message(String id, String type, String domain, String env, Object body) {
+        this(id, type, domain, env, null, System.currentTimeMillis(), Map.of(), body);
+    }
 }
