@@ -24,10 +24,10 @@ public class MessagePoller {
     private final ServiceDefinition serviceDefinition;
 
     void start(String domain, String env, String appId, Duration triggerPeriod) {
-        log.info("Start feature flipping for domain {} and env {}, scheduler at periodic {}", domain, env, triggerPeriod);
+        log.info("Start {} for domain {} and env {}, scheduler at periodic {}", serviceDefinition.name(), domain, env, triggerPeriod);
         taskScheduler.schedule(() -> {
-            log.trace("synchronize feature-flags, for domain {}, env {} and appId {}", domain, env, appId);
-            Message message = consumer.poll(domain, env, appId, serviceDefinition.name());
+            log.trace("synchronize {}, for domain {}, env {} and audience {}", serviceDefinition.name(), domain, env, serviceDefinition.audience());
+            Message message = consumer.poll(domain, env, serviceDefinition.audience(), serviceDefinition.name());
             if (message != null) {
                 messageCache.add(message);
             }

@@ -15,7 +15,6 @@
 		<module>kockpit-backend-application</module>
         <module>kockpit-backend-service-storage</module>
         <module>kockpit-backend-service-search</module>
-        <module>kockpit-service-featureflipping</module>
     </modules>
 
 </project>

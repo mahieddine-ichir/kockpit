@@ -23,10 +23,7 @@
         <module>kockpit-samples</module>
         <module>kockpit-core</module>
         <module>kockpit-core-applications</module>
-        <module>kockpit-core/kockpit-core-communication-storageaccount</module>
-        <module>kockpit-core/kockpit-core-communication-polling</module>
-        <module>kockpit-core/kockpit-core-sdk</module>
-        <module>kockpit-core/kockpit-core-communication-filesystem</module>
+        <module>kockpit-features</module>
     </modules>
 
 	<profiles>
