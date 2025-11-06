@@ -18,7 +18,7 @@ import java.util.List;
 
 @AutoConfiguration
 @EnableScheduling
-@EnableConfigurationProperties({SdkApplicationProperties.class})
+//@EnableConfigurationProperties({SdkApplicationProperties.class})
 public class MessagePollingAutoConfiguration {
 
     @ConditionalOnBean(Consumer.class)
@@ -30,16 +30,13 @@ public class MessagePollingAutoConfiguration {
             @Value("${kockpit.sdk.poller.scheduling:PT10S}") String clientScheduling,
             List<ServiceDefinition> serviceDefinitions
     ) {
-        for (ServiceDefinition serviceDefinition : serviceDefinitions) {
-            MessagePoller messagePoller = new MessagePoller(consumer, messageCache, taskScheduler, serviceDefinition);
-            messagePoller.start(applicationProperties.getDomain(), applicationProperties.getEnv(), applicationProperties.getAppId(), Duration.parse(clientScheduling));
-        }
+        serviceDefinitions.stream()
+                .filter(ServiceDefinition::isPollingEnabled)
+                .forEach(serviceDefinition -> {
+                    MessagePoller messagePoller = new MessagePoller(consumer, messageCache, taskScheduler, serviceDefinition);
+                    messagePoller.start(applicationProperties.getDomain(), applicationProperties.getEnv(), applicationProperties.getAppId(), Duration.parse(clientScheduling));
+            });
 
         return () -> {};
-    }
-
-    @Bean
-    MessageCache inMemoryMessageCache() {
-        return new InMemoryMessageCache();
     }
 }

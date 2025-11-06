@@ -4,8 +4,19 @@ kockpit:
     domain: rcu
     env: local
     appId: sample-app
+
+    featureflipping:
+      polling:
+        enabled: true
+    heartbeat:
+      enabled: true
+      polling:
+        enabled: false
+
     filesystem:
-      local_directory: ${user.home}/IdeaProjects/kockpit/data/feature-flipping
+      local_directory: ${user.home}/IdeaProjects/kockpit/data/
+
+
 
 logging:
   level:

@@ -11,7 +11,11 @@
     <artifactId>kockpit-core</artifactId>
     <name>core</name>
     <modules>
+        <module>kockpit-core-sdk</module>
         <module>kockpit-core-communication</module>
+        <module>kockpit-core-communication-filesystem</module>
+        <module>kockpit-core-communication-storageaccount</module>
+        <module>kockpit-core-communication-polling</module>
     </modules>
     <packaging>pom</packaging>
 
