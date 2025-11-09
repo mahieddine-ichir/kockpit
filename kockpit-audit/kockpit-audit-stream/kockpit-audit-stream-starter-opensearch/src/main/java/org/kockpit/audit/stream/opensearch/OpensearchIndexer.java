@@ -62,7 +62,7 @@ public class OpensearchIndexer implements AuditConsumer {
             return;
         }
         log.debug("Start indexing {} reports", auditReports.size());
-        Long now = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
         // defensive copy
         AuditReport[] copy = Arrays.copyOf(auditReports.toArray(), auditReports.size(), AuditReport[].class);
         auditReports.clear();
