@@ -162,7 +162,7 @@ public class OpensearchRepository implements SearchService {
                     .getHits();
 
             return Page.builder()
-                    .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
+                    .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value())
                     .size((long) hits.getHits().length)
                     .items(fromHits(hits))
                     .build();

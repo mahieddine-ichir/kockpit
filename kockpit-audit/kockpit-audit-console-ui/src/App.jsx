@@ -8,7 +8,8 @@ import DomainEnv from "./components/DomainEnv.jsx";
 import {login} from "./services/api.js";
 import ConfigPage from "./Config/ConfigPage.jsx";
 import FeatureFlippingPage from "./feature-flipping/feature.jsx";
-
+import AppIdDashboard from "./home/Home.jsx";
+import HealthIndicatorsDashboard from "./health/Health.jsx";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -41,11 +42,11 @@ function App() {
     }
 
     function onConfigLoaded(configs) {
-        console.log(`config loaded ${JSON.stringify(configs)}`);
+        //console.log(`config loaded ${JSON.stringify(configs)}`);
         setConfigs(configs);
 
         const cfg = configs[0].configs[0];
-        console.log(`default ${JSON.stringify(cfg)}`);
+        //console.log(`default ${JSON.stringify(cfg)}`);
 
         setConfig(cfg);
         setDomain(cfg.domain);
@@ -74,11 +75,13 @@ function App() {
                                 <div
                                     className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
                                     <Routes>
-                                        <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} />} />
+                                        <Route path='/home' element={<AppIdDashboard />} />
+                                        <Route path='/health' element={<HealthIndicatorsDashboard />} />
+                                        <Route path='/audit' element={<AuditListPage domain={domain} env={env} config={config} />} />
                                         <Route path='/config' element={<ConfigPage configs={configs} />} />
                                         <Route path='/feature-flipping' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
                                         <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env}/>} />
-                                        <Route path="*" element={<Navigate to="/audits" replace={true}/>}/>
+                                        <Route path="*" element={<Navigate to="/home" replace={true}/>}/>
                                     </Routes>
                                 </div>
                             </div> : null
