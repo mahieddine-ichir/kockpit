@@ -1,0 +1,5 @@
+
+kockpit:
+  sdk:
+    domain: rcu
+    env: local
