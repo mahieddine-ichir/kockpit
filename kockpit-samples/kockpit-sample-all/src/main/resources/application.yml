@@ -1,0 +1,14 @@
+
+kockpit:
+  feature-flipping:
+    client:
+      scheduling: PT10S
+
+server:
+  servlet:
+    context-path: /sample-app
+  port: 8081
+
+logging:
+  level:
+    org.kockpit: TRACE

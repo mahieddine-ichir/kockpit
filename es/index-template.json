@@ -1,8 +1,7 @@
 {
   "properties" : {
     "id": {
-      "type": "keyword",
-      "index": false
+      "type": "keyword"
     },
     "@timestamp" : {
       "type" : "date",
@@ -12,12 +11,10 @@
       "type" : "keyword"
     },
     "artifact" : {
-      "type" : "keyword",
-      "index" : false
+      "type" : "keyword"
     },
     "domain" : {
-      "type" : "keyword",
-      "index" : false
+      "type" : "keyword"
     },
     "start" : {
       "type" : "date"
@@ -26,19 +23,16 @@
       "type" : "date"
     },
     "env" : {
-      "type" : "keyword",
-      "index" : false
+      "type" : "keyword"
     },
     "hostname" : {
       "type" : "keyword"
     },
     "requestId" : {
-      "type" : "object",
-      "enabled" : false
+      "type" : "keyword"
     },
     "version" : {
-      "type" : "keyword",
-      "index" : false
+      "type" : "keyword"
     },
     "indexedKeyValues" : {
       "type" : "nested",
@@ -47,16 +41,13 @@
           "type": "keyword"
         },
         "value": {
-          "type": "keyword",
-          "doc_values": false
+          "type": "keyword"
         },
         "valueInteger": {
-          "type": "integer",
-          "doc_values": false
+          "type": "integer"
         },
         "valueFloat": {
-          "type": "float",
-          "doc_values": false
+          "type": "float"
         },
         "valueDate": {
           "type": "date"

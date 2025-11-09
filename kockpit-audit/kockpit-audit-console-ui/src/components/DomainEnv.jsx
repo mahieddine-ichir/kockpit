@@ -8,7 +8,7 @@ function DomainEnv({onConfigLoaded, domainEnvChanged}) {
             onConfigLoaded(config);
             let opts = [];
             config.forEach(cfg => cfg.configs.forEach(_cfg => {
-                console.log(`cfg ${JSON.stringify(_cfg)}`);
+                //console.log(`cfg ${JSON.stringify(_cfg)}`);
                 opts.push({
                     name: cfg.name,
                     domain: _cfg.domain,
