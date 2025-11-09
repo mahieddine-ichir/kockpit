@@ -1,0 +1,47 @@
+{
+  "size": 0,
+  "query": {
+    "range": {
+      "start": {
+        "gte": "--gte--"
+      }
+    }
+  },
+  "aggs": {
+    "by_app": {
+      "terms": {
+        "field": "appId",
+        "size": 10
+      },
+      "aggs": {
+        "http_status_nested": {
+          "nested": {
+            "path": "indexedKeyValues"
+          },
+          "aggs": {
+            "filter_status": {
+              "filter": {
+                "term": {
+                  "indexedKeyValues.key": "httpStatus"
+                }
+              },
+              "aggs": {
+                "status_groups": {
+                  "range": {
+                    "field": "indexedKeyValues.valueInteger",
+                    "ranges": [
+                      { "key": "2xx", "from": 200, "to": 300 },
+                      { "key": "3xx", "from": 300, "to": 400 },
+                      { "key": "4xx", "from": 400, "to": 500 },
+                      { "key": "5xx", "from": 500, "to": 600 }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
