@@ -1,4 +1,4 @@
-FROM openjdk:22-slim
+FROM amazoncorretto:21-al2023-headless
 
 COPY target/kockpit-audit-stream-application-kafka-*.jar /app/api.jar
 
