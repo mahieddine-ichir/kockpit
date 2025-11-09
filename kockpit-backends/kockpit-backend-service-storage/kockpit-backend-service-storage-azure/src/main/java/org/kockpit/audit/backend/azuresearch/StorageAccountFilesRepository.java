@@ -36,7 +36,7 @@ public class StorageAccountFilesRepository implements ConfigApiService {
                 .filter(blobItem -> blobItem.getName().endsWith(".json"))
                 .map(blobItem -> blobContainerClient.getBlobClient(blobItem.getName()))
                 .map(blobClient -> {
-                    log.debug("Reading blob {}", blobClient.getBlobName());
+                    log.trace("Reading blob {}", blobClient.getBlobName());
                     ByteArrayOutputStream os = new ByteArrayOutputStream();
                     blobClient.downloadStream(os);
 
