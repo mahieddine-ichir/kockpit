@@ -62,6 +62,11 @@
                     <artifactId>kockpit-backend-service-search-opensearch</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-backend-service-dashboard</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                </dependency>
             </dependencies>
         </profile>
         <profile>
@@ -82,9 +87,20 @@
                     <artifactId>kockpit-backend-service-storage-filesystem</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
+                <!-- comm -->
                 <dependency>
                     <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-service-backend-featureflipping-filesystem</artifactId>
+                    <artifactId>kockpit-core-communication-filesystem</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-features-featureflipping-service-backend</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-features-heartbeat-service-backend</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>

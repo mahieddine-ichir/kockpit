@@ -1,0 +1,28 @@
+{
+  "size": 0,
+  "query": {
+    "range": {
+      "start": {
+        "lte": "now-1d",
+        "gte": "now-2d"
+      }
+    }
+  },
+  "aggs": {
+    "over_time": {
+      "date_histogram": {
+        "field": "start",
+        "calendar_interval": "1h",
+        "min_doc_count": 0
+      },
+      "aggs": {
+        "by_app": {
+          "terms": {
+            "field": "appId",
+            "size": 10
+          }
+        }
+      }
+    }
+  }
+}
