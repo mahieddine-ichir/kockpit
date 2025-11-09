@@ -22,13 +22,9 @@ public class HeartBeatApi {
 
     private final ServiceDefinition serviceDefinition = new HeartBeatServiceDefinition(true);
 
-    private final ObjectMapper objectMapper;
-
     @GetMapping
     List<Message> heartBeats() {
         return messageCache.get(serviceDefinition.name()).stream()
-                //.map(Message::getBody)
-                //.map(o -> objectMapper.convertValue(o, HeartBeatDto.class))
                 .toList();
     }
 }

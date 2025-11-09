@@ -5,7 +5,7 @@ import {
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
     CogIcon,
-    DocumentTextIcon,
+    DocumentTextIcon, HomeIcon,
     UserIcon
 } from '@heroicons/react/24/outline';
 import {logout} from "../services/api.js";
@@ -90,6 +90,13 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
           <div className="flex-1 overflow-y-auto py-4">
               <h3 className={`px-6 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider sticky top-0 bg-slate-800/90 z-10 ${collapsed ? 'hidden' : ''}`}>Navigation</h3>
               <nav className="space-y-1 px-2">
+                  <NavItem
+                      icon={<HomeIcon className="h-5 w-5" />}
+                      label="Home"
+                      collapsed={collapsed}
+                      onClick={() => navigate('/home')}
+                      active={location.pathname === '/home'}
+                  />
                   {
                       navItems.map((navItem) => {
                           return (
@@ -104,6 +111,13 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
                           )
                       })
                   }
+                  <NavItem
+                      icon={<CogIcon className="h-5 w-5" />}
+                      label="Instances health"
+                      collapsed={collapsed}
+                      onClick={() => navigate('/health')}
+                      active={location.pathname === '/health'}
+                  />
                   <NavItem
                       icon={<CogIcon className="h-5 w-5" />}
                       label="Config"
