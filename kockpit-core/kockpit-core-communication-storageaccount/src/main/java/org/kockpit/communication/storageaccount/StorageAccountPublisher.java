@@ -10,6 +10,7 @@ import org.kockpit.communication.Publisher;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class StorageAccountPublisher implements Publisher {
@@ -37,6 +38,10 @@ public class StorageAccountPublisher implements Publisher {
     }
 
     static String formatFilename(String domain, String env, String appId, String type, String id, long creationDate) {
-        return "%s/%s/%s/%s/%s_%d.json".formatted(domain, env, appId, type, id, creationDate);
+        if (Objects.isNull(appId)) {
+            return "%s/%s/%s/%s_%d.json".formatted(domain, env, type, id, creationDate);
+        } else {
+            return "%s/%s/%s/%s/%s_%d.json".formatted(domain, env, appId, type, id, creationDate);
+        }
     }
 }
