@@ -22,13 +22,14 @@ public class StorageAccountPublisher implements Publisher {
     @SneakyThrows
     @Override
     public void publish(Message message) {
-        BlobClient blobClient = blobContainerClient
-                .getBlobClient(formatFilename(
-                        message.getDomain(),
-                        message.getEnv(),
-                        message.getAppId(),
-                        message.getType()
-                ));
+        String blobName = formatFilename(
+                message.getDomain(),
+                message.getEnv(),
+                message.getAppId(),
+                message.getType()
+        );
+        String fileName = "%s/%s.json".formatted(blobName, message.getId());
+        BlobClient blobClient = blobContainerClient.getBlobClient(fileName);
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             objectMapper.writeValue(os, message);
             blobClient.upload(new ByteArrayInputStream(os.toByteArray()), os.size());
@@ -37,9 +38,9 @@ public class StorageAccountPublisher implements Publisher {
 
     static String formatFilename(String domain, String env, String appId, String type) {
         if (Objects.isNull(appId)) {
-            return "%s/%s/%s.json".formatted(domain, env, type);
+            return "%s/%s/%s".formatted(domain, env, type);
         } else {
-            return "%s/%s/%s/%s.json".formatted(domain, env, appId, type);
+            return "%s/%s/%s/%s".formatted(domain, env, appId, type);
         }
     }
 }

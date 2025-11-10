@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kockpit.communication.Consumer;
 import org.kockpit.communication.Publisher;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -19,21 +18,18 @@ public class StorageAccountCommunicationAutoConfiguration {
 
     @Bean
     Publisher storageAccountPublisher(
-            BlobContainerClient blobContainerClient,
-            @Qualifier("OBJECT_MAPPER_STORAGE_ACCOUNT") ObjectMapper objectMapper
+            BlobContainerClient blobContainerClient
     ) {
-        return new StorageAccountPublisher(blobContainerClient, objectMapper);
+        return new StorageAccountPublisher(blobContainerClient, objectMapper());
     }
 
     @Bean
     Consumer storageAccountConsumer(
-            BlobContainerClient blobContainerClient,
-            @Qualifier("OBJECT_MAPPER_STORAGE_ACCOUNT") ObjectMapper objectMapper
+            BlobContainerClient blobContainerClient
     ) {
-        return new StorageAccountConsumer(blobContainerClient, objectMapper);
+        return new StorageAccountConsumer(blobContainerClient, objectMapper());
     }
 
-    @Bean("OBJECT_MAPPER_STORAGE_ACCOUNT")
     ObjectMapper objectMapper() {
         return new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
