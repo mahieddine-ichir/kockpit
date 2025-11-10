@@ -27,9 +27,7 @@ public class StorageAccountPublisher implements Publisher {
                         message.getDomain(),
                         message.getEnv(),
                         message.getAppId(),
-                        message.getType(),
-                        message.getId(),
-                        message.getCreationDate()
+                        message.getType()
                 ));
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             objectMapper.writeValue(os, message);
@@ -37,11 +35,11 @@ public class StorageAccountPublisher implements Publisher {
         }
     }
 
-    static String formatFilename(String domain, String env, String appId, String type, String id, long creationDate) {
+    static String formatFilename(String domain, String env, String appId, String type) {
         if (Objects.isNull(appId)) {
-            return "%s/%s/%s/%s_%d.json".formatted(domain, env, type, id, creationDate);
+            return "%s/%s/%s.json".formatted(domain, env, type);
         } else {
-            return "%s/%s/%s/%s/%s_%d.json".formatted(domain, env, appId, type, id, creationDate);
+            return "%s/%s/%s/%s.json".formatted(domain, env, appId, type);
         }
     }
 }
