@@ -1,0 +1,6 @@
+kockpit:
+  audit:
+    local:
+      storage-path: ${user.home}/IdeaProjects/kockpit/data/manifests
+    filesystem:
+      local_directory: ${user.home}/IdeaProjects/kockpit/data/
