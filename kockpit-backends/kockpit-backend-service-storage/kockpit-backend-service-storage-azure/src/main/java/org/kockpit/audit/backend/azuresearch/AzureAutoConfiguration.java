@@ -7,6 +7,7 @@ import com.azure.storage.common.StorageSharedKeyCredential;
 import org.kockpit.backend.services.storage.ConfigApiService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
@@ -17,6 +18,7 @@ public class AzureAutoConfiguration {
         return new StorageAccountFilesRepository(blobContainerClient);
     }
 
+    @ConditionalOnMissingBean(BlobServiceClient.class)
     @Bean
     BlobServiceClient blobServiceClient(
             @Value("${kockpit.audit.azure.storage.endpoint}") String storageEndpoint,
@@ -29,10 +31,10 @@ public class AzureAutoConfiguration {
                 .buildClient();
     }
 
+    @ConditionalOnMissingBean(BlobContainerClient.class)
     @Bean
     BlobContainerClient blobClient(BlobServiceClient blobServiceClient,
                                    @Value("${kockpit.audit.azure.storage.container}") String containerName) {
-        return blobServiceClient
-                .getBlobContainerClient(containerName);
+        return blobServiceClient.getBlobContainerClient(containerName);
     }
 }

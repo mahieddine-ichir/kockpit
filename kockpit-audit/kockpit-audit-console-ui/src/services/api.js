@@ -99,7 +99,8 @@ export const getOverTimeByAppId = async (domain, env, timeRange) => {
     return response.data;
 };
 
-export const getHealth = async () => {
+// fixme use domain/env
+export const getHealth = async (domain, env) => {
     const response = await instance.get(`/heartbeat`);
     return response.data;
 };
