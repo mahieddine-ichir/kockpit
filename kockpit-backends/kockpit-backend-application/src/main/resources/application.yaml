@@ -12,6 +12,8 @@ spring:
     name: kockpit-backoffice
   profiles:
     include: opensearch
+  main:
+    allow-bean-definition-overriding: true
 
 kockpit:
   sdk:
