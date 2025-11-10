@@ -13,16 +13,17 @@ import org.opensearch.search.aggregations.AggregationBuilders;
 import org.opensearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.opensearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.opensearch.search.builder.SearchSourceBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Component
@@ -34,10 +35,11 @@ public class DashboardService {
 
     private final RestClient restClient;
 
-    //private final String index;
+    @Value("${kockpit.audit.opensearch.index}")
+    private String index;
 
     @SneakyThrows
-    Map<String, List<Object>> appDetails() {
+    Map<String, List<Object>> appDetails(String domain, String env) {
 
         TermsAggregationBuilder termsAggregationBuilder = AggregationBuilders.terms("apps_distribution")
                 .field("appId").size(20);
@@ -48,7 +50,7 @@ public class DashboardService {
 
         SearchRequest searchRequest = new SearchRequest()
                 .source(searchSourceBuilder)
-                .indices(getAuditAliasName("rcu", "audit-data", "dev"));
+                .indices(getAuditAliasName(domain, "audit-data", env));
 
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         Aggregation first = searchResponse.getAggregations().asList().get(0);
@@ -63,8 +65,8 @@ public class DashboardService {
     }
 
     @SneakyThrows
-    List<Map<String, Object>> avgDurationByApp() {
-        Map byApp = (Map) runJson("/avgDurationByApp.json", null).get("by_app");
+    List<Map<String, Object>> avgDurationByApp(String domain, String env) {
+        Map byApp = (Map) runJson(domain, env, "/avgDurationByApp.json", null).get("by_app");
         List<Map> buckets = (List<Map>) byApp.get("buckets");
 
         return buckets.stream()
@@ -81,9 +83,9 @@ public class DashboardService {
     }
 
     @SneakyThrows
-    List<Map<String, Object>> statusDistributionByAppId(String gte) {
+    List<Map<String, Object>> statusDistributionByAppId(String domain, String env, String gte) {
         log.trace("statusDistributionByAppId({})", gte);
-        Map statusNested = (Map) runJson("/statusDistributionByAppId.json", Map.of("--gte--", gte)).get("by_app");
+        Map statusNested = (Map) runJson(domain, env, "/statusDistributionByAppId.json", Map.of("--gte--", gte)).get("by_app");
         List<Map> buckets = (List<Map>) readMap(statusNested, "buckets");
 
         return buckets.stream()
@@ -105,9 +107,9 @@ public class DashboardService {
     }
 
     @SneakyThrows
-    List<Map<String, Object>> overTimeByAppId(String gte) {
+    List<Map<String, Object>> overTimeByAppId(String domain, String env, String gte) {
         log.trace("overTimeByAppId({})", gte);
-        Map statusNested = (Map) runJson("/overTimeByAppId.json", Map.of("--gte--", gte)).get("over_time");
+        Map statusNested = (Map) runJson(domain, env, "/overTimeByAppId.json", Map.of("--gte--", gte)).get("over_time");
         List<Map> buckets = (List<Map>) readMap(statusNested, "buckets");
 
         return buckets.stream()
@@ -120,7 +122,7 @@ public class DashboardService {
                 }).toList();
     }
 
-    private Map<String, Object> runJson(String json, @Nullable Map<String, Object> replacements) throws IOException {
+    private Map<String, Object> runJson(String domain, String env, String json, @Nullable Map<String, Object> replacements) throws IOException {
         String entity = new String(this.getClass().getResourceAsStream(json).readAllBytes());
         if (replacements != null) {
             for (Map.Entry<String, Object> entry : replacements.entrySet()) {
@@ -128,7 +130,7 @@ public class DashboardService {
             }
         }
 
-        Request request = new Request("POST", "/rcu-audit-data-michir/_search");
+        Request request = new Request("POST", "%s/_search".formatted(getAuditAliasName(domain, index, env)));
         request.setJsonEntity(entity);
 
         Response response = restClient.performRequest(request);

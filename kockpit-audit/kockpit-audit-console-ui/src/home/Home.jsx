@@ -129,7 +129,7 @@ function generateStatusDistribution(data) {
     return result;
 }
 
-const AppIdDashboard = () => {
+const AppIdDashboard = ({domain, env}) => {
     const [loading, setLoading] = useState(false);
     const [selectedTimeRange, setSelectedTimeRange] = useState('24h');
     const [selectedApp, setSelectedApp] = useState('all');
@@ -158,7 +158,7 @@ const AppIdDashboard = () => {
     };
 
     const loadData = () => {
-        getAppDistributionData().then(data => {
+        getAppDistributionData(domain, env).then(data => {
             setAppDistributionData(data);
             setTotalRequests(data.reduce((sum, app) => sum + app.count, 0));
 
@@ -167,12 +167,12 @@ const AppIdDashboard = () => {
             ));
         })
 
-        getStatusDistributionByAppId(selectedTimeRange).then(data => {
+        getStatusDistributionByAppId(domain, env, selectedTimeRange).then(data => {
             setStatusByAppData(data);
             setStatusDistribution(generateStatusDistribution(data));
         });
 
-        getOverTimeByAppId('1d').then(data => {
+        getOverTimeByAppId(domain, env, '1d').then(data => {
             console.log(`timeSeries ${JSON.stringify(data)}`);
             /*
             const transformed = data.map(d => {
