@@ -16,7 +16,7 @@ spring:
 kockpit:
   sdk:
     domain: rcu
-    env: local
+    env: dev
     appId: backend-application
 
 management:

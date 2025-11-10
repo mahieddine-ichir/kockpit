@@ -75,7 +75,7 @@ function App() {
                                 <div
                                     className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
                                     <Routes>
-                                        <Route path='/home' element={<AppIdDashboard />} />
+                                        <Route path='/home' element={<AppIdDashboard domain={domain} env={env} />} />
                                         <Route path='/health' element={<HealthIndicatorsDashboard />} />
                                         <Route path='/audit' element={<AuditListPage domain={domain} env={env} config={config} />} />
                                         <Route path='/config' element={<ConfigPage configs={configs} />} />

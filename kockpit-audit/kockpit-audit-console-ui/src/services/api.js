@@ -84,18 +84,18 @@ export const getFeatureHistory = async (domain, env) => {
 };
 
 // stat's
-export const getAppDistributionData = async () => {
-    const response = await instance.get(`/dashboard/app_distribution_data`);
+export const getAppDistributionData = async (domain, env) => {
+    const response = await instance.get(`/${domain}/${env}/dashboard/app_distribution_data`);
     return response.data;
 };
 
-export const getStatusDistributionByAppId = async (timeRange) => {
-    const response = await instance.get(`/dashboard/status_distribution_by_appId?gte=now-${timeRange}`);
+export const getStatusDistributionByAppId = async (domain, env, timeRange) => {
+    const response = await instance.get(`/${domain}/${env}/dashboard/status_distribution_by_appId?gte=now-${timeRange}`);
     return response.data;
 };
 
-export const getOverTimeByAppId = async (timeRange) => {
-    const response = await instance.get(`/dashboard/overTime_by_appId?gte=now-${timeRange}`);
+export const getOverTimeByAppId = async (domain, env, timeRange) => {
+    const response = await instance.get(`/${domain}/${env}/dashboard/overTime_by_appId?gte=now-${timeRange}`);
     return response.data;
 };
 
