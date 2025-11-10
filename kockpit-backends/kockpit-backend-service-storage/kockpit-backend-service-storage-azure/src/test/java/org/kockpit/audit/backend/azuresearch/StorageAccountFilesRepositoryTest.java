@@ -52,7 +52,7 @@ class StorageAccountFilesRepositoryTest {
         }).when(blobClient).downloadStream(Mockito.any(OutputStream.class));
 
         BlobItem blobItem = mock(BlobItem.class);
-        when(blobItem.getName()).thenReturn("api-config.json");
+        when(blobItem.getName()).thenReturn("api-manifest-config.json");
         PagedResponse<BlobItem> pagedResponse = mock(PagedResponse.class);
 
         List<BlobItem> blobItems = List.of(blobItem);
