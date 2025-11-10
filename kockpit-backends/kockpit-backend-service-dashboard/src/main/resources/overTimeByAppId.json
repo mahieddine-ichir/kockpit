@@ -3,8 +3,7 @@
   "query": {
     "range": {
       "start": {
-        "lte": "now-1d",
-        "gte": "now-2d"
+        "gte": "now-1d"
       }
     }
   },
