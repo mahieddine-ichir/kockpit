@@ -1,18 +1,18 @@
 #!/bin/bash
 
 op=$1
+url=localhost:9200
 
 function delete_index() {
   index=$1
-  read  -r -p "Delete index $index, (y/n) ? " response
+  read  -r -p "Delete index '""$index""', (y/n) ? " response
   case "$response" in
     [yY][eE][sS]|[yY])
-      echo "Deleting index..."
-      break
+      echo "Deleting index $index ..."
+      curl -sX DELETE "$url/$index"
       ;;
     [nN][oO]|[nN])
       echo "Deletion cancelled."
-      break
       ;;
     *)
       echo "Invalid input. Please enter 'y' or 'n'."
@@ -20,8 +20,19 @@ function delete_index() {
   esac
 }
 
+function list_indices() {
+  pattern=$1
+  curl -svX GET "$url/_index/$pattern" | awk '{print $3}'
+}
+
 case $op in
 'delete')
-  delete_index $index
+  delete_index $2
+  ;;
+'list')
+  list_indices "$2"
+  ;;
+*)
+  echo "Invalid input!"
   ;;
 esac
