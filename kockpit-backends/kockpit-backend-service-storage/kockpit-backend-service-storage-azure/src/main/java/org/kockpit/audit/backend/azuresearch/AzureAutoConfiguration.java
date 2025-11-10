@@ -20,7 +20,7 @@ public class AzureAutoConfiguration {
 
     @ConditionalOnMissingBean(BlobServiceClient.class)
     @Bean
-    BlobServiceClient blobServiceClient(
+    BlobServiceClient storageAccountBlobServiceClient(
             @Value("${kockpit.audit.azure.storage.endpoint}") String storageEndpoint,
             @Value("${kockpit.audit.azure.storage.account}") String accountName,
             @Value("${kockpit.audit.azure.storage.key}") String key
@@ -33,7 +33,7 @@ public class AzureAutoConfiguration {
 
     @ConditionalOnMissingBean(BlobContainerClient.class)
     @Bean
-    BlobContainerClient blobClient(BlobServiceClient blobServiceClient,
+    BlobContainerClient storageAccountBlobClient(BlobServiceClient blobServiceClient,
                                    @Value("${kockpit.audit.azure.storage.container}") String containerName) {
         return blobServiceClient.getBlobContainerClient(containerName);
     }
