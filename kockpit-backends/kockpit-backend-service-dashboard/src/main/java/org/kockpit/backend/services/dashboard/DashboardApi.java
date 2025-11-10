@@ -1,16 +1,13 @@
 package org.kockpit.backend.services.dashboard;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/dashboard")
+@RequestMapping("/{domain}/{env}/dashboard")
 @RequiredArgsConstructor
 public class DashboardApi {
 
@@ -18,26 +15,36 @@ public class DashboardApi {
     private final DashboardService dashboardService;
 
     @GetMapping("app_details")
-    Map<String, List<Object>> appDetails() {
-        return dashboardService.appDetails();
+    Map<String, List<Object>> appDetails(
+            @PathVariable String domain,
+            @PathVariable String env
+    ) {
+        return dashboardService.appDetails(domain, env);
     }
 
     @GetMapping("app_distribution_data")
-    List<Map<String, Object>> appDistributionData() {
-        return dashboardService.avgDurationByApp();
+    List<Map<String, Object>> appDistributionData(
+            @PathVariable String domain,
+            @PathVariable String env
+            ) {
+        return dashboardService.avgDurationByApp(domain, env);
     }
 
     @GetMapping("status_distribution_by_appId")
     List<Map<String, Object>> statusDistributionByAppId(
+            @PathVariable String domain,
+            @PathVariable String env,
             @RequestParam(required = false, defaultValue = "now-1d") String gte
     ) {
-        return dashboardService.statusDistributionByAppId(gte);
+        return dashboardService.statusDistributionByAppId(domain, env, gte);
     }
 
     @GetMapping("overTime_by_appId")
     List<Map<String, Object>> overTimeByAppId(
+            @PathVariable String domain,
+            @PathVariable String env,
             @RequestParam(required = false, defaultValue = "now-1d") String gte
     ) {
-        return dashboardService.overTimeByAppId(gte);
+        return dashboardService.overTimeByAppId(domain, env, gte);
     }
 }
