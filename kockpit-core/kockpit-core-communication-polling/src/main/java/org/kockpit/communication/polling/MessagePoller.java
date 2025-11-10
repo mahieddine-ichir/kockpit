@@ -3,7 +3,6 @@ package org.kockpit.communication.polling;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.Consumer;
-import org.kockpit.communication.Message;
 import org.kockpit.communication.MessageCache;
 import org.kockpit.core.sdk.ServiceDefinition;
 import org.springframework.scheduling.TaskScheduler;
@@ -27,10 +26,8 @@ public class MessagePoller {
         log.info("Start {} for domain {} and env {}, scheduler at periodic {}", serviceDefinition.name(), domain, env, triggerPeriod);
         taskScheduler.schedule(() -> {
             log.trace("synchronize {}, for domain {}, env {} and audience {}", serviceDefinition.name(), domain, env, serviceDefinition.audience());
-            Message message = consumer.poll(domain, env, serviceDefinition.audience(), serviceDefinition.name());
-            if (message != null) {
-                messageCache.add(message);
-            }
+            consumer.poll(domain, env, serviceDefinition.audience(), serviceDefinition.name())
+                    .forEach(messageCache::add);
         }, new PeriodicTrigger(triggerPeriod));
     }
 }

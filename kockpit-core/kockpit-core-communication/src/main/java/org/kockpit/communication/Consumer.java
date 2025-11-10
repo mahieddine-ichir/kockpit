@@ -1,6 +1,8 @@
 package org.kockpit.communication;
 
+import java.util.List;
+
 public interface Consumer {
 
-    Message poll(String domain, String env, String appId, String type);
+    List<Message> poll(String domain, String env, String appId, String type);
 }
