@@ -147,7 +147,7 @@ const AppIdDashboard = ({domain, env}) => {
 
     useEffect(() => {
         loadData();
-    }, [selectedTimeRange]);
+    }, [selectedTimeRange, domain, env]);
 
     successRate = statusDistribution.find(s => s.name.includes('2xx'))?.percentage || 0;
     errorRate = (statusDistribution.find(s => s.name.includes('4xx'))?.percentage || 0) +
@@ -160,10 +160,11 @@ const AppIdDashboard = ({domain, env}) => {
     const loadData = () => {
         getAppDistributionData(domain, env).then(data => {
             setAppDistributionData(data);
-            setTotalRequests(data.reduce((sum, app) => sum + app.count, 0));
+            let reduce = data.reduce((sum, app) => sum + app.count, 0);
+            setTotalRequests(reduce);
 
             setAvgResponseTime(Math.round(
-                appDistributionData.reduce((sum, app) => sum + app.avgDuration * app.count, 0) / totalRequests
+                appDistributionData.reduce((sum, app) => sum + app.avgDuration * app.count, 0) / reduce
             ));
         })
 
