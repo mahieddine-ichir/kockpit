@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
 @AutoConfiguration
 public class StorageAccountCommunicationAutoConfiguration {
@@ -40,6 +41,7 @@ public class StorageAccountCommunicationAutoConfiguration {
     }
 
     @Bean
+    @Primary
     BlobServiceClient blobServiceClient(
             @Value("${kockpit.sdk.azure.storage.endpoint}") String storageEndpoint,
             @Value("${kockpit.sdk.azure.storage.account}") String accountName,
@@ -52,6 +54,7 @@ public class StorageAccountCommunicationAutoConfiguration {
     }
 
     @Bean
+    @Primary
     BlobContainerClient blobClient(BlobServiceClient blobServiceClient,
                                    @Value("${kockpit.sdk.azure.storage.container}") String containerName) {
         return blobServiceClient.getBlobContainerClient(containerName);

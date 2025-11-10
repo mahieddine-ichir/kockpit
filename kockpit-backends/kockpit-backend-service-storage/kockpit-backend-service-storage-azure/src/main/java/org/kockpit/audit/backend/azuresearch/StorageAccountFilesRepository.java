@@ -33,7 +33,7 @@ public class StorageAccountFilesRepository implements ConfigApiService {
     public List<Manifest> list() {
         return blobContainerClient.listBlobs()
                 .stream()
-                .filter(blobItem -> blobItem.getName().endsWith(".json"))
+                .filter(blobItem -> blobItem.getName().contains("manifest"))
                 .map(blobItem -> blobContainerClient.getBlobClient(blobItem.getName()))
                 .map(blobClient -> {
                     log.trace("Reading blob {}", blobClient.getBlobName());
