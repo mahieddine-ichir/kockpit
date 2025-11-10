@@ -10,6 +10,8 @@ import org.kockpit.communication.Message;
 
 import java.io.ByteArrayOutputStream;
 
+import static org.kockpit.communication.storageaccount.StorageAccountPublisher.formatFilename;
+
 @RequiredArgsConstructor
 @Slf4j
 public class StorageAccountConsumer implements Consumer {
@@ -20,7 +22,7 @@ public class StorageAccountConsumer implements Consumer {
 
     @Override
     public Message poll(String domain, String env, String appId, String type) {
-        String filePattern = "%s/%s/%s/%s".formatted(domain, env, appId, type);
+        String filePattern = formatFilename(domain, env, appId, type);
         return blobContainerClient.listBlobs()
                 .stream()
                 .filter(blobItem -> blobItem.getName().startsWith(filePattern))
