@@ -49,7 +49,7 @@ stages:
               goals: 'deploy -Pstime,azure'
 
   - stage: Docker
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
     jobs:
       - job: image
         continueOnError: false
