@@ -60,7 +60,7 @@
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-core-communication-storageaccount</artifactId>
+            <artifactId>kockpit-features-featureflipping-service-backend</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
@@ -92,6 +92,11 @@
                     <artifactId>kockpit-backend-service-storage-azure</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-core-communication-storageaccount</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                </dependency>
             </dependencies>
         </profile>
         <profile>
@@ -106,11 +111,6 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-filesystem</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-features-featureflipping-service-backend</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>

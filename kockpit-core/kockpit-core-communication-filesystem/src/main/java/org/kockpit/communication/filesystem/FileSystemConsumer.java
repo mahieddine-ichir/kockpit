@@ -10,6 +10,8 @@ import org.kockpit.communication.Message;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 
 import static org.kockpit.communication.filesystem.FileSystemPublisher.getDirectory;
 
@@ -23,16 +25,21 @@ public class FileSystemConsumer implements Consumer {
 
     @SneakyThrows
     @Override
-    public Message poll(String domain, String env, String appId, String type) {
+    public List<Message> poll(String domain, String env, String appId, String type) {
         File directory = getDirectory(localDirectory, domain, env, appId, type);
         return Files.list(directory.toPath())
-                .min((o1, o2) -> Math.toIntExact(o1.toFile().lastModified() - o2.toFile().lastModified()))
+                .sorted((o1, o2) -> Math.toIntExact(o1.toFile().lastModified() - o2.toFile().lastModified()))
                 .map(this::read)
-                .orElse(null);
+                .filter(Objects::nonNull)
+                .toList();
     }
 
-    @SneakyThrows
     private Message read(Path path) {
-        return objectMapper.readValue(path.toFile(), Message.class);
+        try {
+            return objectMapper.readValue(path.toFile(), Message.class);
+        } catch (Exception e) {
+            log.error("error reading path {}", path, e);
+            return null;
+        }
     }
 }

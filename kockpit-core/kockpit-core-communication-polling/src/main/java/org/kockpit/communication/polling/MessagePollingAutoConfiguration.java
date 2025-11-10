@@ -7,8 +7,6 @@ import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -18,10 +16,8 @@ import java.util.List;
 
 @AutoConfiguration
 @EnableScheduling
-//@EnableConfigurationProperties({SdkApplicationProperties.class})
 public class MessagePollingAutoConfiguration {
 
-    @ConditionalOnBean(Consumer.class)
     @Bean
     InitializingBean messagePoller(
             Consumer consumer, MessageCache messageCache,

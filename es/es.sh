@@ -22,7 +22,7 @@ function delete_index() {
 
 function list_indices() {
   pattern=$1
-  curl -svX GET "$url/_index/$pattern" | awk '{print $3}'
+  curl -sX GET "$url/_cat/indices/$pattern" | awk '{print $3}'
 }
 
 case $op in
