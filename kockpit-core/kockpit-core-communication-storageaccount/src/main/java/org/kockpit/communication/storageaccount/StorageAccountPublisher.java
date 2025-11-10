@@ -32,7 +32,7 @@ public class StorageAccountPublisher implements Publisher {
         BlobClient blobClient = blobContainerClient.getBlobClient(fileName);
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             objectMapper.writeValue(os, message);
-            blobClient.upload(new ByteArrayInputStream(os.toByteArray()), os.size());
+            blobClient.upload(new ByteArrayInputStream(os.toByteArray()), os.size(), true);
         }
     }
 
