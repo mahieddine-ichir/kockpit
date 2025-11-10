@@ -1,1 +1,2 @@
 org.kockpit.audit.module.web.WebAuditAutoConfiguration
+org.kockpit.audit.module.web.traceid.FilterTraceIdConfiguration
