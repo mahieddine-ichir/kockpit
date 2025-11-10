@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import {getHealth} from "../services/api.js";
 
-const HealthIndicatorsDashboard = () => {
+const HealthIndicatorsDashboard = ({domain, env}) => {
     const [indicators, setIndicators] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ const HealthIndicatorsDashboard = () => {
         try {
             // Simuler un appel API
             //await new Promise(resolve => setTimeout(resolve, 500));
-            getHealth().then(data => {
+            getHealth(domain, env).then(data => {
                 setIndicators(data);
             })
 
