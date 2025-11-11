@@ -65,7 +65,7 @@ const Dashboard = ({ audits, getHttStatus, getMethod }) => {
 
     const avgDurationData = Object.entries(durationByStatus).map(([status, data]) => ({
         status,
-        avgDuration: Math.round(data.total / data.count)
+        avgDuration: Math.round(data.total / data.count).toFixed(2)
     }));
 
     const CustomTooltip = ({ active, payload, label }) => {
@@ -133,7 +133,7 @@ const Dashboard = ({ audits, getHttStatus, getMethod }) => {
                         <div>
                             <p className="text-amber-100 text-sm font-medium">Avg Duration</p>
                             <p className="text-3xl font-bold">
-                                {Math.round(audits.reduce((sum, audit) => sum + (audit.end - audit.start), 0) / audits.length)}ms
+                                {Math.round(audits.reduce((sum, audit) => sum + (audit.end - audit.start), 0) / audits.length).toFixed(2)} ms
                             </p>
                         </div>
                         <div className="bg-amber-400/30 rounded-lg p-3">

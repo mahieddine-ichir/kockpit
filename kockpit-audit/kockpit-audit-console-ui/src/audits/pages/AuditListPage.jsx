@@ -349,7 +349,7 @@ const AuditListPage = ({ domain, env, config }) => {
     let thisConfig;
   if (config['services']) {
     thisConfig = config['services'].find(service => service.name === 'audit');
-    label = thisConfig.label;
+    label = thisConfig.label ? thisConfig.label : thisConfig.name;
     columns = thisConfig.config.columns
         .map(column => {
           return {

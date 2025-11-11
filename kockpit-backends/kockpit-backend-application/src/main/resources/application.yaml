@@ -12,11 +12,13 @@ spring:
     name: kockpit-backoffice
   profiles:
     include: opensearch
+  main:
+    allow-bean-definition-overriding: true
 
 kockpit:
   sdk:
     domain: rcu
-    env: local
+    env: dev
     appId: backend-application
 
 management:
