@@ -18,6 +18,7 @@
         <module>kockpit-audit-stream-starter-opensearch</module>
         <!-- Applications -->
         <module>kockpit-audit-stream-application-kafka</module>
+        <module>kockpit-audit-stream-application-kinesis</module>
     </modules>
 
     <dependencies>

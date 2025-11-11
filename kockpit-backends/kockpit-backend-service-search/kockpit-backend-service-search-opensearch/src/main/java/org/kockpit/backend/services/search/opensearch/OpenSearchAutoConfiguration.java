@@ -3,9 +3,10 @@ package org.kockpit.backend.services.search.opensearch;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequestInterceptor;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpRequestInterceptor;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestClientBuilder;
 import org.opensearch.client.RestHighLevelClient;
@@ -44,23 +45,41 @@ public class OpenSearchAutoConfiguration {
     }
 
     @Bean
-    RestHighLevelClient restHighLevelClient(
+    RestClient restClient(RestClientBuilder builder) {
+        return builder.build();
+    }
+
+    @SneakyThrows
+    @Bean
+    RestHighLevelClient restHighLevelClient(RestClientBuilder builder) {
+        return new RestHighLevelClient(builder);
+    }
+
+    @SneakyThrows
+    @Bean
+    RestClientBuilder osRestClientBuilder(
             @Value("${kockpit.audit.opensearch.endpoints}") String endpoints,
             @Autowired(required = false) List<HttpRequestInterceptor> interceptors
     ) {
         HttpHost[] httpHosts = Arrays.stream(endpoints.split(","))
-                .map(HttpHost::create)
+                .map(s -> {
+                    try {
+                        return HttpHost.create(s);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toArray(HttpHost[]::new);
         log.info(
-"""
-    \n
-    - Opensearch endpoints list: {}
-""", endpoints);
+                """
+                    \n
+                    - Opensearch endpoints list: {}
+                """, endpoints);
 
         RestClientBuilder builder = RestClient.builder(httpHosts);
         if (! CollectionUtils.isEmpty(interceptors)) {
-            interceptors.forEach(interceptor -> builder.setHttpClientConfigCallback(hacb -> hacb.addInterceptorLast(interceptor)));
+            interceptors.forEach(interceptor -> builder.setHttpClientConfigCallback(hacb -> hacb.addRequestInterceptorLast(interceptor)));
         }
-        return new RestHighLevelClient(builder);
+        return builder;
     }
 }
