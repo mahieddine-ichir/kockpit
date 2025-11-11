@@ -14,7 +14,7 @@ The UI Modeler of the Rules engine is a UI Web Designer to design business rules
 # Components
 
 ## Rule
-A rule is a set of (service) **actions** and **operators** that are executed following a given (directed) schema.
+A rule is a set of (serviceDefinition) **actions** and **operators** that are executed following a given (directed) schema.
 
 ### example
 
@@ -27,11 +27,11 @@ C --> E(Action 3) --> G
 
 ## Action
 
-An "*action*" is a *service* component, generally backed by a service, and is aimed to execute a single treatment.
+An "*action*" is a *serviceDefinition* component, generally backed by a serviceDefinition, and is aimed to execute a single treatment.
 The action component should have the following properties :
 
 - **name**: a human friendly name (default to action_name)
-- **id**: the action name, used to bind to the back service. It is mandatory and should be unique within the Rule definition.
+- **id**: the action name, used to bind to the back serviceDefinition. It is mandatory and should be unique within the Rule definition.
 
 ```mermaid
 graph LR
@@ -81,7 +81,7 @@ The output json format, fully describes the Rule execution workflow and has the 
 				    },
 				    "action_name": {
 					    "type": "string",
-					    "description": "service name of the action"
+					    "description": "serviceDefinition name of the action"
 				    }
 			    }
 		    }

@@ -3,7 +3,7 @@
 ES_HOST=http://localhost:9200
 
 # reindex
-index_source=rcu-audit_data-pro-ttl90d-2025.10.17-000004
+index_source=rcu-audit_data-pro-ttl30d-2025.10.17-000010
 index_destination=${index_source}.v2
 
 # create index destination
