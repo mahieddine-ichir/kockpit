@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kockpit</groupId>
+        <artifactId>kockpit</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>kockpit-core</artifactId>
+    <name>core</name>
+    <modules>
+        <module>kockpit-core-sdk</module>
+        <module>kockpit-core-communication</module>
+        <module>kockpit-core-communication-filesystem</module>
+        <module>kockpit-core-communication-storageaccount</module>
+        <module>kockpit-core-communication-polling</module>
+    </modules>
+    <packaging>pom</packaging>
+
+
+
+</project>

@@ -82,3 +82,26 @@ export const getFeatureHistory = async (domain, env) => {
     const response = await instance.get(`/${domain}/${env}/feature-flipping/history`);
     return response.data;
 };
+
+// stat's
+export const getAppDistributionData = async (domain, env) => {
+    const response = await instance.get(`/${domain}/${env}/dashboard/app_distribution_data`);
+    return response.data;
+};
+
+export const getStatusDistributionByAppId = async (domain, env, timeRange) => {
+    const response = await instance.get(`/${domain}/${env}/dashboard/status_distribution_by_appId?gte=now-${timeRange}`);
+    return response.data;
+};
+
+export const getOverTimeByAppId = async (domain, env, timeRange) => {
+    const response = await instance.get(`/${domain}/${env}/dashboard/overTime_by_appId?gte=now-${timeRange}`);
+    return response.data;
+};
+
+// fixme use domain/env
+export const getHealth = async (domain, env) => {
+    const response = await instance.get(`/heartbeat`);
+    return response.data;
+};
+

@@ -43,6 +43,7 @@ public class OpensearchRepository implements SearchService {
     @SneakyThrows
     @Override
     public Object getAudit(String domain, String env, String id) {
+        log.trace("load audit for domain {}, env {}, id {}", domain, env, id);
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         boolQueryBuilder.must(matchQuery("id", id));
         boolQueryBuilder.must(matchQuery("env", env));
@@ -162,7 +163,7 @@ public class OpensearchRepository implements SearchService {
                     .getHits();
 
             return Page.builder()
-                    .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value)
+                    .totalCount(hits.getTotalHits() == null ? 0 : hits.getTotalHits().value())
                     .size((long) hits.getHits().length)
                     .items(fromHits(hits))
                     .build();

@@ -1,0 +1,52 @@
+[
+  {
+    "domain": "rcu",
+    "env": "pro",
+    "services": [
+      {
+        "name": "audit",
+        "config": {
+          "columns": [
+            "appId",
+            "requestId",
+            "method",
+            "path",
+            "start",
+            "duration",
+            "status"
+          ],
+          "search_columns": [
+            {
+              "name": "appId",
+              "type": "options",
+              "options": [
+                "orchestrator",
+                "rcu-api"
+              ]
+            },
+            {
+              "name": "gbid",
+              "type": "number",
+              "path": "audits.events.httpAuditedResponse.body"
+            },
+            {
+              "name": "rowId"
+            },
+            {
+              "name": "httpStatus",
+              "type": "options",
+              "options": [200, 201, 400, 500],
+              "path": "indexedKeyValues.httpStatus"
+            },
+            {
+              "name": "httpMethod",
+              "type": "options",
+              "options": ["GET", "POST", "PUT"],
+              "path": "indexedKeyValues.httpMethod"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

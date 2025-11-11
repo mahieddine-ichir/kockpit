@@ -50,8 +50,11 @@ const FeatureFlippingPage = ({ domain, env, config }) => {
     const [originalFlag, setOriginalFlag] = useState(null);
 
     let flags = [];
+    let appId = '';
     if (config['services']) {
         let service = config['services'].find(service => service.name === 'feature-flipping');
+        appId = service['appId'];
+        console.log(`service ${JSON.stringify(service)}`);
         if (service['config']) {
             flags = service['config'].keys;
         }
@@ -70,7 +73,7 @@ const FeatureFlippingPage = ({ domain, env, config }) => {
     }
 
     const handleToggle = (flag) => {
-        updateFeatureFlag(domain, env, flag)
+        updateFeatureFlag(domain, env, appId, flag)
             .then(resp => console.log(resp))
             .catch(err => flag.enabled = !flag.enabled);
     }
