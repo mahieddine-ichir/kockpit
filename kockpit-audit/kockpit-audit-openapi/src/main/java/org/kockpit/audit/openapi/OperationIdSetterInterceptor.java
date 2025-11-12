@@ -2,8 +2,6 @@ package org.kockpit.audit.openapi;
 
 import static java.util.Objects.nonNull;
 
-import com.accor.wcp.audit.AuditorKeyValueService;
-import com.accor.wcp.audit.IndexedKeyValue;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.api.AuditorKeyValueService;
+import org.kockpit.audit.api.IndexedKeyValue;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
