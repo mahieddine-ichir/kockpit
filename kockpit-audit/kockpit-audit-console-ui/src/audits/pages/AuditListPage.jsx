@@ -108,7 +108,10 @@ const AuditLine = ({columns, audit, onClick}) => {
       ) : col.key === 'start' ? (
           <span className="text-slate-600">{dateFormat(audit.start)}</span>
       ) : (
-          <span className="text-slate-800">{fetch(audit, col.key)}</span>
+          <span className="text-slate-800">
+            {fetch(audit, col.key)}
+              <CopyButton value={fetch(audit, col.key)} />
+          </span>
       )}
     </td>
     })}
@@ -615,7 +618,9 @@ const AuditListPage = ({ domain, env, config }) => {
                     <tbody className="divide-y divide-slate-100">
                     { audits ?
                         audits.map(audit => (
-                            <AuditLine audit={audit} columns={columns} key={audit.id} onClick={handleViewDetails} />
+                            <AuditLine audit={audit} columns={columns} key={audit.id} onClick={() => {
+                                window.open(`/audits/${audit.id}`, '_blank');
+                            }} />
                         )) : null
                     }
                     </tbody>

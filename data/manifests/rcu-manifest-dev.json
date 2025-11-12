@@ -7,7 +7,7 @@
         "name": "audit",
         "config": {
           "columns": [
-            "appId", "requestId", "method", "path", "start", "duration", "status"
+            "appId", "requestId", "method", "path", "gbid", "start", "duration", "status"
           ],
           "search_columns": [
             {
