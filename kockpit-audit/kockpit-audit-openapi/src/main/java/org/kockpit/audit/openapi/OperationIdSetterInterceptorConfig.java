@@ -1,7 +1,7 @@
 package org.kockpit.audit.openapi;
 
-import com.accor.wcp.audit.AuditorKeyValueService;
 import lombok.RequiredArgsConstructor;
+import org.kockpit.audit.api.AuditorKeyValueService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
