@@ -28,6 +28,15 @@ function fetchIndexedValue(audit, key) {
   }
 }
 
+const fetch = (audit, key) => {
+    let value = audit[key];
+    if (value === undefined) {
+        return fetchIndexedValue(audit, key);
+    } else {
+        return value;
+    }
+}
+
 function getHttStatus(audit) {
   return fetchIndexedValue(audit, 'httpStatus');
 }
@@ -99,7 +108,7 @@ const AuditLine = ({columns, audit, onClick}) => {
       ) : col.key === 'start' ? (
           <span className="text-slate-600">{dateFormat(audit.start)}</span>
       ) : (
-          <span className="text-slate-800">{audit[col.key]}</span>
+          <span className="text-slate-800">{fetch(audit, col.key)}</span>
       )}
     </td>
     })}
