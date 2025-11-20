@@ -4,7 +4,9 @@
     "env": "dev",
     "services": [
       {
-        "name": "audit",
+        "name": "RCU Audits",
+        "type": "audit",
+        "id": "audit",
         "config": {
           "columns": [
             "appId", "requestId", "method", "path", "start", "duration", "status"
