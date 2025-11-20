@@ -1,16 +1,42 @@
 [
   {
     "domain": "rcu",
-    "env": "pro",
+    "env": "oat",
+    "policies": [
+      {
+        "groups": [
+          "rcu-fid"
+        ],
+        "permissions": [
+          "audit:*",
+          "feature-flipping:refresh"
+        ],
+        "resources": []
+      },
+      {
+        "groups": [
+          "rcu-fid-mco"
+        ],
+        "permissions": [
+          "audit:read"
+        ],
+        "resources": [
+          "audit:rcu-audit"
+        ]
+      }
+    ],
     "services": [
       {
-        "name": "audit",
+        "type": "audit",
+        "id": "rcu-audit",
+        "name": "RCU Audit",
         "config": {
           "columns": [
             "appId",
             "requestId",
             "method",
             "path",
+            "gbid",
             "start",
             "duration",
             "status"
@@ -21,7 +47,9 @@
               "type": "options",
               "options": [
                 "orchestrator",
-                "rcu-api"
+                "rcu-api",
+                "rcu-migration",
+                "rcu-support-api"
               ]
             },
             {
