@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {getFeatureHistory, updateFeatureFlag} from "../services/api.js";
-import {CheckCircle, CircleSlash, Clock, Edit, RefreshCcw, Save, X} from "lucide-react";
+import {updateFeatureFlag} from "../services/api.js";
+import {CheckCircle, CircleSlash, Clock, Edit, Save, X} from "lucide-react";
+import {useSearchParams} from "react-router-dom";
+import Stats from "../components/StatsComponent.jsx";
 
 const StateButtonForFlag = ({flag, toggle}) => {
     const [enabled, setEnabled] = useState(flag.enabled);
@@ -43,6 +45,7 @@ const StateButtonForFlag = ({flag, toggle}) => {
 };
 
 const FeatureFlippingPage = ({ domain, env, config }) => {
+    const [searchParams] = useSearchParams();
     const [loading, setLoading] = useState(false);
     const [editingKey, setEditingKey] = useState(null);
     const [history, setHistory] = useState([]);
@@ -50,10 +53,8 @@ const FeatureFlippingPage = ({ domain, env, config }) => {
     const [originalFlag, setOriginalFlag] = useState(null);
 
     let flags = [];
-    let appId = '';
     if (config['services']) {
-        let service = config['services'].find(service => service.name === 'feature-flipping');
-        appId = service['appId'];
+        let service = config['services'].find(service => service.type === 'feature-flipping');
         console.log(`service ${JSON.stringify(service)}`);
         if (service['config']) {
             flags = service['config'].keys;
@@ -65,17 +66,13 @@ const FeatureFlippingPage = ({ domain, env, config }) => {
 
     const loadFlags = () => {}
 
-    function loadHistory() {
-        try {
-            getFeatureHistory(domain, env)
-                .then(data => setHistory(data || []));
-        } catch (e) { console.error("Error loading history", e); }
-    }
-
     const handleToggle = (flag) => {
-        updateFeatureFlag(domain, env, appId, flag)
+        updateFeatureFlag(domain, env, flag)
             .then(resp => console.log(resp))
-            .catch(err => flag.enabled = !flag.enabled);
+            .catch(err => {
+                console.log(`Error updating ${err}`);
+                flag.enabled = !flag.enabled;
+            });
     }
 
     function handleSave(flag) {
@@ -86,22 +83,23 @@ const FeatureFlippingPage = ({ domain, env, config }) => {
         //await loadHistory();
     }
 
-    return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 px-6 py-8">
-            <div className="max-w-5xl mx-auto space-y-6">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold text-slate-800">Feature Flipping</h1>
-                        <p className="text-slate-500 text-sm">Manage runtime feature toggles across environments</p>
-                    </div>
-                    <button
-                        onClick={loadFlags}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-sm transition-all"
-                    >
-                        <RefreshCcw className="h-4 w-4" /> Refresh
-                    </button>
-                </div>
+    const totalKeys = 0;//flags.reduce((sum, config) => sum + config.length, 0);
+    const modifiedKeys = 0;
+    /*flags.reduce((sum, config) => {
+        return sum + config.filter((key, idx) => {
+            const origConfig = flags.find(c => c.name === config.name);
+            return !origConfig || key.value !== origConfig.config.keys[idx]?.value;
+        }).length;
+    }, 0);
+     */
 
+    return (
+        <div className="min-h-screen bg-slate-50">
+            <div className="mx-auto py-8">
+                {/* Stats Cards */}
+                <Stats keys={flags} totalKeys={totalKeys} modifiedKeys={modifiedKeys} />
+
+                {/* Flags - keys */}
                 <div className="flex gap-3 border-b border-slate-200">
                     {["properties", "history"].map(tab => (
                         <button
@@ -118,8 +116,10 @@ const FeatureFlippingPage = ({ domain, env, config }) => {
                     ))}
                 </div>
 
+                {/* Config Header */}
                 {activeTab === "properties" && (
-                    <div className="space-y-4">
+
+                    <div className="divide-y divide-gray-200">
                         {flags.map(flag => (
                             <div key={flag.key}
                                  className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all p-5 space-y-4">

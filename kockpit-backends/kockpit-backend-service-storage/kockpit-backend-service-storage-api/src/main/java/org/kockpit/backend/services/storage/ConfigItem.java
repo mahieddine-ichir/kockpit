@@ -15,5 +15,11 @@ public class ConfigItem {
   private String env;
 
   private List<Service> services = new ArrayList<>();
+
+  private List<String> policies = new ArrayList<>();
+
+  private List<String> resources = new ArrayList<>();
+
+  private List<String> groups = new ArrayList<>();
 }
 

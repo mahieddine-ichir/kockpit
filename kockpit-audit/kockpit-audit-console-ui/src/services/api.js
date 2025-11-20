@@ -105,3 +105,8 @@ export const getHealth = async (domain, env) => {
     return response.data;
 };
 
+export const updateDynaConfig = async (domain, env, serviceId, config) => {
+    console.log(`Updating dyna config for ${serviceId} on ${domain}/${env} => ${JSON.stringify(config)}`);
+    const response = await instance.put(`/${domain}/${env}/dyna-config/${serviceId}?key=${config.key}`, config);
+    return response.data;
+}

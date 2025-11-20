@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/{domain}/{env}/{appId}/feature-flipping")
+@RequestMapping("/{domain}/{env}/feature-flipping/{id}")
 @RequiredArgsConstructor
 @Slf4j
 public class FeatureFlippingApi {
@@ -20,12 +20,12 @@ public class FeatureFlippingApi {
     ResponseEntity<FeatureFlippingDto> update(
             @PathVariable String domain,
             @PathVariable String env,
-            @PathVariable String appId,
+            @PathVariable String id,
             @RequestParam String key,
             @RequestBody FeatureFlippingDto featureFlippingDto
     ) {
         log.debug("Feature Flipping {} enabled?, {} (domain {}, env {})", key, featureFlippingDto.getEnabled(), domain, env);
-        return ResponseEntity.ok(featureFlippingService.update(domain, env, appId, featureFlippingDto));
+        return ResponseEntity.ok(featureFlippingService.update(domain, env, id, featureFlippingDto));
     }
 
     @GetMapping("history")
