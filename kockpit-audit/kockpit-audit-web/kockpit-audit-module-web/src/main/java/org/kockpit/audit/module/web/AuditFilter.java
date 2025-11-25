@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditorEventService;
 import org.kockpit.audit.api.AuditorKeyValueService;
 import org.kockpit.audit.api.AuditorService;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -19,6 +21,7 @@ import java.util.List;
 
 import static org.kockpit.audit.module.web.WebAuditKeyValues.getWebKeyValues;
 
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class AuditFilter extends OncePerRequestFilter {
 
