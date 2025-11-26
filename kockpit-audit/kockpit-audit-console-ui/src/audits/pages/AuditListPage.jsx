@@ -616,9 +616,7 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
                     <tbody className="divide-y divide-slate-100">
                     { audits ?
                         audits.map(audit => (
-                            <AuditLine audit={audit} columns={columns} key={audit.id} onClick={() => {
-                                window.open(`/audits/${audit.id}`, '_blank');
-                            }} />
+                            <AuditLine audit={audit} columns={columns} key={audit.id} onClick={() => handleViewDetails(audit)} />
                         )) : null
                     }
                     </tbody>
