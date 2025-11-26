@@ -74,8 +74,11 @@ class AuditReportsQueueHandler {
                         .filter(Objects::nonNull)
                         .toList();
 
-        ListUtils.partition(auditJsonReports, partitionSize).forEach(partition ->
-                auditReportNotificationServices.forEach(auditReportNotificationService -> auditReportNotificationService.notify(partition)));
+        ListUtils.partition(auditJsonReports, partitionSize).forEach(this::notify);
+    }
+
+    private void notify(List<AuditReport.AuditJsonReport> partition) {
+        auditReportNotificationServices.forEach(auditReportNotificationService -> auditReportNotificationService.notify(partition));
     }
 
     public void processSingle(AuditReport auditReport) {
