@@ -1,5 +1,6 @@
 package org.kockpit.features.heartbeat.services.application;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.Message;
@@ -10,6 +11,10 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.PeriodicTrigger;
 
 import java.time.Duration;
+import java.util.concurrent.ScheduledFuture;
+
+import static java.util.Objects.isNull;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -30,5 +35,10 @@ public class HeartBeatPublisher {
                     .appId(appId)
                     .build()));
         }, new PeriodicTrigger(triggerPeriod));
+    }
+
+    @PreDestroy
+    void onStop() {
+        // TODO - remove message (heartbeat)
     }
 }
