@@ -11,7 +11,6 @@ const DetailsPage = ({domain, env}) => {
     useEffect(() => {
         fetchAuditById(id, domain, env)
             .then(audit => {
-                console.log(audit);
                 setRequest(audit);
                 setLoading(false);
             });

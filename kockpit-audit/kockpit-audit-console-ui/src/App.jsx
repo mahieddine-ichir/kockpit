@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Navigate, Route, Routes, useSearchParams} from 'react-router-dom';
 import './index.css';
 import Sidebar from "./sidebar/Sidebar.jsx";
 import AuditListPage from "./audits/pages/AuditListPage.jsx";
@@ -10,6 +10,7 @@ import ConfigPage from "./Config/ConfigPage.jsx";
 import FeatureFlippingPage from "./feature-flipping/feature.jsx";
 import AppIdDashboard from "./home/Home.jsx";
 import HealthIndicatorsDashboard from "./health/Health.jsx";
+import ConfigManager from "./dyna-config/dyna-config.jsx";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -19,6 +20,7 @@ function App() {
     const [config, setConfig] = useState();
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState('');
+    const [configIndex, setConfigIndex] = useState(0);
 
     useEffect(() => {
         login().then(logged => {
@@ -27,27 +29,23 @@ function App() {
         })
     }, []);
 
-    function onDomainEnvChanged(domain, env) {
+    function onDomainEnvChanged(domain, env, selectedIndex) {
         console.log(`domain ${domain} / env ${env} selected.`);
         setDomain(domain);
         setEnv(env);
+        setConfigIndex(selectedIndex);
 
-        configs.forEach((cfg) => {
-            cfg.configs.forEach(_cfg => {
+        configs[selectedIndex].configs
+            .forEach(_cfg => {
                 if (_cfg.env === env && _cfg.domain === domain) {
                     setConfig(_cfg);
                 }
             });
-        });
     }
 
-    function onConfigLoaded(configs) {
-        //console.log(`config loaded ${JSON.stringify(configs)}`);
+    function onConfigLoaded(configs, selectedIndex) {
         setConfigs(configs);
-
-        const cfg = configs[0].configs[0];
-        //console.log(`default ${JSON.stringify(cfg)}`);
-
+        const cfg = configs[selectedIndex].configs[0]; // fixme
         setConfig(cfg);
         setDomain(cfg.domain);
         setEnv(cfg.env);
@@ -66,7 +64,7 @@ function App() {
                     }
                     <div>
                         <div className="flex justify-end p-2">
-                            <DomainEnv domainEnvChanged={onDomainEnvChanged} onConfigLoaded={onConfigLoaded} />
+                            <DomainEnv domainEnvChanged={onDomainEnvChanged} onConfigLoaded={onConfigLoaded} selectedIndex={configIndex} onSelectedIndex={setConfigIndex} />
                         </div>
                         <div className='screens-section-container'>
                     {
@@ -77,10 +75,13 @@ function App() {
                                     <Routes>
                                         <Route path='/home' element={<AppIdDashboard domain={domain} env={env} />} />
                                         <Route path='/health' element={<HealthIndicatorsDashboard domain={domain} env={env} />} />
-                                        <Route path='/audit' element={<AuditListPage domain={domain} env={env} config={config} />} />
+                                        <Route path='/audit' element={<AuditListPage domain={domain} env={env} config={config} selectedIdx={configIndex} />} />
+                                        <Route path="/audit/:id" element={<DetailsPage domain={domain} env={env} selectedIdx={configIndex} />} />
                                         <Route path='/config' element={<ConfigPage configs={configs} />} />
                                         <Route path='/feature-flipping' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
-                                        <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env}/>} />
+                                        <Route path='/feature-flipping/:service' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
+                                        <Route path='/dyna-config' element={<ConfigManager domain={domain} env={env} config={config} />} />
+                                        <Route path='/dyna-config/:service' element={<ConfigManager domain={domain} env={env} config={config} />} />
                                         <Route path="*" element={<Navigate to="/home" replace={true}/>}/>
                                     </Routes>
                                 </div>

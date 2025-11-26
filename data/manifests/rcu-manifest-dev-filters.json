@@ -4,7 +4,9 @@
     "env": "dev",
     "services": [
       {
-        "name": "audit",
+        "type": "audit",
+        "name": "RCU Audits 2",
+        "id": "audit-dev",
         "config": {
           "columns": [
             "appId", "requestId", "method", "path", "start", "duration", "status"
@@ -79,6 +81,7 @@
         }
       },
       {
+        "type": "feature-flipping",
         "name": "feature-flipping",
         "config": {
           "keys": [

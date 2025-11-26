@@ -15,6 +15,9 @@
     <modules>
         <module>kockpit-features-featureflipping</module>
         <module>kockpit-features-heartbeat</module>
+        <module>kockpit-features-dynaconfig</module>
+        <module>kockpit-features-dynaconfig/kockpit-features-dynaconfig-service-backend</module>
+        <module>kockpit-features-dynaconfig/kockpit-features-dynaconfig-service</module>
     </modules>
 
 </project>

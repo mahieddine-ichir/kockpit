@@ -4,7 +4,9 @@
     "env" : "local",
     "services" : [
       {
-        "name" : "audit",
+        "name" : "RCU Audits",
+        "type": "audit",
+        "id": "audit-local",
         "config" : {
           "columns" : [ "appId", "requestId", "method", "path", "duration", "start", "status" ],
           "search_columns" : [ ],
@@ -51,13 +53,47 @@
         }
       },
       {
-        "name": "feature-flipping",
-        "appId": "sample-app",
+        "id": "sample-app",
+        "type": "feature-flipping",
+        "name": "Sample App",
         "config": {
           "keys": [
             {
               "key": "solace.publish.enable",
               "enabled": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "default",
+        "type": "dyna-config",
+        "name": "RCU",
+        "config": {
+          "keys": [
+            {
+              "key": "migration.pattern",
+              "value": "[s-z]",
+              "description": "Pattern de migration des comptes"
+            },
+            {
+              "key": "key2.boolean",
+              "value": false,
+              "description": "Boolean value"
+            }
+          ]
+        }
+      },
+      {
+        "id": "default2",
+        "type": "dyna-config",
+        "name": "Sample App",
+        "config": {
+          "keys": [
+            {
+              "key": "any.key",
+              "value": "any value",
+              "description": "Demo value"
             }
           ]
         }
