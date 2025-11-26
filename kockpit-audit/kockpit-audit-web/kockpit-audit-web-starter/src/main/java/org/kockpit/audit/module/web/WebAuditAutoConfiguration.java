@@ -10,7 +10,6 @@ import org.kockpit.audit.module.web.response.DefaultResponseAuditor;
 import org.kockpit.audit.module.web.response.HeadersResponseAuditor;
 import org.kockpit.audit.module.web.skipped.ActuatorSkipAuditor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -94,10 +93,10 @@ public class WebAuditAutoConfiguration {
         auditorKeyValueService);
   }
 
-  // fixme to a security starter
-  @Bean
-  @ConditionalOnBean(AuditFilter.class)
-  public SecurityAuditFilter securityAuditFilter(AuditFilter auditFilter) {
-    return new SecurityAuditFilter(auditFilter);
-  }
+//  // fixme to a security starter
+//  @Bean
+//  @ConditionalOnBean(AuditFilter.class)
+//  public SecurityAuditFilter securityAuditFilter(AuditFilter auditFilter) {
+//    return new SecurityAuditFilter(auditFilter);
+//  }
 }
