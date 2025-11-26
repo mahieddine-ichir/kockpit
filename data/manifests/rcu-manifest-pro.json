@@ -1,35 +1,10 @@
 [
   {
     "domain": "rcu",
-    "env": "oat",
-    "policies": [
-      {
-        "groups": [
-          "rcu-fid"
-        ],
-        "permissions": [
-          "audit:*",
-          "feature-flipping:refresh"
-        ],
-        "resources": []
-      },
-      {
-        "groups": [
-          "rcu-fid-mco"
-        ],
-        "permissions": [
-          "audit:read"
-        ],
-        "resources": [
-          "audit:rcu-audit"
-        ]
-      }
-    ],
+    "env": "pro",
     "services": [
       {
-        "type": "audit",
-        "id": "rcu-audit",
-        "name": "RCU Audit",
+        "name": "audit",
         "config": {
           "columns": [
             "appId",
@@ -63,13 +38,13 @@
             {
               "name": "httpStatus",
               "type": "options",
-              "options": [200, 201, 400, 500],
+              "options": [200, 201, 204, 400, 500],
               "path": "indexedKeyValues.httpStatus"
             },
             {
               "name": "httpMethod",
               "type": "options",
-              "options": ["GET", "POST", "PUT"],
+              "options": ["GET", "POST", "PUT", "DELETE"],
               "path": "indexedKeyValues.httpMethod"
             }
           ]
