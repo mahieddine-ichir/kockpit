@@ -31,8 +31,9 @@ public class FeatureFlippingApi {
     @GetMapping("history")
     ResponseEntity<List<FeatureFlippingDto>> history(
             @PathVariable String domain,
-            @PathVariable String env
-    ) {
+            @PathVariable String env,
+            @PathVariable String id
+            ) {
         return ResponseEntity.ok(featureFlippingService.getHistory(domain, env));
     }
 
