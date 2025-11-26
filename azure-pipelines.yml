@@ -140,7 +140,7 @@ stages:
           - script: |
               cd kockpit-audit/kockpit-audit-console-ui
               npm ci
-              npm run build -- --mode dev
+              npm run build -- --mode production
               cp ./staticwebapp.config.json ./dist/
 
           - task: AzureStaticWebApp@0
