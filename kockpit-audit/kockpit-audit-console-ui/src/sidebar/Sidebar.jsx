@@ -4,8 +4,11 @@ import {
     ArrowLeftStartOnRectangleIcon,
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
+    ChevronDownIcon,
+    ChevronRightIcon,
     CogIcon,
-    DocumentTextIcon, HomeIcon,
+    DocumentTextIcon,
+    HomeIcon,
     UserIcon
 } from '@heroicons/react/24/outline';
 import {logout} from "../services/api.js";
@@ -32,6 +35,9 @@ const UserInfo = ({collapsed, currentUser, logout}) => {
 }
 
 let asLabel = (arg) => {
+    if (!arg) {
+        return '';
+    }
     let label = arg[0].toUpperCase();
     for (let i = 1; i < arg.length; i++) {
         if (arg[i].match(/[\\-]/) != null) {
@@ -51,12 +57,21 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
   console.log(`currentUser ${currentUser}`)
   let navItems = [];
   if (config['services']) {
-      navItems = config['services']
-          .map(service => {
-              return {
+      config['services']
+          .forEach(service => {
+              if (navItems.find(item => item.type === service.type) == null)
+                  navItems.push({
+                      type: service.type,
+                      label: service.label ? service.label : asLabel(service.type),
+                      subMenus: []
+                  })
+
+              navItems.find(item => item.type === service.type).subMenus.push({
                   name: service.name,
+                  type: service.type,
+                  id: service.id,
                   label: service.label ? service.label : asLabel(service.name)
-              }
+              })
           });
   }
 
@@ -103,10 +118,11 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
                               <NavItem
                                   icon={<DocumentTextIcon className="h-5 w-5" />}
                                   label={navItem.label}
-                                  key={navItem.name}
+                                  key={navItem.id}
                                   collapsed={collapsed}
-                                  onClick={() => navigate(`/${navItem.name}`)}
-                                  active={location.pathname === `/${navItem.name}`}
+                                  active={location.pathname === `/${navItem.type}`}
+                                  subItems={navItem.subMenus}
+                                  parent={navItem}
                               />
                           )
                       })
@@ -134,22 +150,61 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
   );
 };
 
-const NavItem = ({ icon, label, collapsed, onClick, active = false }) => (
-    <div
-        onClick={onClick}
+const NavItem = ({ icon, label, collapsed, onClick, active = false, subItems = [] }) => {
+    const navigate = useNavigate();
+  const [isExpanded, setIsExpanded] = React.useState(true);
+  const hasSubItems = subItems.length > 0;
+
+  const handleClick = () => {
+    if (hasSubItems) {
+      setIsExpanded(!isExpanded);
+    } else if (onClick) {
+      onClick();
+    }
+  };
+
+  return (
+    <>
+      <div
+        onClick={handleClick}
         className={`flex items-center px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 group relative
-      ${active ? 'bg-blue-600/20 text-blue-400 border-l-4 border-blue-500 shadow-md' : 'text-slate-300 hover:bg-slate-700 hover:text-white border-l-4 border-transparent'}
-      ${collapsed ? 'justify-center px-0' : ''}`}
+          ${active ? 'bg-blue-600/20 text-blue-400 border-l-4 border-blue-500 shadow-md' : 'text-slate-300 hover:bg-slate-700 hover:text-white border-l-4 border-transparent'}
+          ${collapsed ? 'justify-center px-0' : ''}`}
         style={{ minHeight: '44px' }}
-    >
-      <div className="flex items-center">
-        {icon}
-        {!collapsed && <span className="ml-3 text-sm font-medium">{label}</span>}
-      </div>
-      {active && !collapsed && (
+      >
+        <div className="flex items-center flex-1">
+          {icon}
+          {!collapsed && <span className="ml-3 text-sm font-medium">{label}</span>}
+        </div>
+        {hasSubItems && !collapsed && (
+          <div className="ml-auto">
+            {isExpanded ? (
+              <ChevronDownIcon className="h-4 w-4" />
+            ) : (
+              <ChevronRightIcon className="h-4 w-4" />
+            )}
+          </div>
+        )}
+        {active && !collapsed && (
           <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r"></span>
+        )}
+      </div>
+      {hasSubItems && isExpanded && !collapsed && (
+        <div className="ml-4 space-y-1">
+          {subItems.map((subItem, index) => (
+            <div
+              key={index}
+              onClick={onClick ? onClick : () => navigate(`${subItem.type}?service=${subItem.id}`)}
+              className={`flex items-center px-3 py-2 rounded-lg cursor-pointer transition-all duration-200
+                ${subItem.active ? 'bg-blue-600/10 text-blue-400' : 'text-slate-400 hover:bg-slate-700 hover:text-white'}`}
+            >
+              <span className="text-sm">{subItem.label}</span>
+            </div>
+          ))}
+        </div>
       )}
-    </div>
-);
+    </>
+  );
+};
 
 export default Sidebar;

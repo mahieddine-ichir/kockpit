@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {advancedSearchAudits, fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
-import {EyeIcon, XMarkIcon,BookmarkIcon, CheckCircleIcon,FunnelIcon  } from '@heroicons/react/24/outline';
+import {BookmarkIcon, CheckCircleIcon, EyeIcon, FunnelIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {MagnifyingGlassIcon} from '@heroicons/react/20/solid';
-import {useNavigate} from 'react-router-dom';
 import StatusBadge from '../../components/StatusBadge.jsx';
 import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import Pagination from '../../components/Pagination.jsx';
@@ -341,14 +340,13 @@ const DateRangeControl = ({ searchTerms, addTerm, clearTerm }) => {
 };
 
 
-const AuditListPage = ({ domain, env, config }) => {
+const AuditListPage = ({ domain, env, config, selectedIdx }) => {
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
-  const navigate = useNavigate();
   const [searchTerms, setSearchTerms] = useState([]);
   const [filter, setFilter] = useState({});
   const [showFilters, setShowFilters] = useState(false);
@@ -358,23 +356,24 @@ const AuditListPage = ({ domain, env, config }) => {
   let columns = [];
   //let filters = [];
   let label = '';
-    let thisConfig;
+  let thisConfig = '';
   if (config['services']) {
-    thisConfig = config['services'].find(service => service.name === 'audit');
-    label = thisConfig.label ? thisConfig.label : thisConfig.name;
-    columns = thisConfig.config.columns
-        .map(column => {
-          return {
-            key: column,
-            label: formatLabel(column)
-          }
-        });
-    searchColumns = thisConfig.config['search_columns'];
-
+      thisConfig = config['services'].find(service => service.type === 'audit');
+    if (thisConfig) {
+        label = thisConfig.label ? thisConfig.label : thisConfig.name;
+        columns = thisConfig.config.columns
+            .map(column => {
+              return {
+                key: column,
+                label: formatLabel(column)
+              }
+            });
+        searchColumns = thisConfig.config['search_columns'];
+    }
   }
 
   useEffect(() => {
-      if (thisConfig.config['saved_filters']) {
+      if (thisConfig && thisConfig.config['saved_filters']) {
           //filters = thisConfig.config['saved_filters'];
           setFilters(thisConfig.config['saved_filters']);
       }
@@ -385,7 +384,7 @@ const AuditListPage = ({ domain, env, config }) => {
   }, [domain, env, currentPage, itemsPerPage, searchTerms]);
 
   const handleViewDetails = (audit) => {
-    navigate(`/audits/${audit.id}`);
+      window.open(`/audit/${audit.id}?selectedConfig=${selectedIdx}`, '_blank');
   };
 
   if (loading) return <div>Loading...</div>;
@@ -484,10 +483,9 @@ const AuditListPage = ({ domain, env, config }) => {
         <div className="px-2 py-2 sm:px-2 lg:px-2 bg-slate-50 min-h-screen">
             <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center">
-                    <div className="h-10 w-1 rounded bg-blue-600 mr-4" />
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Audits</h1>
-                        <p className="mt-1 text-base text-slate-500">{label}</p>
+                        <h1 className="text-3xl font-bold text-slate-800 tracking-tight">{label}</h1>
+                        <p className="mt-1 text-base text-slate-500">Audit</p>
                     </div>
                 </div>
                 {filters && filters.length > 0 && (
