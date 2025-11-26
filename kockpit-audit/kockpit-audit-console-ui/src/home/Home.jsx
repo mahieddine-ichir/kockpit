@@ -194,8 +194,7 @@ const AppIdDashboard = ({domain, env}) => {
                 <div className="mb-8">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">OpenSearch AppId Dashboard</h1>
-                            <p className="text-gray-500 mt-2">Real-time monitoring and analytics for application metrics</p>
+                            <h1 className="text-3xl font-bold text-gray-900">Overview</h1>
                         </div>
                         <div className="flex gap-3">
                             <select

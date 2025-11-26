@@ -5,10 +5,12 @@ import lombok.Data;
 @Data
 public class Service {
 
-  private String name;
+    private String type;
 
-  private String appId;
+    private String name;
 
-  private Object config;
+    private String id;
+
+    private Object config;
 }
 
