@@ -68,16 +68,15 @@ public class DashboardService {
     List<Map<String, Object>> avgDurationByApp(String domain, String env, String gte) {
         Map byApp = (Map) runJson(domain, env, "/avgDurationByApp.json", Map.of("--gte--", gte)).get("by_app");
         List<Map> buckets = (List<Map>) byApp.get("buckets");
-
         return buckets.stream()
                 .map(map -> {
-                    Map avgDuration = (Map) map.get("avg_duration");
-                    Map filterDuration = (Map) avgDuration.get("filter_duration");
-                    Map avgValue = (Map) filterDuration.get("avg_value");
-                    return Map.of(
-                            "name", map.get("key"),
-                            "count", map.get("doc_count"),
-                            "avgDuration", avgValue.get("value")
+                    String name = readMap(map, "key").toString();
+                    Integer count = (Integer) readMap(map, "doc_count");
+                    Double avgValue = (Double) readMap(map, "avg_duration.filter_duration.avg_value.value");
+                    return Map.<String, Object>of(
+                            "name", name,
+                            "count", count,
+                            "avgDuration", avgValue
                     );
                 }).toList();
     }
