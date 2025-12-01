@@ -46,3 +46,5 @@ build/
 /kockpit-backends/kockpit-backend-azuresearch/src/main/resources/application-local-pro.yaml
 kockpit-backends/kockpit-backend-application/src/main/resources/application-mic.yaml
 /data/tmp/
+/data/extracts/extract_res.json
+/data/extracts/query_stopSms.json
