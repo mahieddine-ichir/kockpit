@@ -3,7 +3,7 @@
   "query": {
     "range": {
       "start": {
-        "gte": "now-1d"
+        "gte": "--gte--"
       }
     }
   },
