@@ -30,7 +30,7 @@
             {
               "name": "gbid",
               "type": "number",
-              "path": "audits.events.httpAuditedResponse.body"
+              "path": "indexedKeyValues.gbid"
             },
             {
               "name": "rowId"
