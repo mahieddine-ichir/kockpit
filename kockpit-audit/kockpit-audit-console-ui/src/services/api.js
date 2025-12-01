@@ -84,8 +84,8 @@ export const getFeatureHistory = async (domain, env) => {
 };
 
 // stat's
-export const getAppDistributionData = async (domain, env) => {
-    const response = await instance.get(`/${domain}/${env}/dashboard/app_distribution_data`);
+export const getAppDistributionData = async (domain, env, timeRange) => {
+    const response = await instance.get(`/${domain}/${env}/dashboard/app_distribution_data?gte=now-${timeRange}`);
     return response.data;
 };
 
