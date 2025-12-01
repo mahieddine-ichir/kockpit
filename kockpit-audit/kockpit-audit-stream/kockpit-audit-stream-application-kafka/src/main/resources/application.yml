@@ -9,6 +9,7 @@ spring:
       - ${BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: ${spring.application.name}
+      max-poll-records: 50
 
 management:
   endpoint:

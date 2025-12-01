@@ -132,7 +132,7 @@ function generateStatusDistribution(data) {
 const AppIdDashboard = ({domain, env}) => {
     const [loading, setLoading] = useState(false);
     const [selectedTimeRange, setSelectedTimeRange] = useState('24h');
-    const [selectedApp, setSelectedApp] = useState('all');
+    //const [selectedApp, setSelectedApp] = useState('all');
 
     // Simulated data - In production, this would come from OpenSearch queries
     const [appDistributionData, setAppDistributionData] = useState([]);
@@ -158,7 +158,7 @@ const AppIdDashboard = ({domain, env}) => {
     };
 
     const loadData = () => {
-        getAppDistributionData(domain, env).then(data => {
+        getAppDistributionData(domain, env, selectedTimeRange).then(data => {
             setAppDistributionData(data);
             let reduce = data.reduce((sum, app) => sum + app.count, 0);
             setTotalRequests(reduce);

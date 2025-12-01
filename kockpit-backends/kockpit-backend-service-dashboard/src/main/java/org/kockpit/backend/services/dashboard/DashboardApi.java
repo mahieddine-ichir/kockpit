@@ -25,9 +25,10 @@ public class DashboardApi {
     @GetMapping("app_distribution_data")
     List<Map<String, Object>> appDistributionData(
             @PathVariable String domain,
-            @PathVariable String env
+            @PathVariable String env,
+            @RequestParam(required = false, defaultValue = "now-1d") String gte
             ) {
-        return dashboardService.avgDurationByApp(domain, env);
+        return dashboardService.avgDurationByApp(domain, env, gte);
     }
 
     @GetMapping("status_distribution_by_appId")
