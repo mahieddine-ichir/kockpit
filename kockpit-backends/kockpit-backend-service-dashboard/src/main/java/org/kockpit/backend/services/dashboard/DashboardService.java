@@ -65,8 +65,8 @@ public class DashboardService {
     }
 
     @SneakyThrows
-    List<Map<String, Object>> avgDurationByApp(String domain, String env) {
-        Map byApp = (Map) runJson(domain, env, "/avgDurationByApp.json", null).get("by_app");
+    List<Map<String, Object>> avgDurationByApp(String domain, String env, String gte) {
+        Map byApp = (Map) runJson(domain, env, "/avgDurationByApp.json", Map.of("--gte--", gte)).get("by_app");
         List<Map> buckets = (List<Map>) byApp.get("buckets");
 
         return buckets.stream()
