@@ -42,13 +42,13 @@
             {
               "name": "httpStatus",
               "type": "options",
-              "options": [200, 201, 400, 500],
+              "options": [200, 201, 400, 401, 500],
               "path": "indexedKeyValues.httpStatus"
             },
             {
               "name": "httpMethod",
               "type": "options",
-              "options": ["GET", "POST"],
+              "options": ["GET", "POST", "PUT", "DELETE"],
               "path": "indexedKeyValues.httpMethod"
             }
           ],
