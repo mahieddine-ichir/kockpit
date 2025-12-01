@@ -48,3 +48,4 @@ kockpit-backends/kockpit-backend-application/src/main/resources/application-mic.
 /data/tmp/
 /data/extracts/extract_res.json
 /data/extracts/query_stopSms.json
+/data/extracts/
