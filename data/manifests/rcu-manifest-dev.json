@@ -13,6 +13,15 @@
           ],
           "search_columns": [
             {
+              "name": "appId",
+              "type": "options",
+              "options": [
+                "orchestrator",
+                "rcu-api",
+                "rcu-migration"
+              ]
+            },
+            {
               "name": "start",
               "type": "date",
               "path": "."
