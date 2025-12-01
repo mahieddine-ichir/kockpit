@@ -160,12 +160,17 @@ const AppIdDashboard = ({domain, env}) => {
     const loadData = () => {
         getAppDistributionData(domain, env, selectedTimeRange).then(data => {
             setAppDistributionData(data);
-            let reduce = data.reduce((sum, app) => sum + app.count, 0);
-            setTotalRequests(reduce);
+            const totalDocs = data.reduce((sum, app) => sum + app.count, 0);
+            setTotalRequests(totalDocs);
 
-            setAvgResponseTime(Math.round(
-                appDistributionData.reduce((sum, app) => sum + app.avgDuration * app.count, 0) / reduce
-            ));
+            const totalDuration = data.reduce((sum, bucket) => {
+                const avgDuration = bucket.avgDuration;
+                return sum + (avgDuration * bucket.count);
+            }, 0);
+
+            const overallAvg = totalDuration / totalDocs;
+
+            setAvgResponseTime(overallAvg);
         })
 
         getStatusDistributionByAppId(domain, env, selectedTimeRange).then(data => {
@@ -232,7 +237,7 @@ const AppIdDashboard = ({domain, env}) => {
                     <MetricCard
                         icon={Clock}
                         title="Avg Response Time"
-                        value={`${avgResponseTime} ms`}
+                        value={`${avgResponseTime.toFixed(2)} ms`}
                         subtitle="Across all apps"
                         //trend={-8} // fixme
                         color="yellow"
