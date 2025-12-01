@@ -256,7 +256,7 @@ const DateRangeControl = ({ searchTerms, addTerm, clearTerm }) => {
     const [fromDT, setFromDT] = React.useState(toLocalDT(existingStart?.value));
     const [toDT, setToDT] = React.useState(toLocalDT(existingEnd?.value));
 
-    React.useEffect(() => {
+    useEffect(() => {
         setFromDT(toLocalDT(existingStart?.value));
         setToDT(toLocalDT(existingEnd?.value));
     }, [existingStart?.value, existingEnd?.value]);
@@ -276,14 +276,14 @@ const DateRangeControl = ({ searchTerms, addTerm, clearTerm }) => {
     };
 
     const setPreset = (msAgo, label) => {
-        const now = new Date();
+        //const now = new Date();
         const from = new Date(Date.now() - msAgo);
-        const toStr = toLocalDT(now.getTime());
+        //const toStr = toLocalDT(now.getTime());
         const fromStr = toLocalDT(from.getTime());
         setFromDT(fromStr);
-        setToDT(toStr);
-        addTerm({ name: 'start', path: 'start', type: 'date' }, from.getTime());
-        addTerm({ name: 'end', path: 'end', type: 'date' }, now.getTime());
+        //setToDT(toStr);
+        addTerm({ name: 'start', path: 'start', type: 'date' }, from.getTime(), true);
+        //addTerm({ name: 'end', path: 'end', type: 'date' }, now.getTime());
     };
 
     const presets = [
@@ -381,7 +381,7 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
 
   useEffect(() => {
     loadData();
-  }, [domain, env, currentPage, itemsPerPage, searchTerms]);
+  }, [domain, env, currentPage, itemsPerPage]);
 
   const handleViewDetails = (audit) => {
       window.open(`/audit/${audit.id}?selectedConfig=${selectedIdx}`, '_blank');
@@ -434,14 +434,26 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
     }
   }
 
-    let addTerm = (searchTerm, text) => {
-      console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)}`);
+    let addTerm = (searchTerm, text, override = false) => {
       let newEl = {
           name: searchTerm.name,
           path: searchTerm.path,
           value: text
       };
-      setSearchTerms([...searchTerms, newEl]);
+      if (override) {
+          let index = searchTerms.findIndex(st => st.name === searchTerm.name);
+          if (index > -1) {
+            console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)} at index ${index}`);
+            searchTerms[index] = newEl;
+            setSearchTerms([...searchTerms]);
+          } else {
+            console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)}`);
+              setSearchTerms([...searchTerms, newEl]);
+          }
+      } else {
+            console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)}`);
+        setSearchTerms([...searchTerms, newEl]);
+      }
     };
 
   let clearTerm = (searchTerm) => {

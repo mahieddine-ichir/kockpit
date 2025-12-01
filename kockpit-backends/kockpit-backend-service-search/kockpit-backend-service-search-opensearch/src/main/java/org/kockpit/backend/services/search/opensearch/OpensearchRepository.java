@@ -23,7 +23,10 @@ import org.opensearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
@@ -121,13 +124,13 @@ public class OpensearchRepository implements SearchService {
             rootBoolQueryBuilder.must(nestedQueryBuilder);
 
         } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
+            long value = (long) searchTerm.getValue();
+            log.trace("Searching {} (on path {}), value = {}", searchTerm.getName(), searchTerm.getPath(), value);
             if ("start".equals(searchTerm.getName())) {
-                log.info("Searching from {}", new Date((long) searchTerm.getValue()));
-                rootBoolQueryBuilder.must(rangeQuery(path).from(searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(path).gte(value));
             }
             if ("end".equals(searchTerm.getName())) {
-                log.info("Searching to {}", new Date((long) searchTerm.getValue()));
-                rootBoolQueryBuilder.must(rangeQuery(path).to(searchTerm.getValue()));
+                rootBoolQueryBuilder.must(rangeQuery(path).lt(value));
             }
         } else {
             if (searchTerm.getValue() instanceof List<?> values) {
