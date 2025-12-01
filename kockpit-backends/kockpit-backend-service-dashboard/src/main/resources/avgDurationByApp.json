@@ -1,5 +1,12 @@
 {
   "size": 0,
+  "query": {
+    "range": {
+      "start": {
+        "gte": "--gte--"
+      }
+    }
+  },
   "aggs": {
     "by_app": {
       "terms": {
