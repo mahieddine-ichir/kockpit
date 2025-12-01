@@ -97,10 +97,7 @@ public class DashboardService {
                                     .peek(subBucket -> log.trace(subBucket.toString()))
                                     .filter(subBucket -> subBucket.get("key").equals(status))
                                     .findFirst()
-                                    .ifPresent(_2xx -> {
-                                        log.trace(_2xx.toString());
-                                        ret.put(status, readMap(_2xx, "doc_count"));
-                                    }));
+                                    .ifPresent(_2xx -> ret.put(status, readMap(_2xx, "doc_count"))));
                     return ret;
                 }).toList();
     }
