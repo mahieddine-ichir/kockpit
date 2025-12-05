@@ -25,13 +25,20 @@ public class FileSystemConsumer implements Consumer {
 
     @SneakyThrows
     @Override
-    public List<Message> poll(String domain, String env, String appId, String type) {
-        File directory = getDirectory(localDirectory, domain, env, appId, type);
-        return Files.list(directory.toPath())
-                .sorted((o1, o2) -> Math.toIntExact(o1.toFile().lastModified() - o2.toFile().lastModified()))
-                .map(this::read)
-                .filter(Objects::nonNull)
-                .toList();
+    public List<Message> poll(String domain, String env, String type, String audience) {
+        File directory = getDirectory(localDirectory, domain, env);
+        if (directory.exists() && directory.isDirectory()) {
+            return Files.list(directory.toPath())
+                    .filter(path -> !path.toFile().isDirectory())
+                    //.sorted((o1, o2) -> Math.toIntExact(o1.toFile().lastModified() - o2.toFile().lastModified()))
+                    .map(this::read)
+                    .peek(message -> log.trace("polling message {}", message))
+                    .filter(Objects::nonNull)
+                    .toList();
+        } else {
+            log.warn("Cannot list file {} (does not exist or is not a directory)", directory);
+            return List.of();
+        }
     }
 
     private Message read(Path path) {

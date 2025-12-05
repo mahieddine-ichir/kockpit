@@ -29,4 +29,6 @@ management:
   endpoints:
     web:
       base-path: /backend/actuator
-
+logging:
+  level:
+    org.kockpit.communication: error
