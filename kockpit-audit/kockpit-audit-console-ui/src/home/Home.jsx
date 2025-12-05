@@ -158,43 +158,60 @@ const AppIdDashboard = ({domain, env}) => {
     };
 
     const loadData = () => {
-        getAppDistributionData(domain, env, selectedTimeRange).then(data => {
-            setAppDistributionData(data);
-            const totalDocs = data.reduce((sum, app) => sum + app.count, 0);
-            setTotalRequests(totalDocs);
+        setLoading(true);
 
-            const totalDuration = data.reduce((sum, bucket) => {
-                const avgDuration = bucket.avgDuration;
-                return sum + (avgDuration * bucket.count);
-            }, 0);
+        Promise.all([
+            getAppDistributionData(domain, env, selectedTimeRange).then(data => {
+                setAppDistributionData(data);
+                const totalDocs = data.reduce((sum, app) => sum + app.count, 0);
+                setTotalRequests(totalDocs);
 
-            const overallAvg = totalDuration / totalDocs;
+                const totalDuration = data.reduce((sum, bucket) => {
+                    const avgDuration = bucket.avgDuration;
+                    return sum + (avgDuration * bucket.count);
+                }, 0);
 
-            setAvgResponseTime(overallAvg);
-        })
+                const overallAvg = totalDuration / totalDocs;
 
-        getStatusDistributionByAppId(domain, env, selectedTimeRange).then(data => {
-            setStatusByAppData(data);
-            setStatusDistribution(generateStatusDistribution(data));
-        });
+                setAvgResponseTime(overallAvg);
+            }),
 
-        getOverTimeByAppId(domain, env, '1d').then(data => {
-            console.log(`timeSeries ${JSON.stringify(data)}`);
-            /*
-            const transformed = data.map(d => {
-                if (d.hour) {
-                    d.hour = new Date(d.hour).getHours();
-                }
-                return d;
-            });//.sort((a, b) => a.hour - b.hour);
-             */
-            setTimeSeriesData(data);
+            getStatusDistributionByAppId(domain, env, selectedTimeRange).then(data => {
+                setStatusByAppData(data);
+                setStatusDistribution(generateStatusDistribution(data));
+            }),
+
+            getOverTimeByAppId(domain, env, '1d').then(data => {
+                console.log(`timeSeries ${JSON.stringify(data)}`);
+                /*
+                const transformed = data.map(d => {
+                    if (d.hour) {
+                        d.hour = new Date(d.hour).getHours();
+                    }
+                    return d;
+                });//.sort((a, b) => a.hour - b.hour);
+                 */
+                setTimeSeriesData(data);
+            })
+        ]).finally(() => {
+            setLoading(false);
         });
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen bg-gray-50 p-6 relative">
+            {loading && (
+                <>
+                    <div className="absolute inset-0 bg-gray-900 bg-opacity-10 backdrop-blur-sm z-40"></div>
+                    <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-3">
+                            <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
+                            <span className="text-gray-700 font-medium">Loading dashboard data...</span>
+                        </div>
+                    </div>
+                </>
+            )}
+            <div className={`max-w-7xl mx-auto ${loading ? 'blur-sm' : ''}`}>
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex justify-between items-center">
