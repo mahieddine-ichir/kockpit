@@ -12,6 +12,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Paths;
 
+import static java.util.Objects.isNull;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 @RequiredArgsConstructor
 @Slf4j
 public class FileSystemPublisher implements Publisher {
@@ -23,24 +26,28 @@ public class FileSystemPublisher implements Publisher {
     @SneakyThrows
     @Override
     public void publish(Message message) {
-        File directory = getDirectory(localDirectory, message.getDomain(), message.getEnv(), message.getAppId(), message.getType());
-        File file = Paths.get(directory.getAbsolutePath(), "%s.json".formatted(message.getId())).toFile();
+        // check headers (for audience)
+        File directory = getDirectory(localDirectory, message.getDomain(), message.getEnv());
+        File file = Paths.get(directory.getAbsolutePath(), "%s-%s.json".formatted(message.getAppId(), message.getId())).toFile();
         try (OutputStream os = new FileOutputStream(file)) {
             objectMapper.writeValue(os, message);
         }
     }
 
-
-    static File getDirectory(String localDirectory, String domain, String env, String appId, String type) {
-        File directory;
-        if (appId == null) {
-            directory = Paths.get(localDirectory, domain, env, type).toFile();
-        } else {
-            directory = Paths.get(localDirectory, domain, env, appId, type).toFile();
-        }
+    static File getDirectory(String localDirectory, String domain, String env) {
+        File directory = Paths.get(localDirectory, domain, env).toFile();
         if (! directory.exists() && !directory.mkdirs()) {
             log.error("Cannot create directory {}", directory.getAbsolutePath());
         }
         return directory;
+    }
+
+    static String getMessageAudience(Message message) {
+        if (isEmpty(message.getHeaders())) {
+            return null;
+        } else {
+            Object o = message.getHeaders().get("audience");
+            return isNull(o) ? null : o.toString() ;
+        }
     }
 }
