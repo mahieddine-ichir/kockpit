@@ -5,7 +5,7 @@ kockpit:
     env: local
     appId: sample-app
 
-    featureflipping:
+    feature-flipping:
       polling:
         enabled: true
     heartbeat:
@@ -15,8 +15,6 @@ kockpit:
 
     filesystem:
       local_directory: ${user.home}/IdeaProjects/kockpit/data/
-
-
 
 logging:
   level:

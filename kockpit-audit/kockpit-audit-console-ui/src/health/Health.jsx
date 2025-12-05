@@ -9,7 +9,6 @@ const HealthIndicatorsDashboard = ({domain, env}) => {
     const [indicators, setIndicators] = useState([]);
     const [currentTime, setCurrentTime] = useState(Date.now());
     const [loading, setLoading] = useState(false);
-    const [autoRefresh, setAutoRefresh] = useState(true);
 
     // Données simulées - Remplacez par votre appel API
     //const [sampleData, setSampleData] = useState([]);
@@ -27,15 +26,6 @@ const HealthIndicatorsDashboard = ({domain, env}) => {
         return () => clearInterval(interval);
     }, []);
 
-    // Auto-refresh toutes les 30 secondes si activé
-    useEffect(() => {
-        if (autoRefresh) {
-            const interval = setInterval(() => {
-                loadIndicators();
-            }, 30000);
-            return () => clearInterval(interval);
-        }
-    }, [autoRefresh]);
 
     const loadIndicators = async () => {
         setLoading(true);
@@ -165,15 +155,6 @@ const HealthIndicatorsDashboard = ({domain, env}) => {
                             <p className="text-gray-500 mt-1">Real-time system health monitoring</p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={autoRefresh}
-                                    onChange={(e) => setAutoRefresh(e.target.checked)}
-                                    className="w-4 h-4 text-blue-600 rounded"
-                                />
-                                <span className="text-sm text-gray-700">Auto-refresh (30s)</span>
-                            </label>
                             <button
                                 onClick={loadIndicators}
                                 disabled={loading}

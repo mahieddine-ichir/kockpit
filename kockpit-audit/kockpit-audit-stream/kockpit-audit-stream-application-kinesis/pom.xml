@@ -39,20 +39,18 @@
             <artifactId>kockpit-audit-stream-starter-opensearch</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- AWS SDK v2 (Recommended) -->
         <dependency>
-            <groupId>software.amazon.kinesis</groupId>
-            <artifactId>amazon-kinesis-client</artifactId>
-            <version>3.1.2</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-compress</artifactId>
-                    <groupId>org.apache.commons</groupId>
-                </exclusion>
-            </exclusions>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>kinesis</artifactId>
+            <version>2.32.22</version>
         </dependency>
+
+        <!-- OR AWS SDK v1 -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-kinesis</artifactId>
+            <version>1.12.565</version>
         </dependency>
     </dependencies>
 

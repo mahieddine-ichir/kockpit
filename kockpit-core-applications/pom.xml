@@ -11,9 +11,6 @@
 
     <artifactId>kockpit-core-applications</artifactId>
     <name>core-applications</name>
-    <modules>
-        <module>kockpit-core-applications-stream-kafka-opensearch</module>
-    </modules>
     <packaging>pom</packaging>
 
 

@@ -35,7 +35,31 @@
             <artifactId>kockpit-features-heartbeat-service-application</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <!-- Audits -->
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-audit-web-starter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-audit-httpexchange</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>kinesis</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-audit-notification-starter-kinesis</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>

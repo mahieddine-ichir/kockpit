@@ -1,6 +1,6 @@
 package org.kockpit.communication;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 public interface MessageCache {
@@ -9,5 +9,5 @@ public interface MessageCache {
 
     Optional<Message> get(String type, String id);
 
-    List<Message> get(String type);
+    Collection<Message> get(String type);
 }
