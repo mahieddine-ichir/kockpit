@@ -26,10 +26,7 @@ public class MessagePoller {
         log.info("Start {} for domain {} and env {}, scheduler at periodic {}", serviceDefinition.name(), domain, env, triggerPeriod);
         taskScheduler.schedule(() -> {
             log.trace("synchronize {}, for domain {}, env {} and audience {}", serviceDefinition.name(), domain, env, serviceDefinition.audience());
-            consumer.poll(domain, env, serviceDefinition.audience(), serviceDefinition.name()).stream()
-                    .peek(message -> {
-
-                    })
+            consumer.poll(domain, env, appId, serviceDefinition.name())
                     .forEach(messageCache::add);
         }, new PeriodicTrigger(triggerPeriod));
     }

@@ -1,9 +1,10 @@
 server:
-  port: 8080
+  port: 9080
 
 spring:
   application:
     name: kockpit-audit-stream
+
 
 management:
   endpoint:
@@ -14,4 +15,11 @@ management:
 kockpit:
   audit:
     stream:
-      kinesis: todo
+      kinesis:
+        streamName: auditstream-local
+        timeout:
+          connection: 5000
+          socket: 30000
+      opensearch:
+        endpoints: ${OPENSEARCH_ENDPOINTS:http://localhost:9200}
+        index_suffix: audit-data

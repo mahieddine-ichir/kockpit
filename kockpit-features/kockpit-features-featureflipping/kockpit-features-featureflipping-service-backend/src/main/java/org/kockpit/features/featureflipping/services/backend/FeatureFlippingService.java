@@ -8,6 +8,7 @@ import org.kockpit.features.featureflipping.service.FeatureFlippingServiceDefini
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class FeatureFlippingService {
     private final FeatureFlippingServiceDefinition featureFlippingServiceDefinition;
 
     public FeatureFlippingDto update(String domain, String env, String appId, FeatureFlippingDto featureFlippingDto) {
-        publisher.publish(new Message(featureFlippingDto.getKey(), featureFlippingServiceDefinition.name(), domain, env, appId, featureFlippingDto));
+        publisher.publish(new Message(featureFlippingDto.getKey(), featureFlippingServiceDefinition.name(), domain, env, appId, featureFlippingDto, Map.of("audience", appId)));
         return featureFlippingDto;
     }
 
