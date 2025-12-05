@@ -37,6 +37,7 @@ public class FileSystemRepository implements ConfigApiService {
     public List<Manifest> list() {
         log.trace("loading config from {}", localFilePath);
         return Files.list(Path.of(localFilePath))
+                .filter(path -> !path.toFile().isDirectory())
                 .map(this::read)
                 .filter(Objects::nonNull)
                 .toList();
