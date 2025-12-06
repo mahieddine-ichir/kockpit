@@ -4,7 +4,9 @@
     "env": "pro",
     "services": [
       {
-        "name": "audit",
+        "name": "RCU Audits (Pro)",
+        "type": "audit",
+        "id": "audit",
         "config": {
           "columns": [
             "appId",
@@ -46,6 +48,10 @@
               "type": "options",
               "options": ["GET", "POST", "PUT", "DELETE"],
               "path": "indexedKeyValues.httpMethod"
+            },
+            {
+              "name": "Request & Response body",
+              "path": "audits.events.httpAuditedRequest.body, audits.events.httpAuditedResponse.body, audits.events.httpAuditedResponse.payload"
             }
           ]
         }
