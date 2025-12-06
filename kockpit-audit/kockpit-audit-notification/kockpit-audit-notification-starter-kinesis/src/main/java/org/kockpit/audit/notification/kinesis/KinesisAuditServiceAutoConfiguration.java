@@ -8,23 +8,20 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.SdkBytes;
-import software.amazon.awssdk.http.SdkHttpClient;
-import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 import software.amazon.awssdk.services.kinesis.model.PutRecordsRequestEntry;
-import software.amazon.awssdk.services.sts.StsClient;
-import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
-import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
-import software.amazon.kinesis.common.KinesisClientUtil;
+
+import java.net.URI;
 
 @Configuration
 @Slf4j
 public class KinesisAuditServiceAutoConfiguration {
 
   @Bean
-  AuditReportNotificationService eventHubAuditReportNotificationService(
+  AuditReportNotificationService kinesisAuditReportNotificationService(
           SdkApplicationProperties sdkApplicationProperties,
           RecordPartitioner recordPartitioner,
           RecordTransformer recordTransformer,
@@ -55,39 +52,20 @@ public class KinesisAuditServiceAutoConfiguration {
 
   @Bean
   KinesisAsyncClient kinesisAsyncClient(
-          AwsCredentialsProvider awsCredentialsProvider,
-          @Value("${kockpit.service.aws.region}") String regionString
+          @Value("${kockpit.service.aws.region}") String regionString,
+          @Value("${kockpit.audit.notification.kinesis.endpoint:http://localhost:4566}") String kinesisEndpoint,
+          AwsCredentialsProvider awsCredentialsProvider
   ) {
       Region region = Region.of(regionString);
-      return KinesisClientUtil.createKinesisAsyncClient(
-              KinesisAsyncClient.builder()
+      return KinesisAsyncClient.builder()
+              .endpointOverride(URI.create(kinesisEndpoint))
+              .region(region)
                       .credentialsProvider(awsCredentialsProvider)
-                      .region(region));
+              .build();
   }
 
   @Bean
-  AwsCredentialsProvider roleCredentialsProvider(
-          @Value("${kockpit.service.aws.role-arn}") String roleArn,
-          @Value("${kockpit.service.aws.region}") String regionString
-  ) {
-      String roleSessionName = "kockpitaudit-clientapp-session-" + Math.random();
-      Region region = Region.of(regionString);
-      AssumeRoleRequest assumeRoleRequest =
-              AssumeRoleRequest.builder()
-                      .roleArn(roleArn)
-                      .roleSessionName(roleSessionName)
-                      .durationSeconds(900)
-                      .build();
-
-      SdkHttpClient httpClient = ApacheHttpClient.builder().build();
-      StsClient stsClient = StsClient.builder().region(region).httpClient(httpClient).build();
-      StsAssumeRoleCredentialsProvider stsAssumeRoleCredentialsProvider =
-              StsAssumeRoleCredentialsProvider.builder()
-                        .stsClient(stsClient)
-                        .refreshRequest(assumeRoleRequest)
-                        .asyncCredentialUpdateEnabled(true)
-                        .build();
-        log.info("Initializing sts role credential provider: {}", stsAssumeRoleCredentialsProvider.prefetchTime());
-        return stsAssumeRoleCredentialsProvider;
+  AwsCredentialsProvider roleCredentialsProvider() {
+      return DefaultCredentialsProvider.builder().build();
     }
 }
