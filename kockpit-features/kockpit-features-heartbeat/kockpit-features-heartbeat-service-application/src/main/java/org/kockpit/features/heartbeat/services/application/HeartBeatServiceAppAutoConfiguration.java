@@ -24,7 +24,6 @@ import static java.util.Objects.isNull;
 @EnableConfigurationProperties(SdkApplicationProperties.class)
 public class HeartBeatServiceAppAutoConfiguration {
 
-//    @ConditionalOnBean({Publisher.class, HeartBeatServiceDefinition.class})
     @ConditionalOnProperty(value = "kockpit.sdk.heartbeat.enabled", havingValue = "true", matchIfMissing = true)
     @Bean
     InitializingBean heartBeatPublisher(

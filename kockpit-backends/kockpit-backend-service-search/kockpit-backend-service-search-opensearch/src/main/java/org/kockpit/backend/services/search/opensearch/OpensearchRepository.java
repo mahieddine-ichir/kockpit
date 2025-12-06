@@ -98,9 +98,10 @@ public class OpensearchRepository implements SearchService {
                 .map(q -> Arrays.stream(q.split(" ")))
                 .ifPresent(texts -> texts.forEach(text -> {
                     if (text.contains("*")) {
-                        // fixme through searchTerm?
-                        rootBoolQueryBuilder.should(wildcardQuery("audits.events.httpAuditedRequest.body", text));
-                        rootBoolQueryBuilder.should(wildcardQuery("audits.events.httpAuditedResponse.body", text));
+                        rootBoolQueryBuilder
+                                .should(wildcardQuery("audits.events.httpAuditedRequest.body", text))
+                                .should(wildcardQuery("audits.events.httpAuditedResponse.body", text))
+                                .should(wildcardQuery("audits.events.httpAuditedResponse.payload", text));
                     } else {
                         rootBoolQueryBuilder.should(multiMatchQuery(text, "*"));
                     }
@@ -111,6 +112,7 @@ public class OpensearchRepository implements SearchService {
 
     private void buildQuery(SearchTerm searchTerm, BoolQueryBuilder rootBoolQueryBuilder) {
         String path = isNull(searchTerm.getPath()) ? searchTerm.getName() : searchTerm.getPath();
+        // indexedKeyValues -> nested search
         if (path.startsWith("indexedKeyValues")) {
             BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
             String key = path.substring("indexedKeyValues".length() + 1);
@@ -121,9 +123,10 @@ public class OpensearchRepository implements SearchService {
                 buildQueryForIndexedKeyValues(key, List.of(searchTerm.getValue()), boolQueryBuilder);
             }
             NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
-            rootBoolQueryBuilder.must(nestedQueryBuilder);
+            rootBoolQueryBuilder.should(nestedQueryBuilder);
 
         } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
+            // timestamp search
             long value = (long) searchTerm.getValue();
             log.trace("Searching {} (on path {}), value = {}", searchTerm.getName(), searchTerm.getPath(), value);
             if ("start".equals(searchTerm.getName())) {
@@ -133,10 +136,17 @@ public class OpensearchRepository implements SearchService {
                 rootBoolQueryBuilder.must(rangeQuery(path).lt(value));
             }
         } else {
-            if (searchTerm.getValue() instanceof List<?> values) {
-                rootBoolQueryBuilder.must(termsQuery(path, values));
-            } else {
-                rootBoolQueryBuilder.must(matchQuery(path, searchTerm.getValue()));
+            // for multiple paths search
+            if (path.contains(",")) {
+                Stream.of(path.split(",")).map(String::trim)
+                        .forEach(p -> {
+                            if (searchTerm.getValue() instanceof List<?> values) {
+                                rootBoolQueryBuilder.should(termsQuery(p, values));
+                            } else {
+                                rootBoolQueryBuilder.should(wildcardQuery(p, searchTerm.getValue() + "*"));
+                                //rootBoolQueryBuilder.should(matchQuery(p, searchTerm.getValue()));
+                            }
+                        });
             }
         }
     }

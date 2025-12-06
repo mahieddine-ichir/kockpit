@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {advancedSearchAudits, fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
 import {BookmarkIcon, CheckCircleIcon, EyeIcon, FunnelIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {MagnifyingGlassIcon} from '@heroicons/react/20/solid';
+import {RefreshCw} from 'lucide-react';
 import StatusBadge from '../../components/StatusBadge.jsx';
 import TruncateWithTooltip from "../../components/TruncateWithTooltip.jsx";
 import Pagination from '../../components/Pagination.jsx';
@@ -344,8 +345,9 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [lastExecutedSearch, setLastExecutedSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [totalCount, setTotalCount] = useState(0);
   const [searchTerms, setSearchTerms] = useState([]);
   const [filter, setFilter] = useState({});
@@ -387,14 +389,14 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
       window.open(`/audit/${audit.id}?selectedConfig=${selectedIdx}`, '_blank');
   };
 
-  if (loading) return <div>Loading...</div>;
-
   const handlePageChange = (page, size) => {
     setItemsPerPage(size);
     setCurrentPage(page);
   };
 
   function loadData() {
+      setLastExecutedSearch(search.trim());
+
       if (searchTerms.length > 0) {
           setLoading(true);
           console.info(`load data, searchTerms ${JSON.stringify(searchTerms)}`);
@@ -492,8 +494,19 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
     const hasOtherFilters = otherFilters?.length > 0;
 
     return (
-        <div className="px-2 py-2 sm:px-2 lg:px-2 bg-slate-50 min-h-screen">
-            <div className="flex items-center justify-between mb-5">
+        <div className="px-2 py-2 sm:px-2 lg:px-2 bg-slate-50 min-h-screen relative">
+            {loading && (
+                <>
+                    <div className="absolute inset-0 bg-gray-900 bg-opacity-20 z-40"></div>
+                    <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg flex items-center gap-3">
+                            <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
+                            <span className="text-gray-700 font-medium">Loading audit data...</span>
+                        </div>
+                    </div>
+                </>
+            )}
+            <div className={`flex items-center justify-between mb-5 ${loading ? 'blur-sm' : ''}`}>
                 <div className="flex items-center">
                     <div>
                         <h1 className="text-3xl font-bold text-slate-800 tracking-tight">{label}</h1>
@@ -504,6 +517,7 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
                     <Filters filters={filters} onSelectedFilter={onSelectedFilter} value={filter} />
                 )}
             </div>
+            <div className={`${loading ? 'blur-sm' : ''}`}>
 
             <div className="mb-8">
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -525,9 +539,19 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
                                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
                                         <button
                                             onClick={loadData}
-                                            className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold shadow-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform hover:scale-105 active:scale-95"
+                                            disabled={loading}
+                                            className={`px-6 py-2.5 rounded-lg font-semibold shadow-lg transition-all transform focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                                loading
+                                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                                    : search.trim() !== lastExecutedSearch
+                                                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:scale-105 active:scale-95'
+                                                        : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover:scale-105 active:scale-95'
+                                            }`}
                                         >
-                                            Search
+                                            <div className="flex items-center gap-2">
+                                                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                                                <span>{loading ? 'Loading...' : 'Search'}</span>
+                                            </div>
                                         </button>
                                     </div>
                                 </div>
@@ -642,6 +666,7 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
                     itemsPerPage={itemsPerPage}
                     totalItems={totalCount}
                 />
+            </div>
             </div>
         </div>
     );
