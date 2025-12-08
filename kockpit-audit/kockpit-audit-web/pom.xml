@@ -11,6 +11,7 @@
 
     <artifactId>kockpit-audit-web</artifactId>
     <packaging>pom</packaging>
+    <description>DEPRECATED -> kockpit-features-audit</description>
 
     <modules>
         <module>kockpit-audit-module-web</module>

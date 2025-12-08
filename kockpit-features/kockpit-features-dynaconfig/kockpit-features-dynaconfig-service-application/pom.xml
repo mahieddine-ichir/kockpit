@@ -5,18 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit</artifactId>
+        <artifactId>kockpit-features-dynaconfig</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kockpit-features</artifactId>
-    <name>Features</name>
-    <packaging>pom</packaging>
-    <modules>
-        <module>kockpit-features-featureflipping</module>
-        <module>kockpit-features-heartbeat</module>
-        <module>kockpit-features-dynaconfig</module>
-        <module>kockpit-features-audit</module>
-    </modules>
+    <artifactId>kockpit-features-dynaconfig-service-application</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+    </dependencies>
+
 
 </project>

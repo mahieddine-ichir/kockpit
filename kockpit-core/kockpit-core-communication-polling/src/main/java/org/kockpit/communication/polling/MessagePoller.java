@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.Consumer;
 import org.kockpit.communication.MessageCache;
+import org.kockpit.core.sdk.OnMessageListener;
 import org.kockpit.core.sdk.ServiceDefinition;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.PeriodicTrigger;
 
 import java.time.Duration;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -22,11 +24,14 @@ public class MessagePoller {
 
     private final ServiceDefinition serviceDefinition;
 
+    private final List<OnMessageListener> onMessageListeners;
+
     void start(String domain, String env, String appId, Duration triggerPeriod) {
         log.info("Start {} for domain {} and env {}, scheduler at periodic {}", serviceDefinition.name(), domain, env, triggerPeriod);
         taskScheduler.schedule(() -> {
             log.trace("synchronize {}, for domain {}, env {} and audience {}", serviceDefinition.name(), domain, env, serviceDefinition.audience());
-            consumer.poll(domain, env, appId, serviceDefinition.name())
+            consumer.poll(domain, env, appId, serviceDefinition.name()).stream()
+                    .peek(message -> onMessageListeners.forEach(onMessageListener -> onMessageListener.onMessage(message)))
                     .forEach(messageCache::add);
         }, new PeriodicTrigger(triggerPeriod));
     }

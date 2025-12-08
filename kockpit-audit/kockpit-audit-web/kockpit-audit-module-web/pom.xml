@@ -8,60 +8,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kockpit-audit-module-web</artifactId>
+    <description>DEPRECATED -> kockpit-features-audit-module-web</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kockpit</groupId>
-      <artifactId>kockpit-audit-api-impl</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
       <dependency>
-          <groupId>io.opentelemetry</groupId>
-          <artifactId>opentelemetry-api</artifactId>
-      </dependency>
-      <dependency>
-          <groupId>io.opentelemetry</groupId>
-          <artifactId>opentelemetry-sdk-trace</artifactId>
-      </dependency>
-    <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-      <dependency>
-          <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter</artifactId>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-test</artifactId>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-test-autoconfigure</artifactId>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-web</artifactId>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.assertj</groupId>
-          <artifactId>assertj-core</artifactId>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.hamcrest</groupId>
-          <artifactId>hamcrest-core</artifactId>
-          <scope>test</scope>
+          <groupId>org.kockpit</groupId>
+          <artifactId>kockpit-features-audit-module-web</artifactId>
+          <version>1.0.0-SNAPSHOT</version>
       </dependency>
   </dependencies>
 </project>
