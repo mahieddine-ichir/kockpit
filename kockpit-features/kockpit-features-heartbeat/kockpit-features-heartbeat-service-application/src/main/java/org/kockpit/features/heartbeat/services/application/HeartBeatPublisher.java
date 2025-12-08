@@ -28,7 +28,7 @@ public class HeartBeatPublisher {
         taskScheduler.schedule(() -> {
             log.trace("heartBeat for domain {}, env {} and appId {}", domain, env, appId);
             publisher.publish(new Message(
-                    appId+"-"+instanceId,
+                    instanceId,
                     serviceDefinition.name(),
                     domain,
                     env,
