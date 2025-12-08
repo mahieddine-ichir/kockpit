@@ -16,6 +16,7 @@
         <module>kockpit-core-communication-filesystem</module>
         <module>kockpit-core-communication-storageaccount</module>
         <module>kockpit-core-communication-polling</module>
+        <module>kockpit-core-communication-s3</module>
     </modules>
     <packaging>pom</packaging>
 
