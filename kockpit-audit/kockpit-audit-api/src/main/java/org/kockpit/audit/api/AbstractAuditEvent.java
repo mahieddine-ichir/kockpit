@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @SuperBuilder
-public class AbstractAuditEvent implements AuditEvent {
+public abstract class AbstractAuditEvent implements AuditEvent {
   private long startTime;
   private long endTime;
 }
