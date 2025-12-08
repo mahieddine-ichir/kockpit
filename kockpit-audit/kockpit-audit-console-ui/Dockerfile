@@ -3,6 +3,10 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 
+ARG NODE_ENV=production
+
+ENV NODE_ENV=$NODE_ENV
+
 # Copy package files
 COPY package*.json ./
 
@@ -13,7 +17,11 @@ RUN npm ci
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN if [ "$NODE_ENV" = "development" ]; then \
+      npm run build -- --mode development; \
+    else \
+      npm run build; \
+    fi
 
 # Production stage
 FROM nginx:alpine
