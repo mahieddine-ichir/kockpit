@@ -7,30 +7,14 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>kockpit-audit-web-starter</artifactId>
+    <description>DEPRECATED -> kockpit-features-audit-module-web</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kockpit</groupId>
-      <artifactId>kockpit-audit-module-web</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-<!--
-
-    <dependency>
-      <groupId>org.kockpit</groupId>
-      <artifactId>kockpit-obfuscation-autoconfigure</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
--->
-    <dependency>
-      <groupId>org.kockpit</groupId>
-      <artifactId>kockpit-audit-api-impl</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
+      <dependency>
+          <groupId>org.kockpit</groupId>
+          <artifactId>kockpit-features-audit-module-web</artifactId>
+          <version>1.0.0-SNAPSHOT</version>
+      </dependency>
   </dependencies>
+
 </project>
