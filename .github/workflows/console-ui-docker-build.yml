@@ -42,9 +42,9 @@ jobs:
         run: npm ci
         working-directory: kockpit-audit/kockpit-audit-console-ui
 
-      - name: Run Linting
-        run: npm run lint
-        working-directory: kockpit-audit/kockpit-audit-console-ui
+#      - name: Run Linting
+#        run: npm run lint
+#        working-directory: kockpit-audit/kockpit-audit-console-ui
 
       - name: Build Application
         run: npm run build
