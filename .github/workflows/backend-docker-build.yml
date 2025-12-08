@@ -18,10 +18,6 @@ on:
       - 'kockpit-core/**'
       - 'pom.xml'
   workflow_dispatch:
-    push:
-      branches:
-        - main
-        - dev
 
 env:
   REGISTRY: ghcr.io
@@ -46,6 +42,11 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
 
       - name: Cache Maven Dependencies
         uses: actions/cache@v4
