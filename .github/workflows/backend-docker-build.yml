@@ -18,6 +18,10 @@ on:
       - 'kockpit-core/**'
       - 'pom.xml'
   workflow_dispatch:
+    push:
+      branches:
+        - main
+        - dev
 
 env:
   REGISTRY: ghcr.io
