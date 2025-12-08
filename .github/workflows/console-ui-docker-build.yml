@@ -1,0 +1,78 @@
+name: Build Console UI Docker Image
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'kockpit-audit/kockpit-audit-console-ui/**'
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'kockpit-audit/kockpit-audit-console-ui/**'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: kockpit-audit-console-ui
+
+jobs:
+  build-and-push:
+    name: Build and Push Console UI Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: kockpit-audit/kockpit-audit-console-ui/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+        working-directory: kockpit-audit/kockpit-audit-console-ui
+
+      - name: Run Linting
+        run: npm run lint
+        working-directory: kockpit-audit/kockpit-audit-console-ui
+
+      - name: Build Application
+        run: npm run build
+        working-directory: kockpit-audit/kockpit-audit-console-ui
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: kockpit-audit/kockpit-audit-console-ui
+          file: kockpit-audit/kockpit-audit-console-ui/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
