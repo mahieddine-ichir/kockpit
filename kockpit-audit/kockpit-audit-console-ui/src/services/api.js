@@ -1,7 +1,11 @@
 import axios from 'axios';
 
-//const API_BASE = import.meta.env.__VITE_API_BASE__;
-const API_BASE = __VITE_API_BASE__;
+//const API_BASE = import.meta.env.VITE_API_BASE;
+const getApiBase = () => {
+    // Try runtime config first, then fallback to build-time env
+    return window.ENV?.VITE_API_BASE || import.meta.env.VITE_API_BASE || 'http://localhost:8080'
+}
+const API_BASE = getApiBase()
 console.log('API_BASE:', API_BASE);
 
 const instance = axios.create({
