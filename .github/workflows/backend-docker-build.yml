@@ -54,7 +54,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build Application with Maven (filesystem)
-        run: mvn clean package -Pfilesystem -pl kockpit-backends/kockpit-backend-application -am -DskipTests
+        run: mvn clean package -Pfilesystem,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
