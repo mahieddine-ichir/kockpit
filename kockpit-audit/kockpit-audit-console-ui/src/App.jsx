@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {BrowserRouter, Navigate, Route, Routes, useSearchParams} from 'react-router-dom';
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import './index.css';
 import Sidebar from "./sidebar/Sidebar.jsx";
 import AuditListPage from "./audits/pages/AuditListPage.jsx";
