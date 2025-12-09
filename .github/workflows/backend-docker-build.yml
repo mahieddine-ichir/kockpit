@@ -65,7 +65,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract Metadata for Docker
-        id: meta
+        id: meta-fs
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-filesystem
@@ -90,7 +90,7 @@ jobs:
         run: mvn clean package -Pazure,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
 
       - name: Extract Metadata for Docker
-        id: meta
+        id: meta-azure
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-storageaccount
