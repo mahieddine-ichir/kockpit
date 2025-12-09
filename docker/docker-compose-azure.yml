@@ -1,0 +1,2 @@
+# actually Azure do not offer storage account docker or service that one can run locally for tests.
+# EventHub on azure, accepts the Kafka protocol, so we'll use the Kafka along with the kafka protocol.
