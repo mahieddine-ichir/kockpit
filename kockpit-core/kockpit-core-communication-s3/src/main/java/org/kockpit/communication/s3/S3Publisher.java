@@ -1,36 +1,46 @@
 package org.kockpit.communication.s3;
 
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobContainerClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.kockpit.communication.Message;
 import org.kockpit.communication.Publisher;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 @RequiredArgsConstructor
-public class StorageAccountPublisher implements Publisher {
+public class S3Publisher implements Publisher {
 
+    private final S3Client s3Client;
+    private final String bucketName;
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
     @Override
     public void publish(Message message) {
-        String blobName = formatFilename(
+        String path = formatFilename(
                 message.getDomain(),
                 message.getEnv(),
                 message.getAppId(),
                 message.getType()
         );
-        String fileName = "%s/%s.json".formatted(blobName, message.getId());
-        BlobClient blobClient = blobContainerClient.getBlobClient(fileName);
+        String key = "%s/%s.json".formatted(path, message.getId());
+
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             objectMapper.writeValue(os, message);
-            blobClient.upload(new ByteArrayInputStream(os.toByteArray()), os.size(), true);
+            byte[] jsonBytes = os.toByteArray();
+
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .contentType("application/json")
+                    .build();
+
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(jsonBytes));
         }
     }
 

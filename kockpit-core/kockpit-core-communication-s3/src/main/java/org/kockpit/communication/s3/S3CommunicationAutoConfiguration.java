@@ -1,0 +1,60 @@
+package org.kockpit.communication.s3;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kockpit.communication.Consumer;
+import org.kockpit.communication.Publisher;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+
+@AutoConfiguration
+public class S3CommunicationAutoConfiguration {
+
+    @Bean
+    Publisher s3Publisher(
+            S3Client s3Client,
+            @Value("${kockpit.sdk.aws.s3.bucket}") String bucketName
+    ) {
+        return new S3Publisher(s3Client, bucketName, objectMapper());
+    }
+
+    @Bean
+    Consumer s3Consumer(
+            S3Client s3Client,
+            @Value("${kockpit.sdk.aws.s3.bucket}") String bucketName
+    ) {
+        return new S3Consumer(s3Client, bucketName, objectMapper());
+    }
+
+    ObjectMapper objectMapper() {
+        return new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+    }
+
+    //@Value("${kockpit.sdk.aws.accessKeyId}") String accessKeyId,
+    //@Value("${kockpit.sdk.aws.secretAccessKey}") String secretAccessKey
+    @Bean
+    AwsCredentialsProvider roleCredentialsProvider() {
+        //AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+        return DefaultCredentialsProvider.builder().build();
+    }
+
+    @Bean
+    @Primary
+    S3Client s3Client(
+            @Value("${kockpit.sdk.aws.region}") String region,
+            AwsCredentialsProvider credentialsProvider
+    ) {
+        return S3Client.builder()
+                .region(Region.of(region))
+                .credentialsProvider(credentialsProvider)
+                .build();
+    }
+}
