@@ -15,5 +15,6 @@
         <module>kockpit-backend-service-storage-api</module>
         <module>kockpit-backend-service-storage-azure</module>
         <module>kockpit-backend-service-storage-filesystem</module>
+        <module>kockpit-backend-service-storage-s3</module>
     </modules>
 </project>
