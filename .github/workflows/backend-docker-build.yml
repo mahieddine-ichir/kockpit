@@ -53,6 +53,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      # build for File System profile
       - name: Build Application with Maven (filesystem)
         run: mvn clean package -Pfilesystem,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
 
@@ -67,7 +68,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-filesystem
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -84,3 +85,27 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      # build for Azure Storage Account profile
+      - name: Build Application with Maven (azure storage account)
+        run: mvn clean package -Pazure,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
+
+      - name: Extract Metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-storageaccount
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and Push Docker Image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: kockpit-backends/kockpit-backend-application
+          file: kockpit-backends/kockpit-backend-application/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
