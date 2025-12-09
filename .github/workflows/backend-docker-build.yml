@@ -110,7 +110,7 @@ jobs:
 
       # build for S3 Profile
       - name: Build Application with Maven (azure s3)
-        run: mvn clean package -s3,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
+        run: mvn clean package -Ps3,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
 
       - name: Extract Metadata for Docker
         id: meta-s3
