@@ -65,6 +65,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract Metadata for Docker
+        id: meta-filesystem
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-filesystem
@@ -80,14 +81,15 @@ jobs:
           context: kockpit-backends/kockpit-backend-application
           file: kockpit-backends/kockpit-backend-application/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-filesystem.outputs.tags }}
+          labels: ${{ steps.meta-filesystem.outputs.labels }}
 
       # build for Azure Storage Account profile
       - name: Build Application with Maven (azure storage account)
         run: mvn clean package -Pazure,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
 
       - name: Extract Metadata for Docker
+        id: meta-storageaccount
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-storageaccount
@@ -103,5 +105,5 @@ jobs:
           context: kockpit-backends/kockpit-backend-application
           file: kockpit-backends/kockpit-backend-application/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-storageaccount.outputs.tags }}
+          labels: ${{ steps.meta-storageaccount.outputs.labels }}
