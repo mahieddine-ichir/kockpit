@@ -107,3 +107,27 @@ jobs:
           push: true
           tags: ${{ steps.meta-storageaccount.outputs.tags }}
           labels: ${{ steps.meta-storageaccount.outputs.labels }}
+
+      # build for S3 Profile
+      - name: Build Application with Maven (azure s3)
+        run: mvn clean package -s3,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
+
+      - name: Extract Metadata for Docker
+        id: meta-s3
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-s3
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: kockpit-backends/kockpit-backend-application
+          file: kockpit-backends/kockpit-backend-application/Dockerfile
+          push: true
+          tags: ${{ steps.meta-s3.outputs.tags }}
+          labels: ${{ steps.meta-s3.outputs.labels }}
