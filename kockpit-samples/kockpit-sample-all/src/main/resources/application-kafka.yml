@@ -1,0 +1,11 @@
+
+
+kockpit:
+  sdk:
+    service:
+      audit:
+        notification:
+          topic: audit
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
