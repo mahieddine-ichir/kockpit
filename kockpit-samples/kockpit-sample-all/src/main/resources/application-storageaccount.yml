@@ -3,3 +3,10 @@ kockpit:
   sdk:
     domain: rcu
     env: local
+
+    azure:
+      storage:
+        endpoint: ${STORAGE_ENDPOINT}
+        account: ${STORAGE_ACCOUNT}
+        key: ${STORAGE_KEY}
+        container: ${STORAGE_CONTAINER}

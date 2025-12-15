@@ -75,8 +75,8 @@ function App() {
                                     <Routes>
                                         <Route path='/home' element={<AppIdDashboard domain={domain} env={env} />} />
                                         <Route path='/health' element={<HealthIndicatorsDashboard domain={domain} env={env} />} />
-                                        <Route path='/audit' element={<AuditListPage domain={domain} env={env} config={config} selectedIdx={configIndex} />} />
-                                        <Route path="/audit/:id" element={<DetailsPage domain={domain} env={env} selectedIdx={configIndex} />} />
+                                        <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} selectedIdx={configIndex} />} />
+                                        <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env} selectedIdx={configIndex} />} />
                                         <Route path='/config' element={<ConfigPage configs={configs} />} />
                                         <Route path='/feature-flipping' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
                                         <Route path='/feature-flipping/:service' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
