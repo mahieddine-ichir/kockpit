@@ -143,8 +143,17 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
                   />
               </nav>
           </div>
-        <div className="border-t border-slate-700 p-4 bg-slate-800/70">
-            <UserInfo collapsed={collapsed} currentUser={currentUser} logout={logoutUser} />
+        <div className="border-t border-slate-700 bg-slate-800/70">
+            {!collapsed && (
+                <div className="px-4 pt-2 pb-1">
+                    <p className="text-xs text-slate-400">
+                        Build: {new Date(__BUILD_TIME__).toLocaleString()}
+                    </p>
+                </div>
+            )}
+            <div className="p-4">
+                <UserInfo collapsed={collapsed} currentUser={currentUser} logout={logoutUser} />
+            </div>
         </div>
       </div>
   );

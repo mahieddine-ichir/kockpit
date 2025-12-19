@@ -49,6 +49,8 @@ jobs:
       - name: Build Application
         run: npm run build
         working-directory: kockpit-audit/kockpit-audit-console-ui
+        env:
+          VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
 
       - name: Copy Static Web App Config
         run: cp ./staticwebapp.config.json ./dist/
@@ -108,3 +110,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             NODE_ENV=${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+            VITE_BUILD_TIME=${{ github.event.head_commit.timestamp }}
