@@ -64,7 +64,7 @@ jobs:
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         with:
           tag_name: console-ui-${{ github.ref_name }}-latest
           name: Console UI Build - ${{ github.ref_name }}
