@@ -58,7 +58,7 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: console-ui-build-${{ github.sha }}
+          name: console-ui-build-${{ github.ref_name }}
           path: console-ui-dist.zip
           retention-days: 30
 
