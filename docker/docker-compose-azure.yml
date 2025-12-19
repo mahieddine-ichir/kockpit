@@ -48,7 +48,7 @@ services:
       - opensearch
 
   kockpit-audit-stream-kafka:
-    image: ghcr.io/mahieddine-ichir/kockpit/kockpit-audit-stream-kafka:dev-09067fa
+    image: ghcr.io/mahieddine-ichir/kockpit/kockpit-audit-stream-kafka:latest
     container_name: kockpit-audit-stream-kafka
     ports:
       - "9080:9080"
@@ -88,13 +88,14 @@ services:
       - kockpit-backend-application
 
   kockpit-sample-all:
-    image: amazoncorretto:21-al2023-headless
+    image: ghcr.io/mahieddine-ichir/kockpit/kockpit-sample-all-kafka-storageaccount:latest
+    #image: amazoncorretto:21-al2023-headless
     container_name: kockpit-sample-all
     ports:
       - "8081:8081"
-    volumes:
-      - ../kockpit-samples/kockpit-sample-all/target:/app
-    entrypoint: java -jar /app/kockpit-sample-all-1.0.0-SNAPSHOT.jar
+    #volumes:
+    #  - ../kockpit-samples/kockpit-sample-all/target:/app
+    #entrypoint: java -jar /app/kockpit-sample-all-1.0.0-SNAPSHOT.jar
     environment:
       - STORAGE_ENDPOINT=${STORAGE_ENDPOINT}
       - STORAGE_ACCOUNT=${STORAGE_ACCOUNT}
