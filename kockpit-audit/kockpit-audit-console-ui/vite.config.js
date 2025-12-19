@@ -7,4 +7,7 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  define: {
+    __BUILD_TIME__: JSON.stringify(process.env.VITE_BUILD_TIME || new Date().toISOString()),
+  },
 })

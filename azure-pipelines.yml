@@ -113,6 +113,7 @@ stages:
           - script: |
               cd kockpit-audit/kockpit-audit-console-ui
               npm ci
+              export VITE_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
               npm run build -- --mode dev
               cp ./staticwebapp.config.json ./dist/
 
@@ -140,6 +141,7 @@ stages:
           - script: |
               cd kockpit-audit/kockpit-audit-console-ui
               npm ci
+              export VITE_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
               npm run build -- --mode production
               cp ./staticwebapp.config.json ./dist/
 
