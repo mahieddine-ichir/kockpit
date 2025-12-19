@@ -24,7 +24,7 @@ jobs:
     name: Build and Push Console UI Docker Image
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -61,6 +61,20 @@ jobs:
           name: console-ui-build-${{ github.ref_name }}
           path: console-ui-dist.zip
           retention-days: 30
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'push'
+        with:
+          tag_name: console-ui-${{ github.ref_name }}-latest
+          name: Console UI Build - ${{ github.ref_name }}
+          files: console-ui-dist.zip
+          body: |
+            Automated build of Console UI from branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Build Date: ${{ github.event.head_commit.timestamp }}
+          prerelease: ${{ github.ref_name != 'main' }}
+          fail_on_unmatched_files: true
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
