@@ -50,6 +50,18 @@ jobs:
         run: npm run build
         working-directory: kockpit-audit/kockpit-audit-console-ui
 
+      - name: Create Zip Artifact
+        run: |
+          cd kockpit-audit/kockpit-audit-console-ui/dist
+          zip -r ../../../console-ui-dist.zip .
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: console-ui-build-${{ github.sha }}
+          path: console-ui-dist.zip
+          retention-days: 30
+
       - name: Log in to Container Registry
         uses: docker/login-action@v3
         with:
