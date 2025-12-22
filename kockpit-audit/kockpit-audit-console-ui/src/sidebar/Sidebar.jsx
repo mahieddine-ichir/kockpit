@@ -66,7 +66,7 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
                       subMenus: []
                   })
 
-              navItems.find(item => item.type === service.type).subMenus.push({
+              navItems.find(item => item.type === service.type || 'audits').subMenus.push({
                   name: service.name,
                   type: service.type === 'audit' ? 'audits' : service.type, // fixme
                   id: service.id,
