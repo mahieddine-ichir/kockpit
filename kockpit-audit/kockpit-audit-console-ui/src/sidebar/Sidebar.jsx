@@ -61,14 +61,14 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
           .forEach(service => {
               if (navItems.find(item => item.type === service.type) == null)
                   navItems.push({
-                      type: service.type,
+                      type: service.type === 'audit' ? 'audits' : service.type, // fixme
                       label: service.label ? service.label : asLabel(service.type),
                       subMenus: []
                   })
 
               navItems.find(item => item.type === service.type).subMenus.push({
                   name: service.name,
-                  type: service.type,
+                  type: service.type === 'audit' ? 'audits' : service.type, // fixme
                   id: service.id,
                   label: service.label ? service.label : asLabel(service.name)
               })

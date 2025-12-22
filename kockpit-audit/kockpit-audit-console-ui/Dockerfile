@@ -4,8 +4,10 @@ FROM node:22-alpine AS build
 WORKDIR /app
 
 ARG NODE_ENV=production
+ARG VITE_BUILD_TIME
 
 ENV NODE_ENV=$NODE_ENV
+ENV VITE_BUILD_TIME=$VITE_BUILD_TIME
 
 # Copy package files
 COPY package*.json ./

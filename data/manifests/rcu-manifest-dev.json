@@ -42,7 +42,7 @@
             {
               "name": "httpStatus",
               "type": "options",
-              "options": [200, 201, 400, 401, 500],
+              "options": [200, 201, 400, 404, 401, 500],
               "path": "indexedKeyValues.httpStatus"
             },
             {
