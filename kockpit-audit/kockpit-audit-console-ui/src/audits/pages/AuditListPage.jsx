@@ -386,7 +386,7 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
   }, [domain, env, currentPage, itemsPerPage]);
 
   const handleViewDetails = (audit) => {
-      window.open(`/audit/${audit.id}?selectedConfig=${selectedIdx}`, '_blank');
+      window.open(`/audits/${audit.id}?selectedConfig=${selectedIdx}`, '_blank');
   };
 
   const handlePageChange = (page, size) => {
