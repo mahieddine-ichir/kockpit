@@ -6,8 +6,9 @@ on:
       - main
       - dev
     paths:
-      - 'kockpit-backends/**'
       - 'kockpit-core/**'
+      - 'kockpit-features/**'
+      - 'kockpit-core-applications/**'
       - 'pom.xml'
   pull_request:
     branches:
@@ -16,6 +17,7 @@ on:
     paths:
       - 'kockpit-backends/**'
       - 'kockpit-core/**'
+      - 'kockpit-core-applications/**'
       - 'pom.xml'
   workflow_dispatch:
 
@@ -55,7 +57,7 @@ jobs:
 
       # build for File System profile
       - name: Build Application with Maven (filesystem)
-        run: mvn clean package -Pfilesystem,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
+        run: mvn clean package -Pfilesystem,opensearch -pl kockpit-core-applications/kockpit-backend-application -am -DskipTests
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
@@ -78,15 +80,15 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: kockpit-backends/kockpit-backend-application
-          file: kockpit-backends/kockpit-backend-application/Dockerfile
+          context: kockpit-core-applications/kockpit-backend-application
+          file: kockpit-core-applications/kockpit-backend-application/Dockerfile
           push: true
           tags: ${{ steps.meta-filesystem.outputs.tags }}
           labels: ${{ steps.meta-filesystem.outputs.labels }}
 
       # build for Azure Storage Account profile
       - name: Build Application with Maven (azure storage account)
-        run: mvn clean package -Pazure,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
+        run: mvn clean package -Pazure,opensearch -pl kockpit-core-applications/kockpit-backend-application -am -DskipTests
 
       - name: Extract Metadata for Docker
         id: meta-storageaccount
@@ -102,15 +104,15 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: kockpit-backends/kockpit-backend-application
-          file: kockpit-backends/kockpit-backend-application/Dockerfile
+          context: kockpit-core-applications/kockpit-backend-application
+          file: kockpit-core-applications/kockpit-backend-application/Dockerfile
           push: true
           tags: ${{ steps.meta-storageaccount.outputs.tags }}
           labels: ${{ steps.meta-storageaccount.outputs.labels }}
 
       # build for S3 Profile
       - name: Build Application with Maven (azure s3)
-        run: mvn clean package -Ps3,opensearch -pl kockpit-backends/kockpit-backend-application -am -DskipTests
+        run: mvn clean package -Ps3,opensearch -pl kockpit-core-applications/kockpit-backend-application -am -DskipTests
 
       - name: Extract Metadata for Docker
         id: meta-s3
@@ -126,8 +128,8 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: kockpit-backends/kockpit-backend-application
-          file: kockpit-backends/kockpit-backend-application/Dockerfile
+          context: kockpit-core-applications/kockpit-backend-application
+          file: kockpit-core-applications/kockpit-backend-application/Dockerfile
           push: true
           tags: ${{ steps.meta-s3.outputs.tags }}
           labels: ${{ steps.meta-s3.outputs.labels }}

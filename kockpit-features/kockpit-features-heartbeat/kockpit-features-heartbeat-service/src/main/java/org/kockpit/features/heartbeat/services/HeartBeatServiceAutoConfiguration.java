@@ -1,6 +1,5 @@
 package org.kockpit.features.heartbeat.services;
 
-import org.kockpit.core.sdk.ServiceDefinition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 public class HeartBeatServiceAutoConfiguration {
 
     @Bean
-    ServiceDefinition heartBeatServiceDefinition(
+    HeartBeatServiceDefinition heartBeatServiceDefinition(
         @Value("${kockpit.sdk.heartbeat.polling.enabled:true}") boolean pollingEnabled
     ) {
         return new HeartBeatServiceDefinition(pollingEnabled);

@@ -75,9 +75,9 @@ services:
     depends_on:
       - opensearch
 
-  kockpit-audit-console-ui:
-    image: ghcr.io/mahieddine-ichir/kockpit/kockpit-audit-console-ui:latest
-    container_name: kockpit-audit-console-ui
+  kockpit-console:
+    image: ghcr.io/mahieddine-ichir/kockpit/kockpit-console:latest
+    container_name: kockpit-console
     ports:
       - "3000:80"
     environment:

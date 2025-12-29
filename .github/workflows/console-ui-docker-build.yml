@@ -6,18 +6,18 @@ on:
       - main
       - dev
     paths:
-      - 'kockpit-audit/kockpit-audit-console-ui/**'
+      - 'kockpit-core-applications/kockpit-console/**'
   pull_request:
     branches:
       - main
       - dev
     paths:
-      - 'kockpit-audit/kockpit-audit-console-ui/**'
+      - 'kockpit-core-applications/kockpit-console/**'
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: kockpit-audit-console-ui
+  IMAGE_NAME: kockpit-console
 
 jobs:
   build-and-push:
@@ -36,29 +36,29 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: kockpit-audit/kockpit-audit-console-ui/package-lock.json
+          cache-dependency-path: kockpit-core-applications/kockpit-console/package-lock.json
 
       - name: Install Dependencies
         run: npm ci
-        working-directory: kockpit-audit/kockpit-audit-console-ui
+        working-directory: kockpit-core-applications/kockpit-console
 
 #      - name: Run Linting
 #        run: npm run lint
-#        working-directory: kockpit-audit/kockpit-audit-console-ui
+#        working-directory: kockpit-core-applications/kockpit-console
 
       - name: Build Application
         run: npm run build
-        working-directory: kockpit-audit/kockpit-audit-console-ui
+        working-directory: kockpit-core-applications/kockpit-console
         env:
           VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
 
       - name: Copy Static Web App Config
         run: cp ./staticwebapp.config.json ./dist/
-        working-directory: kockpit-audit/kockpit-audit-console-ui
+        working-directory: kockpit-core-applications/kockpit-console
 
       - name: Create Zip Artifact
         run: |
-          cd kockpit-audit/kockpit-audit-console-ui/dist
+          cd kockpit-core-applications/kockpit-console/dist
           zip -r ../../../console-ui-dist.zip .
 
       - name: Upload Build Artifact
@@ -103,8 +103,8 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: kockpit-audit/kockpit-audit-console-ui
-          file: kockpit-audit/kockpit-audit-console-ui/Dockerfile
+          context: kockpit-core-applications/kockpit-console
+          file: kockpit-core-applications/kockpit-console/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

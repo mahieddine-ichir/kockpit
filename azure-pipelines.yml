@@ -85,7 +85,7 @@ stages:
             inputs:
               command: buildAndPush
               repository: 'kockpit-backend-opensearch'
-              dockerfile: 'kockpit-backends/kockpit-backend-application/Dockerfile'
+              dockerfile: 'kockpit-core-applications/kockpit-backend-application/Dockerfile'
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
                 $(tag)
@@ -111,7 +111,7 @@ stages:
             displayName: 'Install Node.js'
 
           - script: |
-              cd kockpit-audit/kockpit-audit-console-ui
+              cd kockpit-core-applications/kockpit-console
               npm ci
               export VITE_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
               npm run build -- --mode dev
@@ -121,7 +121,7 @@ stages:
             displayName: 'Deploy front to DEV'
             inputs:
               azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_dev)
-              cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
+              cwd: '$(System.DefaultWorkingDirectory)/kockpit-core-applications/kockpit-console' # Working directory - optional
               skip_app_build: true
               skip_api_build: true
               app_location: '/dist'
@@ -139,7 +139,7 @@ stages:
             displayName: 'Install Node.js'
 
           - script: |
-              cd kockpit-audit/kockpit-audit-console-ui
+              cd kockpit-core-applications/kockpit-console
               npm ci
               export VITE_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
               npm run build -- --mode production
@@ -149,7 +149,7 @@ stages:
             displayName: 'Deploy front to PRO'
             inputs:
               azure_static_web_apps_api_token: $(DEPLOYMENT_KEY_pro)
-              cwd: '$(System.DefaultWorkingDirectory)/kockpit-audit/kockpit-audit-console-ui' # Working directory - optional
+              cwd: '$(System.DefaultWorkingDirectory)/kockpit-core-applications/kockpit-console' # Working directory - optional
               skip_app_build: true
               skip_api_build: true
               app_location: '/dist'
