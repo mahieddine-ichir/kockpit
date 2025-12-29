@@ -13,5 +13,8 @@
     <name>core-applications</name>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>kockpit-backend-application</module>
+    </modules>
 
 </project>

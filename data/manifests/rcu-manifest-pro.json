@@ -4,9 +4,7 @@
     "env": "pro",
     "services": [
       {
-        "name": "RCU Audits (Pro)",
-        "type": "audit",
-        "id": "audit",
+        "name": "audit",
         "config": {
           "columns": [
             "appId",
@@ -26,13 +24,16 @@
                 "orchestrator",
                 "rcu-api",
                 "rcu-migration",
-                "rcu-support-api"
+                "rcu-support-api",
+                "rcu-batch-purge",
+                "rcu-batch-hb",
+                "rcu-batch-enrich"
               ]
             },
             {
               "name": "gbid",
               "type": "number",
-              "path": "indexedKeyValues.gbid"
+              "path": "audits.events.httpAuditedResponse.body"
             },
             {
               "name": "rowId"
@@ -46,12 +47,8 @@
             {
               "name": "httpMethod",
               "type": "options",
-              "options": ["GET", "POST", "PUT", "DELETE"],
+              "options": ["GET", "POST", "PUT", "DELETE", "inbox:event  "],
               "path": "indexedKeyValues.httpMethod"
-            },
-            {
-              "name": "Request & Response body",
-              "path": "audits.events.httpAuditedRequest.body, audits.events.httpAuditedResponse.body, audits.events.httpAuditedResponse.payload"
             }
           ]
         }

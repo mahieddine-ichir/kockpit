@@ -17,6 +17,7 @@
         <module>kockpit-features-heartbeat</module>
         <module>kockpit-features-dynaconfig</module>
         <module>kockpit-features-audit</module>
+        <module>kockpit-features-manifest</module>
     </modules>
 
 </project>
