@@ -6,22 +6,22 @@ on:
       - main
       - dev
     paths:
-      - 'kockpit-audit/kockpit-audit-stream/**'
-      - 'kockpit-audit/pom.xml'
+      - 'kockpit-core-applications/kockpit-audit-stream/**'
+      - 'kockpit-core-applications/pom.xml'
       - 'pom.xml'
   pull_request:
     branches:
       - main
       - dev
     paths:
-      - 'kockpit-audit/kockpit-audit-stream/**'
-      - 'kockpit-audit/pom.xml'
+      - 'kockpit-core-applications/kockpit-audit-stream/**'
+      - 'kockpit-core-applications/pom.xml'
       - 'pom.xml'
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: kockpit-audit-stream
+  IMAGE_NAME: kockpit-audit-stream-application
 
 jobs:
   build-and-push:
@@ -55,7 +55,7 @@ jobs:
 
       # Build for Kafka
       - name: Build Kafka Stream Application with Maven
-        run: mvn clean package -pl kockpit-audit/kockpit-audit-stream/kockpit-audit-stream-application-kafka -am -DskipTests
+        run: mvn clean package -Pkafka -pl kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application -am -DskipTests
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
@@ -78,15 +78,15 @@ jobs:
       - name: Build and Push Docker Image (Kafka)
         uses: docker/build-push-action@v5
         with:
-          context: kockpit-audit/kockpit-audit-stream/kockpit-audit-stream-application-kafka
-          file: kockpit-audit/kockpit-audit-stream/kockpit-audit-stream-application-kafka/Dockerfile
+          context: kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application
+          file: kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application/Dockerfile
           push: true
           tags: ${{ steps.meta-kafka.outputs.tags }}
           labels: ${{ steps.meta-kafka.outputs.labels }}
 
       # Build for Kinesis
       - name: Build Kinesis Stream Application with Maven
-        run: mvn clean package -pl kockpit-audit/kockpit-audit-stream/kockpit-audit-stream-application-kinesis -am -DskipTests
+        run: mvn clean package -Pkinesis -pl kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application -am -DskipTests
 
       - name: Extract Metadata for Docker (Kinesis)
         id: meta-kinesis
@@ -102,8 +102,8 @@ jobs:
       - name: Build and Push Docker Image (Kinesis)
         uses: docker/build-push-action@v5
         with:
-          context: kockpit-audit/kockpit-audit-stream/kockpit-audit-stream-application-kinesis
-          file: kockpit-audit/kockpit-audit-stream/kockpit-audit-stream-application-kinesis/Dockerfile
+          context: kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application
+          file: kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application/Dockerfile
           push: true
           tags: ${{ steps.meta-kinesis.outputs.tags }}
           labels: ${{ steps.meta-kinesis.outputs.labels }}

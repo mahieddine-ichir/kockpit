@@ -17,7 +17,28 @@
           "start",
           "status"
         ],
-        "search_columns": [],
+        "search_columns": [
+          {
+            "name": "httpStatus",
+            "type": "options",
+            "options": [200, 201, 400, 404, 401, 500],
+            "path": "indexedKeyValues.httpStatus"
+          },
+          {
+            "name": "appId",
+            "type": "options",
+            "options": [
+              "any-app",
+              "sample-app"
+            ]
+          },
+          {
+            "name": "httpMethod",
+            "type": "options",
+            "options": ["GET", "POST", "PUT", "DELETE"],
+            "path": "indexedKeyValues.httpMethod"
+          }
+        ],
         "saved_filters": [
           {
             "name": "rcu-api, Create en erreur",
