@@ -1,0 +1,193 @@
+import React, {useEffect, useState} from "react";
+import {updateFeatureFlag} from "../services/api.js";
+import {Clock, Flag} from "lucide-react";
+import {useSearchParams} from "react-router-dom";
+import Stats from "../components/StatsComponent.jsx";
+
+const StateButtonForFlag = ({flag, toggle}) => {
+    const [enabled, setEnabled] = useState(flag.enabled);
+
+    // Sync local state with prop changes
+    useEffect(() => {
+        setEnabled(flag.enabled);
+    }, [flag.enabled]);
+
+    function handleToggle() {
+        toggle(flag);
+    }
+
+    return (
+        <div className="flex items-center gap-2">
+            <button
+                onClick={handleToggle}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                    enabled ? "bg-green-500" : "bg-slate-300"
+                }`}
+                role="switch"
+                aria-checked={enabled}
+            >
+                <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        enabled ? "translate-x-6" : "translate-x-1"
+                    }`}
+                />
+            </button>
+            <span className={`text-sm font-medium whitespace-nowrap ${enabled ? "text-green-700" : "text-slate-600"}`}>
+                {enabled ? "Enabled" : "Disabled"}
+            </span>
+        </div>
+    )
+};
+
+const FeatureFlippingPage = ({ domain, env, config }) => {
+    const [searchParams] = useSearchParams();
+    const serviceId = searchParams.get('service') || null;
+    const [history, setHistory] = useState([]);
+    const [activeTab, setActiveTab] = useState("properties");
+    const [flags, setFlags] = useState([]);
+    const [serviceName, setServiceName] = useState('Feature Flipping');
+
+    useEffect(() => {
+        if (config['services']) {
+            let service = config['services'].find(service => service.type === 'feature-flipping' && service.id === serviceId);
+            console.log(`service ${JSON.stringify(service)}`);
+            if (service) {
+                if (service['config'] && service['config'].keys) {
+                    setFlags([...service['config'].keys]);
+                }
+                setServiceName(service.name || service.label || 'Feature Flipping');
+            }
+        }
+    }, [domain, env, config, serviceId]);
+
+    const handleToggle = (flag) => {
+        // Create updated flag with toggled value
+        const updatedFlag = { ...flag, enabled: !flag.enabled };
+
+        // Optimistically update UI
+        setFlags(flags.map(f => f.key === flag.key ? updatedFlag : f));
+
+        updateFeatureFlag(domain, env, serviceId, updatedFlag)
+            .then(resp => {
+                console.log('Flag updated successfully:', resp);
+            })
+            .catch(err => {
+                console.log(`Error updating ${err}`);
+                // Revert on error
+                setFlags(flags.map(f => f.key === flag.key ? flag : f));
+            });
+    }
+
+    const totalKeys = flags.length;
+    const modifiedKeys = 0; // TODO: track modifications
+
+    return (
+        <div className="min-h-screen bg-slate-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
+                        <Flag className="h-8 w-8 text-blue-600" />
+                        {serviceName}
+                    </h1>
+                    <p className="text-slate-600">
+                        Feature Flipping
+                    </p>
+                </div>
+
+                {/* Stats Cards */}
+                <Stats keys={flags} totalKeys={totalKeys} modifiedKeys={modifiedKeys} />
+
+                {/* Flags - keys */}
+                <div className="flex gap-3 border-b border-slate-200">
+                    {["properties", "history"].map(tab => (
+                        <button
+                            key={tab}
+                            className={`px-4 py-2 rounded-t-lg text-sm font-medium transition-all ${
+                                activeTab === tab
+                                    ? "bg-white border border-slate-200 border-b-0 text-blue-600"
+                                    : "text-slate-500 hover:text-slate-700"
+                            }`}
+                            onClick={() => setActiveTab(tab)}
+                        >
+                            {tab === "properties" ? "Properties" : "History"}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Config Header */}
+                {activeTab === "properties" && (
+
+                    <div className="divide-y divide-gray-200">
+                        {flags.map(flag => (
+                            <div key={flag.key}
+                                 className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all p-5 space-y-3">
+                                {/* Header with key and controls */}
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="flex-1 min-w-0">
+                                        <span className="text-xs uppercase tracking-wide text-slate-400">Feature Key</span>
+                                        <div className="font-mono text-slate-800 font-semibold break-all text-sm">
+                                            {flag.key}
+                                        </div>
+                                        {flag.comment && (
+                                            <div className="text-xs text-slate-500 mt-1">
+                                                {flag.comment}
+                                            </div>
+                                        )}
+                                        {flag.expirationDate && (
+                                            <div className="flex items-center gap-1.5 mt-2 px-2 py-1 bg-amber-50 border border-amber-200 rounded-md w-fit">
+                                                <Clock className="h-3.5 w-3.5 text-amber-600" />
+                                                <span className="text-xs font-medium text-amber-700">Expires: {flag.expirationDate}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                        <StateButtonForFlag flag={flag} toggle={handleToggle} />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {activeTab === "history" && (
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+                            <Clock className="h-4 w-4" /> Recent Changes
+                        </h3>
+                        <div className="max-h-96 overflow-auto text-sm">
+                            {history.length === 0 ? (
+                                <div className="text-slate-400 italic text-center py-4">No recent changes recorded</div>
+                            ) : (
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                    <tr className="text-slate-500 text-xs uppercase border-b border-slate-200">
+                                        <th className="py-2 px-2">Timestamp</th>
+                                        <th className="py-2 px-2">Key</th>
+                                        <th className="py-2 px-2">Action</th>
+                                        <th className="py-2 px-2">User</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {history.map((h, i) => (
+                                        <tr
+                                            key={i}
+                                            className={`text-slate-700 ${i % 2 === 0 ? "bg-slate-50" : "bg-white"}`}
+                                        >
+                                            <td className="py-2 px-2">{h.timestamp}</td>
+                                            <td className="py-2 px-2 font-mono">{h.key}</td>
+                                            <td className="py-2 px-2">{h.action}</td>
+                                            <td className="py-2 px-2">{h.user}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default FeatureFlippingPage;
