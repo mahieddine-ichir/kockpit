@@ -11,6 +11,8 @@
 	<artifactId>kockpit</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<name>__ Kockpit</name>
+	<description>Kockpit Engineering Platform</description>
 
 	<scm>
 		<connection>scm:git:https://github.com/mahieddine-ichir/kockpit.git</connection>
@@ -27,49 +29,6 @@
     </modules>
 
 	<profiles>
-		<profile>
-			<id>stime</id>
-			<distributionManagement>
-				<repository>
-					<id>releases</id>
-					<url>https://pkgs.dev.azure.com/mousquetaires-rcu/_packaging/releases/maven/v1</url>
-				</repository>
-				<snapshotRepository>
-					<id>snapshots</id>
-					<url>https://pkgs.dev.azure.com/mousquetaires-rcu/_packaging/snapshots/maven/v1</url>
-				</snapshotRepository>
-			</distributionManagement>
-			<repositories>
-				<repository>
-					<id>snapshots</id>
-					<url>https://pkgs.dev.azure.com/mousquetaires-rcu/_packaging/snapshots/maven/v1</url>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>releases</id>
-					<url>https://pkgs.dev.azure.com/mousquetaires-rcu/_packaging/releases/maven/v1</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<name>snapshots</name>
-					<id>snapshots</id>
-					<url>https://pkgs.dev.azure.com/mousquetaires-rcu/_packaging/snapshots/maven/v1</url>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-
 		<profile>
 			<id>central</id>
 			<build>

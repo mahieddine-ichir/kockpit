@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>kockpit-features</artifactId>
-    <name>Features</name>
+    <name>__ Features</name>
     <packaging>pom</packaging>
     <modules>
         <module>kockpit-features-featureflipping</module>

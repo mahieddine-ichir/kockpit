@@ -8,12 +8,12 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>kockpit-rules</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<name>__ Kockpit Rules engine</name>
 
 	<modules>
-		<module>kockpit-rules-engine-parent</module>
 		<module>kockpit-rules-maven-plugin</module>
+		<module>kockpit-rules-engine-parent</module>
 		<module>kockpit-rules-app-sample</module>
 	</modules>
 </project>

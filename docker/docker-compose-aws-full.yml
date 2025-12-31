@@ -1,0 +1,75 @@
+services:
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_NUM_PARTITIONS=3
+
+  localstack_console_services:
+    container_name: localstack_console_services
+    image: localstack/localstack:latest
+    healthcheck:
+      test: [ "CMD", "awslocal", "s3api", "wait", "bucket-exists", "--bucket", "wcp-manifest-bucket" ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    volumes:
+      - ./init:/etc/localstack/init/ready.d/
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - AWS_DEFAULT_REGION=eu-west-1
+      - SERVICES=sqs:4576,dynamodb:4569,s3:4572,kinesis:4573,cloudwatch,sns
+      - DEBUG=1
+
+  opensearch:
+    image: opensearchproject/opensearch:3.2.0
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - DISABLE_SECURITY_PLUGIN=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+      - ./opensearch/data:/init-data
+      - ./opensearch/scripts:/docker-entrypoint-init.d
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dashboards:
+    image: opensearchproject/opensearch-dashboards:3.2.0
+    container_name: opensearch-dashboards
+    ports:
+      - "5601:5601"
+    environment:
+      - OPENSEARCH_HOSTS=["http://opensearch:9200"]
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+
+volumes:
+  opensearch-data:

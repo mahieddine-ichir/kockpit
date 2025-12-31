@@ -10,11 +10,12 @@
     </parent>
 
     <artifactId>kockpit-core-applications</artifactId>
-    <name>core-applications</name>
+    <name>__ Core Applications</name>
     <packaging>pom</packaging>
 
     <modules>
         <module>kockpit-backend-application</module>
+        <module>kockpit-audit-stream</module>
     </modules>
 
 </project>
