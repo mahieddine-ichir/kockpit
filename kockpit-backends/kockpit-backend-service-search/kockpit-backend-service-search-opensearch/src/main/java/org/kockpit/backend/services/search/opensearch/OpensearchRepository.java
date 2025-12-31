@@ -23,10 +23,8 @@ import org.opensearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
@@ -88,9 +86,7 @@ public class OpensearchRepository implements SearchService {
         BoolQueryBuilder rootBoolQueryBuilder = new BoolQueryBuilder();
         if (!CollectionUtils.isEmpty(searchTerms)) {
             log.debug("Search terms {}", searchTerms);
-            searchTerms.stream()
-                    .filter(searchTerm -> nonNull(searchTerm.getValue()))
-                    .forEach(searchTerm -> buildQuery(searchTerm, rootBoolQueryBuilder));
+            buildQuery(searchTerms, rootBoolQueryBuilder);
         }
 
         Optional.ofNullable(query)
@@ -110,52 +106,73 @@ public class OpensearchRepository implements SearchService {
         return runQuery(rootBoolQueryBuilder, domain, env, start, size);
     }
 
-    private void buildQuery(SearchTerm searchTerm, BoolQueryBuilder rootBoolQueryBuilder) {
-        String path = isNull(searchTerm.getPath()) ? searchTerm.getName() : searchTerm.getPath();
+    private void buildQuery(List<SearchTerm> searchTerms, BoolQueryBuilder rootBoolQueryBuilder) {
+        // group searchTerms by name/path
+        searchTerms.stream().collect(Collectors.groupingBy(searchTerm -> isNull(searchTerm.getPath()) ? searchTerm.getName() : searchTerm.getPath()))
+                .forEach((path, terms) -> {
+                    // get values
+                    List<Object> values = new ArrayList<>();
+                    terms.stream().map(SearchTerm::getValue).forEach(value -> {
+                        if (value instanceof List<?> list) {
+                            values.addAll(list);
+                        } else {
+                            values.add(value);
+                        }
+                    });
+                    this.buildQueryWithSamePath(path, values, rootBoolQueryBuilder);
+                });
+    }
+
+    private void buildQueryWithSamePath(String path, List<Object> values, BoolQueryBuilder rootBoolQueryBuilder) {
+        log.trace("search on path {}, for values {}", path, values);
         // indexedKeyValues -> nested search
         if (path.startsWith("indexedKeyValues")) {
+            log.trace("nested search for indexedKeyValues on path {}", path);
             BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
             String key = path.substring("indexedKeyValues".length() + 1);
-            if (searchTerm.getValue() instanceof List<?> values) {
-                log.debug("Searching terms {} of list {}", key, values);
-                buildQueryForIndexedKeyValues(key, values, boolQueryBuilder);
-            } else {
-                buildQueryForIndexedKeyValues(key, List.of(searchTerm.getValue()), boolQueryBuilder);
-            }
+            buildQueryForIndexedKeyValues(key, values, boolQueryBuilder);
             NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
-            rootBoolQueryBuilder.should(nestedQueryBuilder);
+            rootBoolQueryBuilder.must(nestedQueryBuilder);
 
-        } else if ("start".equals(searchTerm.getName()) || "end".equals(searchTerm.getName())) {
+        } else if ("start".equals(path) || "end".equals(path)) {
+            log.trace("time-base search on path {}", path);
             // timestamp search
-            long value = (long) searchTerm.getValue();
-            log.trace("Searching {} (on path {}), value = {}", searchTerm.getName(), searchTerm.getPath(), value);
-            if ("start".equals(searchTerm.getName())) {
+            long value = (long) values.get(0);
+            if ("start".equals(path)) {
                 rootBoolQueryBuilder.must(rangeQuery(path).gte(value));
             }
-            if ("end".equals(searchTerm.getName())) {
+            if ("end".equals(path)) {
                 rootBoolQueryBuilder.must(rangeQuery(path).lt(value));
             }
         } else {
             // for multiple paths search
             if (path.contains(",")) {
-                Stream.of(path.split(",")).map(String::trim)
-                        .forEach(p -> {
-                            if (searchTerm.getValue() instanceof List<?> values) {
-                                rootBoolQueryBuilder.should(termsQuery(p, values));
-                            } else {
-                                rootBoolQueryBuilder.should(wildcardQuery(p, searchTerm.getValue() + "*"));
-                                //rootBoolQueryBuilder.should(matchQuery(p, searchTerm.getValue()));
-                            }
-                        });
+                log.trace("basic search on multiple-paths {}", path);
+                Stream.of(path.split(","))
+                        .map(String::trim)
+                        .forEach(p -> rootBoolQueryBuilder.should(termsQuery(p, values)));
+            } else {
+                log.trace("basic search on path {}", path);
+                if (values.size() == 1) {
+                    rootBoolQueryBuilder.must(matchQuery(path, values.get(0)));
+                } else {
+                    rootBoolQueryBuilder.must(termsQuery(path, values));
+                }
             }
         }
     }
 
     private void buildQueryForIndexedKeyValues(String name, List<?> values, BoolQueryBuilder rootBoolQueryBuilder) {
         log.debug("Searching {} in [{}]", name, values);
-        rootBoolQueryBuilder
-                .must(matchQuery("indexedKeyValues.key", name))
-                .must(termsQuery("indexedKeyValues.value", values));
+        if (values.size() == 1) {
+            rootBoolQueryBuilder
+                    .must(matchQuery("indexedKeyValues.key", name))
+                    .must(matchQuery("indexedKeyValues.value", values.get(0)));
+        } else {
+            rootBoolQueryBuilder
+                    .must(matchQuery("indexedKeyValues.key", name))
+                    .must(termsQuery("indexedKeyValues.value", values));
+        }
     }
 
     private Page runQuery(BoolQueryBuilder rootBoolQueryBuilder, String domain, String env, Integer start, Integer size) throws Exception {
@@ -165,6 +182,7 @@ public class OpensearchRepository implements SearchService {
                             .query(rootBoolQueryBuilder)
                             .sort(new FieldSortBuilder("start").order(SortOrder.DESC))
                             .trackTotalHits(true)
+                            .fetchSource("*", "audits")
                             .from(start)
                             .size(size);
 

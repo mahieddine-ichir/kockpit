@@ -1,0 +1,44 @@
+package org.kockpit.audit.stream;
+
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.stream.api.AuditConsumer;
+import org.kockpit.audit.stream.api.AuditConsumerEvent;
+import org.kockpit.audit.stream.api.model.AuditReport;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationListener;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
+@SpringBootApplication
+@RequiredArgsConstructor
+@Slf4j
+public class AuditStreamApplication implements ApplicationListener<AuditConsumerEvent> {
+
+    private final List<AuditConsumer> consumerList;
+
+    public static void main(String[] args) {
+        SpringApplication.run(AuditStreamApplication.class, args);
+    }
+
+    @PostConstruct
+    void init() {
+        if (CollectionUtils.isEmpty(consumerList)) {
+            log.error("No AuditConsumer registered!");
+            throw new RuntimeException("No AuditConsumer registered!");
+        }
+    }
+
+    @Override
+    public void onApplicationEvent(AuditConsumerEvent event) {
+        consumerList.forEach(consumer -> consumer.accept((AuditReport) event.getSource()));
+    }
+
+    @Override
+    public boolean supportsAsyncExecution() {
+        return false;
+    }
+}

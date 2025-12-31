@@ -13,6 +13,9 @@
     <packaging>pom</packaging>
     <modules>
         <module>kockpit-features-audit-module-web</module>
+        <module>kockpit-features-audit-module-httpexchange</module>
+
+        <module>kockpit-features-audit-notification</module>
     </modules>
 
 </project>

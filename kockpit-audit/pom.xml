@@ -19,12 +19,9 @@
         <module>kockpit-audit-sdk</module>
         <module>kockpit-audit-api</module>
         <module>kockpit-audit-annotation</module>
-        <module>kockpit-audit-httpexchange</module>
         <module>kockpit-audit-api-impl</module>
         <module>kockpit-audit-web</module>
         <module>kockpit-audit-rules</module>
-        <module>kockpit-audit-stream</module>
-        <module>kockpit-audit-notification</module>
         <module>kockpit-obfuscation</module>
         <module>kockpit-audit-openapi</module>
     </modules>

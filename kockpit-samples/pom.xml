@@ -11,10 +11,6 @@
     <artifactId>kockpit-samples</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>kockpit-audit-sample-app</module>
-        <module>kockpit-audit-sample-basic</module>
-        <module>kockpit-audit-sample-kafka</module>
-        <module>kockpit-audit-sample-eventhub</module>
         <module>kockpit-sample-all</module>
     </modules>
 

@@ -1,5 +1,0 @@
-
-kockpit.sdk:
-  domain: default
-  env: local
-  appId: sample-app-basic
