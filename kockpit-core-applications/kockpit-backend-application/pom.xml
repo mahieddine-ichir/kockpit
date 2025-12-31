@@ -96,7 +96,7 @@
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-audit-httpexchange</artifactId>
+            <artifactId>kockpit-features-audit-module-httpexchange</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

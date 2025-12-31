@@ -34,11 +34,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-audit-stream-starter-opensearch</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!-- AWS SDK v2 (Recommended) -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
