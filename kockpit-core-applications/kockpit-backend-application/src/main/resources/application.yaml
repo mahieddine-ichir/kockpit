@@ -21,6 +21,11 @@ kockpit:
     env: dev
     appId: backend-application
 
+  audit:
+    opensearch:
+      index: ${INDEX_NAME:audit-data}
+      endpoints: ${OPENSEARCH_ENDPOINTS}
+
 management:
   endpoint:
     health:
@@ -32,3 +37,4 @@ management:
 logging:
   level:
     org.kockpit.communication: error
+
