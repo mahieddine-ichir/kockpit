@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static org.kockpit.backend.services.search.opensearch.AuditReportHelper.getAuditAliasName;
 import static org.opensearch.index.query.QueryBuilders.*;
 
@@ -54,7 +53,6 @@ public class OpensearchRepository implements SearchService {
                 new SearchSourceBuilder()
                         .query(boolQueryBuilder)
                         .sort(new FieldSortBuilder("start").order(SortOrder.DESC))
-                        .trackTotalHits(true)
                         .size(1);
 
         SearchRequest searchRequest = new SearchRequest()
