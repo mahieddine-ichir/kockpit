@@ -6,6 +6,7 @@ kockpit:
         account: ${STORAGE_ACCOUNT}
         key: ${STORAGE_KEY}
         container: ${STORAGE_CONTAINER}
+
   audit:
     azure:
       storage:

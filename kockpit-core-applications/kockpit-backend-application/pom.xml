@@ -43,6 +43,18 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.8.13</version>
         </dependency>
+        <!-- Opensearch services -->
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-backend-service-search-opensearch</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-backend-service-dashboard</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- applications-side features -->
         <dependency>
             <groupId>org.kockpit</groupId>
@@ -103,25 +115,10 @@
 
     <profiles>
         <profile>
-            <id>opensearch</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-backend-service-search-opensearch</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-backend-service-dashboard</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
             <id>azure</id>
+            <build>
+                <finalName>${project.artifactId}-${project.version}-azure</finalName>
+            </build>
             <dependencies>
                 <!-- manifest -->
                 <dependency>
@@ -144,6 +141,9 @@
         </profile>
         <profile>
             <id>aws</id>
+            <build>
+                <finalName>${project.artifactId}-${project.version}-aws</finalName>
+            </build>
             <dependencies>
                 <!-- manifest -->
                 <dependency>
@@ -166,6 +166,9 @@
         </profile>
         <profile>
             <id>filesystem</id>
+            <build>
+                <finalName>${project.artifactId}-${project.version}-filesystem</finalName>
+            </build>
             <dependencies>
                 <!-- manifest -->
                 <dependency>

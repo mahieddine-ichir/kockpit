@@ -4,7 +4,7 @@ kockpit:
       storage-path: ${user.home}/IdeaProjects/kockpit/data/manifests
   sdk:
     filesystem:
-      local_directory: ${user.home}/IdeaProjects/kockpit/data
+      local_directory: ${DATA_MANIFESTS:/kockpit/data/manifests}
 
     manifest:
       filesystem:
