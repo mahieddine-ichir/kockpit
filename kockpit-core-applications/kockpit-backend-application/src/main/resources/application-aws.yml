@@ -1,4 +1,0 @@
-kockpit:
-  service:
-    aws:
-      region: eu-west-1

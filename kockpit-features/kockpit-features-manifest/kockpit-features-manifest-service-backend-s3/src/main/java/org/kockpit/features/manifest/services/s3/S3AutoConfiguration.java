@@ -13,7 +13,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 @Slf4j
 public class S3AutoConfiguration {
 
-    @Bean
     AwsCredentialsProvider awsCredentialsProvider() {
         return DefaultCredentialsProvider.builder().build();
     }
@@ -25,7 +24,7 @@ public class S3AutoConfiguration {
     ) {
         return S3Client.builder()
                 .region(Region.of(region))
-                .credentialsProvider(credentialsProvider)
+                .credentialsProvider(awsCredentialsProvider())
                 .build();
     }
 
