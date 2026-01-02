@@ -13,18 +13,16 @@ import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Configuration
+@AutoConfiguration
 @EnableScheduling
-@Profile("opensearch")
 @Slf4j
 public class OpensearchAuditConsumerConfiguration {
 
@@ -41,7 +39,10 @@ public class OpensearchAuditConsumerConfiguration {
             @Qualifier("opensearch-object-mapper") ObjectMapper objectMapper,
             @Value("${kockpit.audit.stream.opensearch.index_suffix}") String indexSuffix
             ) {
-        log.info("OpenSearch index suffix: {}", indexSuffix);
+        log.info("""
+        \n
+            - OpenSearch index suffix: {}
+        """, indexSuffix);
         return new OpensearchIndexManager(restHighLevelClient, objectMapper, indexSuffix);
     }
 
@@ -73,7 +74,10 @@ public class OpensearchAuditConsumerConfiguration {
             interceptors.forEach(interceptor -> builder.setHttpClientConfigCallback(hacb -> hacb.addInterceptorLast(interceptor)));
         }
 
-        log.info("OpenSearch endpoints: {}", endpoints);
+        log.info("""
+        \n
+            - OpenSearch endpoints: {}
+        """, endpoints);
         return new RestHighLevelClient(builder);
     }
 }
