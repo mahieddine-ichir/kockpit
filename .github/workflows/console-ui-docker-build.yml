@@ -52,7 +52,7 @@ jobs:
         env:
           VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
 
-      - name: Copy Static Web App Config
+      - name: Copy Static Web App Config (for Azure)
         run: cp ./staticwebapp.config.json ./dist/
         working-directory: kockpit-core-applications/kockpit-console
 

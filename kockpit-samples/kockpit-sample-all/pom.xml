@@ -55,6 +55,11 @@
                     <artifactId>kockpit-core-communication-storageaccount</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-audit-notification-kafka</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                </dependency>
             </dependencies>
         </profile>
         <profile>
@@ -65,22 +70,6 @@
                     <artifactId>kockpit-core-communication-filesystem</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>s3</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-core-communication-s3</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        <!-- Audits feature communication layer (producer part) -->
-        <profile>
-            <id>kafka</id>
-            <dependencies>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-notification-kafka</artifactId>
@@ -89,8 +78,13 @@
             </dependencies>
         </profile>
         <profile>
-            <id>kinesis</id>
+            <id>aws</id>
             <dependencies>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-core-communication-s3</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-notification-kinesis</artifactId>
