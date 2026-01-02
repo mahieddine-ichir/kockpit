@@ -38,23 +38,18 @@ public class S3CommunicationAutoConfiguration {
                 .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
     }
 
-    //@Value("${kockpit.sdk.aws.accessKeyId}") String accessKeyId,
-    //@Value("${kockpit.sdk.aws.secretAccessKey}") String secretAccessKey
-    @Bean
-    AwsCredentialsProvider roleCredentialsProvider() {
-        //AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+    AwsCredentialsProvider awsCredentialsProvider() {
         return DefaultCredentialsProvider.builder().build();
     }
 
     @Bean
     @Primary
     S3Client s3Client(
-            @Value("${kockpit.sdk.aws.region}") String region,
-            AwsCredentialsProvider credentialsProvider
+            @Value("${kockpit.sdk.aws.region}") String region
     ) {
         return S3Client.builder()
                 .region(Region.of(region))
-                .credentialsProvider(credentialsProvider)
+                .credentialsProvider(awsCredentialsProvider())
                 .build();
     }
 }
