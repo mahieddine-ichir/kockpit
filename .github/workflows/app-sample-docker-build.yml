@@ -55,7 +55,7 @@ jobs:
 
       # build for File System profile
       - name: Build Application with Maven (filesystem)
-        run: mvn clean package -Pfilesystem,kafka -pl kockpit-samples/kockpit-sample-all -am -DskipTests
+        run: mvn clean package -Pfilesystem -pl kockpit-samples/kockpit-sample-all -am -DskipTests
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
@@ -68,7 +68,7 @@ jobs:
         id: meta-filesystem
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-kafka-filesystem
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-filesystem
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -84,15 +84,15 @@ jobs:
           tags: ${{ steps.meta-filesystem.outputs.tags }}
           labels: ${{ steps.meta-filesystem.outputs.labels }}
 
-      # build for Azure Storage Account profile
-      - name: Build Application with Maven (azure storage account)
-        run: mvn clean package -Pazure,kafka -pl kockpit-samples/kockpit-sample-all -am -DskipTests
+      # build for Azure profile
+      - name: Build Application with Maven (azure)
+        run: mvn clean package -Pazure -pl kockpit-samples/kockpit-sample-all -am -DskipTests
 
       - name: Extract Metadata for Docker
-        id: meta-storageaccount
+        id: meta-azure
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-kafka-storageaccount
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-azure
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -105,8 +105,29 @@ jobs:
           context: kockpit-samples/kockpit-sample-all
           file: kockpit-samples/kockpit-sample-all/Dockerfile
           push: true
-          tags: ${{ steps.meta-storageaccount.outputs.tags }}
-          labels: ${{ steps.meta-storageaccount.outputs.labels }}
+          tags: ${{ steps.meta-azure.outputs.tags }}
+          labels: ${{ steps.meta-azure.outputs.labels }}
 
-      # build for S3 Profile
-      # todo
+      # build for AWS profile
+      - name: Build Application with Maven (AWS)
+        run: mvn clean package -Paws -pl kockpit-samples/kockpit-sample-all -am -DskipTests
+
+      - name: Extract Metadata for Docker
+        id: meta-aws
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-aws
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: kockpit-samples/kockpit-sample-all
+          file: kockpit-samples/kockpit-sample-all/Dockerfile
+          push: true
+          tags: ${{ steps.meta-aws.outputs.tags }}
+          labels: ${{ steps.meta-aws.outputs.labels }}
