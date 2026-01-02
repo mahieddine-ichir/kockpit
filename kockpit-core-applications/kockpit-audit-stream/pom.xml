@@ -13,10 +13,10 @@
     <packaging>pom</packaging>
     <modules>
         <module>kockpit-audit-stream-api</module>
-        <module>kockpit-audit-stream-application</module>
-
         <!-- starters -->
         <module>kockpit-audit-stream-starter-kafka</module>
         <module>kockpit-audit-stream-starter-kinesis</module>
+        <!-- Application -->
+        <module>kockpit-audit-stream-application</module>
     </modules>
 </project>

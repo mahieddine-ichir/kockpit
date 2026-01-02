@@ -29,6 +29,12 @@ public class AuditStreamApplication implements ApplicationListener<AuditConsumer
         if (CollectionUtils.isEmpty(consumerList)) {
             log.error("No AuditConsumer registered!");
             throw new RuntimeException("No AuditConsumer registered!");
+        } else {
+            consumerList.forEach(consumer -> log.info("""
+            \n
+                - Starting consumer {}
+            """, consumer.getClass().getSimpleName()
+            ));
         }
     }
 
