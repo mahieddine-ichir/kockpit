@@ -47,6 +47,10 @@ build/
 **/.env.local
 **/.env.*.local
 
+### Generated OpenAPI specs ###
+**/openapi.yml
+**/openapi.yaml
+
 **/src/**/application-local.yaml
 **/src/**/application-dev.yaml
 **/src/**/application-pro.yaml

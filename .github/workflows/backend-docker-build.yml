@@ -61,6 +61,18 @@ jobs:
       - name: Build Application with Maven (filesystem)
         run: mvn clean package -Pfilesystem -pl kockpit-core-applications/kockpit-backend-application -am -DskipTests
 
+      # Generate OpenAPI specification
+      - name: Generate OpenAPI Specification
+        run: mvn verify -Pfilesystem -pl kockpit-core-applications/kockpit-backend-application -DskipTests
+
+      # Upload OpenAPI spec as artifact
+      - name: Upload OpenAPI Specification
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-spec
+          path: kockpit-core-applications/kockpit-backend-application/openapi.yml
+          retention-days: 90
+
       - name: Log in to Container Registry
         uses: docker/login-action@v3
         with:
