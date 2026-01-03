@@ -30,7 +30,7 @@ public class KafkaAuditServiceAutoConfiguration {
   @Bean
   AuditReportNotificationService kafkaAuditReportNotificationService(
           KafkaTemplate<String, byte[]> kafkaTemplate,
-          @Value("${kockpit.sdk.service.audit.notification.topic}") String topic,
+          @Value("${kockpit.audit.notification.kafka.topic}") String topic,
           CompressionService compressionService) {
     return new KafkaAuditReportNotificationService(kafkaTemplate, topic, compressionService);
   }

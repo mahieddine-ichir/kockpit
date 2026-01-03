@@ -1,9 +1,15 @@
 server:
-  port: 9080
+  port: 8081
 
 spring:
   application:
     name: kockpit-audit-stream
+  kafka:
+    bootstrap-servers:
+      - ${BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${spring.application.name}
+      max-poll-records: 50
 
 management:
   endpoint:
@@ -11,11 +17,29 @@ management:
       probes:
         enabled: true
   server:
-    port: 9090
+    port: 8091
 
 kockpit:
+  domain: kockpit
+  env: local
+  appId: ${spring.application.name}
+
   audit:
     stream:
       opensearch:
         endpoints: ${OPENSEARCH_ENDPOINTS:http://localhost:9200}
         index_suffix: ${INDEX_SUFFIX:audit-data}
+        ttl_default_in_days: 5
+      kafka:
+        topics: audits
+
+      kinesis:
+        streamName: ${spring.application.name}
+        timeout:
+          connection: 5000
+          socket: 30000
+
+    # application services
+    notification:
+      kafka:
+        topic: audits

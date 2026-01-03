@@ -1,13 +1,44 @@
-
-kockpit:
-  feature-flipping:
-    client:
-      scheduling: PT10S
-
 server:
   servlet:
     context-path: /sample-app
-  port: 8081
+  port: 8082
+
+spring:
+  application:
+    name: kockpit-samples-all
+
+kockpit:
+  domain: kockpit
+  env: local
+  app-id: ${spring.application.name}
+
+  communication:
+    azure:
+      storage:
+        account: ${STORAGE_ACCOUNT}
+        endpoint: https://${kockpit.communication.azure.storage.account}.blob.core.windows.net
+        key: ${STORAGE_KEY}
+        container: ${STORAGE_CONTAINER:data}
+
+  audit:
+    notification:
+      kafka:
+        topic: audits
+
+  feature-flipping:
+    client:
+      scheduling: PT10S
+    polling:
+      enabled: true
+  heartbeat:
+    enabled: true
+    polling:
+      enabled: false
+
+  filesystem:
+    local_directory: ${user.home}/IdeaProjects/kockpit/data/
+
+
 
 logging:
   level:

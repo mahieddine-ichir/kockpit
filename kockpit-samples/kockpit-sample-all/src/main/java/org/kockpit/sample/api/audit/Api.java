@@ -1,8 +1,10 @@
 package org.kockpit.sample.api.audit;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.time.Instant;
@@ -10,13 +12,24 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class Api {
 
+    private static final String API_URL = "https://randomuser.me/api/";
+    private static final String FACTS_API_URL = "https://catfact.ninja";
+
+    private final RestTemplate restTemplate;
+
+    @GetMapping("facts")
+    public CatFact facts() {
+        return restTemplate.getForObject(FACTS_API_URL + "/fact", CatFact.class);
+    }
+
     @GetMapping("sayHello/{name}")
-    Map<String, Object> sayHello(
+    RandomUserResponse sayHello(
             @PathVariable String name
     ) {
-        return Map.of("hello", name);
+        return restTemplate.getForObject(API_URL, RandomUserResponse.class);
     }
 
     @PostMapping("createMessage")

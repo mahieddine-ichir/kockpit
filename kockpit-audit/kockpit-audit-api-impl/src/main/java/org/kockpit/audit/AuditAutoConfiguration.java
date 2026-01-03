@@ -38,7 +38,7 @@ class AuditAutoConfiguration {
           SdkApplicationProperties sdkApplicationProperties,
           BuildProperties buildProperties,
           NotificationAuditReportManager notificationAuditReportManager,
-          @Value("${kockpit.sdk.service.audit.ttl_default_in_days:5}") Integer defaultAuditTtl) {
+          @Value("${kockpit.audit.ttl_default_in_days:5}") Integer defaultAuditTtl) {
     return new KockpitAuditor(
         sdkApplicationProperties.getDomain(),
         sdkApplicationProperties.getEnv(),
@@ -52,12 +52,12 @@ class AuditAutoConfiguration {
   public NotificationAuditReportManager notificationAuditReportManager(
       AuditPostProcessor auditPostProcessor,
       List<AuditReportNotificationService> auditReportNotificationServices,
-      @Value("${kockpit.sdk.service.audit.notification.async:true}") boolean async,
-      @Value("${kockpit.sdk.service.audit.notification.buffer.size:1000}") int bufferSize,
-      @Value("${kockpit.sdk.service.audit.notification.buffer.threshold:300}") int bufferThreshold,
-      @Value("${kockpit.sdk.service.audit.notification.buffer.partition-size:10}") int partitionSize,
-      @Value("${kockpit.sdk.service.audit.notification.buffer.block:false}") boolean blockIfFullBuffer,
-      @Value("${kockpit.sdk.service.audit.notification.silent-error:true}") boolean silentErrorProcessing
+      @Value("${kockpit.audit.notification.async:true}") boolean async,
+      @Value("${kockpit.audit.notification.buffer.size:1000}") int bufferSize,
+      @Value("${kockpit.audit.notification.buffer.threshold:300}") int bufferThreshold,
+      @Value("${kockpit.audit.notification.buffer.partition-size:10}") int partitionSize,
+      @Value("${kockpit.audit.notification.buffer.block:false}") boolean blockIfFullBuffer,
+      @Value("${kockpit.audit.notification.silent-error:true}") boolean silentErrorProcessing
   ) {
     if (auditReportNotificationServices.isEmpty()) {
       throw new IllegalArgumentException(

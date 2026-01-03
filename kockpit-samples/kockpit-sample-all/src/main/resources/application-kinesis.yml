@@ -1,5 +1,0 @@
-kockpit:
-  service:
-    aws:
-      role-arn: any
-      region: eu-west-1

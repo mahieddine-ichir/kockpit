@@ -39,9 +39,9 @@ public class StorageAccountCommunicationAutoConfiguration {
     @Bean
     @Primary
     BlobServiceClient blobServiceClient(
-            @Value("${kockpit.sdk.azure.storage.endpoint}") String storageEndpoint,
-            @Value("${kockpit.sdk.azure.storage.account}") String accountName,
-            @Value("${kockpit.sdk.azure.storage.key}") String key
+            @Value("${kockpit.communication.azure.storage.endpoint}") String storageEndpoint,
+            @Value("${kockpit.communication.azure.storage.account}") String accountName,
+            @Value("${kockpit.communication.azure.storage.key}") String key
     ) {
         return new BlobServiceClientBuilder()
                 .endpoint(storageEndpoint)
@@ -52,7 +52,7 @@ public class StorageAccountCommunicationAutoConfiguration {
     @Bean
     @Primary
     BlobContainerClient blobClient(BlobServiceClient blobServiceClient,
-                                   @Value("${kockpit.sdk.azure.storage.container}") String containerName) {
+                                   @Value("${kockpit.communication.azure.storage.container}") String containerName) {
         return blobServiceClient.getBlobContainerClient(containerName);
     }
 }

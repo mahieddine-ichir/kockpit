@@ -9,20 +9,9 @@ springdoc:
 
 spring:
   application:
-    name: kockpit-backoffice
+    name: kockpit-backend-application
   main:
     allow-bean-definition-overriding: true
-
-kockpit:
-  sdk:
-    domain: rcu
-    env: dev
-    appId: backend-application
-
-  audit:
-    opensearch:
-      index: ${INDEX_NAME:audit-data}
-      endpoints: ${OPENSEARCH_ENDPOINTS}
 
 management:
   endpoint:
@@ -32,7 +21,46 @@ management:
   endpoints:
     web:
       base-path: /backend/actuator
+  server:
+    port: 8090
 logging:
   level:
     org.kockpit.communication: error
+
+kockpit:
+  domain: kockpit
+  env: local
+  appId: ${spring.application.name}
+
+  # backend services
+  backend:
+    opensearch:
+      endpoints: ${OPENSEARCH_ENDPOINTS:http://localhost:9200}
+      index: ${INDEX_NAME:audit-data}
+    manifests:
+      azure:
+        storage:
+          account: ${MANIFESTS_STORAGE_ACCOUNT}
+          endpoint: https://${kockpit.backend.manifests.azure.storage.account}.blob.core.windows.net
+          key: ${MANIFESTS_STORAGE_KEY}
+          container: ${MANIFESTS_STORAGE_CONTAINER:manifests}
+
+  # comm layer
+  communication:
+    azure:
+      storage:
+        account: ${STORAGE_ACCOUNT}
+        endpoint: https://${kockpit.communication.azure.storage.account}.blob.core.windows.net
+        key: ${STORAGE_KEY}
+        container: ${STORAGE_CONTAINER:data}
+    aws:
+    filesystem:
+
+  # application services
+  audit:
+    ttl_default_in_days: 1
+    notification:
+      kafka:
+        topic: audits
+
 

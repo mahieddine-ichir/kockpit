@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(
         scanBasePackages = "org.kockpit"
 )
-public class KockpitAuditBackendApplication {
+public class KockpitBackendApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(KockpitAuditBackendApplication.class, args);
+        SpringApplication.run(KockpitBackendApplication.class, args);
     }
 
 }
