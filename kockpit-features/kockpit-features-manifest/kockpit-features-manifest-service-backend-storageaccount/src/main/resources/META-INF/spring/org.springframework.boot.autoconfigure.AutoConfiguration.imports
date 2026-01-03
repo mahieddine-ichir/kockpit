@@ -1,1 +1,1 @@
-org.kockpit.features.manifest.services.storageaccount.StorageAccountAutoConfiguration
+org.kockpit.features.manifest.services.manifest.ManifestStorageAccountAutoConfiguration

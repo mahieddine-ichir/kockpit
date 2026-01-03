@@ -63,8 +63,6 @@ services:
       - kockpit.sdk.filesystem.local_directory=/data
     volumes:
       - ~/IdeaProjects/kockpit/data:/data
-    links:
-      - opensearch:opensearch
 
   kockpit-console:
     image: ghcr.io/mahieddine-ichir/kockpit/kockpit-console:latest
@@ -73,8 +71,6 @@ services:
       - "3000:80"
     environment:
       - KOCKPIT_BACKEND=http://kockpit-backend-application:8080/backend
-    links:
-      - kockpit-backend-application:kockpit-backend-application
     depends_on:
       - kockpit-backend-application
 
