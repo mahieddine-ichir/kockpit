@@ -17,18 +17,9 @@
               "options": [
                 "orchestrator",
                 "rcu-api",
-                "rcu-migration"
+                "rcu-migration",
+                "rcu-inbox"
               ]
-            },
-            {
-              "name": "start",
-              "type": "date",
-              "path": "."
-            },
-            {
-              "name": "end",
-              "type": "date",
-              "path": "."
             },
             {
               "name": "gbid",
@@ -47,7 +38,7 @@
             {
               "name": "httpMethod",
               "type": "options",
-              "options": ["GET", "POST", "PUT", "DELETE"],
+              "options": ["GET", "POST", "PUT", "DELETE", "inbox:event"],
               "path": "indexedKeyValues.httpMethod"
             }
           ],

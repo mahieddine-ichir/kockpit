@@ -31,8 +31,8 @@ public class S3AutoConfiguration {
     @Bean
     S3Repository s3Repository(
             S3Client s3Client,
-            @Value("${kockpit.sdk.aws.s3.bucket}") String bucketName,
-            @Value("${kockpit.sdk.aws.region}") String region
+            @Value("${kockpit.manifests.aws.s3.bucket}") String bucketName,
+            @Value("${kockpit.manifests.aws.region}") String region
     ) {
         log.info(
 """

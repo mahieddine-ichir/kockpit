@@ -1,4 +1,4 @@
-package org.kockpit.features.manifest.services.storageaccount;
+package org.kockpit.features.manifest.services.manifest;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-public class StorageAccountRepository implements ManifestBackendRepository {
+public class ManifestStorageAccountRepository implements ManifestBackendRepository {
 
     private final BlobContainerClient blobContainerClient;
 

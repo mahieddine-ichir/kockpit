@@ -1,0 +1,90 @@
+name: Deploy libs on maven central
+
+on:
+  # Only deploy on release tags (e.g., v1.0.0, v1.0.1-SNAPSHOT)
+  push:
+    tags:
+      - 'v*'
+  # Allow manual deployment
+  workflow_dispatch:
+    inputs:
+      deploy_modules:
+        description: 'Modules to deploy (comma-separated: core,audit,features,all)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - core
+          - audit
+          - features
+
+jobs:
+  deploy:
+    name: Deploy to Maven Central
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build and Install Project
+        run: mvn clean install -DskipTests
+
+      - name: Deploy All Modules to Maven Central
+        if: github.event.inputs.deploy_modules == 'all' || github.event.inputs.deploy_modules == ''
+        run: mvn deploy -Pcentral -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Deploy kockpit-core to Maven Central
+        if: github.event.inputs.deploy_modules == 'core'
+        run: mvn deploy -Pcentral -f kockpit-core/pom.xml -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Deploy kockpit-audit to Maven Central
+        if: github.event.inputs.deploy_modules == 'audit'
+        run: mvn deploy -Pcentral -f kockpit-audit/pom.xml -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Deploy kockpit-features to Maven Central
+        if: github.event.inputs.deploy_modules == 'features'
+        run: mvn deploy -Pcentral -f kockpit-features/pom.xml -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
