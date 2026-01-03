@@ -21,12 +21,12 @@ import java.util.List;
 
 @AutoConfiguration
 @Slf4j
-public class OpenSearchAutoConfiguration {
+public class OpensearchAutoConfiguration {
 
     @Bean
     OpensearchRepository opensearchRepository(
             RestHighLevelClient restHighLevelClient,
-            @Value("${kockpit.audit.opensearch.index}") String index
+            @Value("${kockpit.backend.opensearch.index}") String index
     ) {
         log.info(
 """
@@ -58,7 +58,7 @@ public class OpenSearchAutoConfiguration {
     @SneakyThrows
     @Bean
     RestClientBuilder osRestClientBuilder(
-            @Value("${kockpit.audit.opensearch.endpoints}") String endpoints,
+            @Value("${kockpit.backend.opensearch.endpoints}") String endpoints,
             @Autowired(required = false) List<HttpRequestInterceptor> interceptors
     ) {
         HttpHost[] httpHosts = Arrays.stream(endpoints.split(","))

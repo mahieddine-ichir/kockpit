@@ -100,7 +100,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>org.kockpit.sample.SampleApplication</mainClass>
+                    <mainClass>org.kockpit.sample.KockpitSampleApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

@@ -16,12 +16,12 @@ import java.util.List;
 @SpringBootApplication
 @RequiredArgsConstructor
 @Slf4j
-public class AuditStreamApplication implements ApplicationListener<AuditConsumerEvent> {
+public class KockpitStreamApplication implements ApplicationListener<AuditConsumerEvent> {
 
     private final List<AuditConsumer> consumerList;
 
     public static void main(String[] args) {
-        SpringApplication.run(AuditStreamApplication.class, args);
+        SpringApplication.run(KockpitStreamApplication.class, args);
     }
 
     @PostConstruct

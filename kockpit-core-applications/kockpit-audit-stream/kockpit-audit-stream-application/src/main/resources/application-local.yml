@@ -1,5 +1,0 @@
-kockpit:
-  audit.stream.opensearch.index_suffix: audit-data
-logging:
-  level:
-    org.kockpit: DEBUG

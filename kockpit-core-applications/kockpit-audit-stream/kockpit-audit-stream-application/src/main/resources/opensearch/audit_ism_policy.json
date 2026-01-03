@@ -1,20 +1,21 @@
 {
   "policy": {
-    "description": "rollover and delete",
-    "ism_template": {
-      "index_patterns": ["${index_patterns}"],
-      "priority": 100
-    },
+    "description": "Rollover policy based on 30GB size or 1 day age",
     "default_state": "hot",
-    "schema_version": "${version}",
     "states": [
       {
         "name": "hot",
         "actions": [
           {
+            "timeout": "12h",
+            "retry": {
+              "count": 3,
+              "backoff": "exponential",
+              "delay": "1m"
+            },
             "rollover": {
-              "min_index_age": "${rollover_min_index_age}",
-              "min_size": "${rollover_min_size}"
+              "min_size": "30gb",
+              "min_index_age": "1d"
             }
           }
         ],
@@ -31,6 +32,12 @@
         "name": "delete",
         "actions": [
           {
+            "timeout": "1h",
+            "retry": {
+              "count": 3,
+              "backoff": "exponential",
+              "delay": "1m"
+            },
             "delete": {}
           }
         ]

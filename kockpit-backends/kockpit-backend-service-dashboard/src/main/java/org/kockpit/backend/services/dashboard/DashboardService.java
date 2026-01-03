@@ -35,7 +35,7 @@ public class DashboardService {
 
     private final RestClient restClient;
 
-    @Value("${kockpit.audit.opensearch.index}")
+    @Value("${kockpit.backend.opensearch.index}")
     private String index;
 
     @SneakyThrows

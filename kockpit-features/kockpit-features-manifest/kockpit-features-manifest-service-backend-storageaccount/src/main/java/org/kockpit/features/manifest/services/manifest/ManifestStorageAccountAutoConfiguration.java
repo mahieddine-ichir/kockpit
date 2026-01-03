@@ -5,6 +5,7 @@ import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.common.StorageSharedKeyCredential;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -13,11 +14,11 @@ import org.springframework.context.annotation.Bean;
 @Slf4j
 public class ManifestStorageAccountAutoConfiguration {
 
-    @Bean
+    @Bean("manifestBlobServiceClient")
     BlobServiceClient manifestBlobServiceClient(
-            @Value("${kockpit.manifests.azure.storage.endpoint}") String storageEndpoint,
-            @Value("${kockpit.manifests.azure.storage.account}") String accountName,
-            @Value("${kockpit.manifests.azure.storage.key}") String key
+            @Value("${kockpit.backend.manifests.azure.storage.endpoint}") String storageEndpoint,
+            @Value("${kockpit.backend.manifests.azure.storage.account}") String accountName,
+            @Value("${kockpit.backend.manifests.azure.storage.key}") String key
     ) {
         return new BlobServiceClientBuilder()
                 .endpoint(storageEndpoint)
@@ -25,10 +26,10 @@ public class ManifestStorageAccountAutoConfiguration {
                 .buildClient();
     }
 
-    @Bean
+    @Bean("manifestBlobContainerClient")
     BlobContainerClient manifestBlobContainerClient(
-            BlobServiceClient blobServiceClient,
-            @Value("${kockpit.manifests.azure.storage.container}") String containerName
+            @Qualifier("manifestBlobServiceClient") BlobServiceClient blobServiceClient,
+            @Value("${kockpit.backend.manifests.azure.storage.container}") String containerName
     ) {
         log.info(
 """
@@ -40,7 +41,8 @@ public class ManifestStorageAccountAutoConfiguration {
     }
 
     @Bean
-    ManifestStorageAccountRepository manifestStorageAccountRepository(BlobContainerClient blobContainerClient) {
+    ManifestStorageAccountRepository manifestStorageAccountRepository(
+            @Qualifier("manifestBlobContainerClient") BlobContainerClient blobContainerClient) {
         return new ManifestStorageAccountRepository(blobContainerClient);
     }
 }
