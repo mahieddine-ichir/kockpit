@@ -199,6 +199,7 @@
                             <goal>build-info</goal>
                         </goals>
                     </execution>
+                    <!-- OpenAPI generation disabled - uncomment if needed
                     <execution>
                         <id>pre-integration-test</id>
                         <goals>
@@ -217,8 +218,10 @@
                             <goal>stop</goal>
                         </goals>
                     </execution>
+                    -->
                 </executions>
             </plugin>
+            <!-- OpenAPI generation disabled - uncomment if needed
             <plugin>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-maven-plugin</artifactId>
@@ -280,6 +283,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 
