@@ -26,6 +26,7 @@ public class OpensearchV3IndexManager {
         createIndexTemplate(indexPrefix, policyId);
         // create index
         if (!client.indices().exists(new GetIndexRequest(indexName), RequestOptions.DEFAULT)) {
+            log.info("Creating index name: {}", indexName);
 
             CreateIndexRequest request = new CreateIndexRequest(indexName);
             client.indices().create(request, RequestOptions.DEFAULT);
