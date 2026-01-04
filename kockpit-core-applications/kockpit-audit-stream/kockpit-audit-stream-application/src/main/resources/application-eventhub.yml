@@ -4,4 +4,4 @@ spring:
       properties:
         security.protocol: SASL_SSL
         sasl.mechanism: PLAIN
-        sasl.jaas.config: ${SASL_JASS_CONFIG}
+        sasl.jaas.config: ${SASL_JAAS_CONFIG}
