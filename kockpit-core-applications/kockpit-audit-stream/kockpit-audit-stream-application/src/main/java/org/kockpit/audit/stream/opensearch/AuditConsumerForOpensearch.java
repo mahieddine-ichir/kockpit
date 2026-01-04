@@ -105,8 +105,6 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
                     String aliasRead = getAliasRead(indexMetadata.getDomain(), indexSuffix, indexMetadata.getEnv());
 
                     String indexName = "<" + indexPrefix + "-{now/d}-00001>";
-                    log.info("Creating index name: {}", indexName);
-
                     // ensure the index exists (template, policy and aliases)
                     opensearchV3IndexManager.ensureIndexExists(indexName, aliasWrite, aliasRead, indexPrefix, indexMetadata.getTtl());
 
