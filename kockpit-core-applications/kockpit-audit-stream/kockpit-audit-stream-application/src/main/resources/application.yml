@@ -40,6 +40,7 @@ kockpit:
           socket: 30000
 
     # application services
+    ttl_default_in_days: 1
     notification:
       kafka:
-        topic: audits
+        topic: ${NOTIFICATION_TOPIC:audits}
