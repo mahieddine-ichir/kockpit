@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>kockpit-audit-web-starter</artifactId>
-    <description>DEPRECATED -&gt; kockpit-features-audit-module-web</description>
+    <description>DEPRECATED -> kockpit-features-audit-module-web</description>
 
   <dependencies>
       <dependency>

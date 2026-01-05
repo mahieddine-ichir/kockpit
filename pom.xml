@@ -16,8 +16,7 @@
 
 	<scm>
 		<connection>scm:git:https://github.com/mahieddine-ichir/kockpit.git</connection>
-	  <tag>HEAD</tag>
-  </scm>
+	</scm>
 
 	<modules>
 		<module>kockpit-audit</module>
