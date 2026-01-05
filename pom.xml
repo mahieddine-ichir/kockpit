@@ -13,9 +13,36 @@
 	<packaging>pom</packaging>
 	<name>__ Kockpit</name>
 	<description>Kockpit Engineering Platform</description>
+	<url>https://github.com/mahieddine-ichir/kockpit</url>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>mahieddine-ichir</id>
+			<name>Mahieddine Ichir</name>
+			<email>mahieddine.ichir@gmail.com</email>
+			<url>https://github.com/mahieddine-ichir/kockpit</url>
+		</developer>
+		<developer>
+			<id>cyril-joui</id>
+			<name>Cyril Joui</name>
+			<email>cyril@kisstech.fr</email>
+			<url>https://github.com/mahieddine-ichir/kockpit</url>
+		</developer>
+	</developers>
 
 	<scm>
 		<connection>scm:git:https://github.com/mahieddine-ichir/kockpit.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/mahieddine-ichir/kockpit.git</developerConnection>
+		<url>https://github.com/mahieddine-ichir/kockpit</url>
+		<tag>HEAD</tag>
 	</scm>
 
 	<modules>
