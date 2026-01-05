@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kockpit</groupId>
         <artifactId>kockpit-audit</artifactId>
-        <version>1.0.0-beta</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>kockpit-audit-api-impl</artifactId>
 
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-audit-api</artifactId>
-            <version>1.0.0-beta</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
