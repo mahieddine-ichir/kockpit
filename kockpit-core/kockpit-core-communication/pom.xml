@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kockpit</groupId>
         <artifactId>kockpit-core</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-beta</version>
     </parent>
 
     <artifactId>kockpit-core-communication</artifactId>
