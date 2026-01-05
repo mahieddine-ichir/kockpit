@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-samples</artifactId><version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-samples</artifactId><version>1.0.1-beta</version>
     </parent>
 
     <artifactId>kockpit-sample-all</artifactId>
@@ -16,30 +16,30 @@
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-core-communication-polling</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.1-beta</version>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-featureflipping-service</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.1-beta</version>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-heartbeat-service-application</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.1-beta</version>
         </dependency>
         <!-- Audits -->
         <!-- audit web requests -->
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-audit-module-web</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.1-beta</version>
         </dependency>
         <!-- audit http exchanges requests -->
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-audit-module-httpexchange</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.1-beta</version>
         </dependency>
     </dependencies>
 
@@ -51,12 +51,12 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-storageaccount</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>1.0.1-beta</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-notification-kafka</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>1.0.1-beta</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -66,12 +66,12 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-filesystem</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>1.0.1-beta</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-notification-kafka</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>1.0.1-beta</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -81,12 +81,12 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-s3</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>1.0.1-beta</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-notification-kinesis</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>1.0.1-beta</version>
                 </dependency>
             </dependencies>
         </profile>
