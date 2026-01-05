@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-features-audit-notification</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Features Audit Notification</name>
 
     <modules>
         <module>kockpit-audit-notification-kafka</module>

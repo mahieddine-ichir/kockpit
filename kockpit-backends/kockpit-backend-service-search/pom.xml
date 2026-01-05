@@ -8,6 +8,7 @@
     </parent>
     <artifactId>kockpit-backend-service-search</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Backend Service Search</name>
 
     <modules>
         <module>kockpit-backend-service-search-api</module>

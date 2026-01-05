@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-features-audit</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Features Audit</name>
     <modules>
         <module>kockpit-features-audit-module-web</module>
         <module>kockpit-features-audit-module-httpexchange</module>

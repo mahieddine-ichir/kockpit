@@ -8,4 +8,5 @@
 	</parent>
 	<artifactId>kockpit-rules-registry-data</artifactId>
 	<packaging>jar</packaging>
+    <name>Kockpit Rules Registry Data</name>
 </project>

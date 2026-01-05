@@ -9,6 +9,7 @@
 	</parent>
 	<artifactId>kockpit-backends</artifactId>
 	<packaging>pom</packaging>
+    <name>Kockpit Backends</name>
 
 	<modules>
         <module>kockpit-backend-authentication-basic</module>

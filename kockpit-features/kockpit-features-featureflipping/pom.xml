@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-features-featureflipping</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Features Featureflipping</name>
 
     <modules>
         <module>kockpit-features-featureflipping-service</module>

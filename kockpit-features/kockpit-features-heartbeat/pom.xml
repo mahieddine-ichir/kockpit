@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-features-heartbeat</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Features Heartbeat</name>
     <modules>
         <module>kockpit-features-heartbeat-service-backend</module>
         <module>kockpit-features-heartbeat-service</module>

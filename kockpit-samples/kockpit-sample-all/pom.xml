@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-samples</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-samples</artifactId><version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-sample-all</artifactId>
+    <name>Kockpit Sample All</name>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

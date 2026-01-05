@@ -9,6 +9,7 @@
 	</parent>
 	<artifactId>kockpit-rules-engine-parent</artifactId>
 	<packaging>pom</packaging>
+    <name>Kockpit Rules Engine Parent</name>
 
 	<properties>
 		<maven.compiler.source>21</maven.compiler.source>

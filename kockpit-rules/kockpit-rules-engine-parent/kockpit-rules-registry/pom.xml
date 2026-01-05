@@ -8,6 +8,7 @@
 	</parent>
 	<artifactId>kockpit-rules-registry</artifactId>
 	<packaging>jar</packaging>
+    <name>Kockpit Rules Registry</name>
 
 	<dependencies>
 		<dependency>

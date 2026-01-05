@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-obfuscation</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Obfuscation</name>
 
     <modules>
         <module>kockpit-obfuscation-api</module>

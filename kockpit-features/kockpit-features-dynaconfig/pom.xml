@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-features-dynaconfig</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Features Dynaconfig</name>
 
     <modules>
         <module>kockpit-features-dynaconfig-service</module>

@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-features-manifest</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Features Manifest</name>
 
     <modules>
         <module>kockpit-features-manifest-service</module>

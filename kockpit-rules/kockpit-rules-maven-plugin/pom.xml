@@ -9,6 +9,7 @@
     </parent>
     <artifactId>kockpit-rules-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
+    <name>Kockpit Rules Maven Plugin</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
