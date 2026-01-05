@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-audit-stream</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Audit Stream</name>
     <modules>
         <module>kockpit-audit-stream-api</module>
         <!-- starters -->

@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-backend-service-search</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-backend-service-search</artifactId><version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>kockpit-backend-service-search-opensearch</artifactId>
+    <name>Kockpit Backend Service Search Opensearch</name>
     <properties>
         <opensearch.version>3.3.2</opensearch.version>
     </properties>

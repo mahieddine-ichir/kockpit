@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-audit-rules</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Audit Rules</name>
     <modules>
         <module>kockpit-audit-rules-api</module>
         <module>kockpit-audit-rules-impl</module>

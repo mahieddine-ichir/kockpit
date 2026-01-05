@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>kockpit-core-applications</artifactId>
-    <name>__ Core Applications</name>
+    <name>Kockpit Core Applications</name>
     <packaging>pom</packaging>
 
     <modules>

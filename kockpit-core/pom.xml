@@ -7,7 +7,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>kockpit-core</artifactId>
-    <name>__ Core</name>
+    <name>Kockpit Core</name>
     <modules>
         <module>kockpit-core-sdk</module>
         <module>kockpit-core-communication</module>

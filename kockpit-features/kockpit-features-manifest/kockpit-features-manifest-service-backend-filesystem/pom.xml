@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-features-manifest</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-features-manifest</artifactId><version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-features-manifest-service-backend-filesystem</artifactId>
+    <name>Kockpit Features Manifest Service Backend Filesystem</name>
 
     <dependencies>
         <dependency>

@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>kockpit-rules</artifactId>
 	<packaging>pom</packaging>
-	<name>__ Kockpit Rules engine</name>
+	<name>Kockpit Rules</name>
 
 	<modules>
 		<module>kockpit-rules-maven-plugin</module>

@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-core-applications</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-core-applications</artifactId><version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>kockpit-backend-application</artifactId>
+    <name>Kockpit Backend Application</name>
     <properties>
         <java.version>17</java.version>
     </properties>

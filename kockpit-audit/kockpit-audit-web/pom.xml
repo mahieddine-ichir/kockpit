@@ -9,6 +9,7 @@
 
     <artifactId>kockpit-audit-web</artifactId>
     <packaging>pom</packaging>
+    <name>Kockpit Audit Web</name>
     <description>DEPRECATED -&gt; kockpit-features-audit</description>
 
     <modules>

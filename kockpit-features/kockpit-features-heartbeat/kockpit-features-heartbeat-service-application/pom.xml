@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-features-heartbeat</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-features-heartbeat</artifactId><version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-features-heartbeat-service-application</artifactId>
+    <name>Kockpit Features Heartbeat Service Application</name>
 
     <dependencies>
         <dependency>

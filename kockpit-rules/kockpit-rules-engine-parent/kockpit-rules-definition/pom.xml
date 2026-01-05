@@ -8,6 +8,7 @@
 	</parent>
 	<artifactId>kockpit-rules-definition</artifactId>
 	<packaging>jar</packaging>
+    <name>Kockpit Rules Definition</name>
 
 	<dependencies>
 		<dependency>

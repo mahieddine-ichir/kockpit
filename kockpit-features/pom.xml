@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>kockpit-features</artifactId>
-    <name>__ Features</name>
+    <name>Kockpit Features</name>
     <packaging>pom</packaging>
     <modules>
         <module>kockpit-features-featureflipping</module>
