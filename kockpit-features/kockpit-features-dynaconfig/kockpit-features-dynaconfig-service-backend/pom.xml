@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kockpit</groupId>
         <artifactId>kockpit-features-dynaconfig</artifactId>
-        <version>1.0.0-beta</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-features-dynaconfig-service-backend</artifactId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-dynaconfig-service</artifactId>
-            <version>1.0.0-beta</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
