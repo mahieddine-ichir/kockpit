@@ -11,7 +11,7 @@ public class FilesystemAutoConfiguration {
 
     @Bean
     FilesystemRepository filesystemRepository(
-            @Value("${kockpit.manifests.filesystem.path}") String fileRepositoryPath
+            @Value("${kockpit.backend.manifests.filesystem.path}") String fileRepositoryPath
     ) {
         log.info(
 """

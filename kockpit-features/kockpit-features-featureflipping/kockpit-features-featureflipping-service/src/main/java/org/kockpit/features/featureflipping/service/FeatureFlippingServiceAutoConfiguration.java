@@ -20,8 +20,8 @@ public class FeatureFlippingServiceAutoConfiguration {
     @Bean
     FeatureFlippingServiceDefinition featureFlippingServiceDefinition(
             SdkApplicationProperties sdkApplicationProperties,
-            @Value("${kockpit.sdk.feature-flipping.audience:#{null}}") String audience,
-            @Value("${kockpit.sdk.feature-flipping.polling.enabled:false}") boolean pollingEnabled
+            @Value("${kockpit.feature-flipping.audience:#{null}}") String audience,
+            @Value("${kockpit.feature-flipping.polling.enabled:false}") boolean pollingEnabled
 
     ) {
         if (Objects.isNull(audience)) {

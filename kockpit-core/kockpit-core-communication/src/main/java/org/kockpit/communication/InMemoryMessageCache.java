@@ -15,7 +15,6 @@ public class InMemoryMessageCache implements MessageCache {
 
     @Override
     public void add(Message message) {
-        log.trace("adding message {}", message);
         String key = message.getType();
         cache.putIfAbsent(key, new ConcurrentHashMap<>());
         cache.get(key).put(message.getId(), message);

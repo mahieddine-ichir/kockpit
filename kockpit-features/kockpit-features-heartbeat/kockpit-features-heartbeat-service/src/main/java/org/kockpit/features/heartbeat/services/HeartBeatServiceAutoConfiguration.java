@@ -9,7 +9,7 @@ public class HeartBeatServiceAutoConfiguration {
 
     @Bean
     HeartBeatServiceDefinition heartBeatServiceDefinition(
-        @Value("${kockpit.sdk.heartbeat.polling.enabled:true}") boolean pollingEnabled
+        @Value("${kockpit.heartbeat.polling.enabled:true}") boolean pollingEnabled
     ) {
         return new HeartBeatServiceDefinition(pollingEnabled);
     }

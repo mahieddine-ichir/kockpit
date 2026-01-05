@@ -82,13 +82,13 @@ services:
     image: ghcr.io/mahieddine-ichir/kockpit/kockpit-audit-stream-application-kafka:latest
     container_name: kockpit-audit-stream-application
     ports:
-      - "9080:9080"
+      - "8081:8081"
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
       - OPENSEARCH_ENDPOINTS=http://opensearch:9200
-      #- spring.profiles.include=kafka,eventhub -> on azure
-      - spring.profiles.include=kafka
-      - kockpit.audit.stream.kafka.topics=audits
+      - KOCKPIT_AUDIT_STREAM_KAFKA_TOPICS=audits
+      - KOCKPIT_AUDIT_NOTIFICATION_KAFKA_TOPIC=audits
+      #- SPRING_PROFILES_INCLUDE=eventhub -> on azure
     depends_on:
       - kafka
       - opensearch
@@ -97,7 +97,7 @@ services:
     image: ghcr.io/mahieddine-ichir/kockpit/kockpit-sample-all-azure:latest
     container_name: kockpit-sample-all
     ports:
-      - "8081:8081"
+      - "8082:8082"
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KOCKPIT_SDK_DOMAIN=kockpit

@@ -7,6 +7,8 @@ import org.kockpit.core.sdk.ServiceDefinition;
 @RequiredArgsConstructor
 public class DynaConfigServiceDefinition implements ServiceDefinition {
 
+    public static final String DYNA_CONFIG = "dyna-config";
+
     @Getter
     private final String audience;
 
@@ -15,7 +17,7 @@ public class DynaConfigServiceDefinition implements ServiceDefinition {
 
     @Override
     public String name() {
-        return "DynaConfig";
+        return DYNA_CONFIG;
     }
 
     @Override

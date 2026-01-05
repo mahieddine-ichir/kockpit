@@ -16,8 +16,15 @@ public class FeatureFlippingApi {
 
     private final FeatureFlippingEvaluatorService featureFlippingEvaluatorService;
 
-    @GetMapping("{key}")
+    private final FeatureFlagService featureFlagService;
+
+    @GetMapping("keys/{key}")
     Map<String, Object> evaluate(@PathVariable String key) {
         return Map.of(key, featureFlippingEvaluatorService.evaluate(key));
+    }
+
+    @GetMapping("keys")
+    Map<String, Object> keys() {
+        return Map.of("compression.enabled", featureFlagService.isCompressionEnabled());
     }
 }
