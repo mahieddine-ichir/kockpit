@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kockpit</groupId>
         <artifactId>kockpit-rules</artifactId>
-        <version>1.0.0-beta</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>kockpit-rules-app-sample</artifactId>
 
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-rules-starter</artifactId>
-            <version>1.0.0-beta</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,7 +34,7 @@
             <plugin>
                 <groupId>org.kockpit</groupId>
                 <artifactId>kockpit-rules-maven-plugin</artifactId>
-                <version>1.0.0-beta</version>
+                <version>1.0.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <goals>
