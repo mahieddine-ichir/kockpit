@@ -20,8 +20,8 @@ public class DynaConfigServiceAutoConfiguration {
     @Bean
     DynaConfigServiceDefinition dynaConfigServiceDefinition(
             SdkApplicationProperties sdkApplicationProperties,
-            @Value("${kockpit.sdk.dyna-config.audience:#{null}}") String audience,
-            @Value("${kockpit.sdk.dyna-config.polling.enabled:false}") boolean pollingEnabled
+            @Value("${kockpit.dyna-config.audience:#{null}}") String audience,
+            @Value("${kockpit.dyna-config.polling.enabled:false}") boolean pollingEnabled
 
     ) {
         if (Objects.isNull(audience)) {

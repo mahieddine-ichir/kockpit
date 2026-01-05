@@ -15,7 +15,6 @@
     <modules>
         <module>kockpit-features-dynaconfig-service</module>
         <module>kockpit-features-dynaconfig-service-backend</module>
-        <module>kockpit-features-dynaconfig-service-application</module>
     </modules>
 
 </project>

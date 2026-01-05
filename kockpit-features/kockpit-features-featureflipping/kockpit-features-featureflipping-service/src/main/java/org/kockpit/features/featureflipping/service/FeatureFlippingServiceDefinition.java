@@ -7,6 +7,8 @@ import org.kockpit.core.sdk.ServiceDefinition;
 @RequiredArgsConstructor
 public class FeatureFlippingServiceDefinition implements ServiceDefinition {
 
+    public static final String FEATURE_FLIPPING = "feature-flipping";
+
     @Getter
     private final String audience;
 
@@ -15,7 +17,7 @@ public class FeatureFlippingServiceDefinition implements ServiceDefinition {
 
     @Override
     public String name() {
-        return "FeatureFlipping";
+        return FEATURE_FLIPPING;
     }
 
     @Override

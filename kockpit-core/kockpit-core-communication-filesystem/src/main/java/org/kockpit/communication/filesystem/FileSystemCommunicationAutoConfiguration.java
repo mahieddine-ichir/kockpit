@@ -13,14 +13,14 @@ public class FileSystemCommunicationAutoConfiguration {
 
     @Bean
     Publisher fileSystemPublisher(
-            @Value("${kockpit.sdk.filesystem.local_directory}") String localDirectory
+            @Value("${kockpit.communication.filesystem.path}") String localDirectory
     ) {
         return new FileSystemPublisher(localDirectory, objectMapper());
     }
 
     @Bean
     Consumer fileSystemConsumer(
-            @Value("${kockpit.sdk.filesystem.local_directory}") String localDirectory
+            @Value("${kockpit.communication.filesystem.path}") String localDirectory
     ) {
         return new FileSystemConsumer(localDirectory, objectMapper());
     }

@@ -24,7 +24,7 @@ public class MessagePollingAutoConfiguration {
             Consumer consumer, MessageCache messageCache,
             TaskScheduler taskScheduler,
             SdkApplicationProperties applicationProperties,
-            @Value("${kockpit.sdk.poller.scheduling:PT10S}") String clientScheduling,
+            @Value("${kockpit.communication.poller.scheduling:PT10M}") String clientScheduling,
             List<ServiceDefinition> serviceDefinitions,
             List<OnMessageListener> onMessageListeners
     ) {

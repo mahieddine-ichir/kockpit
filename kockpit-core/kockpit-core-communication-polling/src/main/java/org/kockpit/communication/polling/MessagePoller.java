@@ -28,11 +28,8 @@ public class MessagePoller {
 
     void start(String domain, String env, String appId, Duration triggerPeriod) {
         log.info("Start {} for domain {} and env {}, scheduler at periodic {}", serviceDefinition.name(), domain, env, triggerPeriod);
-        taskScheduler.schedule(() -> {
-            log.trace("synchronize {}, for domain {}, env {} and audience {}", serviceDefinition.name(), domain, env, serviceDefinition.audience());
-            consumer.poll(domain, env, appId, serviceDefinition.name()).stream()
+        taskScheduler.schedule(() -> consumer.poll(domain, env, appId, serviceDefinition.name()).stream()
                     .peek(message -> onMessageListeners.forEach(onMessageListener -> onMessageListener.onMessage(message)))
-                    .forEach(messageCache::add);
-        }, new PeriodicTrigger(triggerPeriod));
+                .forEach(messageCache::add), new PeriodicTrigger(triggerPeriod));
     }
 }

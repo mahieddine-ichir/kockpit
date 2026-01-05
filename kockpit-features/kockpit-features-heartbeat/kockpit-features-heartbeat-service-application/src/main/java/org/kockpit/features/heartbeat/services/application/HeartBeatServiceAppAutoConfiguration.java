@@ -24,15 +24,16 @@ import static java.util.Objects.isNull;
 @EnableConfigurationProperties(SdkApplicationProperties.class)
 public class HeartBeatServiceAppAutoConfiguration {
 
-    @ConditionalOnProperty(value = "kockpit.sdk.heartbeat.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "kockpit.heartbeat.enabled",
+            havingValue = "true", matchIfMissing = true)
     @Bean
     InitializingBean heartBeatPublisher(
             Publisher publisher,
             TaskScheduler taskScheduler,
             SdkApplicationProperties applicationProperties,
             HeartBeatServiceDefinition serviceDefinition,
-            @Value("${kockpit.sdk.heartbeat.scheduling:PT10S}") String clientScheduling,
-            @Value("${kockpit.sdk.hostname:#{null}}") String hostname
+            @Value("${kockpit.heartbeat.scheduling:PT1M}") String clientScheduling,
+            @Value("${kockpit.hostname:#{null}}") String hostname
     ) {
         String instanceId = hostname;
         if (isNull(instanceId)) {

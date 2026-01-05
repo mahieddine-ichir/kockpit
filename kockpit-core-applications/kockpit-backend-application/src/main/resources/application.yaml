@@ -47,6 +47,8 @@ kockpit:
           endpoint: https://${kockpit.backend.manifests.azure.storage.account}.blob.core.windows.net
           key: ${MANIFESTS_STORAGE_KEY}
           container: ${MANIFESTS_STORAGE_CONTAINER:manifests}
+      filesystem:
+        path: ${FS_MANIFESTS_PATH}
 
   # comm layer
   communication:
@@ -58,6 +60,7 @@ kockpit:
         container: ${STORAGE_CONTAINER:data}
     aws:
     filesystem:
+      path: ${FS_STORAGE_PATH}
 
   # application services
   audit:

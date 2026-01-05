@@ -19,6 +19,11 @@ kockpit:
         endpoint: https://${kockpit.communication.azure.storage.account}.blob.core.windows.net
         key: ${STORAGE_KEY}
         container: ${STORAGE_CONTAINER:data}
+    filesystem:
+      path: ${FS_STORAGE_PATH}
+
+    poller:
+      scheduling: PT30S
 
   audit:
     notification:
@@ -30,13 +35,12 @@ kockpit:
       scheduling: PT10S
     polling:
       enabled: true
+  dyna-config:
+
   heartbeat:
     enabled: true
     polling:
       enabled: false
-
-  filesystem:
-    local_directory: ${user.home}/IdeaProjects/kockpit/data/
 
 
 
