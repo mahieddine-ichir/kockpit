@@ -1,0 +1,6 @@
+
+aws:
+  service:
+    name: es
+  region: eu-west-1
+

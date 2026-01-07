@@ -1,0 +1,19 @@
+server.port: 8080
+spring:
+  application.name: mcp-server
+  main.web-application-type: servlet
+  main.banner-mode: off
+  ai:
+    mcp:
+      server:
+        name: mcp-server
+        version: 1.0.0
+        type: sync
+        stdio: false
+
+logging.pattern.console:
+
+opensearch:
+    endpoints: localhost
+    search:
+      index_pattern: %s-auditdata-%s-read
