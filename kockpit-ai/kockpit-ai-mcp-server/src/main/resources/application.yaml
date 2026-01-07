@@ -16,4 +16,4 @@ logging.pattern.console:
 opensearch:
     endpoints: localhost
     search:
-      index_pattern: %s-auditdata-%s-read
+      index_pattern: '%s-auditdata-%s-read'
