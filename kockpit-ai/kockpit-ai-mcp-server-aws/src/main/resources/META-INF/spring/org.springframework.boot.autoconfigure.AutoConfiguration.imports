@@ -1,1 +1,1 @@
-org.kockpit.ai.mcp.server.aws.AwsRestClientInterceptorConfig
+org.kockpit.ai.mcp.server.aws.AwsSigningRestConfiguration
