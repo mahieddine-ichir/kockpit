@@ -3,14 +3,15 @@ package org.kockpit.ai.mcp.server.aws;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.EntityDetails;
 import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
 import org.apache.hc.core5.http.message.BasicHeader;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpHost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.hc.core5.net.URIBuilder;
 import software.amazon.awssdk.http.SdkHttpFullRequest;
 import software.amazon.awssdk.http.SdkHttpMethod;
 
@@ -76,17 +77,26 @@ public class AwsRequestSigningApacheInterceptor implements org.apache.hc.core5.h
     public void process(org.apache.hc.core5.http.HttpRequest httpRequest, EntityDetails entityDetails, org.apache.hc.core5.http.protocol.HttpContext httpContext) throws org.apache.hc.core5.http.HttpException, IOException {
         URI requestUri = buildUri(httpContext, httpRequest.getUri());
         SdkHttpFullRequest.Builder requestBuilder = SdkHttpFullRequest.builder().method(SdkHttpMethod.fromValue(httpRequest.getMethod())).uri(requestUri);
-        if (httpRequest instanceof HttpEntityEnclosingRequest httpEntityEnclosingRequest) {
-            if (httpEntityEnclosingRequest.getEntity() != null) {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                httpEntityEnclosingRequest.getEntity().writeTo(outputStream);
-                if (!httpEntityEnclosingRequest.getEntity().isRepeatable()) {
-                    BasicHttpEntity entity = new BasicHttpEntity();
-                    entity.setContent(new ByteArrayInputStream(outputStream.toByteArray()));
-                    httpEntityEnclosingRequest.setEntity(new BufferedHttpEntity(entity));
-                }
 
-                requestBuilder.contentStreamProvider(() -> new ByteArrayInputStream(outputStream.toByteArray()));
+        // HTTP Core 5: Use ClassicHttpRequest to access request entity
+        if (httpRequest instanceof ClassicHttpRequest classicHttpRequest) {
+            HttpEntity entity = classicHttpRequest.getEntity();
+            if (entity != null) {
+                // Read entity content into byte array
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                entity.writeTo(outputStream);
+                byte[] entityBytes = outputStream.toByteArray();
+
+                // Parse content type from entity
+                ContentType contentType = entity.getContentType() != null
+                    ? ContentType.parse(entity.getContentType())
+                    : ContentType.APPLICATION_JSON;
+
+                // Replace entity with repeatable ByteArrayEntity to allow re-reading
+                classicHttpRequest.setEntity(new ByteArrayEntity(entityBytes, contentType));
+
+                // Provide content stream to AWS SDK for signature calculation
+                requestBuilder.contentStreamProvider(() -> new ByteArrayInputStream(entityBytes));
             }
         }
 
