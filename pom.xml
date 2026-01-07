@@ -53,7 +53,8 @@
         <module>kockpit-core</module>
         <module>kockpit-core-applications</module>
         <module>kockpit-features</module>
-    </modules>
+		<module>kockpit-ai</module>
+	</modules>
 
 	<profiles>
 		<profile>
