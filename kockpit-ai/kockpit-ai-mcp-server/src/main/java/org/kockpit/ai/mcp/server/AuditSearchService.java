@@ -123,25 +123,31 @@ public class AuditSearchService {
     }
 
     private AuditReportPage runRequest(Integer from, Integer size, SearchSourceBuilder searchSourceBuilder, String index) {
-        SearchRequest searchRequest =
-                new SearchRequest()
-                        .source(searchSourceBuilder)
-                        .indices(index);
+        try {
+            SearchRequest searchRequest =
+                    new SearchRequest()
+                            .source(searchSourceBuilder)
+                            .indices(index);
 
-        SearchResponse searchResponse = client.search(searchRequest);
-        List<AuditReport> items = Arrays.stream(searchResponse.getHits().getHits())
-                .map(AuditReportHelper::convertForViewList).toList();
+            SearchResponse searchResponse = client.search(searchRequest);
+            List<AuditReport> items = Arrays.stream(searchResponse.getHits().getHits())
+                    .map(AuditReportHelper::convertForViewList).toList();
 
-        return AuditReportPage.builder()
-                .items(items)
-                .totalSize(Optional.ofNullable(searchResponse.getHits())
-                        .map(SearchHits::getTotalHits)
-                        .map(TotalHits::value)
-                        .orElse(0L)
-                )
-                .from(from)
-                .size(size)
-                .build();
+            return AuditReportPage.builder()
+                    .items(items)
+                    .totalSize(Optional.ofNullable(searchResponse.getHits())
+                            .map(SearchHits::getTotalHits)
+                            .map(TotalHits::value)
+                            .orElse(0L)
+                    )
+                    .from(from)
+                    .size(size)
+                    .build();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            return AuditReportPage.builder().build();
+        }
     }
 
     private IndexKeyValuesForNested resolveIndexKeyValuesPath(String indexVersion) {
