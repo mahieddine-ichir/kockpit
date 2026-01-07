@@ -41,9 +41,6 @@ public class AuditSearchService {
     @Value("${opensearch.env:dev}")
     private String defaultEnv;
 
-    @Value("${opensearch.search.index_pattern}")
-    private String indexPattern;
-
     @Value("${opensearch.search.index_version:wcp}")
     private String indexVersion;
 
@@ -63,7 +60,7 @@ public class AuditSearchService {
         from = isNull(from) ? 0 : max(from, 0);
         size = isNull(size) ? 25 : min(size, 50);
 
-        String index = indexPattern.formatted(
+        String index = "%s-auditdata-%s-read".formatted(
                 nonNull(domain) ? domain : "*",
                 nonNull(env) ? env : defaultEnv
         );
