@@ -137,7 +137,7 @@ public class AuditSearchService {
                     .items(items)
                     .totalSize(Optional.ofNullable(searchResponse.getHits())
                             .map(SearchHits::getTotalHits)
-                            .map(TotalHits::value)
+                            .map(totalHits -> totalHits.value)
                             .orElse(0L)
                     )
                     .from(from)
@@ -151,6 +151,7 @@ public class AuditSearchService {
     }
 
     private IndexKeyValuesForNested resolveIndexKeyValuesPath(String indexVersion) {
+
         if (indexVersion.equals("wcp")) {
             return new IndexKeyValuesForNested(
                     "indexedExtensions.indexedKeyValues",

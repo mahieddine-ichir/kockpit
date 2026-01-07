@@ -1,8 +1,8 @@
 package org.kockpit.ai.mcp.server;
 
 import lombok.SneakyThrows;
-import org.apache.hc.core5.http.HttpHost;
-import org.apache.hc.core5.http.HttpRequestInterceptor;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequestInterceptor;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestClientBuilder;
 import org.opensearch.client.RestHighLevelClient;
@@ -25,17 +25,29 @@ class RestClientConfig {
     System.out.printf("""
       Opensearch endpoints: %s
     %n""", endpoints);
+    System.out.println("RestClientConfig - Number of HttpRequestInterceptors: " + (requestInterceptors != null ? requestInterceptors.size() : "null"));
+
     HttpHost[] hosts = Stream.of(endpoints.split(","))
             .map(String::trim)
             .map(this::create)
             .toArray(HttpHost[]::new);
 
     RestClientBuilder restClientBuilder = RestClient.builder(hosts);
+
+    // Configure HTTP client with interceptors for AWS signing
     if (!CollectionUtils.isEmpty(requestInterceptors)) {
-      requestInterceptors.forEach(httpRequestInterceptor -> restClientBuilder.setHttpClientConfigCallback(httpClientBuilder ->
-              httpClientBuilder.addRequestInterceptorLast(httpRequestInterceptor))
-      );
+      System.out.println("RestClientConfig - Registering " + requestInterceptors.size() + " interceptors");
+      restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> {
+        for (HttpRequestInterceptor interceptor : requestInterceptors) {
+          System.out.println("RestClientConfig - Adding interceptor: " + interceptor.getClass().getName());
+          httpClientBuilder.addInterceptorLast(interceptor);
+        }
+        return httpClientBuilder;
+      });
+    } else {
+      System.out.println("RestClientConfig - No interceptors to register");
     }
+
     return new RestHighLevelClient(restClientBuilder);
   }
 
