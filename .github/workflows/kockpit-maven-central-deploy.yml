@@ -1,10 +1,10 @@
 name: Deploy libs on maven central
 
 on:
-  # Only deploy on release tags (e.g., v1.0.0, v1.0.1-SNAPSHOT)
+  # Only deploy on release tags (e.g., 1.0.0, 1.0.1)
   push:
     tags:
-      - 'v*'
+      - '*'
   # Allow manual deployment
   workflow_dispatch:
     inputs:
@@ -18,6 +18,7 @@ on:
           - core
           - audit
           - features
+          - rules
 
 jobs:
   deploy:
@@ -83,6 +84,14 @@ jobs:
       - name: Deploy kockpit-features to Maven Central
         if: github.event.inputs.deploy_modules == 'features'
         run: mvn deploy -Pcentral -f kockpit-features/pom.xml -DskipTests -DskipITs
+        env:
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
+
+      - name: Deploy kockpit-rules to Maven Central
+        if: github.event.inputs.deploy_modules == 'rules'
+        run: mvn deploy -Pcentral -f kockpit-rules/pom.xml -DskipTests -DskipITs
         env:
           MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
