@@ -22,6 +22,9 @@ class RestClientConfig {
           @Value("${opensearch.endpoints}") String endpoints,
           List<HttpRequestInterceptor> requestInterceptors
   ) {
+    System.out.printf("""
+      Opensearch endpoints: %s
+    %n""", endpoints);
     HttpHost[] hosts = Stream.of(endpoints.split(","))
             .map(String::trim)
             .map(this::create)
