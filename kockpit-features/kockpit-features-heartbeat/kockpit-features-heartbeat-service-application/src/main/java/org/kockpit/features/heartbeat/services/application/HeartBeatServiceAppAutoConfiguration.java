@@ -22,10 +22,12 @@ import static java.util.Objects.isNull;
 @AutoConfiguration
 @EnableScheduling
 @EnableConfigurationProperties(SdkApplicationProperties.class)
+@ConditionalOnProperty(
+        value = "kockpit.heartbeat.enabled",
+        havingValue = "true",
+        matchIfMissing = true)
 public class HeartBeatServiceAppAutoConfiguration {
 
-    @ConditionalOnProperty(value = "kockpit.heartbeat.enabled",
-            havingValue = "true", matchIfMissing = true)
     @Bean
     InitializingBean heartBeatPublisher(
             Publisher publisher,
