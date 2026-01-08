@@ -53,6 +53,12 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Verify GPG Setup
+        run: |
+          echo "Checking GPG installation and keys..."
+          gpg --version
+          gpg --list-secret-keys --keyid-format=long || echo "No GPG keys found"
+
       - name: Build and Install Project
         run: mvn clean install -DskipTests -DskipITs
 
