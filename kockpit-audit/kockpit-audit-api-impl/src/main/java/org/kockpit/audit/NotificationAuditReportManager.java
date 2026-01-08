@@ -1,6 +1,7 @@
 package org.kockpit.audit;
 
 import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditReport;
@@ -11,22 +12,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
+@RequiredArgsConstructor
 public class NotificationAuditReportManager {
+
   private final boolean asyncEnableFlag;
   private final boolean blockIfFullBuffer;
   private final boolean silentErrorProcessing;
   private final AuditReportsQueueHandler auditReportsQueueHandler;
-
-  public NotificationAuditReportManager(
-      List<AuditReportNotificationService> auditReportNotificationServices,
-      AuditPostProcessor auditPostProcessor,
-      boolean asyncEnableFlag,
-      int bufferSize, int bufferThreshold, int partitionSize, boolean blockIfFullBuffer, boolean silentErrorProcessing) {
-    this.asyncEnableFlag = asyncEnableFlag;
-    this.blockIfFullBuffer = blockIfFullBuffer;
-    this.silentErrorProcessing = silentErrorProcessing;
-    this.auditReportsQueueHandler = new AuditReportsQueueHandler(auditPostProcessor, auditReportNotificationServices, partitionSize, bufferSize, bufferThreshold);
-  }
 
   @SneakyThrows
   public void addAuditReport(AuditReport auditReport) {

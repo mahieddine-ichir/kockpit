@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.kockpit.audit.api.AuditReportNotificationService;
 import org.kockpit.audit.api.CompressionService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@ConditionalOnProperty(
+        value = "kockpit.audit.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 @Slf4j
 public class KafkaAuditServiceAutoConfiguration {
 

@@ -3,7 +3,9 @@ package org.kockpit.audit;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -18,6 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Slf4j
+@RequiredArgsConstructor
 class AuditReportsQueueHandler {
 
     private final AuditPostProcessor auditPostProcessor;
@@ -26,24 +29,20 @@ class AuditReportsQueueHandler {
 
     private final int partitionSize;
 
-    private final LinkedBlockingQueue<AuditReport> auditReportsBlockingQueue;
-
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule());
+    private final int bufferSize;
 
     private final int bufferFreeThreshold;
 
     private final Executor executor = Executors.newFixedThreadPool(1);
 
-    public AuditReportsQueueHandler(AuditPostProcessor auditPostProcessor,
-                                    List<AuditReportNotificationService> auditReportNotificationServices, int partitionSize,
-                                    int bufferSize, int bufferFreeThreshold
-    ) {
-        this.auditPostProcessor = auditPostProcessor;
-        this.auditReportNotificationServices = auditReportNotificationServices;
-        this.partitionSize = partitionSize;
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
+
+    private LinkedBlockingQueue<AuditReport> auditReportsBlockingQueue;
+
+    @PostConstruct
+    void init() {
         this.auditReportsBlockingQueue = new LinkedBlockingQueue<>(bufferSize);
-        this.bufferFreeThreshold = bufferFreeThreshold;
     }
 
     void doProcess() {

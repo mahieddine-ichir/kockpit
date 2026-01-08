@@ -50,24 +50,29 @@ class AuditAutoConfiguration {
 
   @Bean
   public NotificationAuditReportManager notificationAuditReportManager(
-      AuditPostProcessor auditPostProcessor,
       List<AuditReportNotificationService> auditReportNotificationServices,
       @Value("${kockpit.audit.notification.async:true}") boolean async,
-      @Value("${kockpit.audit.notification.buffer.size:1000}") int bufferSize,
-      @Value("${kockpit.audit.notification.buffer.threshold:300}") int bufferThreshold,
-      @Value("${kockpit.audit.notification.buffer.partition-size:10}") int partitionSize,
       @Value("${kockpit.audit.notification.buffer.block:false}") boolean blockIfFullBuffer,
-      @Value("${kockpit.audit.notification.silent-error:true}") boolean silentErrorProcessing
+      @Value("${kockpit.audit.notification.silent-error:true}") boolean silentErrorProcessing,
+      AuditReportsQueueHandler auditReportsQueueHandler
   ) {
     if (auditReportNotificationServices.isEmpty()) {
       throw new IllegalArgumentException(
           "No AuditReportNotificationService has been configured. "
               + "Please add one to the application context.");
     }
-    return new NotificationAuditReportManager(
-        auditReportNotificationServices, auditPostProcessor,
-        async, bufferSize, bufferThreshold, partitionSize, blockIfFullBuffer, silentErrorProcessing
-    );
+    return new NotificationAuditReportManager(async, blockIfFullBuffer, silentErrorProcessing, auditReportsQueueHandler);
+  }
+
+  @Bean
+  AuditReportsQueueHandler auditReportsQueueHandler(
+          AuditPostProcessor auditPostProcessor,
+          List<AuditReportNotificationService> auditReportNotificationServices,
+          @Value("${kockpit.audit.notification.buffer.size:1000}") int bufferSize,
+          @Value("${kockpit.audit.notification.buffer.threshold:300}") int bufferThreshold,
+          @Value("${kockpit.audit.notification.buffer.partition-size:10}") int partitionSize
+  ) {
+    return new AuditReportsQueueHandler(auditPostProcessor, auditReportNotificationServices, partitionSize, bufferSize, bufferThreshold);
   }
 
   @Bean
