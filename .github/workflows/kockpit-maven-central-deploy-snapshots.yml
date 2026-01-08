@@ -1,0 +1,66 @@
+name: Deploy snapshots on maven central
+
+on:
+  push:
+    branches:
+      - dev
+  # Allow manual deployment
+  workflow_dispatch:
+    inputs:
+      deploy_modules:
+        description: 'Modules to deploy (comma-separated: core,audit,features,all)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - core
+          - audit
+          - features
+          - rules
+
+jobs:
+  deploy:
+    name: Deploy snapshots to Maven Central
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build and Install Project
+        run: mvn clean install -DskipTests -DskipITs
+
+      - name: Deploy kockpit-features to Maven Central
+        if: github.event.inputs.deploy_modules == 'features'
+        run: mvn deploy -Pcentral -f kockpit-features/pom.xml -DskipTests -DskipITs
+        env:
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
+
