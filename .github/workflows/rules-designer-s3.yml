@@ -98,7 +98,7 @@ jobs:
             --include "*.html"
 
       - name: Invalidate CloudFront Distribution (Optional)
-        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        if: secrets.CLOUDFRONT_DISTRIBUTION_ID != ''
         env:
           CLOUDFRONT_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
         run: |
