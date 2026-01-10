@@ -1,0 +1,125 @@
+name: Deploy Rules Designer to S3
+
+on:
+  # Trigger on push to deployment branch
+  push:
+    branches:
+      - deploy/rules-designer
+    paths:
+      - 'kockpit-rules/kockpit-rules-designer/**'
+      - '.github/workflows/rules-designer-s3.yml'
+
+  # Allow manual deployment
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      s3_bucket:
+        description: 'S3 bucket name (optional override)'
+        required: false
+        type: string
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy to S3
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write  # Required for AWS OIDC authentication
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: kockpit-rules/kockpit-rules-designer/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: kockpit-rules/kockpit-rules-designer
+        run: npm ci
+
+#      - name: Lint Code
+#        working-directory: kockpit-rules/kockpit-rules-designer
+#        run: npm run lint
+#        continue-on-error: true  # Don't fail deployment on lint errors
+
+      - name: Build Application
+        working-directory: kockpit-rules/kockpit-rules-designer
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Option 1: Use OIDC (recommended for security)
+#          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+#          aws-region: ${{ secrets.AWS_REGION }}
+
+          # Option 2: Use access keys (uncomment if not using OIDC)
+         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Determine S3 Bucket
+        id: s3-bucket
+        run: |
+          if [ -n "${{ github.event.inputs.s3_bucket }}" ]; then
+            echo "bucket=${{ github.event.inputs.s3_bucket }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.inputs.environment }}" == "production" ]; then
+            echo "bucket=${{ secrets.S3_BUCKET_PRODUCTION }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.inputs.environment }}" == "staging" ]; then
+            echo "bucket=${{ secrets.S3_BUCKET_STAGING }}" >> $GITHUB_OUTPUT
+          else
+            echo "bucket=${{ secrets.S3_BUCKET }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy to S3
+        working-directory: kockpit-rules/kockpit-rules-designer
+        run: |
+          echo "Deploying to S3 bucket: ${{ steps.s3-bucket.outputs.bucket }}"
+          aws s3 sync dist/ s3://${{ steps.s3-bucket.outputs.bucket }}/ \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html" \
+            --exclude "*.html"
+
+          # Deploy HTML files with no-cache to ensure latest version
+          aws s3 sync dist/ s3://${{ steps.s3-bucket.outputs.bucket }}/ \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --exclude "*" \
+            --include "index.html" \
+            --include "*.html"
+
+      - name: Invalidate CloudFront Distribution (Optional)
+        if: secrets.CLOUDFRONT_DISTRIBUTION_ID != ''
+        run: |
+          echo "Invalidating CloudFront distribution: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+
+      - name: Deployment Summary
+        run: |
+          echo "### Deployment Complete! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ github.event.inputs.environment || 'dev' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**S3 Bucket:** ${{ steps.s3-bucket.outputs.bucket }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" ]; then
+            echo "**CloudFront:** Cache invalidated" >> $GITHUB_STEP_SUMMARY
+          fi
