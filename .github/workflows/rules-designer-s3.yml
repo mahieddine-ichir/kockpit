@@ -4,7 +4,7 @@ on:
   # Trigger on push to deployment branch
   push:
     branches:
-      - deploy/rules-designer
+      - dev
     paths:
       - 'kockpit-rules/kockpit-rules-designer/**'
       - '.github/workflows/rules-designer-s3.yml'
@@ -21,10 +21,6 @@ on:
           - dev
           - staging
           - production
-      s3_bucket:
-        description: 'S3 bucket name (optional override)'
-        required: false
-        type: string
 
 jobs:
   build-and-deploy:
@@ -76,9 +72,7 @@ jobs:
       - name: Determine S3 Bucket
         id: s3-bucket
         run: |
-          if [ -n "${{ github.event.inputs.s3_bucket }}" ]; then
-            echo "bucket=${{ github.event.inputs.s3_bucket }}" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event.inputs.environment }}" == "production" ]; then
+          if [ "${{ github.event.inputs.environment }}" == "production" ]; then
             echo "bucket=${{ secrets.S3_BUCKET_PRODUCTION }}" >> $GITHUB_OUTPUT
           elif [ "${{ github.event.inputs.environment }}" == "staging" ]; then
             echo "bucket=${{ secrets.S3_BUCKET_STAGING }}" >> $GITHUB_OUTPUT
