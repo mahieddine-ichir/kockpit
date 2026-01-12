@@ -169,12 +169,17 @@ export default function BpmnCanvasBase({
             }
           })
 
-          modelerRef.current.on(
-              'canvas.viewbox.changed',
-              (event: viewboxChangeEvent) => {
-                setZoomLevel(event.viewbox.scale)
-              }
-          )
+          modelerRef.current.on('canvas.viewbox.changed', (event: viewboxChangeEvent) => {
+            setZoomLevel(event.viewbox.scale)
+          })
+
+          // Reset to Rule when clicking on canvas background
+          modelerRef.current.on('root.click', () => {
+            setType('Rule')
+            setName('')
+            setDescription('')
+            setId('')
+          })
 
           isInitialized.current = true
         }

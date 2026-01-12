@@ -1,7 +1,7 @@
 .deleteBtn {
-  visibility: hidden;
+  opacity: 0;
 }
 
-.ruleBtn:hover .deleteBtn {
-  visibility: visible;
+.ruleItem:hover .deleteBtn {
+  opacity: 1;
 }
