@@ -18,7 +18,7 @@ import { Actions, IJsonModel, Model } from 'flexlayout-react'
 import { Switch } from '@/components/ui/switch'
 import { RuleAddButton } from '@/components/ui-2/RuleAddButton/RuleAddButton'
 import clsx from 'clsx'
-import { Trash2 } from 'lucide-react'
+import { Trash2, ChevronDown, ChevronRight } from 'lucide-react'
 import classes from './RulesManager.module.css'
 import { Button } from '@/components/ui/button'
 import {
@@ -72,71 +72,81 @@ export function RulesList() {
   const rules = useLiveQuery(() => db.rules.toArray())
   const [ruleIdToDelete, setRuleIdToDelete] = useState<number | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  return (
-      <div className='flex flex-col gap-2 p-2'>
-        <div className='flex items-center justify-between'>
-          <h2 className='text-sm font-medium text-gray-500'>Rules</h2>
-          <RuleAddButton />
-        </div>
-        <ul className='space-y-2'>
-          {rules?.map((rule) => (
-              <li key={rule.id}>
-                <Button
-                    variant={rule.id === currentRuleId ? 'outline' : 'ghost'}
-                    className={clsx(
-                        'w-full',
-                        classes.ruleBtn,
-                        rule.id === currentRuleId && 'border hover:bg-white'
-                    )}
-                    style={{ textAlign: 'left' }}
-                    onClick={async () => {
-                      // Update the current rule in the database
-                      if (currentRuleId !== null) {
-                        const currentRule = rules?.find((r) => r.id === currentRuleId)
-                        if (currentRule) {
-                          // @ts-ignore TODO: fix later
-                          await db.rules.update(currentRuleId, {
-                            jsonStr: jsonStr,
-                            xmlHistory: history,
-                            layout: layout,
-                          })
-                        }
-                      }
+  const [isExpanded, setIsExpanded] = useState(true)
 
-                      // Switch to the new rule
-                      setCurrentRuleId(rule.id)
-                      setJsonStr(rule.jsonStr)
-                      setHistory(rule.xmlHistory)
-                      setLayout(rule.layout)
-                      setElementType('Rule')
-                      setElementName(rule.name)
-                      setElementDescription(rule.description)
+  return (
+      <div className='py-4'>
+        <div
+          className='px-6 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider sticky top-0 bg-slate-800/90 z-10 flex items-center justify-between cursor-pointer hover:text-slate-300 transition-colors'
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <span>Rules</span>
+          <div className='ml-auto'>
+            {isExpanded ? (
+              <ChevronDown className='h-4 w-4' />
+            ) : (
+              <ChevronRight className='h-4 w-4' />
+            )}
+          </div>
+        </div>
+        {isExpanded && (
+          <nav className='space-y-1 px-2'>
+            <div className='px-3 py-2'>
+              <RuleAddButton />
+            </div>
+            {rules?.map((rule) => (
+              <div
+                  key={rule.id}
+                  className={clsx(
+                      'flex items-center px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 relative',
+                      classes.ruleItem,
+                      rule.id === currentRuleId
+                          ? 'bg-blue-600/20 text-blue-400 border-l-4 border-blue-500 shadow-md'
+                          : 'text-slate-300 hover:bg-slate-700 hover:text-white border-l-4 border-transparent'
+                  )}
+                  style={{ minHeight: '44px' }}
+                  onClick={async () => {
+                    // Update the current rule in the database
+                    if (currentRuleId !== null) {
+                      const currentRule = rules?.find((r) => r.id === currentRuleId)
+                      if (currentRule) {
+                        // @ts-ignore TODO: fix later
+                        await db.rules.update(currentRuleId, {
+                          jsonStr: jsonStr,
+                          xmlHistory: history,
+                          layout: layout,
+                        })
+                      }
+                    }
+
+                    // Switch to the new rule
+                    setCurrentRuleId(rule.id)
+                    setJsonStr(rule.jsonStr)
+                    setHistory(rule.xmlHistory)
+                    setLayout(rule.layout)
+                    setElementType('Rule')
+                    setElementName(rule.name)
+                    setElementDescription(rule.description)
+                  }}
+              >
+                <span className='flex-1 text-sm font-medium'>{rule.name}</span>
+                <button
+                    className={clsx(
+                        'p-1.5 rounded-md hover:bg-slate-600 transition-all',
+                        classes.deleteBtn
+                    )}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setRuleIdToDelete(rule.id)
+                      setIsDialogOpen(true)
                     }}
                 >
-                  <div style={{ textAlign: 'left', width: '100%' }}>
-                    {rule.name}
-                  </div>
-                  <Button
-                      variant={'ghost'}
-                      size='icon'
-                      className={clsx(
-                          'h-5',
-                          'w-5',
-                          rule.id !== currentRuleId && 'hover:bg-white',
-                          classes.deleteBtn
-                      )}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setRuleIdToDelete(rule.id)
-                        setIsDialogOpen(true)
-                      }}
-                  >
-                    <Trash2 className='h-3 w-3' />
-                  </Button>
-                </Button>
-              </li>
-          ))}
-        </ul>
+                  <Trash2 className='h-4 w-4 text-slate-400 hover:text-red-400' />
+                </button>
+              </div>
+            ))}
+          </nav>
+        )}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
             <DialogHeader>

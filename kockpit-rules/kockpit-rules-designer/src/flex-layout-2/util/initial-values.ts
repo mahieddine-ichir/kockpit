@@ -42,51 +42,18 @@ const layoutJsonMain: IJsonModel = {
         weight: 83.86075949367088,
         children: [
           {
-            type: 'row',
-            id: '#4775d0cf-ae67-442f-8cee-9417aa714e32',
+            type: 'tabset',
+            id: '#6f6f91fa-5ca4-407c-9d95-6bc046bd0528',
             weight: 45.13368983957219,
             children: [
               {
-                type: 'tabset',
-                id: '#6f6f91fa-5ca4-407c-9d95-6bc046bd0528',
-                weight: 54.21098983741849,
-                children: [
-                  {
-                    type: 'tab',
-                    id: '#47d36169-89e8-4e5f-b8c8-40f55a5a1b15',
-                    name: 'Json Editor',
-                    component: 'JsonEditor',
-                  },
-                ],
-                active: true,
-              },
-              {
-                type: 'tabset',
-                id: '#94e08494-13ca-4b32-bc40-681b268da51d',
-                weight: 22.35570024837468,
-                children: [
-                  {
-                    type: 'tab',
-                    id: '#47d36139-83e8-4e5f-b839-41f55a5a1b15',
-                    name: 'Properties',
-                    component: 'Properties',
-                  },
-                ],
-              },
-              {
-                type: 'tabset',
-                id: '#20c97bc2-04a0-4090-97a2-c9c8ff9ca0c3',
-                weight: 23.433309914206834,
-                children: [
-                  {
-                    type: 'tab',
-                    id: '#47d36169-82e8-4eff-b8c8-53395faa1b15',
-                    name: 'Problems',
-                    component: 'Problems',
-                  },
-                ],
+                type: 'tab',
+                id: '#47d36169-89e8-4e5f-b8c8-40f55a5a1b15',
+                name: 'Json Editor',
+                component: 'JsonEditor',
               },
             ],
+            active: true,
           },
           {
             type: 'tabset',

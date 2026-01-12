@@ -67,11 +67,12 @@ export default function RuleForm({
           className='flex flex-col gap-4'
         >
           <div className='mb-2 flex items-center justify-between'>
-            <h2 className='flex-grow'>Add Rule</h2>
+            <h2 className='flex-grow text-white font-semibold'>Add Rule</h2>
             <Button
               type='button'
               variant='ghost'
               size='icon'
+              className='text-slate-300 hover:bg-slate-700 hover:text-white'
               onClick={() => setShowRuleForm(false)}
               style={{ width: '24px', height: '24px', padding: '4px' }}
             >
@@ -83,9 +84,9 @@ export default function RuleForm({
             name='ruleName'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Rule name</FormLabel>
+                <FormLabel className='text-slate-300'>Rule name</FormLabel>
                 <FormControl>
-                  <Input {...field} className='bg-background' autoFocus />
+                  <Input {...field} className='bg-slate-700 border-slate-600 text-white' autoFocus />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -96,15 +97,15 @@ export default function RuleForm({
             name='ruleDescription'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Rule description</FormLabel>
+                <FormLabel className='text-slate-300'>Rule description</FormLabel>
                 <FormControl>
-                  <Textarea {...field} className='bg-background' />
+                  <Textarea {...field} className='bg-slate-700 border-slate-600 text-white' />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type='submit' className='mt-4 self-end'>
+          <Button type='submit' className='mt-4 self-end bg-blue-600 hover:bg-blue-700'>
             Save
           </Button>
         </form>

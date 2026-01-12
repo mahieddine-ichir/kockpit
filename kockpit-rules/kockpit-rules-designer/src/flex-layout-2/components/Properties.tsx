@@ -82,37 +82,37 @@ export default function Properties() {
   }
 
   return (
-      <div className='absolute inset-0 bg-secondary'>
-        <ScrollArea className='flex h-full flex-col gap-4 px-3'>
-          <div className='mx-1'>
-            <div className='h-2' />
-            <h2 className='mb-6 text-xl font-bold'>Properties</h2>
-            <div className='flex items-center justify-between'>
-              <h3 className='text-md font-bold'>{type}</h3>
-              {type === 'Rule' && <Network className='h-6 w-6' />}
-              {type === 'Action' && <RectangleHorizontal className='h-6 w-6' />}
-              {type === 'Predicate' && <Diamond className='h-6 w-6' />}
-              {type === 'ComplexGateway' && <GitBranch className='h-6 w-6' />}
-              {type === 'Event' && <Circle className='h-6 w-6' />}
-              {type === 'Transition' && <MoveRight className='h-6 w-6' />}
+      <div className='absolute inset-0 bg-slate-800 text-white'>
+        <div className='border-b border-slate-700 p-4'>
+          <h2 className='text-lg font-semibold text-white'>Properties</h2>
+        </div>
+        <ScrollArea className='flex h-[calc(100%-60px)] flex-col gap-4'>
+          <div className='px-4 py-4'>
+            <div className='flex items-center justify-between mb-6'>
+              <h3 className='text-md font-bold text-slate-300'>{type}</h3>
+              {type === 'Rule' && <Network className='h-6 w-6 text-slate-400' />}
+              {type === 'Action' && <RectangleHorizontal className='h-6 w-6 text-slate-400' />}
+              {type === 'Predicate' && <Diamond className='h-6 w-6 text-slate-400' />}
+              {type === 'ComplexGateway' && <GitBranch className='h-6 w-6 text-slate-400' />}
+              {type === 'Event' && <Circle className='h-6 w-6 text-slate-400' />}
+              {type === 'Transition' && <MoveRight className='h-6 w-6 text-slate-400' />}
             </div>
 
-            <div className='h-4' />
             <div className='mb-4 hidden'>
-              <Label htmlFor='id'>ID</Label>
-              <Input value={id} className='bg-background' disabled />
+              <Label htmlFor='id' className='text-slate-300'>ID</Label>
+              <Input value={id} className='bg-slate-700 border-slate-600 text-white' disabled />
             </div>
 
             <div className='mb-4'>
-              <Label htmlFor='name'>
+              <Label htmlFor='name' className='text-slate-300'>
                 {type === 'Transition' ? 'Value' : 'Name'}
               </Label>
               {type === 'Transition' ? (
                   <Select>
-                    <SelectTrigger className='bg-background'>
+                    <SelectTrigger className='bg-slate-700 border-slate-600 text-white'>
                       <SelectValue placeholder='Select a value' />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className='bg-slate-800 border-slate-700 text-white'>
                       <SelectItem value='true'>true</SelectItem>
                       <SelectItem value='false'>false</SelectItem>
                     </SelectContent>
@@ -120,18 +120,18 @@ export default function Properties() {
               ) : (
                   <Input
                       value={name}
-                      className='bg-background'
+                      className='bg-slate-700 border-slate-600 text-white'
                       onChange={handleNameChange}
                   />
               )}
             </div>
 
             <div className='mb-4'>
-              <Label htmlFor='description'>Description</Label>
+              <Label htmlFor='description' className='text-slate-300'>Description</Label>
               <Textarea
                   value={description}
                   rows={4}
-                  className='bg-background'
+                  className='bg-slate-700 border-slate-600 text-white'
                   onChange={handleDescriptionChange}
               />
             </div>
