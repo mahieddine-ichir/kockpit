@@ -1,8 +1,8 @@
 package org.kockpit.ai.mcp.server;
 
 import lombok.SneakyThrows;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequestInterceptor;
+import org.apache.hc.client5.http.async.AsyncExecChainHandler;
+import org.apache.hc.core5.http.HttpHost;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestClientBuilder;
 import org.opensearch.client.RestHighLevelClient;
@@ -20,12 +20,12 @@ class RestClientConfig {
   @Bean
   RestHighLevelClient searchClient(
           @Value("${opensearch.endpoints}") String endpoints,
-          List<HttpRequestInterceptor> requestInterceptors
+          List<AsyncExecChainHandler> handlers
   ) {
     System.out.printf("""
       Opensearch endpoints: %s
     %n""", endpoints);
-    System.out.println("RestClientConfig - Number of HttpRequestInterceptors: " + (requestInterceptors != null ? requestInterceptors.size() : "null"));
+    System.out.println("RestClientConfig - Number of HttpRequestInterceptors: " + (handlers != null ? handlers.size() : "null"));
 
     HttpHost[] hosts = Stream.of(endpoints.split(","))
             .map(String::trim)
@@ -35,12 +35,12 @@ class RestClientConfig {
     RestClientBuilder restClientBuilder = RestClient.builder(hosts);
 
     // Configure HTTP client with interceptors for AWS signing
-    if (!CollectionUtils.isEmpty(requestInterceptors)) {
-      System.out.println("RestClientConfig - Registering " + requestInterceptors.size() + " interceptors");
+    if (!CollectionUtils.isEmpty(handlers)) {
+      System.out.println("RestClientConfig - Registering " + handlers.size() + " handlers");
       restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> {
-        for (HttpRequestInterceptor interceptor : requestInterceptors) {
-          System.out.println("RestClientConfig - Adding interceptor: " + interceptor.getClass().getName());
-          httpClientBuilder.addInterceptorLast(interceptor);
+        for (AsyncExecChainHandler handler : handlers) {
+          System.out.println("RestClientConfig - Adding interceptor: " + handler.getClass().getName());
+          httpClientBuilder.addExecInterceptorLast(handler.getClass().getName(), handler);
         }
         return httpClientBuilder;
       });

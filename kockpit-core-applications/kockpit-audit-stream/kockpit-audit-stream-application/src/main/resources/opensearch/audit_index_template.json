@@ -17,6 +17,9 @@
           "type": "date",
           "format": "epoch_millis"
         },
+        "ttl": {
+          "type": "integer"
+        },
         "appId": {
           "type": "keyword"
         },

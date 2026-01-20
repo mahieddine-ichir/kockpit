@@ -30,6 +30,7 @@ import static java.lang.Math.min;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.opensearch.index.query.QueryBuilders.matchQuery;
+import static org.opensearch.index.query.QueryBuilders.termsQuery;
 
 @Component
 @Slf4j
@@ -68,7 +69,9 @@ public class AuditSearchService {
         IndexKeyValuesForNested indexKeyValuesForNested = resolveIndexKeyValuesPath(indexVersion);
 
         BoolQueryBuilder traceIdQuery = QueryBuilders.boolQuery();
-        traceIdQuery.must(matchQuery(indexKeyValuesForNested.keyPath(), "traceId"))
+
+        traceIdQuery
+                .must(termsQuery(indexKeyValuesForNested.keyPath(), "traceId", "X-B3-TraceId"))
                 .must(matchQuery(indexKeyValuesForNested.valuePath(), traceId));
 
         NestedQueryBuilder queryBuilder = QueryBuilders.nestedQuery(
@@ -137,7 +140,7 @@ public class AuditSearchService {
                     .items(items)
                     .totalSize(Optional.ofNullable(searchResponse.getHits())
                             .map(SearchHits::getTotalHits)
-                            .map(totalHits -> totalHits.value)
+                            .map(TotalHits::value)
                             .orElse(0L)
                     )
                     .from(from)

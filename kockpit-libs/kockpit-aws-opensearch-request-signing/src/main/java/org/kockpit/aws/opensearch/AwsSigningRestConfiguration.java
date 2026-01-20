@@ -1,0 +1,21 @@
+package org.kockpit.aws.opensearch;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.http.auth.aws.signer.AwsV4HttpSigner;
+import software.amazon.awssdk.regions.Region;
+
+@AutoConfiguration
+class AwsSigningRestConfiguration {
+
+  @Bean
+  AwsRequestSigningApacheV5Interceptor awsSigningRequestInterceptor(
+          @Value("${kockpit.audit.stream.aws.service.name:es}") String serviceName,
+          @Value("${kockpit.audit.stream.aws.region}") String region
+  ) {
+    RequestSigner requestSigner = new RequestSigner(serviceName, AwsV4HttpSigner.create(), DefaultCredentialsProvider.builder().build(), Region.of(region));
+    return new AwsRequestSigningApacheV5Interceptor(requestSigner);
+  }
+}
