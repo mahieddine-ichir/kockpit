@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.opensearch.client</groupId>
             <artifactId>opensearch-rest-high-level-client</artifactId>
-            <version>2.17.1</version>
+            <version>3.3.2</version>
         </dependency>
         <!-- features -->
         <dependency>
@@ -102,11 +102,11 @@
                 </dependency>
             </dependencies>
             <build>
-                <finalName>${project.artifactId}-filesystem-${project.version}</finalName>
+                <finalName>${project.artifactId}-kafka-${project.version}</finalName>
             </build>
         </profile>
         <profile>
-            <id>kinesis</id>
+            <id>aws</id>
             <dependencies>
                 <dependency>
                     <groupId>org.kockpit</groupId>
@@ -118,9 +118,14 @@
                     <artifactId>kockpit-audit-notification-kinesis</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-aws-opensearch-request-signing</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                </dependency>
             </dependencies>
             <build>
-                <finalName>${project.artifactId}-kinesis-${project.version}</finalName>
+                <finalName>${project.artifactId}-aws-${project.version}</finalName>
             </build>
         </profile>
     </profiles>

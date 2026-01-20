@@ -52,10 +52,10 @@ class KockpitAuditor implements AuditorService {
   }
 
   public void startAudit() {
-    this.startAudit(null);
+    this.startAuditInternal();
   }
 
-  public void startAudit(Integer ttl) {
+  private void startAuditInternal() {
     AuditReportContainer.resetReport();
     String auditId = UUID.randomUUID().toString();
     AuditReportContainer.setAuditReport(
@@ -69,7 +69,7 @@ class KockpitAuditor implements AuditorService {
             .hostname(this.hostname)
             .artifact(this.artifact)
             .version(this.version)
-            .ttl(ttl)
+            .ttl(this.defaultTtl)
             .build());
     MDC.put("auditId", auditId);
   }
@@ -132,11 +132,6 @@ class KockpitAuditor implements AuditorService {
 
   public void notify(AuditReport auditReport) {
     notificationAuditReportManager.addAuditReport(auditReport);
-  }
-
-  // fixme check usage
-  AuditReport getAuditReport() {
-    return AuditReportContainer.getAuditReport();
   }
 
   private String retrieveHostName() {
