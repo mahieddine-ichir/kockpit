@@ -11,7 +11,19 @@
     <name>Kockpit Samples</name>
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
+        <central.publishing.phase>none</central.publishing.phase>
     </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <configuration>
+                    <skipPublishing>true</skipPublishing>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <modules>
         <module>kockpit-sample-all</module>
     </modules>
