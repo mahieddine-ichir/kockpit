@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>kockpit-features-audit-starters-kafka</artifactId>
+    <name>Kockpit Audit Starter for Kafka</name>
 
     <dependencies>
         <dependency>

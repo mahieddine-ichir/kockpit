@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>kockpit-features-audit-starters-kinesis</artifactId>
+    <name>Kockpit Audit Starter for Kinesis</name>
 
     <dependencies>
         <dependency>
