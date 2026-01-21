@@ -85,15 +85,15 @@ jobs:
           tags: ${{ steps.meta-kafka.outputs.tags }}
           labels: ${{ steps.meta-kafka.outputs.labels }}
 
-      # Build for Kinesis
-      - name: Build Kinesis Stream Application with Maven
-        run: mvn clean package -Pkinesis -pl kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application -am -DskipTests
+      # Build for Aws
+      - name: Build Aws Stream Application with Maven
+        run: mvn clean package -Paws -pl kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application -am -DskipTests
 
-      - name: Extract Metadata for Docker (Kinesis)
-        id: meta-kinesis
+      - name: Extract Metadata for Docker (Aws)
+        id: meta-aws
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-kinesis
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-aws
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -101,11 +101,11 @@ jobs:
             type=raw,value={{date 'YYYYMMDD-HHmmss'}}
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and Push Docker Image (Kinesis)
+      - name: Build and Push Docker Image (Aws)
         uses: docker/build-push-action@v5
         with:
           context: kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application
           file: kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application/Dockerfile
           push: true
-          tags: ${{ steps.meta-kinesis.outputs.tags }}
-          labels: ${{ steps.meta-kinesis.outputs.labels }}
+          tags: ${{ steps.meta-aws.outputs.tags }}
+          labels: ${{ steps.meta-aws.outputs.labels }}
