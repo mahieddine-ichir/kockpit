@@ -1,6 +1,7 @@
 package org.kockpit.audit;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditReportNotificationService;
@@ -8,6 +9,8 @@ import org.kockpit.audit.api.AuditReportWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Slf4j
@@ -24,11 +27,18 @@ class AuditReportsQueueHandler {
     // batch size in bytes
     private final int maxBatchSize;
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     private LinkedBlockingQueue<AuditReportWrapper> auditReportsBlockingQueue;
 
     @PostConstruct
     void init() {
         this.auditReportsBlockingQueue = new LinkedBlockingQueue<>(bufferSize);
+    }
+
+    @PreDestroy
+    void shutdown() {
+        executor.shutdown();
     }
 
     private void notify(List<AuditReportWrapper> partition) {
@@ -42,20 +52,24 @@ class AuditReportsQueueHandler {
     boolean add(AuditReportWrapper auditReportWrapper) {
         try {
             if (auditReportsBlockingQueue.remainingCapacity() <= 0) {
-                log.warn("Buffer full, triggering poll and notify");
-                this.pollAndNotify();
+                log.warn("Buffer full, triggering poll and notify (blocking)");
+                this.pollAndNotify();  // blocking to ensure space is freed
             }
             auditReportsBlockingQueue.add(auditReportWrapper);
-            if (auditReportsBlockingQueue.remainingCapacity() <= bufferFreeThreshold) {
-                log.warn("Buffer capacity threshold exceeded -> free buffer (buffer size {})", auditReportsBlockingQueue.size());
-                this.pollAndNotify();
+            if (auditReportsBlockingQueue.size() >= bufferFreeThreshold) {
+                log.warn("Buffer threshold reached -> free buffer (buffer size {})", auditReportsBlockingQueue.size());
+                this.pollAndNotifyAsync();
             }
             return true;
         } catch (Exception e) {
             log.warn("Cannot add audit report to buffer, limit exceeded ! {}", auditReportsBlockingQueue.size(), e);
-            this.pollAndNotify();
+            this.pollAndNotifyAsync();
             return false;
         }
+    }
+
+    private void pollAndNotifyAsync() {
+        executor.submit(this::pollAndNotify);
     }
 
     void pollAndNotify() {
