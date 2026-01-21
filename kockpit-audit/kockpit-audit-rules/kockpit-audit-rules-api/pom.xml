@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-audit-rules</artifactId><version>1.0.2-beta</version>
+        <artifactId>kockpit-audit-rules</artifactId><version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-audit-rules-api</artifactId>
