@@ -1,0 +1,186 @@
+name: Terraform - Rules Designer Infrastructure
+
+on:
+  # Manual trigger with environment selection
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      action:
+        description: 'Terraform action'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+
+  # Run on changes to terraform files
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'terraform/rules-designer/**'
+      - '.github/workflows/rules-designer-terraform.yml'
+
+  pull_request:
+    paths:
+      - 'terraform/rules-designer/**'
+
+jobs:
+  terraform:
+    name: Terraform ${{ github.event.inputs.action || 'plan' }} - ${{ github.event.inputs.environment || 'dev' }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write  # Required for AWS OIDC authentication
+      pull-requests: write  # Required to comment on PRs
+
+    defaults:
+      run:
+        working-directory: terraform/rules-designer
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Option 1: Use OIDC (recommended)
+          # role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          # aws-region: ${{ secrets.AWS_REGION }}
+
+          # Option 2: Use access keys
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+          terraform_wrapper: false
+
+      - name: Determine Environment
+        id: env
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+            echo "action=${{ github.event.inputs.action }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "action=plan" >> $GITHUB_OUTPUT
+          else
+            echo "environment=dev" >> $GITHUB_OUTPUT
+            echo "action=plan" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Terraform Init
+        id: init
+        run: |
+          # Initialize without backend config
+          terraform init
+
+          # If using backend, uncomment and configure:
+          # terraform init \
+          #   -backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET }}" \
+          #   -backend-config="key=kockpit/rules-designer/${{ steps.env.outputs.environment }}/terraform.tfstate" \
+          #   -backend-config="region=${{ secrets.AWS_REGION }}"
+
+      - name: Terraform Format Check
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        if: steps.env.outputs.action == 'plan' || github.event_name == 'pull_request'
+        run: |
+          terraform plan \
+            -var-file="${{ steps.env.outputs.environment }}.tfvars" \
+            -out=tfplan \
+            -no-color
+        continue-on-error: true
+
+      - name: Comment PR with Plan
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`terraform
+            ${{ steps.plan.outputs.stdout }}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Environment: ${{ steps.env.outputs.environment }}*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Terraform Apply
+        if: steps.env.outputs.action == 'apply' && github.event_name == 'workflow_dispatch'
+        run: |
+          terraform apply \
+            -var-file="${{ steps.env.outputs.environment }}.tfvars" \
+            -auto-approve
+
+      - name: Terraform Destroy
+        if: steps.env.outputs.action == 'destroy' && github.event_name == 'workflow_dispatch'
+        run: |
+          terraform destroy \
+            -var-file="${{ steps.env.outputs.environment }}.tfvars" \
+            -auto-approve
+
+      - name: Output Terraform Values
+        if: steps.env.outputs.action == 'apply' && github.event_name == 'workflow_dispatch'
+        id: output
+        run: |
+          echo "s3_bucket=$(terraform output -raw s3_bucket_name)" >> $GITHUB_OUTPUT
+          echo "cloudfront_id=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_OUTPUT
+          echo "cloudfront_url=$(terraform output -raw cloudfront_url)" >> $GITHUB_OUTPUT
+
+      - name: Deployment Summary
+        if: steps.env.outputs.action == 'apply' && github.event_name == 'workflow_dispatch'
+        run: |
+          echo "### Infrastructure Deployment Complete! 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ steps.env.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** ${{ steps.env.outputs.action }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Outputs:**" >> $GITHUB_STEP_SUMMARY
+          echo "- S3 Bucket: \`${{ steps.output.outputs.s3_bucket }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- CloudFront ID: \`${{ steps.output.outputs.cloudfront_id }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- CloudFront URL: ${{ steps.output.outputs.cloudfront_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next Steps:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. Add these secrets to GitHub:" >> $GITHUB_STEP_SUMMARY
+          echo "   - \`S3_BUCKET\` or \`S3_BUCKET_${{ steps.env.outputs.environment | upper }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "   - \`CLOUDFRONT_DISTRIBUTION_ID\` or \`CLOUDFRONT_DISTRIBUTION_ID_${{ steps.env.outputs.environment | upper }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "2. Run the deployment workflow to deploy the Rules Designer" >> $GITHUB_STEP_SUMMARY
