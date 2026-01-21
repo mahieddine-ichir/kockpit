@@ -12,6 +12,9 @@
     <packaging>pom</packaging>
     <name>Kockpit AI</name>
     <description>Kockpit AI project (MCP Server, model ... etc)</description>
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
     <modules>
         <module>kockpit-ai-mcp-server</module>
     </modules>

@@ -10,7 +10,9 @@
 	<artifactId>kockpit-backends</artifactId>
 	<packaging>pom</packaging>
     <name>Kockpit Backends</name>
-
+	<properties>
+		<maven.deploy.skip>true</maven.deploy.skip>
+	</properties>
 	<modules>
         <module>kockpit-backend-authentication-basic</module>
         <module>kockpit-backend-service-search</module>

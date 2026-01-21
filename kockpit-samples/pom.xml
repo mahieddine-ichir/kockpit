@@ -9,6 +9,9 @@
     <artifactId>kockpit-samples</artifactId>
     <packaging>pom</packaging>
     <name>Kockpit Samples</name>
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
     <modules>
         <module>kockpit-sample-all</module>
     </modules>
