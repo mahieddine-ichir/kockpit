@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-core</artifactId><version>1.0.2-beta</version>
+        <artifactId>kockpit-core</artifactId><version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-core-communication-storageaccount</artifactId>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-core-communication</artifactId>
-            <version>1.0.2-beta</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>
