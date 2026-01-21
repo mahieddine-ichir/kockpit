@@ -9,6 +9,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>kockpit-features-audit-starters</artifactId>
+    <name>Kockpit Audit Starter</name>
     <packaging>pom</packaging>
     <modules>
         <module>kockpit-features-audit-starters-kafka</module>

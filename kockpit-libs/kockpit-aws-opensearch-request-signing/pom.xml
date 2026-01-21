@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>kockpit-aws-opensearch-request-signing</artifactId>
-
+    <name>Kockpit AWS Opensearch v3 Request signging</name>
     <properties>
         <aws.version>2.41.10</aws.version>
     </properties>
