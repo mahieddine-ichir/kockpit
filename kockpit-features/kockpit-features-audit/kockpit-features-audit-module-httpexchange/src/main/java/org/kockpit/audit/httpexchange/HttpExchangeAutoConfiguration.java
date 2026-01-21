@@ -19,12 +19,12 @@ import java.util.List;
 @ConditionalOnClass(RestTemplate.class)
 public class HttpExchangeAutoConfiguration {
 
-  @Value("${kockpit.sdk.service.audit.http.authorization.header.filter:true}")
+  @Value("${kockpit.audit.http.authorization.header.filter:true}")
   private boolean filterAuthorizationHeader;
 
   @Bean
   @ConditionalOnProperty(
-      prefix = "kockpit.sdk.service.audit.http",
+      prefix = "kockpit.audit.http",
       name = "disabled",
       havingValue = "false",
       matchIfMissing = true)
@@ -34,7 +34,7 @@ public class HttpExchangeAutoConfiguration {
 
   @Bean
   @ConditionalOnProperty(
-      prefix = "kockpit.sdk.service.audit.http",
+      prefix = "kockpit.audit.http",
       name = "disabled",
       havingValue = "false",
       matchIfMissing = true)
@@ -48,7 +48,7 @@ public class HttpExchangeAutoConfiguration {
 
   @Bean
   @ConditionalOnProperty(
-      prefix = "kockpit.sdk.service.audit.http",
+      prefix = "kockpit.audit.http",
       name = "disabled",
       havingValue = "false",
       matchIfMissing = true)
@@ -61,7 +61,7 @@ public class HttpExchangeAutoConfiguration {
 
   @Bean
   @ConditionalOnProperty(
-      prefix = "kockpit.sdk.service.audit.http",
+      prefix = "kockpit.audit.http",
       name = "disabled",
       havingValue = "false",
       matchIfMissing = true)
