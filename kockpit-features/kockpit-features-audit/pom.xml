@@ -15,6 +15,7 @@
         <module>kockpit-features-audit-module-httpexchange</module>
 
         <module>kockpit-features-audit-notification</module>
+        <module>kockpit-features-audit-starters</module>
     </modules>
 
 </project>

@@ -9,6 +9,9 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.groupingBy;
 
+/**
+ * Fixme check usage?
+ */
 public class AuditPostProcessor {
 
   private final Map<String, List<AuditModuleIntegration>> moduleIntegrationsByType;

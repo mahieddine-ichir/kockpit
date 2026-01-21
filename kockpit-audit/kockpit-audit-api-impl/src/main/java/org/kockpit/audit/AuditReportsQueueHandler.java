@@ -1,134 +1,95 @@
 package org.kockpit.audit;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.kockpit.audit.api.AuditReport;
 import org.kockpit.audit.api.AuditReportNotificationService;
+import org.kockpit.audit.api.AuditReportWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Slf4j
 @RequiredArgsConstructor
 class AuditReportsQueueHandler {
 
-    private final AuditPostProcessor auditPostProcessor;
-
     private final List<AuditReportNotificationService> auditReportNotificationServices;
 
-    private final int partitionSize;
-
+    // buffer size in number of records
     private final int bufferSize;
 
     private final int bufferFreeThreshold;
 
-    private final Executor executor = Executors.newFixedThreadPool(1);
+    // batch size in bytes
+    private final int maxBatchSize;
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule());
-
-    private LinkedBlockingQueue<AuditReport> auditReportsBlockingQueue;
+    private LinkedBlockingQueue<AuditReportWrapper> auditReportsBlockingQueue;
 
     @PostConstruct
     void init() {
         this.auditReportsBlockingQueue = new LinkedBlockingQueue<>(bufferSize);
     }
 
-    void doProcess() {
-        executor.execute(this::doProcessBlocking);
-    }
-
-    void doProcessBlocking() {
-        if (auditReportsBlockingQueue.isEmpty()) {
-            return;
-        }
-        log.trace("Process buffer of size: {}", auditReportsBlockingQueue.size());
-        long currentTimeMillis = System.currentTimeMillis();
-        List<AuditReport> auditReports = new ArrayList<>();
-        auditReportsBlockingQueue.drainTo(auditReports);
-
-        log.trace("Processed buffer of size: {} in {} ms", auditReportsBlockingQueue.size(), System.currentTimeMillis() - currentTimeMillis);
-        this.processAuditsReports(auditReports);
-    }
-
-    private void processAuditsReports(List<AuditReport> auditReports) {
-        if (CollectionUtils.isEmpty(auditReports)) {
-            return;
-        }
-        List<AuditReport.AuditJsonReport> auditJsonReports =
-                auditReports.stream()
-                        .map(auditPostProcessor::process)
-                        .map(this::mapToAuditJsonReport)
-                        .filter(Objects::nonNull)
-                        .toList();
-
-        ListUtils.partition(auditJsonReports, partitionSize).forEach(this::notify);
-    }
-
-    private void notify(List<AuditReport.AuditJsonReport> partition) {
+    private void notify(List<AuditReportWrapper> partition) {
         auditReportNotificationServices.forEach(auditReportNotificationService -> auditReportNotificationService.notify(partition));
     }
 
-    public void processSingle(AuditReport auditReport) {
-        AuditReport process = auditPostProcessor.process(auditReport);
-        if (process == null) {
-            return;
-        }
-        auditReportNotificationServices.forEach(auditReportNotificationService -> auditReportNotificationService.notify(List.of(mapToAuditJsonReport(process))));
+    void processSingle(AuditReportWrapper auditReportWrapper) {
+        this.notify(List.of(auditReportWrapper));
     }
 
-    private AuditReport.AuditJsonReport mapToAuditJsonReport(AuditReport auditReport) {
-        String json;
-        try {
-            json = objectMapper.writeValueAsString(auditReport);
-        } catch (JsonProcessingException e) {
-            log.error("Error serializing Audit object {} to json. Error: {}", auditReport, e.getMessage(), e);
-            return null;
-        }
-        return new InternalAuditJsonReport(auditReport, json);
-    }
-
-    @Getter
-    @Deprecated
-    private static class InternalAuditJsonReport extends AuditReport.AuditJsonReport {
-        private final String auditJson;
-
-        public InternalAuditJsonReport(AuditReport auditReport, String auditJson) {
-            super(auditReport, new ArrayList<>());
-            this.auditJson = auditJson;
-        }
-    }
-
-    boolean add(AuditReport auditReport, boolean blocking) {
+    boolean add(AuditReportWrapper auditReportWrapper) {
         try {
             if (auditReportsBlockingQueue.remainingCapacity() <= 0) {
-                this.doProcess();
+                log.warn("Buffer full, triggering poll and notify");
+                this.pollAndNotify();
             }
-            if (blocking) {
-                auditReportsBlockingQueue.put(auditReport);
-            } else {
-                auditReportsBlockingQueue.add(auditReport);
-            }
+            auditReportsBlockingQueue.add(auditReportWrapper);
             if (auditReportsBlockingQueue.remainingCapacity() <= bufferFreeThreshold) {
                 log.warn("Buffer capacity threshold exceeded -> free buffer (buffer size {})", auditReportsBlockingQueue.size());
-                this.doProcess();
+                this.pollAndNotify();
             }
             return true;
         } catch (Exception e) {
             log.warn("Cannot add audit report to buffer, limit exceeded ! {}", auditReportsBlockingQueue.size(), e);
-            this.doProcess();
+            this.pollAndNotify();
             return false;
         }
+    }
+
+    void pollAndNotify() {
+        if (auditReportsBlockingQueue.isEmpty()) {
+            return;
+        }
+        log.trace("Polling buffer of size: {}, batchSizeInBytes: {}", auditReportsBlockingQueue.size(), maxBatchSize);
+        long currentTimeMillis = System.currentTimeMillis();
+
+        List<AuditReportWrapper> polledRecords = new ArrayList<>();
+        int totalSize = 0;
+        while (true) {
+            AuditReportWrapper peeked = auditReportsBlockingQueue.peek();
+            if (peeked == null) {
+                break;
+            }
+            // Stop if adding this record would exceed batch size (but always take at least one)
+            // !polledRecords.isEmpty() ensures that we add at least an element to the list
+            if (!polledRecords.isEmpty() && totalSize + peeked.data().length > maxBatchSize) {
+                break;
+            }
+            AuditReportWrapper record = auditReportsBlockingQueue.poll();
+            polledRecords.add(record);
+            totalSize += record.data().length;
+        }
+        if (polledRecords.isEmpty()) {
+            return;
+        }
+        if (polledRecords.size() == 1 && totalSize > maxBatchSize) {
+            log.error("Record size {} is larger than authorized limit {} => skip record!", totalSize, maxBatchSize);
+            return;
+        }
+
+        log.trace("Polled {} records ({} bytes) in {} ms", polledRecords.size(), totalSize, System.currentTimeMillis() - currentTimeMillis);
+        this.notify(polledRecords);
     }
 }

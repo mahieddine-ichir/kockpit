@@ -6,6 +6,7 @@ import org.kockpit.communication.Consumer;
 import org.kockpit.communication.Publisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -14,6 +15,11 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @AutoConfiguration
+@ConditionalOnProperty(
+        value = "kockpit.communication.s3.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 public class S3CommunicationAutoConfiguration {
 
     @Bean

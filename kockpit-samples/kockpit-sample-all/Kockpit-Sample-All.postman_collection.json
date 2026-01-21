@@ -1,0 +1,882 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "Kockpit Sample All - API Collection",
+		"description": "Comprehensive Postman collection for Kockpit Sample All application and related backend APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
+	},
+	"item": [
+		{
+			"name": "Sample App APIs",
+			"description": "APIs provided by the kockpit-sample-all application",
+			"item": [
+				{
+					"name": "Say Hello",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SAMPLE_BASE_URL}}/api/sayHello/{{name}}",
+							"host": [
+								"{{SAMPLE_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"sayHello",
+								"{{name}}"
+							]
+						},
+						"description": "Returns a greeting message for the provided name"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"Hello from POST endpoint\",\n  \"author\": \"{{$randomFirstName}}\",\n  \"category\": \"sample\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SAMPLE_BASE_URL}}/api/createMessage",
+							"host": [
+								"{{SAMPLE_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"createMessage"
+							]
+						},
+						"description": "Creates a new message and returns confirmation with generated ID and timestamp"
+					},
+					"response": []
+				},
+				{
+					"name": "Evaluate Feature Flag",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SAMPLE_BASE_URL}}/feature-flipping/{{feature_key}}",
+							"host": [
+								"{{SAMPLE_BASE_URL}}"
+							],
+							"path": [
+								"feature-flipping",
+								"{{feature_key}}"
+							]
+						},
+						"description": "Evaluates a feature flag and returns its current state"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"description": "Authentication and user management endpoints",
+			"item": [
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/me",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"me"
+							]
+						},
+						"description": "Get information about the currently authenticated user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "HeartBeat Monitoring",
+			"description": "Health monitoring and heartbeat endpoints",
+			"item": [
+				{
+					"name": "Get Active Heartbeats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/heartbeat?active=true",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"heartbeat"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "true",
+									"description": "Filter for active heartbeats only"
+								}
+							]
+						},
+						"description": "Get active heartbeat messages for a specific domain and environment"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Heartbeats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/heartbeat?active=false",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"heartbeat"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "false",
+									"description": "Include inactive heartbeats"
+								}
+							]
+						},
+						"description": "Get all heartbeat messages for a specific domain and environment"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard Analytics",
+			"description": "Dashboard and analytics endpoints",
+			"item": [
+				{
+					"name": "Get Application Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/dashboard/app_details",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"dashboard",
+								"app_details"
+							]
+						},
+						"description": "Get detailed information about applications"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Application Distribution Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/dashboard/app_distribution_data?gte=now-1d",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"dashboard",
+								"app_distribution_data"
+							],
+							"query": [
+								{
+									"key": "gte",
+									"value": "now-1d",
+									"description": "Time range filter (e.g., now-1d, now-1h, now-7d)"
+								}
+							]
+						},
+						"description": "Get application distribution metrics for dashboard"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status Distribution by App ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/dashboard/status_distribution_by_appId?gte=now-1d",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"dashboard",
+								"status_distribution_by_appId"
+							],
+							"query": [
+								{
+									"key": "gte",
+									"value": "now-1d",
+									"description": "Time range filter"
+								}
+							]
+						},
+						"description": "Get status distribution metrics grouped by application ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Overtime Data by App ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/dashboard/overTime_by_appId?gte=now-1d",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"dashboard",
+								"overTime_by_appId"
+							],
+							"query": [
+								{
+									"key": "gte",
+									"value": "now-1d",
+									"description": "Time range filter"
+								}
+							]
+						},
+						"description": "Get overtime metrics grouped by application ID"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Audit Management",
+			"description": "Audit log and search endpoints",
+			"item": [
+				{
+					"name": "Get Audit by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/audits/{{audit_id}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"audits",
+								"{{audit_id}}"
+							]
+						},
+						"description": "Get a specific audit record by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "List Audits",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/audits?start=0&size=50",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"audits"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0",
+									"description": "Number of elements to skip"
+								},
+								{
+									"key": "size",
+									"value": "50",
+									"description": "Number of items to return"
+								}
+							]
+						},
+						"description": "List audit records with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Audits (GET)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/audits/_search?query={{search_query}}&status={{status}}&start=0&size=50",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"audits",
+								"_search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "{{search_query}}",
+									"description": "Search query string"
+								},
+								{
+									"key": "status",
+									"value": "{{status}}",
+									"description": "Status filter"
+								},
+								{
+									"key": "start",
+									"value": "0",
+									"description": "Pagination start"
+								},
+								{
+									"key": "size",
+									"value": "50",
+									"description": "Pagination size"
+								}
+							]
+						},
+						"description": "Search audit records with simple query parameters"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Audits (POST)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"field\": \"appId\",\n    \"value\": \"sample-app\",\n    \"operator\": \"EQUAL\"\n  },\n  {\n    \"field\": \"status\",\n    \"value\": \"SUCCESS\",\n    \"operator\": \"EQUAL\"\n  }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/audits/_search?query={{search_query}}&status={{status}}&start=0&size=50",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"audits",
+								"_search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "{{search_query}}",
+									"description": "Search query string"
+								},
+								{
+									"key": "status",
+									"value": "{{status}}",
+									"description": "Status filter"
+								},
+								{
+									"key": "start",
+									"value": "0",
+									"description": "Pagination start"
+								},
+								{
+									"key": "size",
+									"value": "50",
+									"description": "Pagination size"
+								}
+							]
+						},
+						"description": "Search audit records with complex criteria using POST body"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Configuration Management",
+			"description": "Configuration and feature management endpoints",
+			"item": [
+				{
+					"name": "List Configuration Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/config",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"config"
+							]
+						},
+						"description": "List all configuration manifests"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Configuration Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"sample-config\",\n  \"name\": \"Sample Configuration\",\n  \"description\": \"Sample configuration item\",\n  \"content\": {\n    \"key1\": \"value1\",\n    \"key2\": \"value2\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/config",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"config"
+							]
+						},
+						"description": "Create a new configuration item"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Feature Management",
+			"description": "Feature flags and dynamic configuration",
+			"item": [
+				{
+					"name": "Update Feature Flag",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"key\": \"{{feature_key}}\",\n  \"enabled\": true,\n  \"description\": \"Sample feature flag\",\n  \"conditions\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/feature-flipping/{{feature_id}}?key={{feature_key}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"feature-flipping",
+								"{{feature_id}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{feature_key}}",
+									"description": "Feature key"
+								}
+							]
+						},
+						"description": "Update a feature flag configuration"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Feature Flag History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/feature-flipping/{{feature_id}}/history",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"feature-flipping",
+								"{{feature_id}}",
+								"history"
+							]
+						},
+						"description": "Get the change history for a feature flag"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Dynamic Configuration",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"key\": \"{{config_key}}\",\n  \"value\": \"new_config_value\",\n  \"description\": \"Updated configuration value\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/{{domain}}/{{env}}/dyna-config/{{config_id}}?key={{config_key}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"{{domain}}",
+								"{{env}}",
+								"dyna-config",
+								"{{config_id}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{config_key}}",
+									"description": "Configuration key"
+								}
+							]
+						},
+						"description": "Update a dynamic configuration value"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health & Monitoring",
+			"description": "Health checks and monitoring endpoints",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/actuator/health",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						},
+						"description": "Get application health status"
+					},
+					"response": []
+				},
+				{
+					"name": "Application Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/actuator/info",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"actuator",
+								"info"
+							]
+						},
+						"description": "Get application information"
+					},
+					"response": []
+				},
+				{
+					"name": "Application Metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/actuator/metrics",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"actuator",
+								"metrics"
+							]
+						},
+						"description": "Get application metrics"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set default values for common variables if not already set",
+					"if (!pm.collectionVariables.get('BASE_URL')) {",
+					"    pm.collectionVariables.set('BASE_URL', 'http://localhost:8080/backend/api');",
+					"}",
+					"",
+					"if (!pm.collectionVariables.get('SAMPLE_BASE_URL')) {",
+					"    pm.collectionVariables.set('SAMPLE_BASE_URL', 'http://localhost:8081/sample-app');",
+					"}",
+					"",
+					"if (!pm.collectionVariables.get('domain')) {",
+					"    pm.collectionVariables.set('domain', 'sample');",
+					"}",
+					"",
+					"if (!pm.collectionVariables.get('env')) {",
+					"    pm.collectionVariables.set('env', 'dev');",
+					"}",
+					"",
+					"if (!pm.collectionVariables.get('auth_token')) {",
+					"    // Set a default basic auth token (base64 encoded 'admin:admin')",
+					"    pm.collectionVariables.set('auth_token', 'YWRtaW46YWRtaW4=');",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://localhost:8080/backend/api",
+			"type": "string",
+			"description": "Base URL for Kockpit backend API"
+		},
+		{
+			"key": "SAMPLE_BASE_URL",
+			"value": "http://localhost:8081/sample-app",
+			"type": "string",
+			"description": "Base URL for Kockpit sample application"
+		},
+		{
+			"key": "domain",
+			"value": "sample",
+			"type": "string",
+			"description": "Domain name for multi-tenant endpoints"
+		},
+		{
+			"key": "env",
+			"value": "dev",
+			"type": "string",
+			"description": "Environment name (dev, test, prod)"
+		},
+		{
+			"key": "name",
+			"value": "World",
+			"type": "string",
+			"description": "Name parameter for hello endpoint"
+		},
+		{
+			"key": "feature_key",
+			"value": "sample-feature",
+			"type": "string",
+			"description": "Feature flag key"
+		},
+		{
+			"key": "feature_id",
+			"value": "1",
+			"type": "string",
+			"description": "Feature flag ID"
+		},
+		{
+			"key": "config_key",
+			"value": "sample-config",
+			"type": "string",
+			"description": "Dynamic configuration key"
+		},
+		{
+			"key": "config_id",
+			"value": "1",
+			"type": "string",
+			"description": "Dynamic configuration ID"
+		},
+		{
+			"key": "audit_id",
+			"value": "12345",
+			"type": "string",
+			"description": "Audit record ID"
+		},
+		{
+			"key": "search_query",
+			"value": "*",
+			"type": "string",
+			"description": "Search query for audit search"
+		},
+		{
+			"key": "status",
+			"value": "SUCCESS",
+			"type": "string",
+			"description": "Status filter for searches"
+		},
+		{
+			"key": "auth_token",
+			"value": "YWRtaW46YWRtaW4=",
+			"type": "string",
+			"description": "Base64 encoded basic auth token (admin:admin)"
+		}
+	]
+}

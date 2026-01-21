@@ -1,0 +1,37 @@
+meta {
+  name: Update Feature Flag
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{BASE_URL}}/{{domain}}/{{env}}/feature-flipping/{{feature_id}}?key={{feature_key}}
+  body: json
+  auth: basic
+}
+
+params:query {
+  key: {{feature_key}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:basic {
+  username: admin
+  password: admin
+}
+
+body:json {
+  {
+    "key": "{{feature_key}}",
+    "enabled": true,
+    "description": "Sample feature flag",
+    "conditions": []
+  }
+}
+
+docs {
+  Update a feature flag configuration
+}

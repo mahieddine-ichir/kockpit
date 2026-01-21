@@ -1,0 +1,25 @@
+meta {
+  name: List Audits
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/{{domain}}/{{env}}/audits?start=0&size=50
+  body: none
+  auth: basic
+}
+
+params:query {
+  start: 0
+  size: 50
+}
+
+auth:basic {
+  username: admin
+  password: admin
+}
+
+docs {
+  List audit records with pagination
+}

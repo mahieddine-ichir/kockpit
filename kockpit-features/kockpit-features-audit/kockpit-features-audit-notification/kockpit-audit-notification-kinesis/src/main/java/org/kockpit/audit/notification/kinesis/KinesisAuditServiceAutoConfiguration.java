@@ -2,12 +2,12 @@ package org.kockpit.audit.notification.kinesis;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditReportNotificationService;
-import org.kockpit.audit.api.CompressionService;
 import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -15,15 +15,14 @@ import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 
 import java.net.URI;
 
-@Configuration
+@AutoConfiguration
+@ConditionalOnProperty(
+        value = "kockpit.audit.kinesis.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 @Slf4j
 public class KinesisAuditServiceAutoConfiguration {
-
-  @Bean
-  CompressionService compressionService(
-          @Value("${kockpit.audit.compression.enabled:true}") boolean compressionEnabled) {
-    return new CompressionService(compressionEnabled);
-  }
 
   @Bean
   AuditReportNotificationService kinesisAuditReportNotificationService(
@@ -35,7 +34,7 @@ public class KinesisAuditServiceAutoConfiguration {
       return new KinesisAuditReportNotificationService(kinesisClient, streamName, recordTransformer);
   }
 
-  @ConditionalOnMissingBean(DefaultRecordPartitioner.class)
+  @ConditionalOnMissingBean(RecordPartitioner.class)
   @Bean
   RecordPartitioner defaultRecordPartitioner() {
       return new DefaultRecordPartitioner(256);
@@ -43,8 +42,8 @@ public class KinesisAuditServiceAutoConfiguration {
 
   @ConditionalOnMissingBean(RecordTransformer.class)
   @Bean
-  RecordTransformer defaultRecordTransformer(RecordPartitioner recordPartitioner, CompressionService compressionService) {
-      return new DefaultRecordTransformer(recordPartitioner, compressionService);
+  RecordTransformer defaultRecordTransformer(RecordPartitioner recordPartitioner) {
+      return new DefaultRecordTransformer(recordPartitioner);
   }
 
   @Bean

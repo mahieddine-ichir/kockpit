@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Kockpit Sample All - API Collection",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

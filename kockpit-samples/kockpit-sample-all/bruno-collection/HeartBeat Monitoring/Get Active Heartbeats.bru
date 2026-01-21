@@ -1,0 +1,24 @@
+meta {
+  name: Get Active Heartbeats
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{BASE_URL}}/{{domain}}/{{env}}/heartbeat?active=true
+  body: none
+  auth: basic
+}
+
+params:query {
+  active: true
+}
+
+auth:basic {
+  username: admin
+  password: admin
+}
+
+docs {
+  Get active heartbeat messages for a specific domain and environment
+}

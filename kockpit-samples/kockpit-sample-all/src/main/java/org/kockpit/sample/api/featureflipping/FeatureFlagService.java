@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.kockpit.audit.api.CompressionService;
 import org.kockpit.communication.Message;
 import org.kockpit.core.sdk.OnMessageListener;
 import org.kockpit.features.featureflipping.service.FeatureFlippingDto;
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class FeatureFlagService implements OnMessageListener {
-
-    private final CompressionService compressionService;
 
     @Setter
     @Getter
