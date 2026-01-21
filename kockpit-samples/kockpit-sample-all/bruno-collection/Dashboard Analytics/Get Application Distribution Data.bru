@@ -1,0 +1,24 @@
+meta {
+  name: Get Application Distribution Data
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/{{domain}}/{{env}}/dashboard/app_distribution_data?gte=now-1d
+  body: none
+  auth: basic
+}
+
+params:query {
+  gte: now-1d
+}
+
+auth:basic {
+  username: admin
+  password: admin
+}
+
+docs {
+  Get application distribution metrics for dashboard
+}

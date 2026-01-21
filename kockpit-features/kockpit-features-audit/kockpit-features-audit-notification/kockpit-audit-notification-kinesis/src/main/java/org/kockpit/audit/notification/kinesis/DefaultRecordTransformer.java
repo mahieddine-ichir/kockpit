@@ -1,8 +1,7 @@
 package org.kockpit.audit.notification.kinesis;
 
 import lombok.RequiredArgsConstructor;
-import org.kockpit.audit.api.AuditReport;
-import org.kockpit.audit.api.CompressionService;
+import org.kockpit.audit.api.AuditReportWrapper;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.kinesis.model.PutRecordsRequestEntry;
 
@@ -10,15 +9,13 @@ import software.amazon.awssdk.services.kinesis.model.PutRecordsRequestEntry;
 public class DefaultRecordTransformer implements RecordTransformer {
 
     private final RecordPartitioner recordPartitioner;
-    private final CompressionService compressionService;
 
     @Override
-    public PutRecordsRequestEntry apply(AuditReport.AuditJsonReport auditJsonReport) {
-        String partitionKey = recordPartitioner.computePartitionKey(auditJsonReport);
-        byte[] compressedData = compressionService.compress(auditJsonReport.getAuditJson());
+    public PutRecordsRequestEntry apply(AuditReportWrapper reportWrapper) {
+        String partitionKey = recordPartitioner.computePartitionKey(reportWrapper);
         return PutRecordsRequestEntry.builder()
                 .partitionKey(partitionKey)
-                .data(SdkBytes.fromByteArray(compressedData))
+                .data(SdkBytes.fromByteArray(reportWrapper.data()))
                 .build();
     }
 }

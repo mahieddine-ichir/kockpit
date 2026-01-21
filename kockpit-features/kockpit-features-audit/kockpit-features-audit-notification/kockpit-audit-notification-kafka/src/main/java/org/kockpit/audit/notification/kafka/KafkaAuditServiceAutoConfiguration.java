@@ -5,7 +5,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.kockpit.audit.api.AuditReportNotificationService;
-import org.kockpit.audit.api.CompressionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -20,7 +19,7 @@ import java.util.Map;
 
 @Configuration
 @ConditionalOnProperty(
-        value = "kockpit.audit.enabled",
+        value = "kockpit.audit.kafka.enabled",
         havingValue = "true",
         matchIfMissing = true
 )
@@ -28,17 +27,10 @@ import java.util.Map;
 public class KafkaAuditServiceAutoConfiguration {
 
   @Bean
-  CompressionService compressionService(
-          @Value("${kockpit.audit.compression.enabled:true}") boolean compressionEnabled) {
-    return new CompressionService(compressionEnabled);
-  }
-
-  @Bean
   AuditReportNotificationService kafkaAuditReportNotificationService(
           KafkaTemplate<String, byte[]> kafkaTemplate,
-          @Value("${kockpit.audit.notification.kafka.topic}") String topic,
-          CompressionService compressionService) {
-    return new KafkaAuditReportNotificationService(kafkaTemplate, topic, compressionService);
+          @Value("${kockpit.audit.notification.kafka.topic}") String topic) {
+    return new KafkaAuditReportNotificationService(kafkaTemplate, topic);
   }
 
   @Bean

@@ -1,9 +1,8 @@
 package org.kockpit.audit.notification.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import org.kockpit.audit.api.AuditReport.AuditJsonReport;
 import org.kockpit.audit.api.AuditReportNotificationService;
-import org.kockpit.audit.api.CompressionService;
+import org.kockpit.audit.api.AuditReportWrapper;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.List;
@@ -11,20 +10,19 @@ import java.util.List;
 @Slf4j
 record KafkaAuditReportNotificationService(
         KafkaTemplate<String, byte[]> producerClient,
-        String topic,
-        CompressionService compressionService) implements AuditReportNotificationService {
+        String topic) implements AuditReportNotificationService {
 
     @Override
-    public void notify(List<AuditJsonReport> auditReports) {
+    public void notify(List<AuditReportWrapper> auditReports) {
         this.publishEvents(auditReports);
     }
 
-    void publishEvents(List<AuditJsonReport> auditReports) {
+    void publishEvents(List<AuditReportWrapper> auditReports) {
         // sample events in an array
-        auditReports
-                .stream()
-                .map(AuditJsonReport::getAuditJson)
-                .map(compressionService::compress)
-                .forEach(compressedData -> producerClient.send(topic, compressedData));
+        auditReports.forEach(report -> producerClient.send(topic, key(report), report.data()));
+    }
+
+    private String key(AuditReportWrapper report) {
+        return "%s-%s-%s".formatted(report.domain(), report.env(), report.appId());
     }
 }

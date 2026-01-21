@@ -13,6 +13,10 @@ kockpit:
   app-id: ${spring.application.name}
 
   communication:
+    enabled: false
+    polling:
+      enabled: false
+
     azure:
       storage:
         account: ${STORAGE_ACCOUNT}
@@ -20,13 +24,17 @@ kockpit:
         key: ${STORAGE_KEY}
         container: ${STORAGE_CONTAINER:data}
     filesystem:
+      enabled: false
       path: ${FS_STORAGE_PATH}
 
     poller:
       scheduling: PT30S
 
   audit:
+    trace:
+      enabled: false
     notification:
+      async-delay-ms: 60000
       kafka:
         topic: audits
 
@@ -36,9 +44,9 @@ kockpit:
     polling:
       enabled: true
   dyna-config:
-
+    enabled: false
   heartbeat:
-    enabled: true
+    enabled: false
     polling:
       enabled: false
 

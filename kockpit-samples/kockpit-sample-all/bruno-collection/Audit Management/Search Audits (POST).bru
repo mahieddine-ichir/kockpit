@@ -1,0 +1,46 @@
+meta {
+  name: Search Audits (POST)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{BASE_URL}}/{{domain}}/{{env}}/audits/_search?query={{search_query}}&status={{status}}&start=0&size=50
+  body: json
+  auth: basic
+}
+
+params:query {
+  query: {{search_query}}
+  status: {{status}}
+  start: 0
+  size: 50
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:basic {
+  username: admin
+  password: admin
+}
+
+body:json {
+  [
+    {
+      "field": "appId",
+      "value": "sample-app",
+      "operator": "EQUAL"
+    },
+    {
+      "field": "status",
+      "value": "SUCCESS",
+      "operator": "EQUAL"
+    }
+  ]
+}
+
+docs {
+  Search audit records with complex criteria using POST body
+}

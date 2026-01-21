@@ -86,16 +86,6 @@
         <!-- Application features -->
         <dependency>
             <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-features-audit-module-web</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-features-audit-module-httpexchange</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-heartbeat-service-application</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
@@ -129,7 +119,7 @@
                 <!-- kafka for EventHub -->
                 <dependency>
                     <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-audit-notification-kafka</artifactId>
+                    <artifactId>kockpit-features-audit-starters-kafka</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
@@ -151,7 +141,6 @@
                     <artifactId>kockpit-core-communication-s3</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
-                <!-- kafka for EventHub -->
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-notification-kinesis</artifactId>

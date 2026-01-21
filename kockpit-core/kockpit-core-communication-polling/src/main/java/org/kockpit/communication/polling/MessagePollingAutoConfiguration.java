@@ -8,6 +8,7 @@ import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -16,6 +17,11 @@ import java.time.Duration;
 import java.util.List;
 
 @AutoConfiguration
+@ConditionalOnProperty(
+        value = "kockpit.communication.polling.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 @EnableScheduling
 public class MessagePollingAutoConfiguration {
 

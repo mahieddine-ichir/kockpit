@@ -1,15 +1,18 @@
 package org.kockpit.audit.module.web.traceid;
 
 import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.AuditTraceNotificationService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import java.util.Properties;
 
 @Slf4j
 @SpringBootApplication
+@Import({AuditTraceNotificationService.class})
 class SpringBoot4IntegrationTestApplication {
 
   public static void main(String[] args) {

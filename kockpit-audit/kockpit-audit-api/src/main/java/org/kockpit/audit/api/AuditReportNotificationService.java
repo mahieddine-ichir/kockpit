@@ -6,7 +6,7 @@ public interface AuditReportNotificationService {
 
   /**
    * Send audit reports to inherent systems (brokers).
-   * @param auditReport
+   * @param auditReports audit reports to notify/send to inherent systems
    */
-  void notify(List<AuditReport.AuditJsonReport> auditReport);
+  void notify(List<AuditReportWrapper> auditReports);
 }

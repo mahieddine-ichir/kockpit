@@ -1,8 +1,8 @@
 package org.kockpit.audit.notification.kinesis;
 
 import lombok.extern.slf4j.Slf4j;
-import org.kockpit.audit.api.AuditReport.AuditJsonReport;
 import org.kockpit.audit.api.AuditReportNotificationService;
+import org.kockpit.audit.api.AuditReportWrapper;
 import org.springframework.util.CollectionUtils;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 import software.amazon.awssdk.services.kinesis.model.PutRecordsRequest;
@@ -20,11 +20,11 @@ record KinesisAuditReportNotificationService(
 ) implements AuditReportNotificationService {
 
     @Override
-    public void notify(List<AuditJsonReport> auditReports) {
+    public void notify(List<AuditReportWrapper> auditReports) {
         this.publishEvents(auditReports);
     }
 
-    void publishEvents(List<AuditJsonReport> auditReports) {
+    void publishEvents(List<AuditReportWrapper> auditReports) {
         if (CollectionUtils.isEmpty(auditReports)) {
             return;
         }

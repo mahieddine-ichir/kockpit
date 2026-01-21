@@ -28,19 +28,6 @@
             <artifactId>kockpit-features-heartbeat-service-application</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-        <!-- Audits -->
-        <!-- audit web requests -->
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-features-audit-module-web</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <!-- audit http exchanges requests -->
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-features-audit-module-httpexchange</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <profiles>
@@ -55,7 +42,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-audit-notification-kafka</artifactId>
+                    <artifactId>kockpit-features-audit-starters-kafka</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
@@ -70,7 +57,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-audit-notification-kafka</artifactId>
+                    <artifactId>kockpit-features-audit-starters-kafka</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
@@ -85,7 +72,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
-                    <artifactId>kockpit-audit-notification-kinesis</artifactId>
+                    <artifactId>kockpit-features-audit-starters-kinesis</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>

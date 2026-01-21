@@ -1,0 +1,27 @@
+meta {
+  name: Create Message
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{SAMPLE_BASE_URL}}/api/createMessage
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "message": "Hello from POST endpoint",
+    "author": "John Doe",
+    "category": "sample"
+  }
+}
+
+docs {
+  Creates a new message and returns confirmation with generated ID and timestamp
+}
