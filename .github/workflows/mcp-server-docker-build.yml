@@ -15,6 +15,7 @@ on:
     paths:
       - 'kockpit-ai/**'
       - 'pom.xml'
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
