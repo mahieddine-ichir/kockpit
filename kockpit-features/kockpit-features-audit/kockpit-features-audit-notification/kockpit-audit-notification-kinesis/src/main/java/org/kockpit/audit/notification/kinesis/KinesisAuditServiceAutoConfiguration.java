@@ -2,7 +2,6 @@ package org.kockpit.audit.notification.kinesis;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditReportNotificationService;
-import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,11 +25,10 @@ public class KinesisAuditServiceAutoConfiguration {
 
   @Bean
   AuditReportNotificationService kinesisAuditReportNotificationService(
-          SdkApplicationProperties sdkApplicationProperties,
           RecordTransformer recordTransformer,
-          KinesisAsyncClient kinesisClient
+          KinesisAsyncClient kinesisClient,
+          @Value("${kockpit.audit.notification.kinesis.strean_name}") String streamName
   ) {
-      String streamName = "auditstream-" + sdkApplicationProperties.getEnv();
       return new KinesisAuditReportNotificationService(kinesisClient, streamName, recordTransformer);
   }
 
@@ -48,7 +46,7 @@ public class KinesisAuditServiceAutoConfiguration {
 
   @Bean
   KinesisAsyncClient kinesisAsyncClient(
-          @Value("${kockpit.service.aws.region}") String regionString,
+          @Value("${aws.region}") String regionString,
           @Value("${kockpit.audit.notification.kinesis.endpoint:http://localhost:4566}") String kinesisEndpoint,
           AwsCredentialsProvider awsCredentialsProvider
   ) {
