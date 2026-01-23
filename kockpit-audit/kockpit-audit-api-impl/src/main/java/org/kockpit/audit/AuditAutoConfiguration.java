@@ -56,7 +56,7 @@ class AuditAutoConfiguration {
   }
 
   @Bean
-  public NotificationAuditReportManager notificationAuditReportManager(
+  NotificationAuditReportManager notificationAuditReportManager(
       List<AuditReportNotificationService> auditReportNotificationServices,
       AuditReportsQueueHandler auditReportsQueueHandler,
       @Value("${kockpit.audit.notification.async:true}") boolean async,

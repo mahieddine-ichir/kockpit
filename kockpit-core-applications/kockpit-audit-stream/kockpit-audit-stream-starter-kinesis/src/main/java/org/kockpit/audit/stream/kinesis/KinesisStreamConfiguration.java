@@ -2,7 +2,6 @@ package org.kockpit.audit.stream.kinesis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -30,10 +29,6 @@ public class KinesisStreamConfiguration {
 
     @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}")
     private int socketTimeoutMs;
-
-    public static void main(String[] args) {
-        SpringApplication.run(KinesisStreamConfiguration.class, args);
-    }
 
     @Bean
     KinesisClient amazonKinesis(AwsCredentialsProvider credentialsProvider) {
