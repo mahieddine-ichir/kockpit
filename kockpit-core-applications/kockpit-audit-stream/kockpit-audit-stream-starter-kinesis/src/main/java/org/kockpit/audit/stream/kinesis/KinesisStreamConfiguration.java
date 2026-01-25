@@ -24,11 +24,11 @@ public class KinesisStreamConfiguration {
 
     @Bean
     KinesisClient amazonKinesis(
-            @Value("${aws.kinesis.endpoint:http://localhost:4566}") String kinesisEndpoint,
+            @Value("${kockpit.audit.stream.kinesis.endpoint}") String kinesisEndpoint,
             @Value("${aws.region:eu-west-1}") String awsRegion,
             @Value("${kockpit.audit.stream.kinesis.timeout.connection:5000}") int connectionTimeoutMs,
-            @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}") int socketTimeoutMs,
-            AwsCredentialsProvider credentialsProvider) {
+            @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}") int socketTimeoutMs
+    ) {
         ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
                 .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
                 .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
@@ -37,12 +37,11 @@ public class KinesisStreamConfiguration {
         return KinesisClient.builder()
                 .endpointOverride(URI.create(kinesisEndpoint))
                 .region(Region.of(awsRegion))
-                .credentialsProvider(credentialsProvider)
+                .credentialsProvider(credentialsProvider())
                 .overrideConfiguration(overrideConfig)
                 .build();
     }
 
-    @Bean
     AwsCredentialsProvider credentialsProvider() {
         // EC2 instance role -> InstanceProfileCredentialsProvider.builder().build()
         // ECS task role -> ContainerProvider.builder().build()
@@ -52,14 +51,16 @@ public class KinesisStreamConfiguration {
     @Bean
     KinesisStreamListener kinesisStreamListener(
             KinesisClient kinesisClient,
-            ApplicationEventPublisher applicationEventPublisher
-    ) {
+            ApplicationEventPublisher applicationEventPublisher,
+            @Value("${kockpit.audit.stream.kinesis.stream_name}") String streamName
+            ) {
         return new KinesisStreamListener(
                 kinesisClient,
                 applicationEventPublisher,
                 new ObjectMapper()
                         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                        .registerModule(new JavaTimeModule())
+                        .registerModule(new JavaTimeModule()),
+                streamName
         );
     }
 

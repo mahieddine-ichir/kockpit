@@ -27,7 +27,7 @@ public class KinesisAuditServiceAutoConfiguration {
   AuditReportNotificationService kinesisAuditReportNotificationService(
           RecordTransformer recordTransformer,
           KinesisAsyncClient kinesisClient,
-          @Value("${kockpit.audit.notification.kinesis.strean_name}") String streamName
+          @Value("${kockpit.audit.notification.kinesis.stream_name}") String streamName
   ) {
       return new KinesisAuditReportNotificationService(kinesisClient, streamName, recordTransformer);
   }
@@ -47,7 +47,7 @@ public class KinesisAuditServiceAutoConfiguration {
   @Bean
   KinesisAsyncClient kinesisAsyncClient(
           @Value("${aws.region}") String regionString,
-          @Value("${kockpit.audit.notification.kinesis.endpoint:http://localhost:4566}") String kinesisEndpoint,
+          @Value("${kockpit.audit.notification.kinesis.endpoint}") String kinesisEndpoint,
           AwsCredentialsProvider awsCredentialsProvider
   ) {
       Region region = Region.of(regionString);
