@@ -39,6 +39,10 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>kinesis</artifactId>
         </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>utils</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
