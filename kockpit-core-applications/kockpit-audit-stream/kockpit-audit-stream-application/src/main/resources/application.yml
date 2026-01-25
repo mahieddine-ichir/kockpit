@@ -32,9 +32,9 @@ kockpit:
         ttl_default_in_days: 5
       kafka:
         topics: audits
-
       kinesis:
-        streamName: ${spring.application.name}
+        endpoint: ${KINESIS_ENDPOINT}
+        stream_name: ${KINESIS_STREAM_NAME}
         timeout:
           connection: 5000
           socket: 30000
@@ -44,3 +44,6 @@ kockpit:
     notification:
       kafka:
         topic: ${NOTIFICATION_TOPIC:audits}
+      kinesis:
+        endpoint: ${KINESIS_ENDPOINT}
+        stream_name: ${KINESIS_STREAM_NAME}

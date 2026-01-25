@@ -1,17 +1,13 @@
 package org.kockpit.audit.stream.kinesis;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumerEvent;
 import org.kockpit.audit.stream.api.model.AuditReport;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
 import software.amazon.awssdk.services.kinesis.model.*;
 import software.amazon.awssdk.services.kinesis.model.Record;
@@ -33,8 +29,7 @@ public class KinesisStreamListener {
 
     private final ObjectMapper objectMapper;
 
-    @Value("${kockpit.audit.stream.kinesis.streamName:auditstream-local}")
-    private String streamName;
+    private final String streamName;
 
     private volatile boolean running = false;
     
