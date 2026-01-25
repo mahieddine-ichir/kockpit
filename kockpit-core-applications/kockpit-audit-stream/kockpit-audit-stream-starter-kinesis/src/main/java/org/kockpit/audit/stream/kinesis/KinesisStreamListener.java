@@ -31,13 +31,11 @@ public class KinesisStreamListener {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    private final ObjectMapper objectMapper;
+
     @Value("${kockpit.audit.stream.kinesis.streamName:auditstream-local}")
     private String streamName;
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .registerModule(new JavaTimeModule());
-    
     private volatile boolean running = false;
     
     @Async  // Runs in separate thread

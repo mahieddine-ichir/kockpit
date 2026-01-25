@@ -1,5 +1,8 @@
 package org.kockpit.audit.stream.kinesis;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -51,7 +54,13 @@ public class KinesisStreamConfiguration {
             KinesisClient kinesisClient,
             ApplicationEventPublisher applicationEventPublisher
     ) {
-        return new KinesisStreamListener(kinesisClient, applicationEventPublisher);
+        return new KinesisStreamListener(
+                kinesisClient,
+                applicationEventPublisher,
+                new ObjectMapper()
+                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                        .registerModule(new JavaTimeModule())
+        );
     }
 
     @Bean
