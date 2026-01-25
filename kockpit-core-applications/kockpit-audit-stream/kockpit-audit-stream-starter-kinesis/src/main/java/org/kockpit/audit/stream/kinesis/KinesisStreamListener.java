@@ -1,78 +1,177 @@
 package org.kockpit.audit.stream.kinesis;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.stream.api.AuditConsumerEvent;
+import org.kockpit.audit.stream.api.model.AuditReport;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
-import software.amazon.kinesis.common.ConfigsBuilder;
-import software.amazon.kinesis.common.KinesisClientUtil;
-import software.amazon.kinesis.coordinator.Scheduler;
+import software.amazon.awssdk.services.kinesis.model.*;
+import software.amazon.awssdk.services.kinesis.model.Record;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.zip.GZIPInputStream;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class KinesisStreamListener {
-
+    
     private final KinesisClient kinesisClient;
-    private final DynamoDbClient dynamoDbClient;
-    private final CloudWatchClient cloudWatchClient;
-    private final KclRecordProcessorFactory recordProcessorFactory;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Value("${kockpit.audit.stream.kinesis.streamName:auditstream-local}")
     private String streamName;
 
-    @Value("${kockpit.audit.stream.kinesis.applicationName:audit-consumer}")
-    private String applicationName;
-
-    @Value("${kockpit.audit.stream.kinesis.workerIdentifier:#{T(java.util.UUID).randomUUID().toString()}}")
-    private String workerIdentifier;
-
-    private Scheduler scheduler;
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .registerModule(new JavaTimeModule());
+    
+    private volatile boolean running = false;
     
     @Async  // Runs in separate thread
     public void startAsync() {
-        log.info("✅ Starting KCL consumer for stream: {} with application: {}", streamName, applicationName);
-
+        running = true;
+        log.info("✅ Listener started");
+        
         try {
-            ConfigsBuilder configsBuilder = new ConfigsBuilder(
-                streamName,
-                applicationName,
-                kinesisClient,
-                dynamoDbClient,
-                cloudWatchClient,
-                workerIdentifier,
-                recordProcessorFactory.shardRecordProcessor()
+            ListShardsResponse response = kinesisClient.listShards(
+                ListShardsRequest.builder()
+                    .streamName(streamName)
+                    .build()
             );
 
-            scheduler = new Scheduler(
-                configsBuilder.checkpointConfig(),
-                configsBuilder.coordinatorConfig(),
-                configsBuilder.leaseManagementConfig(),
-                configsBuilder.lifecycleConfig(),
-                configsBuilder.metricsConfig(),
-                configsBuilder.processorConfig(),
-                configsBuilder.retrievalConfig()
+            // Listen to shards
+            for (Shard shard : response.shards()) {
+                listenToShard(streamName, shard.shardId());
+            }
+            
+        } catch (Exception e) {
+            log.error("❌ Error: {}", e.getMessage(), e);
+            running = false;
+        }
+    }
+    
+    private void listenToShard(String streamName, String shardId) {
+        long iteratorStartTime = System.currentTimeMillis();
+        String shardIterator = getShardIterator(streamName, shardId);
+        while (running) {
+            try {
+                // Refresh iterator every 4 minutes (before 5 minute expiry)
+                if (System.currentTimeMillis() - iteratorStartTime > 240_000 || shardIterator == null) {
+                    log.info("🔄 Getting fresh iterator");
+                    shardIterator = getShardIterator(streamName, shardId);
+                    iteratorStartTime = System.currentTimeMillis();
+                }
+
+                GetRecordsResponse response = kinesisClient.getRecords(
+                        GetRecordsRequest.builder()
+                                .shardIterator(shardIterator)
+                                .limit(100)
+                                .build()
+                );
+
+                // Process records
+                this.processRecords(response.records());
+
+                shardIterator = response.nextShardIterator();
+                Thread.sleep(1000);
+
+            } catch (ExpiredIteratorException e) {
+                log.warn("⏰ Iterator expired, getting fresh one ...");
+                shardIterator = null;  // Force refresh
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ie) {
+                    break;
+                }
+            } catch (InterruptedException e) {
+                log.info("Listener interrupted");
+                break;
+            } catch (Exception e) {
+                log.error("❌ Error streaming data {}", e.getMessage(), e);
+                break;
+            }
+        }
+    }
+
+    private void processRecords(Collection<Record> records) {
+        records.forEach(record -> {
+            String event = null;
+            try {
+                event = read(record.data().asByteArray());
+                AuditReport auditReport = objectMapper.readValue(event, AuditReport.class);
+                applicationEventPublisher.publishEvent(new AuditConsumerEvent(auditReport));
+            } catch (Exception e) {
+                log.error("❌ Error processing audit record {}", event, e);
+            }
+        });
+    }
+
+    String read(byte[] message) throws IOException {
+        // Check if the data is GZIP compressed by checking the magic number
+        // GZIP files start with 0x1f 0x8b
+        if (message.length >= 2 && message[0] == (byte) 0x1f && message[1] == (byte) 0x8b) {
+            log.debug("Detected GZIP compressed data, decompressing...");
+            return decompress(message);
+        } else {
+            log.debug("Data is not compressed, converting directly to string");
+            return new String(message, StandardCharsets.UTF_8);
+        }
+    }
+
+    private String decompress(byte[] compressedData) throws IOException {
+        try (ByteArrayInputStream byteStream = new ByteArrayInputStream(compressedData);
+             GZIPInputStream gzipStream = new GZIPInputStream(byteStream);
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = gzipStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, len);
+            }
+
+            byte[] decompressed = outputStream.toByteArray();
+            log.debug("Decompressed {} bytes to {} bytes", compressedData.length, decompressed.length);
+
+            return new String(decompressed, StandardCharsets.UTF_8);
+        }
+    }
+
+    private String getShardIterator(String streamName, String shardId) {
+        try {
+            GetShardIteratorResponse response = kinesisClient.getShardIterator(
+                    GetShardIteratorRequest.builder()
+                            .streamName(streamName)
+                            .shardId(shardId)
+                            .shardIteratorType("LATEST")
+                            .build()
             );
 
-            log.info("✅ KCL Scheduler configured for worker: {}", workerIdentifier);
-            scheduler.run();
+            log.info("✅ Got shard iterator for {}", shardId);
+            return response.shardIterator();
 
         } catch (Exception e) {
-            log.error("❌ KCL Scheduler error: {}", e.getMessage(), e);
+            log.error("❌ Failed to get iterator: {}", e.getMessage(), e);
+            return null;
         }
     }
 
     @PreDestroy
     public void stop() {
-        if (scheduler != null) {
-            log.info("⏹️ Shutting down KCL Scheduler...");
-            scheduler.shutdown();
-            log.info("⏹️ KCL Scheduler stopped");
-        }
+        running = false;
+        log.info("⏹️ Stopped");
     }
 }
