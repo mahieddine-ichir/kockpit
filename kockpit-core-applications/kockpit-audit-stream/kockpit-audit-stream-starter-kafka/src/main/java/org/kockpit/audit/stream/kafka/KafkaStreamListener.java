@@ -3,31 +3,17 @@ package org.kockpit.audit.stream.kafka;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.ByteArrayDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.kockpit.audit.stream.api.AuditConsumerEvent;
 import org.kockpit.audit.stream.api.model.AuditReport;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-@Configuration
-@EnableKafka
 @RequiredArgsConstructor
 @Slf4j
 public class KafkaStreamListener {
@@ -76,21 +62,5 @@ public class KafkaStreamListener {
 
             return new String(decompressed, StandardCharsets.UTF_8);
         }
-    }
-
-    @Bean
-    public ConsumerFactory<String, byte[]> consumerFactory(KafkaProperties properties) {
-        Map<String, Object> props = new HashMap<>(properties.buildConsumerProperties());
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
-        return new DefaultKafkaConsumerFactory<>(props);
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, byte[]> kafkaListenerContainerFactory(KafkaProperties kafkaProperties) {
-        ConcurrentKafkaListenerContainerFactory<String, byte[]> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory(kafkaProperties));
-        return factory;
     }
 }

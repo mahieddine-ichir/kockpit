@@ -2,8 +2,9 @@ package org.kockpit.audit.stream.kinesis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -14,24 +15,17 @@ import software.amazon.awssdk.services.kinesis.KinesisClient;
 import java.net.URI;
 import java.time.Duration;
 
-@Configuration
+@AutoConfiguration
 @EnableAsync
 public class KinesisStreamConfiguration {
 
-    @Value("${aws.kinesis.endpoint:http://localhost:4566}")
-    private String kinesisEndpoint;
-
-    @Value("${aws.region:eu-west-1}")
-    private String awsRegion;
-
-    @Value("${kockpit.audit.stream.kinesis.timeout.connection:5000}")
-    private int connectionTimeoutMs;
-
-    @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}")
-    private int socketTimeoutMs;
-
     @Bean
-    KinesisClient amazonKinesis(AwsCredentialsProvider credentialsProvider) {
+    KinesisClient amazonKinesis(
+            @Value("${aws.kinesis.endpoint:http://localhost:4566}") String kinesisEndpoint,
+            @Value("${aws.region:eu-west-1}") String awsRegion,
+            @Value("${kockpit.audit.stream.kinesis.timeout.connection:5000}") int connectionTimeoutMs,
+            @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}") int socketTimeoutMs,
+            AwsCredentialsProvider credentialsProvider) {
         ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
                 .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
                 .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
@@ -50,6 +44,14 @@ public class KinesisStreamConfiguration {
         // EC2 instance role -> InstanceProfileCredentialsProvider.builder().build()
         // ECS task role -> ContainerProvider.builder().build()
         return DefaultCredentialsProvider.builder().build();  // Auto-detects IAM role
+    }
+
+    @Bean
+    KinesisStreamListener kinesisStreamListener(
+            KinesisClient kinesisClient,
+            ApplicationEventPublisher applicationEventPublisher
+    ) {
+        return new KinesisStreamListener(kinesisClient, applicationEventPublisher);
     }
 
     @Bean
