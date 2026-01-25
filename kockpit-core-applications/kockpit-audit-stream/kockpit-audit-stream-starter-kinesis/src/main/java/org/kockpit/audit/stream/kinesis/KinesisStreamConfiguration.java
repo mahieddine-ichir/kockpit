@@ -9,8 +9,6 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
 
 import java.net.URI;
@@ -22,12 +20,6 @@ public class KinesisStreamConfiguration {
 
     @Value("${aws.kinesis.endpoint:http://localhost:4566}")
     private String kinesisEndpoint;
-
-    @Value("${aws.dynamodb.endpoint:http://localhost:4566}")
-    private String dynamoDbEndpoint;
-
-    @Value("${aws.cloudwatch.endpoint:http://localhost:4566}")
-    private String cloudWatchEndpoint;
 
     @Value("${aws.region:eu-west-1}")
     private String awsRegion;
@@ -47,36 +39,6 @@ public class KinesisStreamConfiguration {
 
         return KinesisClient.builder()
                 .endpointOverride(URI.create(kinesisEndpoint))
-                .region(Region.of(awsRegion))
-                .credentialsProvider(credentialsProvider)
-                .overrideConfiguration(overrideConfig)
-                .build();
-    }
-
-    @Bean
-    DynamoDbClient dynamoDbClient(AwsCredentialsProvider credentialsProvider) {
-        ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
-                .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
-                .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
-                .build();
-
-        return DynamoDbClient.builder()
-                .endpointOverride(URI.create(dynamoDbEndpoint))
-                .region(Region.of(awsRegion))
-                .credentialsProvider(credentialsProvider)
-                .overrideConfiguration(overrideConfig)
-                .build();
-    }
-
-    @Bean
-    CloudWatchClient cloudWatchClient(AwsCredentialsProvider credentialsProvider) {
-        ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
-                .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
-                .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
-                .build();
-
-        return CloudWatchClient.builder()
-                .endpointOverride(URI.create(cloudWatchEndpoint))
                 .region(Region.of(awsRegion))
                 .credentialsProvider(credentialsProvider)
                 .overrideConfiguration(overrideConfig)
