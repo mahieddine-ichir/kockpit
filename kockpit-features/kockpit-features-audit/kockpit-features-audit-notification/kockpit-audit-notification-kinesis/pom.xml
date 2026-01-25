@@ -10,11 +10,11 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- AWS SDK BOM - Ensures all versions match -->
+            <!-- AWS SDK BOM for version consistency (compatible with KCL 2.5.4) -->
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.32.22</version>
+                <version>2.20.56</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
