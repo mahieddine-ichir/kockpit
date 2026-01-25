@@ -9,6 +9,19 @@
     <artifactId>kockpit-audit-stream-starter-kinesis</artifactId>
     <name>Kockpit Audit Stream Starter Kinesis</name>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- AWS SDK BOM for version consistency -->
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.32.22</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.kockpit</groupId>
@@ -28,14 +41,25 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>kinesis</artifactId>
-            <version>2.32.22</version>
         </dependency>
 
-        <!-- OR AWS SDK v1 -->
+        <!-- KCL v2 for consumer groups -->
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-kinesis</artifactId>
-            <version>1.12.565</version>
+            <groupId>software.amazon.kinesis</groupId>
+            <artifactId>amazon-kinesis-client</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <!-- DynamoDB for KCL checkpointing -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>dynamodb</artifactId>
+        </dependency>
+
+        <!-- CloudWatch for KCL metrics -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>cloudwatch</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
