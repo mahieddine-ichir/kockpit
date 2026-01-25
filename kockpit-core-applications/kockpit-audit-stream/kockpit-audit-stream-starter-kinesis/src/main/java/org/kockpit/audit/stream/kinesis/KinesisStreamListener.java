@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.zip.GZIPInputStream;
 
-@Component
 @Slf4j
 @RequiredArgsConstructor
 public class KinesisStreamListener {
@@ -65,6 +64,7 @@ public class KinesisStreamListener {
     }
     
     private void listenToShard(String streamName, String shardId) {
+        log.info("Listening to stream: {}, at shard: {}", streamName, shardId);
         long iteratorStartTime = System.currentTimeMillis();
         String shardIterator = getShardIterator(streamName, shardId);
         while (running) {
