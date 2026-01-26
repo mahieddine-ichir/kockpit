@@ -13,7 +13,7 @@ class AwsSigningRestConfiguration {
   @Bean
   AwsRequestSigningApacheV5Interceptor awsSigningRequestInterceptor(
           @Value("${kockpit.audit.stream.aws.service.name:es}") String serviceName,
-          @Value("${kockpit.audit.stream.aws.region}") String region
+          @Value("${aws.region}") String region
   ) {
     RequestSigner requestSigner = new RequestSigner(serviceName, AwsV4HttpSigner.create(), DefaultCredentialsProvider.builder().build(), Region.of(region));
     return new AwsRequestSigningApacheV5Interceptor(requestSigner);

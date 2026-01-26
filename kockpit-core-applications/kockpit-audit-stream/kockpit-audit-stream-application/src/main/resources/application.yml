@@ -32,10 +32,10 @@ kockpit:
         ttl_default_in_days: 5
       kafka:
         topics: audits
-      dynamodb:
-        endpoint: ${DYNAMODB_ENDPOINT}
+#      dynamodb:
+#        endpoint: ${DYNAMODB_ENDPOINT}
       kinesis:
-        endpoint: ${KINESIS_ENDPOINT}
+#        endpoint: ${KINESIS_ENDPOINT}
         stream_name: ${KINESIS_STREAM_NAME}
         application_name: ${KINESIS_APP_NAME}
         timeout:
@@ -48,7 +48,7 @@ kockpit:
       kafka:
         topic: ${NOTIFICATION_TOPIC:audits}
       kinesis:
-        endpoint: ${KINESIS_ENDPOINT}
+#        endpoint: ${KINESIS_ENDPOINT}
         stream_name: ${KINESIS_STREAM_NAME}
 
 aws.region: eu-west-1
