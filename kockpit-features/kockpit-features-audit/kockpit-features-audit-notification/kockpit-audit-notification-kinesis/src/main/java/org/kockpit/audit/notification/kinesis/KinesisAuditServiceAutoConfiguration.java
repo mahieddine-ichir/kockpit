@@ -47,19 +47,23 @@ public class KinesisAuditServiceAutoConfiguration {
   @Bean
   KinesisAsyncClient kinesisAsyncClient(
           @Value("${aws.region}") String regionString,
-          @Value("${kockpit.audit.notification.kinesis.endpoint}") String kinesisEndpoint,
-          AwsCredentialsProvider awsCredentialsProvider
+          @Value("${kockpit.audit.notification.kinesis.endpoint:}") String kinesisEndpoint
   ) {
       Region region = Region.of(regionString);
-      return KinesisAsyncClient.builder()
-              .endpointOverride(URI.create(kinesisEndpoint))
-              .region(region)
-              .credentialsProvider(awsCredentialsProvider)
-              .build();
+      if (kinesisEndpoint == null || kinesisEndpoint.isEmpty()) {
+          return KinesisAsyncClient.builder()
+                  .credentialsProvider(credentialsProvider())
+                  .region(region)
+                  .build();
+      } else {
+          return KinesisAsyncClient.builder()
+                  .endpointOverride(URI.create(kinesisEndpoint))
+                  .region(region)
+                  .build();
+      }
   }
 
-  @Bean
-  AwsCredentialsProvider roleCredentialsProvider() {
+  AwsCredentialsProvider credentialsProvider() {
       return DefaultCredentialsProvider.builder().build();
   }
 }

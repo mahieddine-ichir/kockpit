@@ -22,47 +22,57 @@ public class KinesisStreamConfiguration {
 
     @Bean
     KinesisAsyncClient amazonKinesis(
-            AwsCredentialsProvider credentialsProvider,
-            @Value("${kockpit.audit.stream.kinesis.endpoint}") String kinesisEndpoint,
+            @Value("${kockpit.audit.stream.kinesis.endpoint:}") String kinesisEndpoint,
             @Value("${aws.region}") String awsRegion,
             @Value("${kockpit.audit.stream.kinesis.timeout.connection:5000}") int connectionTimeoutMs,
             @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}") int socketTimeoutMs
     ) {
-        ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
-                .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
-                .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
-                .build();
+        Region region = Region.of(awsRegion);
+        if (kinesisEndpoint == null || kinesisEndpoint.isEmpty()) {
+            return KinesisAsyncClient.builder()
+                    .region(region)
+                    .credentialsProvider(credentialsProvider())
+                    .build();
+        } else {
+            ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
+                    .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
+                    .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
+                    .build();
 
-        return KinesisAsyncClient.builder()
-                .endpointOverride(URI.create(kinesisEndpoint))
-                .region(Region.of(awsRegion))
-                .credentialsProvider(credentialsProvider)
-                .overrideConfiguration(overrideConfig)
-                .build();
+            return KinesisAsyncClient.builder()
+                    .endpointOverride(URI.create(kinesisEndpoint))
+                    .region(region)
+                    .overrideConfiguration(overrideConfig)
+                    .build();
+        }
     }
 
     @Bean
     DynamoDbAsyncClient dynamoDbClient(
-            AwsCredentialsProvider credentialsProvider,
-            @Value("${kockpit.audit.stream.dynamodb.endpoint}") String dynamoDbEndpoint,
+            @Value("${kockpit.audit.stream.dynamodb.endpoint:}") String dynamoDbEndpoint,
             @Value("${aws.region}") String awsRegion,
             @Value("${kockpit.audit.stream.dynamodb.timeout.connection:5000}") int connectionTimeoutMs,
             @Value("${kockpit.audit.stream.dynamodb.timeout.socket:30000}") int socketTimeoutMs
     ) {
-        ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
-                .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
-                .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
-                .build();
+        if (dynamoDbEndpoint == null || dynamoDbEndpoint.isEmpty()) {
+            return DynamoDbAsyncClient.builder()
+                    .region(Region.of(awsRegion))
+                    .credentialsProvider(credentialsProvider())
+                    .build();
+        } else {
+            ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
+                    .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
+                    .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
+                    .build();
 
-        return DynamoDbAsyncClient.builder()
-                .endpointOverride(URI.create(dynamoDbEndpoint))
-                .region(Region.of(awsRegion))
-                .credentialsProvider(credentialsProvider)
-                .overrideConfiguration(overrideConfig)
-                .build();
+            return DynamoDbAsyncClient.builder()
+                    .endpointOverride(URI.create(dynamoDbEndpoint))
+                    .region(Region.of(awsRegion))
+                    .overrideConfiguration(overrideConfig)
+                    .build();
+        }
     }
 
-    @Bean
     AwsCredentialsProvider credentialsProvider() {
         // EC2 instance role -> InstanceProfileCredentialsProvider.builder().build()
         // ECS task role -> ContainerProvider.builder().build()
