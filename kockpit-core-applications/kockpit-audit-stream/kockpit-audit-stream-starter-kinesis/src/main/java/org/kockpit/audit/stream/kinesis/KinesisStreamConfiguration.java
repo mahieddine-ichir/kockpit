@@ -1,5 +1,6 @@
 package org.kockpit.audit.stream.kinesis;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -20,7 +21,7 @@ import java.time.Duration;
 @EnableAsync
 public class KinesisStreamConfiguration {
 
-    @Bean
+    @Bean("kinesisConsumerClient")
     KinesisAsyncClient amazonKinesis(
             @Value("${kockpit.audit.stream.kinesis.endpoint:}") String kinesisEndpoint,
             @Value("${aws.region}") String awsRegion,
@@ -86,7 +87,7 @@ public class KinesisStreamConfiguration {
 
     @Bean
     KinesisStreamListener kinesisStreamListener(
-            KinesisAsyncClient kinesisClient,
+            @Qualifier("kinesisConsumerClient") KinesisAsyncClient kinesisClient,
             DynamoDbAsyncClient dynamoDbClient,
             KclRecordProcessorFactory recordProcessorFactory,
             @Value("${kockpit.audit.stream.kinesis.stream_name}") String streamName,
