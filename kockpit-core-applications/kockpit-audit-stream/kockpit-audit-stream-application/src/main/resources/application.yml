@@ -32,9 +32,12 @@ kockpit:
         ttl_default_in_days: 5
       kafka:
         topics: audits
+      dynamodb:
+        endpoint: ${DYNAMODB_ENDPOINT}
       kinesis:
         endpoint: ${KINESIS_ENDPOINT}
         stream_name: ${KINESIS_STREAM_NAME}
+        application_name: ${KINESIS_APP_NAME}
         timeout:
           connection: 5000
           socket: 30000
@@ -47,3 +50,5 @@ kockpit:
       kinesis:
         endpoint: ${KINESIS_ENDPOINT}
         stream_name: ${KINESIS_STREAM_NAME}
+
+aws.region: eu-west-1

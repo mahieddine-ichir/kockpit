@@ -1,8 +1,5 @@
 package org.kockpit.audit.stream.kinesis;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -13,7 +10,8 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.kinesis.KinesisClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
+import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 
 import java.net.URI;
 import java.time.Duration;
@@ -23,9 +21,10 @@ import java.time.Duration;
 public class KinesisStreamConfiguration {
 
     @Bean
-    KinesisClient amazonKinesis(
+    KinesisAsyncClient amazonKinesis(
+            AwsCredentialsProvider credentialsProvider,
             @Value("${kockpit.audit.stream.kinesis.endpoint}") String kinesisEndpoint,
-            @Value("${aws.region:eu-west-1}") String awsRegion,
+            @Value("${aws.region}") String awsRegion,
             @Value("${kockpit.audit.stream.kinesis.timeout.connection:5000}") int connectionTimeoutMs,
             @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}") int socketTimeoutMs
     ) {
@@ -34,14 +33,36 @@ public class KinesisStreamConfiguration {
                 .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
                 .build();
 
-        return KinesisClient.builder()
+        return KinesisAsyncClient.builder()
                 .endpointOverride(URI.create(kinesisEndpoint))
                 .region(Region.of(awsRegion))
-                .credentialsProvider(credentialsProvider())
+                .credentialsProvider(credentialsProvider)
                 .overrideConfiguration(overrideConfig)
                 .build();
     }
 
+    @Bean
+    DynamoDbAsyncClient dynamoDbClient(
+            AwsCredentialsProvider credentialsProvider,
+            @Value("${kockpit.audit.stream.dynamodb.endpoint}") String dynamoDbEndpoint,
+            @Value("${aws.region}") String awsRegion,
+            @Value("${kockpit.audit.stream.dynamodb.timeout.connection:5000}") int connectionTimeoutMs,
+            @Value("${kockpit.audit.stream.dynamodb.timeout.socket:30000}") int socketTimeoutMs
+    ) {
+        ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
+                .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
+                .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
+                .build();
+
+        return DynamoDbAsyncClient.builder()
+                .endpointOverride(URI.create(dynamoDbEndpoint))
+                .region(Region.of(awsRegion))
+                .credentialsProvider(credentialsProvider)
+                .overrideConfiguration(overrideConfig)
+                .build();
+    }
+
+    @Bean
     AwsCredentialsProvider credentialsProvider() {
         // EC2 instance role -> InstanceProfileCredentialsProvider.builder().build()
         // ECS task role -> ContainerProvider.builder().build()
@@ -49,18 +70,26 @@ public class KinesisStreamConfiguration {
     }
 
     @Bean
+    KclRecordProcessorFactory kclRecordProcessorFactory(ApplicationEventPublisher applicationEventPublisher) {
+        return new KclRecordProcessorFactory(applicationEventPublisher);
+    }
+
+    @Bean
     KinesisStreamListener kinesisStreamListener(
-            KinesisClient kinesisClient,
-            ApplicationEventPublisher applicationEventPublisher,
-            @Value("${kockpit.audit.stream.kinesis.stream_name}") String streamName
-            ) {
+            KinesisAsyncClient kinesisClient,
+            DynamoDbAsyncClient dynamoDbClient,
+            KclRecordProcessorFactory recordProcessorFactory,
+            @Value("${kockpit.audit.stream.kinesis.stream_name}") String streamName,
+            @Value("${kockpit.audit.stream.kinesis.application_name}") String applicationName,
+            @Value("${kockpit.audit.stream.kinesis.workerIdentifier:#{T(java.util.UUID).randomUUID().toString()}}") String workerIdentifier
+    ) {
         return new KinesisStreamListener(
                 kinesisClient,
-                applicationEventPublisher,
-                new ObjectMapper()
-                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                        .registerModule(new JavaTimeModule()),
-                streamName
+                dynamoDbClient,
+                recordProcessorFactory,
+                streamName,
+                applicationName,
+                workerIdentifier
         );
     }
 
