@@ -2,6 +2,7 @@ package org.kockpit.audit.notification.kinesis;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.api.AuditReportNotificationService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,7 +27,7 @@ public class KinesisAuditServiceAutoConfiguration {
   @Bean
   AuditReportNotificationService kinesisAuditReportNotificationService(
           RecordTransformer recordTransformer,
-          KinesisAsyncClient kinesisClient,
+          @Qualifier("kinesisProducerClient") KinesisAsyncClient kinesisClient,
           @Value("${kockpit.audit.notification.kinesis.stream_name}") String streamName
   ) {
       return new KinesisAuditReportNotificationService(kinesisClient, streamName, recordTransformer);
@@ -44,7 +45,7 @@ public class KinesisAuditServiceAutoConfiguration {
       return new DefaultRecordTransformer(recordPartitioner);
   }
 
-  @Bean
+  @Bean("kinesisProducerClient")
   KinesisAsyncClient kinesisAsyncClient(
           @Value("${aws.region}") String regionString,
           @Value("${kockpit.audit.notification.kinesis.endpoint:}") String kinesisEndpoint
