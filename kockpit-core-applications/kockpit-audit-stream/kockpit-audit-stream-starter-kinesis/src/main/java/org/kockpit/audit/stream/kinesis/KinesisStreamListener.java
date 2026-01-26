@@ -4,6 +4,7 @@ import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
+import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 import software.amazon.kinesis.common.ConfigsBuilder;
@@ -15,6 +16,7 @@ public class KinesisStreamListener {
 
     private final KinesisAsyncClient kinesisClient;
     private final DynamoDbAsyncClient dynamoDbClient;
+    private final CloudWatchAsyncClient cloudWatchClient;
     private final KclRecordProcessorFactory recordProcessorFactory;
     private final String streamName;
     private final String applicationName;
@@ -33,7 +35,7 @@ public class KinesisStreamListener {
                 applicationName,
                 kinesisClient,
                 dynamoDbClient,
-                null,
+                cloudWatchClient,
                 workerIdentifier,
                 recordProcessorFactory
             );
