@@ -30,11 +30,7 @@ public class KockpitStreamApplication implements ApplicationListener<AuditConsum
             log.error("No AuditConsumer registered!");
             throw new RuntimeException("No AuditConsumer registered!");
         } else {
-            consumerList.forEach(consumer -> log.info("""
-            \n
-                - Starting consumer {}
-            """, consumer.getClass().getSimpleName()
-            ));
+            consumerList.forEach(consumer -> log.info("➡️ Starting consumer {}", consumer.getClass().getSimpleName()));
         }
     }
 

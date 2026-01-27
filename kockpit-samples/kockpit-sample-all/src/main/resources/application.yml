@@ -37,6 +37,8 @@ kockpit:
       async-delay-ms: 60000
       kafka:
         topic: audits
+      kinesis:
+        stream_name: auditstream
 
   feature-flipping:
     client:

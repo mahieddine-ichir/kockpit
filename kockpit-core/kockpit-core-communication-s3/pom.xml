@@ -7,6 +7,18 @@
     </parent>
     <artifactId>kockpit-core-communication-s3</artifactId>
     <name>Kockpit Core Communication S3</name>
+    <dependencyManagement>
+        <dependencies>
+            <!-- AWS SDK BOM for version consistency (compatible with KCL 3.1.2) -->
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.41.10</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -26,7 +38,6 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
-            <version>2.20.26</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

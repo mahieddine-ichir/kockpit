@@ -1,5 +1,6 @@
 package org.kockpit.audit.httpexchange;
 
+import lombok.RequiredArgsConstructor;
 import org.kockpit.audit.api.AuditorEventService;
 import org.kockpit.audit.httpexchange.obfuscator.AuditObfuscator;
 import org.springframework.beans.BeansException;
@@ -8,18 +9,12 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class AuditRestTemplateBeanPostProcessor implements BeanPostProcessor {
 
   private final AuditorEventService auditorEvents;
   private final List<AuditObfuscator> bodyAuditObfuscators;
   private final boolean filterAuthorizationHeader;
-
-  public AuditRestTemplateBeanPostProcessor(
-      AuditorEventService auditorEvents, List<AuditObfuscator> bodyAuditObfuscators, boolean filterAuthorizationHeader) {
-    this.auditorEvents = auditorEvents;
-    this.bodyAuditObfuscators = bodyAuditObfuscators;
-    this.filterAuthorizationHeader = filterAuthorizationHeader;
-  }
 
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
