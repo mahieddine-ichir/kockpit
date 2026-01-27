@@ -1,7 +1,7 @@
 package org.kockpit.audit.stream.kinesis;
 
+import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.kockpit.audit.stream.kinesis.coordination.DynamoDbShardCoordinator;
 import org.kockpit.audit.stream.kinesis.coordination.LeaseHeartbeatService;
 import org.springframework.beans.factory.annotation.Qualifier;
