@@ -17,6 +17,7 @@ import software.amazon.awssdk.services.kinesis.model.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class KinesisStreamProcessor {
     private volatile boolean initialized = false;
     private final AtomicLong lastShardAcquisition = new AtomicLong(0);
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelayString = "${kockpit.audit.stream.kinesis.read_interval_ms:5000}")
     public void read() {
         if (!initialized) {
             initializeCoordination();
@@ -82,9 +83,19 @@ public class KinesisStreamProcessor {
         log.info("✅ Initializing DynamoDB coordination for stream: {} with application: {}", streamName, applicationName);
 
         shardCoordinator.ensureTableExists()
+                .thenCompose(v -> {
+                    // Add a small delay to ensure table is fully ready
+                    return CompletableFuture.runAsync(() -> {
+                        try {
+                            Thread.sleep(2000); // 2 second delay
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    });
+                })
                 .thenRun(() -> {
                     initialized = true;
-                    // Trigger immediate shard acquisition after initialization
+                    // Trigger immediate shard acquisition after table is ready
                     lastShardAcquisition.set(0);
                     log.info("✅ DynamoDB coordination initialized successfully");
                 })
