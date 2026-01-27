@@ -45,10 +45,7 @@ public class OpensearchAuditConsumerConfiguration {
             RestHighLevelClient restHighLevelClient,
             @Value("${kockpit.audit.stream.opensearch.index_suffix}") String indexSuffix
             ) {
-        log.info("""
-        \n
-            - OpenSearch index suffix: {}
-        """, indexSuffix);
+        log.info("➡️ OpenSearch index suffix: {}", indexSuffix);
         return new OpensearchV3IndexManager(restHighLevelClient);
     }
 
@@ -94,10 +91,7 @@ public class OpensearchAuditConsumerConfiguration {
             });
         }
 
-        log.info("""
-        \n
-            - OpenSearch endpoints: {}
-        """, endpoints);
+        log.info("➡️ OpenSearch endpoints: {}", endpoints);
         return new RestHighLevelClient(builder);
     }
 

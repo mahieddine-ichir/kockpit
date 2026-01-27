@@ -18,9 +18,7 @@ public class HttpExchangeAudit extends AbstractAuditEvent {
   private HttpAuditedResponse httpAuditedResponse;
 
   public static void logHttpExchange(HttpExchangeAudit event) {
-    log.debug("""
-        method: {}, request: {}, duration:{}, httpStatus: {}
-        """,
+    log.trace("method: {}, request: {}, duration:{}, httpStatus: {}",
         event.getHttpAuditedRequest().getMethod(),
         event.getHttpAuditedRequest().getUri(),
         event.getEndTime() - event.getStartTime(),

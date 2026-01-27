@@ -25,7 +25,7 @@ public class S3CommunicationAutoConfiguration {
     @Bean
     Publisher s3Publisher(
             S3Client s3Client,
-            @Value("${kockpit.sdk.aws.s3.bucket}") String bucketName
+            @Value("${kockpit.aws.s3.bucket}") String bucketName
     ) {
         return new S3Publisher(s3Client, bucketName, objectMapper());
     }
@@ -33,7 +33,7 @@ public class S3CommunicationAutoConfiguration {
     @Bean
     Consumer s3Consumer(
             S3Client s3Client,
-            @Value("${kockpit.sdk.aws.s3.bucket}") String bucketName
+            @Value("${kockpit.aws.s3.bucket}") String bucketName
     ) {
         return new S3Consumer(s3Client, bucketName, objectMapper());
     }
@@ -51,7 +51,7 @@ public class S3CommunicationAutoConfiguration {
     @Bean
     @Primary
     S3Client s3Client(
-            @Value("${kockpit.sdk.aws.region}") String region
+            @Value("${aws.region}") String region
     ) {
         return S3Client.builder()
                 .region(Region.of(region))

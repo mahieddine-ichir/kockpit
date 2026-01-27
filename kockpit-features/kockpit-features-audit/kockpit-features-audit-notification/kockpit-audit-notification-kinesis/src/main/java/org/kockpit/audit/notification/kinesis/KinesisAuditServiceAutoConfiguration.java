@@ -1,6 +1,7 @@
 package org.kockpit.audit.notification.kinesis;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.kockpit.audit.api.AuditReportNotificationService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 
 import java.net.URI;
+import java.util.Optional;
 
 @AutoConfiguration
 @ConditionalOnProperty(
@@ -30,6 +32,7 @@ public class KinesisAuditServiceAutoConfiguration {
           @Qualifier("kinesisProducerClient") KinesisAsyncClient kinesisClient,
           @Value("${kockpit.audit.notification.kinesis.stream_name}") String streamName
   ) {
+      log.info("➡️ Kinesis stream name: {}", streamName);
       return new KinesisAuditReportNotificationService(kinesisClient, streamName, recordTransformer);
   }
 
@@ -48,20 +51,26 @@ public class KinesisAuditServiceAutoConfiguration {
   @Bean("kinesisProducerClient")
   KinesisAsyncClient kinesisAsyncClient(
           @Value("${aws.region}") String regionString,
-          @Value("${kockpit.audit.notification.kinesis.endpoint:}") String kinesisEndpoint
+          @Value("${kockpit.audit.notification.kinesis.endpoint:}") Optional<String> kinesisEndpoint
   ) {
       Region region = Region.of(regionString);
-      if (kinesisEndpoint == null || kinesisEndpoint.isEmpty()) {
-          return KinesisAsyncClient.builder()
-                  .credentialsProvider(credentialsProvider())
-                  .region(region)
-                  .build();
-      } else {
-          return KinesisAsyncClient.builder()
-                  .endpointOverride(URI.create(kinesisEndpoint))
-                  .region(region)
-                  .build();
-      }
+      return kinesisEndpoint
+              .map(String::trim)
+              .filter(StringUtils::isNotEmpty)
+              .map(s -> {
+                  log.info("➡️ Kinesis endpoint: {}", s);
+                  return KinesisAsyncClient.builder()
+                          .endpointOverride(URI.create(s))
+                          .region(region)
+                          .credentialsProvider(credentialsProvider())
+                          .build();
+              }).orElseGet(() -> {
+                  log.info("➡️ Initialize Kinesis client using AWS Credentials");
+                  return KinesisAsyncClient.builder()
+                          .credentialsProvider(credentialsProvider())
+                          .region(region)
+                          .build();
+      });
   }
 
   AwsCredentialsProvider credentialsProvider() {

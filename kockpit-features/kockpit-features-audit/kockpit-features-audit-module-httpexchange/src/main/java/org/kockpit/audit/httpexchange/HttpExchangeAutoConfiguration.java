@@ -55,8 +55,7 @@ public class HttpExchangeAutoConfiguration {
   AuditClientHttpRequestInterceptor auditClientHttpRequestInterceptor(
       AuditorEventService auditorEventService,
       @Autowired(required = false) List<AuditObfuscator> bodyAuditObfuscators) {
-    return new AuditClientHttpRequestInterceptor(
-        auditorEventService, bodyAuditObfuscators, filterAuthorizationHeader);
+    return new AuditClientHttpRequestInterceptor(auditorEventService, bodyAuditObfuscators, filterAuthorizationHeader);
   }
 
   @Bean
@@ -68,7 +67,6 @@ public class HttpExchangeAutoConfiguration {
   AuditRestTemplateBeanPostProcessor auditRestTemplateBeanPostProcessor(
       AuditorEventService auditorEventService,
       @Autowired(required = false) List<AuditObfuscator> bodyAuditObfuscators) {
-    return new AuditRestTemplateBeanPostProcessor(
-        auditorEventService, bodyAuditObfuscators, filterAuthorizationHeader);
+    return new AuditRestTemplateBeanPostProcessor(auditorEventService, bodyAuditObfuscators, filterAuthorizationHeader);
   }
 }

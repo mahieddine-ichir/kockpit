@@ -1,8 +1,10 @@
 package org.kockpit.audit.stream.kinesis;
 
+import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.stream.kinesis.coordination.DynamoDbShardCoordinator;
+import org.kockpit.audit.stream.kinesis.coordination.LeaseHeartbeatService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -17,25 +19,23 @@ import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 
 import java.net.URI;
 import java.time.Duration;
+import java.util.Optional;
 
 @AutoConfiguration
 @EnableAsync
+@Slf4j
 public class KinesisStreamConfiguration {
 
     @Bean("kinesisConsumerClient")
     KinesisAsyncClient amazonKinesis(
-            @Value("${kockpit.audit.stream.kinesis.endpoint:}") String kinesisEndpoint,
+            @Value("${kockpit.audit.stream.kinesis.endpoint:}") Optional<String> kinesisEndpointOptional,
             @Value("${aws.region}") String awsRegion,
             @Value("${kockpit.audit.stream.kinesis.timeout.connection:5000}") int connectionTimeoutMs,
             @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}") int socketTimeoutMs
     ) {
         Region region = Region.of(awsRegion);
-        if (kinesisEndpoint == null || kinesisEndpoint.isEmpty()) {
-            return KinesisAsyncClient.builder()
-                    .region(region)
-                    .credentialsProvider(credentialsProvider())
-                    .build();
-        } else {
+        return kinesisEndpointOptional.map(kinesisEndpoint -> {
+            log.info("➡️ Kinesis endpoint: {}", kinesisEndpoint);
             ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
                     .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
                     .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
@@ -46,22 +46,24 @@ public class KinesisStreamConfiguration {
                     .region(region)
                     .overrideConfiguration(overrideConfig)
                     .build();
-        }
+        }).orElseGet(() -> {
+            log.info("➡️ Initialize Kinesis client using AWS Credentials");
+            return KinesisAsyncClient.builder()
+                    .region(region)
+                    .credentialsProvider(credentialsProvider())
+                    .build();
+        });
     }
 
     @Bean
     DynamoDbAsyncClient dynamoDbClient(
-            @Value("${kockpit.audit.stream.dynamodb.endpoint:}") String dynamoDbEndpoint,
+            @Value("${kockpit.audit.stream.dynamodb.endpoint:}") Optional<String> dynamoDbEndpointOptional,
             @Value("${aws.region}") String awsRegion,
             @Value("${kockpit.audit.stream.dynamodb.timeout.connection:5000}") int connectionTimeoutMs,
             @Value("${kockpit.audit.stream.dynamodb.timeout.socket:30000}") int socketTimeoutMs
     ) {
-        if (dynamoDbEndpoint == null || dynamoDbEndpoint.isEmpty()) {
-            return DynamoDbAsyncClient.builder()
-                    .region(Region.of(awsRegion))
-                    .credentialsProvider(credentialsProvider())
-                    .build();
-        } else {
+        return dynamoDbEndpointOptional.map(dynamoDbEndpoint -> {
+            log.info("➡️ DynamoDb endpoint: {}", dynamoDbEndpoint);
             ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
                     .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
                     .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
@@ -72,22 +74,24 @@ public class KinesisStreamConfiguration {
                     .region(Region.of(awsRegion))
                     .overrideConfiguration(overrideConfig)
                     .build();
-        }
+        }).orElseGet(() -> {
+            log.info("➡️ Initialize DynamoDb client using AWS Credentials");
+            return DynamoDbAsyncClient.builder()
+                    .region(Region.of(awsRegion))
+                    .credentialsProvider(credentialsProvider())
+                    .build();
+        });
     }
 
     @Bean
     CloudWatchAsyncClient cloudWatchClient(
-            @Value("${kockpit.audit.stream.cloudwatch.endpoint:}") String cloudWatchEndpoint,
+            @Value("${kockpit.audit.stream.cloudwatch.endpoint:}") Optional<String> cloudWatchEndpointOptional,
             @Value("${aws.region}") String awsRegion,
             @Value("${kockpit.audit.stream.cloudwatch.timeout.connection:5000}") int connectionTimeoutMs,
             @Value("${kockpit.audit.stream.cloudwatch.timeout.socket:30000}") int socketTimeoutMs
     ) {
-        if (cloudWatchEndpoint == null || cloudWatchEndpoint.isEmpty()) {
-            return CloudWatchAsyncClient.builder()
-                    .region(Region.of(awsRegion))
-                    .credentialsProvider(credentialsProvider())
-                    .build();
-        } else {
+        return cloudWatchEndpointOptional.map(cloudWatchEndpoint -> {
+            log.info("➡️ CloudWatch endpoint: {}", cloudWatchEndpoint);
             ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
                     .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
                     .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
@@ -98,7 +102,13 @@ public class KinesisStreamConfiguration {
                     .region(Region.of(awsRegion))
                     .overrideConfiguration(overrideConfig)
                     .build();
-        }
+        }).orElseGet(() -> {
+            log.info("➡️ Initialize CloudWatch client using AWS Credentials");
+            return CloudWatchAsyncClient.builder()
+                    .region(Region.of(awsRegion))
+                    .credentialsProvider(credentialsProvider())
+                    .build();
+        });
     }
 
     AwsCredentialsProvider credentialsProvider() {
@@ -108,33 +118,44 @@ public class KinesisStreamConfiguration {
     }
 
     @Bean
-    KclRecordProcessorFactory kclRecordProcessorFactory(ApplicationEventPublisher applicationEventPublisher) {
-        return new KclRecordProcessorFactory(applicationEventPublisher);
+    DynamoDbShardCoordinator shardCoordinator(
+            DynamoDbAsyncClient dynamoDbClient,
+            @Value("${kockpit.audit.stream.kinesis.stream_name}") String streamName,
+            @Value("${kockpit.audit.stream.kinesis.application_name}") String applicationName,
+            @Value("${kockpit.audit.stream.kinesis.worker_id:#{T(java.util.UUID).randomUUID().toString()}}") String workerId,
+            @Value("${kockpit.audit.stream.kinesis.lease_duration:PT30S}") Duration leaseDuration
+    ) {
+        String tableName = streamName + "-" + applicationName + "-coordination";
+        return new DynamoDbShardCoordinator(dynamoDbClient, tableName, applicationName, workerId, leaseDuration);
     }
 
     @Bean
-    KinesisStreamListener kinesisStreamListener(
-            @Qualifier("kinesisConsumerClient") KinesisAsyncClient kinesisClient,
-            DynamoDbAsyncClient dynamoDbClient,
-            CloudWatchAsyncClient cloudWatchClient,
-            KclRecordProcessorFactory recordProcessorFactory,
+    LeaseHeartbeatService leaseHeartbeatService(DynamoDbShardCoordinator shardCoordinator) {
+        return new LeaseHeartbeatService(shardCoordinator);
+    }
+
+    @Bean
+    KinesisStreamProcessor kinesisStreamProcessor(
+            @Qualifier("kinesisConsumerClient") KinesisAsyncClient kinesisAsyncClient,
             @Value("${kockpit.audit.stream.kinesis.stream_name}") String streamName,
             @Value("${kockpit.audit.stream.kinesis.application_name}") String applicationName,
-            @Value("${kockpit.audit.stream.kinesis.workerIdentifier:#{T(java.util.UUID).randomUUID().toString()}}") String workerIdentifier
+            @Value("${kockpit.audit.stream.kinesis.record_limit:100}") int recordLimit,
+            @Value("${kockpit.audit.stream.kinesis.shard_acquisition_interval_ms:30000}") long shardAcquisitionIntervalMs,
+            ApplicationEventPublisher applicationEventPublisher,
+            DynamoDbShardCoordinator shardCoordinator,
+            LeaseHeartbeatService heartbeatService
     ) {
-        return new KinesisStreamListener(
-                kinesisClient,
-                dynamoDbClient,
-                cloudWatchClient,
-                recordProcessorFactory,
+        return new KinesisStreamProcessor(
+                kinesisAsyncClient,
                 streamName,
                 applicationName,
-                workerIdentifier
+                new KclRecordProcessor(applicationEventPublisher),
+                applicationEventPublisher,
+                recordLimit,
+                shardCoordinator,
+                heartbeatService,
+                shardAcquisitionIntervalMs
         );
     }
 
-    @Bean
-    public CommandLineRunner initKinesis(KinesisStreamListener listener) {
-        return args -> listener.startAsync();
-    }
 }
