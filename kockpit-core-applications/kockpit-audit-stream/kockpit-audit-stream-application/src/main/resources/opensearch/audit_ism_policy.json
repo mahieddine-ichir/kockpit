@@ -23,7 +23,7 @@
           {
             "state_name": "delete",
             "conditions": {
-              "min_index_age": "${delete_min_index_age}"
+              "min_index_age": "5d"
             }
           }
         ]
