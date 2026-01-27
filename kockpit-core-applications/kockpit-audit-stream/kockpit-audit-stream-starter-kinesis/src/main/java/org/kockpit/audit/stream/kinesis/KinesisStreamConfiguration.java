@@ -1,6 +1,7 @@
 package org.kockpit.audit.stream.kinesis;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.kockpit.audit.stream.kinesis.coordination.DynamoDbShardCoordinator;
 import org.kockpit.audit.stream.kinesis.coordination.LeaseHeartbeatService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,25 +35,28 @@ public class KinesisStreamConfiguration {
             @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}") int socketTimeoutMs
     ) {
         Region region = Region.of(awsRegion);
-        return kinesisEndpointOptional.map(kinesisEndpoint -> {
-            log.info("➡️ Kinesis endpoint: {}", kinesisEndpoint);
-            ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
-                    .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
-                    .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
-                    .build();
+        return kinesisEndpointOptional
+                .map(String::trim)
+                .filter(StringUtils::isNotEmpty)
+                .map(kinesisEndpoint -> {
+                    log.info("➡️ Kinesis endpoint: {}", kinesisEndpoint);
+                    ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
+                            .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
+                            .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
+                            .build();
 
-            return KinesisAsyncClient.builder()
-                    .endpointOverride(URI.create(kinesisEndpoint))
-                    .region(region)
-                    .overrideConfiguration(overrideConfig)
-                    .build();
-        }).orElseGet(() -> {
-            log.info("➡️ Initialize Kinesis client using AWS Credentials");
-            return KinesisAsyncClient.builder()
-                    .region(region)
-                    .credentialsProvider(credentialsProvider())
-                    .build();
-        });
+                    return KinesisAsyncClient.builder()
+                            .endpointOverride(URI.create(kinesisEndpoint))
+                            .region(region)
+                            .overrideConfiguration(overrideConfig)
+                            .build();
+                }).orElseGet(() -> {
+                    log.info("➡️ Initialize Kinesis client using AWS Credentials");
+                    return KinesisAsyncClient.builder()
+                            .region(region)
+                            .credentialsProvider(credentialsProvider())
+                            .build();
+                });
     }
 
     @Bean
@@ -62,25 +66,28 @@ public class KinesisStreamConfiguration {
             @Value("${kockpit.audit.stream.dynamodb.timeout.connection:5000}") int connectionTimeoutMs,
             @Value("${kockpit.audit.stream.dynamodb.timeout.socket:30000}") int socketTimeoutMs
     ) {
-        return dynamoDbEndpointOptional.map(dynamoDbEndpoint -> {
-            log.info("➡️ DynamoDb endpoint: {}", dynamoDbEndpoint);
-            ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
-                    .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
-                    .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
-                    .build();
+        return dynamoDbEndpointOptional
+                .map(String::trim)
+                .filter(StringUtils::isNotEmpty)
+                .map(dynamoDbEndpoint -> {
+                    log.info("➡️ DynamoDb endpoint: {}", dynamoDbEndpoint);
+                    ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
+                            .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
+                            .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
+                            .build();
 
-            return DynamoDbAsyncClient.builder()
-                    .endpointOverride(URI.create(dynamoDbEndpoint))
-                    .region(Region.of(awsRegion))
-                    .overrideConfiguration(overrideConfig)
-                    .build();
-        }).orElseGet(() -> {
-            log.info("➡️ Initialize DynamoDb client using AWS Credentials");
-            return DynamoDbAsyncClient.builder()
-                    .region(Region.of(awsRegion))
-                    .credentialsProvider(credentialsProvider())
-                    .build();
-        });
+                    return DynamoDbAsyncClient.builder()
+                            .endpointOverride(URI.create(dynamoDbEndpoint))
+                            .region(Region.of(awsRegion))
+                            .overrideConfiguration(overrideConfig)
+                            .build();
+                }).orElseGet(() -> {
+                    log.info("➡️ Initialize DynamoDb client using AWS Credentials");
+                    return DynamoDbAsyncClient.builder()
+                            .region(Region.of(awsRegion))
+                            .credentialsProvider(credentialsProvider())
+                            .build();
+                });
     }
 
     @Bean
@@ -90,25 +97,28 @@ public class KinesisStreamConfiguration {
             @Value("${kockpit.audit.stream.cloudwatch.timeout.connection:5000}") int connectionTimeoutMs,
             @Value("${kockpit.audit.stream.cloudwatch.timeout.socket:30000}") int socketTimeoutMs
     ) {
-        return cloudWatchEndpointOptional.map(cloudWatchEndpoint -> {
-            log.info("➡️ CloudWatch endpoint: {}", cloudWatchEndpoint);
-            ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
-                    .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
-                    .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
-                    .build();
+        return cloudWatchEndpointOptional
+                .map(String::trim)
+                .filter(StringUtils::isNotEmpty)
+                .map(cloudWatchEndpoint -> {
+                    log.info("➡️ CloudWatch endpoint: {}", cloudWatchEndpoint);
+                    ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
+                            .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
+                            .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
+                            .build();
 
-            return CloudWatchAsyncClient.builder()
-                    .endpointOverride(URI.create(cloudWatchEndpoint))
-                    .region(Region.of(awsRegion))
-                    .overrideConfiguration(overrideConfig)
-                    .build();
-        }).orElseGet(() -> {
-            log.info("➡️ Initialize CloudWatch client using AWS Credentials");
-            return CloudWatchAsyncClient.builder()
-                    .region(Region.of(awsRegion))
-                    .credentialsProvider(credentialsProvider())
-                    .build();
-        });
+                    return CloudWatchAsyncClient.builder()
+                            .endpointOverride(URI.create(cloudWatchEndpoint))
+                            .region(Region.of(awsRegion))
+                            .overrideConfiguration(overrideConfig)
+                            .build();
+                }).orElseGet(() -> {
+                    log.info("➡️ Initialize CloudWatch client using AWS Credentials");
+                    return CloudWatchAsyncClient.builder()
+                            .region(Region.of(awsRegion))
+                            .credentialsProvider(credentialsProvider())
+                            .build();
+                });
     }
 
     AwsCredentialsProvider credentialsProvider() {
