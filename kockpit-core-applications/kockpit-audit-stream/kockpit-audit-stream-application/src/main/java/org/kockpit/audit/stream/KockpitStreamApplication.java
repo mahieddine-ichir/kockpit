@@ -6,9 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumer;
 import org.kockpit.audit.stream.api.AuditConsumerEvent;
 import org.kockpit.audit.stream.api.model.AuditReport;
+import org.kockpit.audit.stream.console.ConsoleLogger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -42,5 +45,14 @@ public class KockpitStreamApplication implements ApplicationListener<AuditConsum
     @Override
     public boolean supportsAsyncExecution() {
         return false;
+    }
+
+    @ConditionalOnProperty(
+            value = "kockpit.audit.stream.trace",
+            havingValue = "true"
+    )
+    @Bean
+    ConsoleLogger consoleLogger() {
+        return new ConsoleLogger();
     }
 }

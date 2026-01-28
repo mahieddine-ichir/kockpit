@@ -4,9 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumer;
 import org.kockpit.audit.stream.api.model.AuditReport;
-import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
 public class ConsoleLogger implements AuditConsumer {
 
