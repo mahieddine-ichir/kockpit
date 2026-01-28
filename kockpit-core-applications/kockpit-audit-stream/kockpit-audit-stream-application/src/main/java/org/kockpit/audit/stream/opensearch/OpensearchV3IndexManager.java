@@ -71,14 +71,30 @@ public class OpensearchV3IndexManager {
 
             Request createRequest = new Request("PUT", "_plugins/_ism/policies/" + policyId);
             createRequest.setJsonEntity(policyJson);
+
+            // Log AWS signing details
+            log.trace("Request URI: {}", createRequest.getEndpoint());
+            log.trace("Request method: {}", createRequest.getMethod());
+            log.trace("Request entity: {}", createRequest.getEntity() != null ? "present" : "null");
+            log.trace("Request options: {}", createRequest.getOptions());
+
+            // Log headers if available
+            if (createRequest.getOptions() != null && createRequest.getOptions().getHeaders() != null) {
+                createRequest.getOptions().getHeaders().forEach(header ->
+                    log.trace("Request header: {} = {}", header.getName(),
+                        header.getName().toLowerCase().contains("auth") ? "[REDACTED]" : header.getValue())
+                );
+            } else {
+                log.trace("No custom headers set on request");
+            }
+
             Response createResponse = client.getLowLevelClient().performRequest(createRequest);
             log.info("✅ Created policy {} -> response = {}", policyId, createResponse.getStatusLine());
         } catch (Exception e) {
             log.error("❌ Failed to create ISM policy {} with TTL {}d: {}", policyId, ttl, e.getMessage(), e);
 
             // Log response body if it's a ResponseException to see the actual error
-            if (e instanceof org.opensearch.client.ResponseException) {
-                org.opensearch.client.ResponseException responseException = (org.opensearch.client.ResponseException) e;
+            if (e instanceof org.opensearch.client.ResponseException responseException) {
                 try {
                     String responseBody = new String(responseException.getResponse().getEntity().getContent().readAllBytes());
                     log.error("❌ OpenSearch response body: {}", responseBody);

@@ -1,6 +1,7 @@
 package org.kockpit.aws.opensearch;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.async.AsyncExecCallback;
 import org.apache.hc.client5.http.async.AsyncExecChain;
 import org.apache.hc.client5.http.async.AsyncExecChainHandler;
@@ -33,6 +34,7 @@ import static software.amazon.awssdk.http.ContentStreamProvider.fromInputStreamS
 import static software.amazon.awssdk.http.auth.aws.signer.SignerConstant.X_AMZ_CONTENT_SHA256;
 
 @RequiredArgsConstructor
+@Slf4j
 public final class AwsRequestSigningApacheV5Interceptor implements ExecChainHandler, AsyncExecChainHandler {
 
     private final RequestSigner signer;
@@ -60,23 +62,44 @@ public final class AwsRequestSigningApacheV5Interceptor implements ExecChainHand
 
     private void signRequest(HttpRequest request,
                              Supplier<InputStream> contentStreamSupplier) throws IOException {
+        try {
+            log.trace("🔐 Starting AWS request signing for: {} {}", request.getMethod(), request.getUri());
+        } catch (Exception e) {
+            log.trace("🔐 Starting AWS request signing for: {} [URI UNRESOLVED]", request.getMethod());
+        }
+
         // copy Apache HttpRequest to AWS request
         SdkHttpFullRequest.Builder requestBuilder = SdkHttpFullRequest.builder()
                 .method(SdkHttpMethod.fromValue(request.getMethod()))
                 .uri(buildUri(request));
+
+        try {
+            log.trace("🔐 Original request URI: {}", request.getUri());
+        } catch (Exception e) {
+            log.trace("🔐 Original request URI: [UNRESOLVED]");
+        }
+        log.trace("🔐 Original request method: {}", request.getMethod());
 
         if (contentStreamSupplier != null) {
             requestBuilder.contentStreamProvider(fromInputStreamSupplier(contentStreamSupplier));
         }
 
         Map<String, List<String>> headers = headerArrayToMap(request.getHeaders());
+        log.trace("🔐 Original headers before signing: {}", headers);
+
         // adds a hash of the request payload when signing
         headers.put(X_AMZ_CONTENT_SHA256, singletonList("required"));
         requestBuilder.headers(headers);
+
+        log.trace("🔐 About to sign request with SDK");
         SignedRequest signedRequest = signer.signRequest(requestBuilder.build());
+
+        log.trace("🔐 Request signed successfully");
+        log.trace("🔐 Signed request headers: {}", signedRequest.request().headers());
 
         // copy everything back
         request.setHeaders(mapToHeaderArray(signedRequest.request().headers()));
+        log.trace("🔐 Final signed headers applied to request");
     }
 
     private static Supplier<InputStream> getContentStreamSupplier(HttpRequest request) throws IOException {
