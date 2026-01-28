@@ -42,7 +42,10 @@ public class OpensearchV3IndexManager {
     @SneakyThrows
     void createISMPolicy(Integer ttl, String policyId) {
         // First, test ISM plugin availability
-        testISMAvailability();
+        if (!isISMAvailable()) {
+            log.warn("⚠️ ISM plugin not available - skipping ISM policy creation. Indices will need manual lifecycle management.");
+            return;
+        }
 
         // Check if policy already exists
         try {
@@ -68,34 +71,36 @@ public class OpensearchV3IndexManager {
     }
 
     @SneakyThrows
-    private void testISMAvailability() {
+    private boolean isISMAvailable() {
         log.info("🔍 Testing OpenSearch ISM plugin availability...");
 
         try {
-            // Test basic cluster connectivity
+            // Test basic cluster connectivity first
             Request clusterRequest = new Request("GET", "/");
             Response clusterResponse = client.getLowLevelClient().performRequest(clusterRequest);
             log.info("✅ OpenSearch cluster reachable: {}", clusterResponse.getStatusLine());
-
-            // Test ISM plugin - try both new and legacy paths
-            try {
-                Request ismRequest = new Request("GET", "_plugins/_ism");
-                Response ismResponse = client.getLowLevelClient().performRequest(ismRequest);
-                log.info("✅ ISM plugin available at /_plugins/_ism: {}", ismResponse.getStatusLine());
-            } catch (Exception e) {
-                log.warn("⚠️ ISM not available at /_plugins/_ism, trying legacy path...");
-                try {
-                    Request legacyRequest = new Request("GET", "_opendistro/_ism");
-                    Response legacyResponse = client.getLowLevelClient().performRequest(legacyRequest);
-                    log.info("✅ ISM plugin available at /_opendistro/_ism: {}", legacyResponse.getStatusLine());
-                } catch (Exception e2) {
-                    log.error("❌ ISM plugin not available at either path. Error: {}", e2.getMessage());
-                    throw new RuntimeException("ISM plugin not available", e2);
-                }
-            }
         } catch (Exception e) {
-            log.error("❌ OpenSearch connectivity test failed: {}", e.getMessage());
-            throw e;
+            log.error("❌ OpenSearch cluster unreachable: {}", e.getMessage());
+            throw new RuntimeException("OpenSearch cluster unreachable", e);
+        }
+
+        // Test ISM plugin - try both new and legacy paths
+        try {
+            Request ismRequest = new Request("GET", "_plugins/_ism");
+            Response ismResponse = client.getLowLevelClient().performRequest(ismRequest);
+            log.info("✅ ISM plugin available at /_plugins/_ism: {}", ismResponse.getStatusLine());
+            return true;
+        } catch (Exception e) {
+            log.warn("⚠️ ISM not available at /_plugins/_ism, trying legacy path...");
+            try {
+                Request legacyRequest = new Request("GET", "_opendistro/_ism");
+                Response legacyResponse = client.getLowLevelClient().performRequest(legacyRequest);
+                log.info("✅ ISM plugin available at /_opendistro/_ism: {}", legacyResponse.getStatusLine());
+                return true;
+            } catch (Exception e2) {
+                log.warn("⚠️ ISM plugin not available at either path - continuing without lifecycle management");
+                return false;
+            }
         }
     }
 
