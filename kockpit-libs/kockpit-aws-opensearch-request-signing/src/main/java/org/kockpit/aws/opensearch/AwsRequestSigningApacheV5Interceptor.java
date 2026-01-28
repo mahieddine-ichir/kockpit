@@ -147,9 +147,18 @@ public final class AwsRequestSigningApacheV5Interceptor implements ExecChainHand
     }
 
     private static boolean skipHeader(Header header) {
-        return (HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(header.getName())
+        boolean shouldSkip = (HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(header.getName())
                 && "0".equals(header.getValue())) // Strip Content-Length: 0
                 || HttpHeaders.HOST.equalsIgnoreCase(header.getName()); // Host comes from endpoint
+
+        if (shouldSkip) {
+            log.trace("🔐 Skipping header: {} = {}", header.getName(), header.getValue());
+        } else {
+            log.trace("🔐 Including header: {} = {}", header.getName(),
+                header.getName().toLowerCase().contains("auth") ? "[REDACTED]" : header.getValue());
+        }
+
+        return shouldSkip;
     }
 
     private static Header[] mapToHeaderArray(Map<String, List<String>> mapHeaders) {
