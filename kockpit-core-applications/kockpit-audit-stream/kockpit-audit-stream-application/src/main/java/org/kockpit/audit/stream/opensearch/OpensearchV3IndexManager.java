@@ -112,6 +112,10 @@ public class OpensearchV3IndexManager {
             Request createRequest = new Request("PUT", "_plugins/_ism/policies/" + policyId);
             createRequest.setJsonEntity(policyJson);
 
+            RequestOptions.Builder optionsBuilder = RequestOptions.DEFAULT.toBuilder();
+            optionsBuilder.addHeader("Content-Type", "application/json");
+            RequestOptions requestOptions = optionsBuilder.build();
+
             // Log AWS signing details
             log.trace("Request URI: {}", createRequest.getEndpoint());
             log.trace("Request method: {}", createRequest.getMethod());
@@ -119,8 +123,8 @@ public class OpensearchV3IndexManager {
             log.trace("Request options: {}", createRequest.getOptions());
 
             // Log headers if available
-            if (createRequest.getOptions() != null && createRequest.getOptions().getHeaders() != null) {
-                createRequest.getOptions().getHeaders().forEach(header ->
+            if (requestOptions.getHeaders() != null) {
+                requestOptions.getHeaders().forEach(header ->
                     log.trace("Request header: {} = {}", header.getName(),
                         header.getName().toLowerCase().contains("auth") ? "[REDACTED]" : header.getValue())
                 );
@@ -128,6 +132,7 @@ public class OpensearchV3IndexManager {
                 log.trace("No custom headers set on request");
             }
 
+            createRequest.setOptions(requestOptions);
             Response createResponse = client.getLowLevelClient().performRequest(createRequest);
             log.info("✅ Created policy {} -> response = {}", policyId, createResponse.getStatusLine());
         } catch (Exception e) {
