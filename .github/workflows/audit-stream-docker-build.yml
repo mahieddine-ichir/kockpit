@@ -6,6 +6,7 @@ on:
       - main
       - dev
     paths:
+      - 'kockpit-libs/**'
       - 'kockpit-core-applications/kockpit-audit-stream/**'
       - 'kockpit-core-applications/pom.xml'
       - 'pom.xml'
@@ -14,6 +15,7 @@ on:
       - main
       - dev
     paths:
+      - 'kockpit-libs/**'
       - 'kockpit-core-applications/kockpit-audit-stream/**'
       - 'kockpit-core-applications/pom.xml'
       - 'pom.xml'
@@ -52,6 +54,16 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      # Build kockpit-libs if changed (required dependency)
+      - name: Build kockpit-libs if changed
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -q "^kockpit-libs/"; then
+            echo "🔧 kockpit-libs has changes, building it first..."
+            mvn clean install -pl kockpit-libs -am -DskipTests
+          else
+            echo "📦 No changes in kockpit-libs, skipping build"
+          fi
 
       # Build for Kafka
       - name: Build Kafka Stream Application with Maven
