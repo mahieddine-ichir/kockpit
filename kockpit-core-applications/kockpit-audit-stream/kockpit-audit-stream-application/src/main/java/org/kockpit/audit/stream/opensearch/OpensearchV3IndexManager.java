@@ -41,6 +41,9 @@ public class OpensearchV3IndexManager {
 
     @SneakyThrows
     void createISMPolicy(Integer ttl, String policyId) {
+        // First, test ISM plugin availability
+        testISMAvailability();
+
         // Check if policy already exists
         try {
             Request getRequest = new Request("GET", "_plugins/_ism/policies/"+policyId);
@@ -61,6 +64,38 @@ public class OpensearchV3IndexManager {
 
             // Policy doesn't exist, create it
             doCreatePolicy(policyId, ttl, policyJson);
+        }
+    }
+
+    @SneakyThrows
+    private void testISMAvailability() {
+        log.info("🔍 Testing OpenSearch ISM plugin availability...");
+
+        try {
+            // Test basic cluster connectivity
+            Request clusterRequest = new Request("GET", "/");
+            Response clusterResponse = client.getLowLevelClient().performRequest(clusterRequest);
+            log.info("✅ OpenSearch cluster reachable: {}", clusterResponse.getStatusLine());
+
+            // Test ISM plugin - try both new and legacy paths
+            try {
+                Request ismRequest = new Request("GET", "_plugins/_ism");
+                Response ismResponse = client.getLowLevelClient().performRequest(ismRequest);
+                log.info("✅ ISM plugin available at /_plugins/_ism: {}", ismResponse.getStatusLine());
+            } catch (Exception e) {
+                log.warn("⚠️ ISM not available at /_plugins/_ism, trying legacy path...");
+                try {
+                    Request legacyRequest = new Request("GET", "_opendistro/_ism");
+                    Response legacyResponse = client.getLowLevelClient().performRequest(legacyRequest);
+                    log.info("✅ ISM plugin available at /_opendistro/_ism: {}", legacyResponse.getStatusLine());
+                } catch (Exception e2) {
+                    log.error("❌ ISM plugin not available at either path. Error: {}", e2.getMessage());
+                    throw new RuntimeException("ISM plugin not available", e2);
+                }
+            }
+        } catch (Exception e) {
+            log.error("❌ OpenSearch connectivity test failed: {}", e.getMessage());
+            throw e;
         }
     }
 
