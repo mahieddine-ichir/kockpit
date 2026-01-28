@@ -41,9 +41,6 @@ public class OpensearchV3IndexManager {
 
     @SneakyThrows
     void createISMPolicy(Integer ttl, String policyId) {
-        String policyJson = new String(this.getClass().getResourceAsStream("/opensearch/audit_ism_policy.json").readAllBytes())
-                .replace("${delete_min_index_age}", ttl+"d");
-
         // Check if policy already exists
         try {
             Request getRequest = new Request("GET", "_plugins/_ism/policies/"+policyId);
@@ -59,11 +56,25 @@ public class OpensearchV3IndexManager {
             log.info("Updated policy {} -> response = {}", policyId, updateResponse.getStatusLine());
              */
         } catch (Exception e) {
+            String policyJson = new String(this.getClass().getResourceAsStream("/opensearch/audit_ism_policy.json").readAllBytes())
+                    .replace("${delete_min_index_age}", ttl+"d");
+
             // Policy doesn't exist, create it
-            Request createRequest = new Request("PUT", "_plugins/_ism/policies/"+policyId);
+            doCreatePolicy(policyId, ttl, policyJson);
+        }
+    }
+
+    private void doCreatePolicy(String policyId, Integer ttl, String policyJson) {
+        try {
+            log.info("➡️ Creating ISM policy with ID: {} and TTL: {}d", policyId, ttl);
+            log.trace("ISM Policy JSON being sent:\n{}", policyJson);
+
+            Request createRequest = new Request("PUT", "_plugins/_ism/policies/" + policyId);
             createRequest.setJsonEntity(policyJson);
             Response createResponse = client.getLowLevelClient().performRequest(createRequest);
-            log.info("Created policy {} -> response = {}", policyId, createResponse.getStatusLine());
+            log.info("✅ Created policy {} -> response = {}", policyId, createResponse.getStatusLine());
+        } catch (Exception e) {
+            log.error("❌ Failed to create ISM policy {} with TTL {}d: {}", policyId, ttl, e.getMessage(), e);
         }
     }
 
