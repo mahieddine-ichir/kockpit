@@ -75,6 +75,17 @@ public class OpensearchV3IndexManager {
             log.info("✅ Created policy {} -> response = {}", policyId, createResponse.getStatusLine());
         } catch (Exception e) {
             log.error("❌ Failed to create ISM policy {} with TTL {}d: {}", policyId, ttl, e.getMessage(), e);
+
+            // Log response body if it's a ResponseException to see the actual error
+            if (e instanceof org.opensearch.client.ResponseException) {
+                org.opensearch.client.ResponseException responseException = (org.opensearch.client.ResponseException) e;
+                try {
+                    String responseBody = new String(responseException.getResponse().getEntity().getContent().readAllBytes());
+                    log.error("❌ OpenSearch response body: {}", responseBody);
+                } catch (Exception bodyException) {
+                    log.error("❌ Could not read response body: {}", bodyException.getMessage());
+                }
+            }
         }
     }
 
