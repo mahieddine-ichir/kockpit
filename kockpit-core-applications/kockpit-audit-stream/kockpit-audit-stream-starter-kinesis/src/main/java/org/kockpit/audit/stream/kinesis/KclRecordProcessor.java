@@ -22,10 +22,10 @@ public class KclRecordProcessor {
         // Check if the data is GZIP compressed by checking the magic number
         // GZIP files start with 0x1f 0x8b
         if (message.length >= 2 && message[0] == (byte) 0x1f && message[1] == (byte) 0x8b) {
-            log.debug("Detected GZIP compressed data, decompressing...");
+            log.trace("Detected GZIP compressed data, decompressing...");
             return decompress(message);
         } else {
-            log.debug("Data is not compressed, converting directly to string");
+            log.trace("Data is not compressed, converting directly to string");
             return new String(message, StandardCharsets.UTF_8);
         }
     }
@@ -42,7 +42,7 @@ public class KclRecordProcessor {
             }
 
             byte[] decompressed = outputStream.toByteArray();
-            log.debug("Decompressed {} bytes to {} bytes", compressedData.length, decompressed.length);
+            log.trace("Decompressed {} bytes to {} bytes", compressedData.length, decompressed.length);
 
             return new String(decompressed, StandardCharsets.UTF_8);
         }
