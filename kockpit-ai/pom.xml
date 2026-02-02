@@ -25,6 +25,7 @@
         </plugins>
     </build>
     <modules>
+        <module>kockpit-ai-mcp-server-aws</module>
         <module>kockpit-ai-mcp-server</module>
     </modules>
 
