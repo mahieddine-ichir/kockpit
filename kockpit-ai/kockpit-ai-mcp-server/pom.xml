@@ -11,7 +11,6 @@
     <name>Kockpit MCP Server</name>
     <properties>
         <spring-ai.version>1.0.1</spring-ai.version>
-        <aws.version>2.41.10</aws.version>
     </properties>
 
     <dependencies>
@@ -96,18 +95,9 @@
             <id>aws</id>
             <dependencies>
                 <dependency>
-                    <groupId>software.amazon.awssdk</groupId>
-                    <artifactId>auth</artifactId>
-                    <version>${aws.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.httpcomponents.client5</groupId>
-                    <artifactId>httpclient5</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.projectlombok</groupId>
-                    <artifactId>lombok</artifactId>
-                    <scope>provided</scope>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-ai-mcp-server-aws</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
         </profile>
