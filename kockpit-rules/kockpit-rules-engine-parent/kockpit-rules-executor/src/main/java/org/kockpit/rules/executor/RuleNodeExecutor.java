@@ -15,13 +15,6 @@ public class RuleNodeExecutor<T> {
 
   private KengineLogStore kengineLogStore;
 
-  public RuleNodeExecutor(KengineLogStore kengineLogStore) {
-    this.kengineLogStore = kengineLogStore;
-  }
-
-  public RuleNodeExecutor() {
-  }
-
   @Setter
   private ActionExecutor<T> actionExecutor = new DefaultActionExecutor<>();
 

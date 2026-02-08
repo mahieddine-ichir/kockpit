@@ -12,45 +12,43 @@ import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 
 @AutoConfiguration
+@ConditionalOnProperty(
+    prefix = "kockpit.audit.rules",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true)
 class KEngineAuditExtensionAutoConfiguration {
 
   @Bean
-  @Primary
-  @ConditionalOnProperty(
-      prefix = "kockpit.sdk.service.audit.rules",
-      name = "disabled",
-      havingValue = "false",
-      matchIfMissing = true)
   AuditedRuleNodeExecutorFactory auditedRuleNodeExecutorFactory(
+          FlowExecutionAuditReportSerializer flowExecutionAuditReportSerializer,
       AuditAttributesAnnotationProcessor auditAttributesAnnotationProcessor,
       AuditorService auditorService,
       AuditorEventService auditorEventService,
-      AuditorKeyValueService auditorKeyValueService,
-      RuleNodeRegistry<?> registry,
-      DetailHandler detailHandler,
-      SdkApplicationProperties sdkApplicationProperties) {
+      AuditorKeyValueService auditorKeyValueService
+  ) {
     return new AuditedRuleNodeExecutorFactory(
         auditAttributesAnnotationProcessor,
         auditorService,
         auditorEventService,
         auditorKeyValueService,
-        new FlowExecutionAuditReportSerializer(
-            registry, detailHandler, new ExecutionEDTDTOConverter(sdkApplicationProperties)
-        )
+        flowExecutionAuditReportSerializer
     );
   }
 
   @Bean
-  @ConditionalOnProperty(
-      prefix = "kockpit.sdk.service.audit.rules",
-      name = "disabled",
-      havingValue = "false",
-      matchIfMissing = true)
-  KEngineFlowsAuditModuleActivator kEngineFlowsAuditModuleActivator(
-      RuleNodeRegistry<?> registry
+  FlowExecutionAuditReportSerializer flowExecutionAuditReportSerializer(
+      RuleNodeRegistry<?> registry,
+      DetailHandler detailHandler,
+      SdkApplicationProperties sdkApplicationProperties
+  ) {
+    return new FlowExecutionAuditReportSerializer(registry, new RuleEngineAudit(detailHandler), new ExecutionEDTDTOConverter(sdkApplicationProperties));
+  }
+
+  @Bean
+  KEngineFlowsAuditModuleActivator kEngineFlowsAuditModuleActivator(RuleNodeRegistry<?> registry
           // fixme , AppConsoleCommunicationService appConsoleCommunicationService
   ) {
   // fixme  return new KEngineFlowsAuditModuleActivator(registry, appConsoleCommunicationService);

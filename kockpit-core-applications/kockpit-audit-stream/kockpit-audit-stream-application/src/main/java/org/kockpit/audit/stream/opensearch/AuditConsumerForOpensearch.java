@@ -16,13 +16,14 @@ import org.kockpit.audit.module.web.response.HttpAuditedResponse;
 import org.kockpit.audit.stream.api.AuditConsumer;
 import org.kockpit.audit.stream.api.model.AuditReport;
 import org.kockpit.sdk.SdkApplicationProperties;
-import org.opensearch.action.bulk.BulkItemResponse;
-import org.opensearch.action.bulk.BulkRequest;
-import org.opensearch.action.bulk.BulkResponse;
-import org.opensearch.action.index.IndexRequest;
-import org.opensearch.client.RequestOptions;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.common.xcontent.XContentType;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.Refresh;
+import org.opensearch.client.opensearch.core.BulkRequest;
+import org.opensearch.client.opensearch.core.BulkResponse;
+import org.opensearch.client.opensearch.core.bulk.BulkOperation;
+import org.opensearch.client.opensearch.core.bulk.IndexOperation;
+import org.opensearch.client.util.ObjectBuilder;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
     // local cache for batch indexing
     private final List<AuditReport> auditReports = new ArrayList<>();
 
-    private final RestHighLevelClient restHighLevelClient;
+    private final OpenSearchClient openSearchClient;
 
     private final OpensearchV3IndexManager opensearchV3IndexManager;
 
@@ -109,9 +110,11 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
                     opensearchV3IndexManager.ensureIndexExists(indexName, aliasWrite, aliasRead, indexPrefix, indexMetadata.getTtl());
 
                     // index requests
-                    BulkRequest bulkRequest = auditIndexRequestsGrouped.stream()
-                            .map(auditIndexRequest -> toIndexRequest(auditIndexRequest, aliasWrite))
-                            .collect(BulkRequest::new, BulkRequest::add, (left, right) -> left.add(right.requests()));
+                    BulkRequest bulkRequest = BulkRequest.of(b -> b
+                            .operations(auditIndexRequestsGrouped.stream()
+                                    .map(auditIndexRequest -> toBulkOperation(auditIndexRequest, aliasWrite))
+                                    .toList())
+                    );
 
                     try {
                         BulkResponse bulkResponse = bulkRequest(bulkRequest);
@@ -147,13 +150,13 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
     }
 
     private void auditResponseOk(BulkResponse bulkResponse) {
-        int status = bulkResponse.status().getStatus();
+        int status = 200; // OpenSearch client doesn't expose HTTP status for successful operations
         auditorKeyValueService.addIndexedKeyValues(List.of(
                 IndexedKeyValue.builder().key("httpStatus").value(""+status).valueInteger(status).build(),
-                IndexedKeyValue.builder().key("itemsSize").valueInteger(bulkResponse.getItems().length).build(),
-                IndexedKeyValue.builder().key("indexDuration").value(""+bulkResponse.getTook().duration()).build(),
-                IndexedKeyValue.builder().key("ingestDuration").value(""+bulkResponse.getIngestTookInMillis()).build(),
-                IndexedKeyValue.builder().key("hasFailures").value(""+bulkResponse.hasFailures()).build()
+                IndexedKeyValue.builder().key("itemsSize").valueInteger(bulkResponse.items().size()).build(),
+                IndexedKeyValue.builder().key("indexDuration").value(""+bulkResponse.took()).build(),
+                IndexedKeyValue.builder().key("ingestDuration").value(""+bulkResponse.ingestTook()).build(),
+                IndexedKeyValue.builder().key("hasFailures").value(""+bulkResponse.errors()).build()
         ));
         auditorEvents.addAuditEvents(WebAuditReportData.TYPE, List.of(
                 WebAuditEvent.builder()
@@ -162,8 +165,8 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
                                 .method("bulk_index")
                                 .build())
                         .httpAuditedResponse(HttpAuditedResponse.builder()
-                                .body(bulkResponse.buildFailureMessage())
-                                .status(bulkResponse.status().getStatus())
+                                .body(bulkResponse.errors() ? "Has failures" : "Success")
+                                .status(200)
                                 .build())
                         .build()
         ));
@@ -201,20 +204,27 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
 
     @SneakyThrows
     private BulkResponse bulkRequest(BulkRequest bulkRequest) {
-        BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-        if (bulkResponse.hasFailures()) {
-            Stream.of(bulkResponse.getItems())
-                    .filter(BulkItemResponse::isFailed)
-                    .forEach(bulkItemResponse -> log.error("Bulk item in error {}", bulkItemResponse.getFailureMessage()));
+        BulkResponse bulkResponse = openSearchClient.bulk(bulkRequest);
+        if (bulkResponse.errors()) {
+            bulkResponse.items().stream()
+                    .filter(item -> item.error() != null)
+                    .forEach(item -> log.error("Bulk item in error {}", item.error().reason()));
         }
         return bulkResponse;
     }
 
     @SneakyThrows
-    private IndexRequest toIndexRequest(AuditReport auditReport, String writeAlias) {
-        return new IndexRequest(writeAlias)
-                .id(isNull(auditReport.getId()) ? auditReport.getRequestId() : auditReport.getId())
-                .source(objectMapper.writeValueAsBytes(auditReport), XContentType.JSON);
+    private BulkOperation toBulkOperation(AuditReport auditReport, String writeAlias) {
+        String documentId = isNull(auditReport.getId()) ? auditReport.getRequestId() : auditReport.getId();
+        JsonNode jsonNode = objectMapper.valueToTree(auditReport);
+
+        return BulkOperation.of(op -> op
+                .index(IndexOperation.of(idx -> idx
+                        .index(writeAlias)
+                        .id(documentId)
+                        .document(jsonNode)
+                ))
+        );
     }
 
 }

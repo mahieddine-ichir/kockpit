@@ -7,23 +7,21 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.client5.http.async.AsyncExecChainHandler;
 import org.apache.hc.core5.http.HttpHost;
 import org.kockpit.audit.api.AuditorEventService;
 import org.kockpit.audit.api.AuditorKeyValueService;
 import org.kockpit.audit.api.AuditorService;
 import org.kockpit.audit.stream.api.AuditConsumer;
 import org.kockpit.sdk.SdkApplicationProperties;
-import org.opensearch.client.RestClient;
-import org.opensearch.client.RestClientBuilder;
-import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.transport.httpclient5.ApacheHttpClient5Transport;
+import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.util.CollectionUtils;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 @AutoConfiguration
@@ -41,17 +39,13 @@ public class OpensearchAuditConsumerConfiguration {
     }
 
     @Bean
-    public OpensearchV3IndexManager opensearchV3IndexManager(
-            RestHighLevelClient restHighLevelClient,
-            @Value("${kockpit.audit.stream.opensearch.index_suffix}") String indexSuffix
-            ) {
-        log.info("➡️ OpenSearch index suffix: {}", indexSuffix);
-        return new OpensearchV3IndexManager(restHighLevelClient);
+    public OpensearchV3IndexManager opensearchV3IndexManager(OpenSearchClient openSearchClient) {
+        return new OpensearchV3IndexManager(openSearchClient);
     }
 
     @Bean("opensearch")
     public AuditConsumer auditConsumer(
-            RestHighLevelClient restHighLevelClient,
+            OpenSearchClient openSearchClient,
             OpensearchV3IndexManager opensearchV3IndexManager,
             AuditorService auditorService, AuditorKeyValueService auditorKeyValueService, AuditorEventService auditorEventService,
             SdkApplicationProperties sdkApplicationProperties,
@@ -59,7 +53,7 @@ public class OpensearchAuditConsumerConfiguration {
             @Value("${kockpit.audit.stream.opensearch.ttl_default_in_days}") Integer ttlDefaultInDays
     ) {
         return new AuditConsumerForOpensearch(
-                restHighLevelClient,
+                openSearchClient,
                 opensearchV3IndexManager,
                 auditorService, auditorKeyValueService, auditorEventService,
                 sdkApplicationProperties,
@@ -69,30 +63,21 @@ public class OpensearchAuditConsumerConfiguration {
         );
     }
 
+    @ConditionalOnMissingBean
     @Bean
-    RestHighLevelClient openSearchIndexer(
-            @Value("${kockpit.audit.stream.opensearch.endpoints}") String endpoints,
-            List<AsyncExecChainHandler> handlers
+    OpenSearchClient openSearchClientSecondary(
+            @Value("${kockpit.audit.stream.opensearch.endpoints}") String endpoints
     ) {
-        log.info("Registering {} handlers on OpenSearch", handlers.size());
+        log.info("➡️ OpenSearch endpoints: {}", endpoints);
+
         HttpHost[] httpHosts = Stream.of(endpoints.split(","))
                 .map(String::trim)
                 .map(this::create)
                 .toArray(HttpHost[]::new);
 
-        RestClientBuilder builder = RestClient.builder(httpHosts);
-        if (! CollectionUtils.isEmpty(handlers)) {
-            builder.setHttpClientConfigCallback(httpClientBuilder -> {
-                for (AsyncExecChainHandler handler : handlers) {
-                    log.info("adding interceptor {}", handler.getClass().getName());
-                    httpClientBuilder.addExecInterceptorLast(handler.getClass().getName(), handler);
-                }
-                return httpClientBuilder;
-            });
-        }
-
-        log.info("➡️ OpenSearch endpoints: {}", endpoints);
-        return new RestHighLevelClient(builder);
+        ApacheHttpClient5Transport httpClient5Transport = ApacheHttpClient5TransportBuilder.builder(httpHosts)
+                .build();
+        return new OpenSearchClient(httpClient5Transport);
     }
 
     @SneakyThrows

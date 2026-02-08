@@ -28,20 +28,22 @@ const JsonTab = ({ request }) => {
   const highlightJson = (json) => {
     return json
       .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
-        let cls = 'text-purple-600'; // number
+        let cls = 'text-purple-700'; // number
         if (/^"/.test(match)) {
           if (/:$/.test(match)) {
-            cls = 'text-blue-600 font-semibold'; // key
+            cls = 'text-blue-700 font-semibold'; // key
           } else {
-            cls = 'text-green-600'; // string
+            cls = 'text-green-700'; // string
           }
         } else if (/true|false/.test(match)) {
-          cls = 'text-orange-600 font-semibold'; // boolean
+          cls = 'text-orange-700 font-semibold'; // boolean
         } else if (/null/.test(match)) {
-          cls = 'text-red-600 font-semibold'; // null
+          cls = 'text-red-700 font-semibold'; // null
         }
         return `<span class="${cls}">${match}</span>`;
-      });
+      })
+      // Highlight structural characters for better visibility
+      .replace(/([{}[\],])/g, '<span class="text-gray-700 font-bold">$1</span>');
   };
 
   const highlightedJson = highlightJson(jsonString);
@@ -121,8 +123,8 @@ const JsonTab = ({ request }) => {
       </div>
 
       {/* JSON Content */}
-      <div className={`p-6 bg-gray-900 overflow-auto ${expanded ? 'max-h-screen' : 'max-h-[600px]'}`}>
-        <pre className="text-sm font-mono leading-relaxed">
+      <div className={`p-6 bg-gray-50 border-2 border-gray-200 overflow-auto ${expanded ? 'max-h-screen' : 'max-h-[600px]'}`}>
+        <pre className="text-sm font-mono leading-relaxed text-gray-800">
           <code dangerouslySetInnerHTML={{ __html: displayJson }} />
         </pre>
       </div>
