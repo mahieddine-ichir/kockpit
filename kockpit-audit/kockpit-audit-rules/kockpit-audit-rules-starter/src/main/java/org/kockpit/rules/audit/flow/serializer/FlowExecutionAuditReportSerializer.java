@@ -1,7 +1,7 @@
 package org.kockpit.rules.audit.flow.serializer;
 
+import lombok.RequiredArgsConstructor;
 import org.kockpit.audit.rules.data.model.Execution;
-import org.kockpit.rules.DetailHandler;
 import org.kockpit.rules.audit.ExecutionAudit;
 import org.kockpit.rules.audit.RuleEngineAudit;
 import org.kockpit.rules.audit.flow.FlowExecutionAuditEvent;
@@ -10,20 +10,12 @@ import org.kockpit.rules.registry.RuleNodeRegistry;
 
 import static java.util.Collections.emptyList;
 
+@RequiredArgsConstructor
 public class FlowExecutionAuditReportSerializer {
 
   private final RuleNodeRegistry<?> registry;
   private final RuleEngineAudit ruleEngineAudit;
   private final ExecutionEDTDTOConverter executionEDTDTOConverter;
-
-  public FlowExecutionAuditReportSerializer(
-      RuleNodeRegistry<?> registry,
-      DetailHandler detailHandler,
-      ExecutionEDTDTOConverter executionEDTDTOConverter) {
-    this.registry = registry;
-    ruleEngineAudit = new RuleEngineAudit(detailHandler);
-    this.executionEDTDTOConverter = executionEDTDTOConverter;
-  }
 
   public FlowExecutionAuditEvent serialize(ExecutionResult executionResult) {
     Execution execution = auditFlowExecution(executionResult);
