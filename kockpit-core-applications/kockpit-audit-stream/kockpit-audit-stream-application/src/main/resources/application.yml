@@ -27,7 +27,7 @@ kockpit:
   audit:
     stream:
       opensearch:
-        endpoints: ${OPENSEARCH_ENDPOINTS:http://localhost:9200}
+        endpoints: ${OPENSEARCH_ENDPOINTS}
         index_suffix: ${INDEX_SUFFIX:audit-data}
         ttl_default_in_days: 5
       kafka:
