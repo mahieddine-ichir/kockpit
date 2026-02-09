@@ -69,8 +69,9 @@ public class OpensearchV3IndexManager {
             log.trace("ISM Policy JSON being sent:\n{}", policyJson);
 
             CreatePolicyRequest createPolicyRequest = new CreatePolicyRequest(policyId, policyJson.getBytes(StandardCharsets.UTF_8));
-            Response createResponse = client.generic().execute(createPolicyRequest);
-            log.info("✅ Created policy {} -> response = {}", policyId, createResponse.getStatus());
+            try (Response createResponse = client.generic().execute(createPolicyRequest)) {
+                log.info("✅ Created policy {} -> response = {}", policyId, createResponse.getStatus());
+            }
         } catch (Exception e) {
             log.error("❌ Failed to create ISM policy {} with TTL {}d: {}", policyId, ttl, e.getMessage(), e);
         }
@@ -78,13 +79,18 @@ public class OpensearchV3IndexManager {
 
     @SneakyThrows
     public void createIndexTemplate(String indexPrefix, String policyId) {
-        log.info("➡️ Creating Template {} for policy {}", indexPrefix, policyId );
-        String templateJson = new String(this.getClass().getResourceAsStream("/opensearch/audit_index_template.json").readAllBytes())
-                .replace("${index_pattern}", indexPrefix+"*")
-                .replace("${policy_id}", policyId);
+        try {
+            log.info("➡️ Creating Template {} for policy {}", indexPrefix, policyId);
+            String templateJson = new String(this.getClass().getResourceAsStream("/opensearch/audit_index_template.json").readAllBytes())
+                    .replace("${index_pattern}", indexPrefix + "*")
+                    .replace("${policy_id}", policyId);
 
-        Response response = client.generic().execute(new CreateTemplateRequest("_index_template/" + indexPrefix, templateJson.getBytes(StandardCharsets.UTF_8)));
-        log.debug("Created template {} -> response = {}", indexPrefix, response.getStatus());
+            try (Response response = client.generic().execute(new CreateTemplateRequest("_index_template/" + indexPrefix, templateJson.getBytes(StandardCharsets.UTF_8)))) {
+                log.debug("Created template {} -> response = {}", indexPrefix, response.getStatus());
+            }
+        } catch (Exception e) {
+            log.error("❌ Failed to create template for indexPrefix {} and policyId {}", indexPrefix, policyId, e);
+        }
     }
 
     @SneakyThrows
