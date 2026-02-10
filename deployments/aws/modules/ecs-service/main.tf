@@ -32,10 +32,6 @@ data "aws_ecs_cluster" "main" {
   cluster_name = var.ecs_cluster_name
 }
 
-data "aws_lb" "main" {
-  arn = var.load_balancer_arn
-}
-
 data "aws_s3_bucket" "kockpit_data" {
   bucket = var.kockpit_data_s3_bucket
 }

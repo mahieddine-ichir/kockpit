@@ -47,9 +47,3 @@ output "log_group_name" {
   description = "Name of the CloudWatch log group"
   value       = aws_cloudwatch_log_group.main.name
 }
-
-# Service URL (if needed for load balancer configuration)
-output "service_url" {
-  description = "URL where the service will be accessible through the load balancer"
-  value       = "http://${data.aws_lb.main.dns_name}"
-}
