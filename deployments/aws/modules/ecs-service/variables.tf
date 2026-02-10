@@ -37,9 +37,21 @@ variable "ecs_cluster_name" {
   type        = string
 }
 
-variable "load_balancer_arn" {
-  description = "ARN of the existing load balancer"
+variable "load_balancer_listener_arn" {
+  description = "ARN of the existing load balancer listener"
   type        = string
+}
+
+variable "listener_rule_priority" {
+  description = "Priority for the load balancer listener rule"
+  type        = number
+  default     = 100
+}
+
+variable "path_pattern" {
+  description = "Path pattern for the listener rule (e.g., '/api/*')"
+  type        = string
+  default     = "/*"
 }
 
 # Container Configuration
