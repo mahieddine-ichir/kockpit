@@ -1,0 +1,46 @@
+# AWS Configuration
+aws_region = "eu-west-1"
+
+# Network Configuration (Data Sources)
+vpc_id = "vpc-xxxxxxxxx"
+private_subnet_names = ["private-subnet-1", "private-subnet-2"]
+ecs_cluster_name = "my-ecs-cluster"
+load_balancer_arn = "arn:aws:elasticloadbalancing:eu-west-1:123456789012:loadbalancer/app/my-alb/xxxxxxxxx"
+
+# S3 Configuration (legacy - still needed for IAM)
+s3_bucket_name = "kockpit-data-dev"
+
+# Service Configuration
+container_image = "ghcr.io/mahieddine-ichir/kockpit/kockpit-backend-application-aws:20260209-1513"
+cpu = 512
+memory = 1024
+desired_count = 2
+
+# Kockpit-specific Configuration
+kockpit_env = "dev"
+opensearch_endpoints = "vpc-wcp-dev-opk-domain-2gthk7dt74i6g7nzmtaxdpzhuu.eu-west-1.es.amazonaws.com"
+kockpit_data_s3_bucket = "kockpit-data-dev"
+kockpit_manifests_s3_bucket = "kockpit-manifests-dev"
+kinesis_stream_name = "auditstream-dev"
+
+# Additional Environment Variables (if needed)
+additional_environment_variables = [
+  # Add any custom environment variables here
+  # {
+  #   name  = "CUSTOM_VAR"
+  #   value = "custom_value"
+  # }
+]
+
+# Load Balancer Listener Rule (optional)
+create_listener_rule = false
+# load_balancer_listener_arn = "arn:aws:elasticloadbalancing:eu-west-1:123456789012:listener/app/my-alb/xxxxxxxxx/xxxxxxxxx"
+# listener_rule_priority = 100
+
+# Tags
+tags = {
+  Environment = "dev"
+  Project     = "kockpit"
+  ManagedBy   = "terraform"
+  Service     = "console-backend"
+}
