@@ -55,16 +55,30 @@ variable "path_pattern" {
 }
 
 # Container Configuration
-variable "container_image" {
-  description = "Docker image for the ECS service"
+variable "image_tag" {
+  description = "Docker image tag for the kockpit backend application"
   type        = string
-  default     = "nginx:latest"  # Replace with actual kockpit-console-backend image
+  default     = "latest"
+}
+
+locals {
+  container_image = "ghcr.io/mahieddine-ichir/kockpit/kockpit-backend-application-aws:${var.image_tag}"
 }
 
 variable "container_port" {
   description = "Port the container listens on"
   type        = number
   default     = 8080
+}
+
+variable "cpu_architecture" {
+  description = "CPU architecture for the ECS task (ARM64 or X86_64)"
+  type        = string
+  default     = "ARM64"
+  validation {
+    condition     = contains(["ARM64", "X86_64"], var.cpu_architecture)
+    error_message = "CPU architecture must be either ARM64 or X86_64."
+  }
 }
 
 variable "cpu" {
