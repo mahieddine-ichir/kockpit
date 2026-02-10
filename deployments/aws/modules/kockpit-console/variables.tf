@@ -1,0 +1,91 @@
+# General Configuration
+variable "aws_region" {
+  description = "AWS region where resources will be created"
+  type        = string
+  default     = "us-west-1"
+}
+
+variable "service_name" {
+  description = "Name of the service (used for resource naming)"
+  type        = string
+  default     = "kockpit-console"
+}
+
+variable "tags" {
+  description = "Tags to apply to all resources"
+  type        = map(string)
+  default = {
+    Environment = "production"
+    Project     = "kockpit"
+    ManagedBy   = "terraform"
+  }
+}
+
+# Environment Configuration
+variable "kockpit_env" {
+  description = "Kockpit environment (dev, staging, prod)"
+  type        = string
+  default     = "dev"
+}
+
+# S3 Configuration
+variable "bucket_name_prefix" {
+  description = "Prefix for the S3 bucket name (will include environment)"
+  type        = string
+  default     = "kockpit-console"
+}
+
+# CloudFront Configuration
+variable "default_root_object" {
+  description = "Default root object for CloudFront distribution"
+  type        = string
+  default     = "index.html"
+}
+
+variable "price_class" {
+  description = "CloudFront price class"
+  type        = string
+  default     = "PriceClass_100"
+  validation {
+    condition     = contains(["PriceClass_All", "PriceClass_200", "PriceClass_100"], var.price_class)
+    error_message = "Price class must be one of: PriceClass_All, PriceClass_200, PriceClass_100."
+  }
+}
+
+variable "aliases" {
+  description = "List of CNAMEs (alternate domain names) for the distribution"
+  type        = list(string)
+  default     = null
+}
+
+variable "acm_certificate_arn" {
+  description = "ARN of the ACM certificate for custom domains (required if aliases are specified)"
+  type        = string
+  default     = null
+}
+
+# Backend Integration
+variable "backend_alb_domain" {
+  description = "Domain name of the backend ALB for API proxy (optional)"
+  type        = string
+  default     = null
+}
+
+# Console UI Configuration
+variable "console_ui_version" {
+  description = "Version tag for cache busting when updating the UI"
+  type        = string
+  default     = "latest"
+}
+
+variable "console_ui_download_url" {
+  description = "URL to download the console UI distribution zip"
+  type        = string
+  default     = "https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-dist.zip"
+}
+
+variable "auto_deploy" {
+  description = "Whether to automatically download and deploy the console UI"
+  type        = bool
+  default     = true
+}
