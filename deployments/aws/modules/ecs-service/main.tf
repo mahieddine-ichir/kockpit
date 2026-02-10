@@ -145,6 +145,17 @@ resource "aws_security_group" "ecs_service" {
   })
 }
 
+resource "aws_security_group_rule" "health_check_lb_http-ingress" {
+  type                     = "ingress"
+  from_port                = var.container_port
+  to_port                  = var.container_port
+  protocol                 = "tcp"
+  source_security_group_id = var.lb_security_group_id
+  security_group_id        = aws_security_group.ecs_service.id
+  description              = "Allow access for target group health check ${var.container_port}"
+}
+
+
 # ECS Task Definition
 resource "aws_ecs_task_definition" "main" {
   family                   = var.service_name

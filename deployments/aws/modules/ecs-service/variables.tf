@@ -42,6 +42,11 @@ variable "load_balancer_listener_arn" {
   type        = string
 }
 
+variable "lb_security_group_id" {
+  description = "Security group ID of the load balancer"
+  type        = string
+}
+
 variable "listener_rule_priority" {
   description = "Priority for the load balancer listener rule"
   type        = number
