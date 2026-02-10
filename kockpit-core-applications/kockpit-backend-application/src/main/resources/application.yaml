@@ -21,11 +21,9 @@ management:
     health:
       probes:
         enabled: true
-  endpoints:
-    web:
-      base-path: /backend/actuator
   server:
     port: 8090
+
 logging:
   level:
     org.kockpit.communication: error
