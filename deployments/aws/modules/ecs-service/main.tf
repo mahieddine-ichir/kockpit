@@ -153,6 +153,20 @@ resource "aws_security_group_rule" "health_check_lb_http-ingress" {
   source_security_group_id = var.lb_security_group_id
   security_group_id        = aws_security_group.ecs_service.id
   description              = "Allow access for target group health check ${var.container_port}"
+
+  # Additional ingress rule for health check port if different from container port
+  dynamic "ingress" {
+    for_each = local.health_check_port_number != var.container_port ? [1] : []
+    content {
+      type                     = "ingress"
+      from_port                = local.health_check_port_number
+      to_port                  = local.health_check_port_number
+      protocol                 = "tcp"
+      source_security_group_id = var.lb_security_group_id
+      security_group_id        = aws_security_group.ecs_service.id
+      description              = "Allow access for target group health check ${local.health_check_port_number}"
+    }
+  }
 }
 
 
@@ -164,7 +178,7 @@ resource "aws_ecs_task_definition" "main" {
   cpu                      = var.cpu
   memory                   = var.memory
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn           = aws_iam_role.ecs_task_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
 
   runtime_platform {
     cpu_architecture        = var.cpu_architecture
