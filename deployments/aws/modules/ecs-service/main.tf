@@ -211,6 +211,27 @@ resource "aws_lb_target_group" "main" {
   })
 }
 
+# Load Balancer Listener Rule
+resource "aws_lb_listener_rule" "main" {
+  listener_arn = var.load_balancer_listener_arn
+  priority     = var.listener_rule_priority
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.main.arn
+  }
+
+  condition {
+    path_pattern {
+      values = [var.path_pattern]
+    }
+  }
+
+  depends_on = [aws_lb_target_group.main]
+
+  tags = var.tags
+}
+
 # ECS Service
 resource "aws_ecs_service" "main" {
   name            = var.service_name
@@ -231,7 +252,7 @@ resource "aws_ecs_service" "main" {
     container_port   = var.container_port
   }
 
-  depends_on = [aws_lb_target_group.main]
+  depends_on = [aws_lb_listener_rule.main]
 
   tags = var.tags
 }
