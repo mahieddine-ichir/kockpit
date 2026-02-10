@@ -42,12 +42,6 @@ variable "load_balancer_arn" {
   type        = string
 }
 
-# S3 Configuration
-variable "s3_bucket_name" {
-  description = "Name of the S3 bucket the ECS service needs access to"
-  type        = string
-}
-
 # Container Configuration
 variable "container_image" {
   description = "Docker image for the ECS service"
