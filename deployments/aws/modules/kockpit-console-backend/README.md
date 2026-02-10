@@ -1,6 +1,6 @@
-# ECS Service Terraform Module
+# Kockpit Console Backend Module
 
-This Terraform module creates an ECS Fargate service with:
+This Terraform module creates an ECS Fargate service for the Kockpit Console Backend with:
 - IAM roles for task execution and S3 access
 - Security group for the ECS service
 - ECS task definition with CloudWatch logging
@@ -9,47 +9,54 @@ This Terraform module creates an ECS Fargate service with:
 
 ## Features
 
-- **S3 Access**: Configures IAM permissions for listing, getting, and putting objects in an S3 bucket
-- **Load Balancer Integration**: Creates a target group that can be attached to an existing load balancer
-- **Security**: Follows AWS best practices with separate execution and task roles
+- **Kockpit Spring Boot Application**: Pre-configured for Kockpit console backend with OpenSearch integration
+- **Multi-Architecture Support**: Supports both ARM64 and X86_64 CPU architectures
+- **S3 Integration**: Configures IAM permissions for Kockpit data and manifests buckets
+- **Load Balancer Integration**: Complete ALB listener rule setup with security group rules
+- **Health Check Configuration**: Supports separate health check ports (e.g., Spring Boot management port)
+- **Environment-Aware**: Configurable environments (dev, staging, production)
+- **Security**: Bidirectional security group rules for ALB ↔ ECS communication
 - **Logging**: CloudWatch log group with configurable retention
-- **Health Checks**: Configurable health check endpoint for the target group
+- **OpenSearch Integration**: Built-in configuration for search endpoints
+- **Kinesis Integration**: Optional audit streaming to Kinesis
 
 ## Usage
 
 ```hcl
 module "kockpit_backend" {
-  source = "./modules/ecs-service"
+  source = "git::https://github.com/mahieddine-ichir/kockpit.git//deployments/aws/modules/kockpit-console-backend?ref=main"
 
-  # Required variables
-  vpc_id                = "vpc-xxxxxxxxx"
-  private_subnet_names  = ["private-subnet-1", "private-subnet-2"]
-  ecs_cluster_name      = "my-ecs-cluster"
-  load_balancer_arn     = "arn:aws:elasticloadbalancing:region:account:loadbalancer/app/my-alb/xxxxxxxxx"
-  s3_bucket_name        = "my-kockpit-bucket"
+  # Required infrastructure
+  vpc_id                     = "vpc-xxxxxxxxx"
+  private_subnet_ids         = ["subnet-xxxxxxxxx", "subnet-yyyyyyyyy"]
+  ecs_cluster_name           = "my-ecs-cluster"
+  load_balancer_listener_arn = "arn:aws:elasticloadbalancing:region:account:listener/app/my-alb/xxxxxxxxx/yyyyyyyyy"
+  lb_security_group_id       = "sg-xxxxxxxxx"
+
+  # Kockpit configuration
+  kockpit_env                   = "production"
+  opensearch_endpoints          = "search-domain.region.es.amazonaws.com:443"
+  kockpit_data_s3_bucket       = "kockpit-data-production"
+  kockpit_manifests_s3_bucket  = "kockpit-manifests-production"
 
   # Optional customization
-  service_name      = "my-backend-service"
-  container_image   = "my-account.dkr.ecr.region.amazonaws.com/my-app:latest"
-  container_port    = 8080
-  cpu              = 1024
-  memory           = 2048
-  desired_count    = 3
+  service_name         = "kockpit-console-backend"
+  image_tag           = "v1.0.0"
+  cpu_architecture    = "ARM64"
+  container_port      = 8080
+  cpu                 = 1024
+  memory              = 2048
+  desired_count       = 2
+  health_check_path   = "/actuator/health"
+  health_check_port   = "8090"
 
-  environment_variables = [
-    {
-      name  = "SPRING_PROFILES_ACTIVE"
-      value = "production"
-    },
-    {
-      name  = "DATABASE_URL"
-      value = "jdbc:postgresql://db.example.com:5432/mydb"
-    }
-  ]
+  # Load balancer integration
+  listener_rule_priority = 1
+  path_pattern          = "/backend/*"
 
   tags = {
     Environment = "production"
-    Project     = "my-project"
+    Project     = "kockpit"
   }
 }
 ```
@@ -72,21 +79,30 @@ module "kockpit_backend" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | vpc_id | ID of the existing VPC | `string` | n/a | yes |
-| private_subnet_names | Names of the private subnets where ECS tasks will run | `list(string)` | n/a | yes |
+| private_subnet_ids | IDs of the private subnets where ECS tasks will run | `list(string)` | n/a | yes |
 | ecs_cluster_name | Name of the existing ECS cluster | `string` | n/a | yes |
-| load_balancer_arn | ARN of the existing load balancer | `string` | n/a | yes |
-| s3_bucket_name | Name of the S3 bucket the ECS service needs access to | `string` | n/a | yes |
+| load_balancer_listener_arn | ARN of the existing load balancer listener | `string` | n/a | yes |
+| lb_security_group_id | Security group ID of the load balancer | `string` | n/a | yes |
+| opensearch_endpoints | OpenSearch cluster endpoints | `string` | n/a | yes |
+| kockpit_data_s3_bucket | S3 bucket for Kockpit data storage | `string` | n/a | yes |
+| kockpit_manifests_s3_bucket | S3 bucket for Kockpit manifests storage | `string` | n/a | yes |
+| aws_region | AWS region where resources will be created | `string` | `"us-west-2"` | no |
 | service_name | Name of the ECS service | `string` | `"kockpit-console-backend"` | no |
-| container_image | Docker image for the ECS service | `string` | `"nginx:latest"` | no |
+| kockpit_env | Kockpit environment (dev, staging, prod) | `string` | `"dev"` | no |
+| image_tag | Docker image tag for the kockpit backend application | `string` | `"latest"` | no |
+| cpu_architecture | CPU architecture for the ECS task (ARM64 or X86_64) | `string` | `"ARM64"` | no |
 | container_port | Port the container listens on | `number` | `8080` | no |
 | cpu | CPU units for the ECS task (1024 = 1 vCPU) | `number` | `512` | no |
 | memory | Memory for the ECS task in MB | `number` | `1024` | no |
 | desired_count | Desired number of ECS service instances | `number` | `2` | no |
-| health_check_path | Health check path for the target group | `string` | `"/health"` | no |
+| health_check_path | Health check path for the target group | `string` | `"/actuator/health"` | no |
+| health_check_port | Health check port for the target group | `string` | `"traffic-port"` | no |
+| listener_rule_priority | Priority for the load balancer listener rule | `number` | `100` | no |
+| path_pattern | Path pattern for the listener rule | `string` | `"/*"` | no |
 | log_retention_days | CloudWatch log retention period in days | `number` | `7` | no |
-| aws_region | AWS region where resources will be created | `string` | `"us-west-2"` | no |
-| environment_variables | Environment variables to pass to the container | `list(object({name=string,value=string}))` | See variables.tf | no |
-| tags | Tags to apply to all resources | `map(string)` | `{}` | no |
+| kinesis_stream_name | Kinesis stream name for audit notifications | `string` | `""` | no |
+| additional_environment_variables | Additional environment variables to pass to the container | `list(object({name=string,value=string}))` | `[]` | no |
+| tags | Tags to apply to all resources | `map(string)` | See variables.tf | no |
 
 ## Outputs
 
@@ -105,30 +121,47 @@ module "kockpit_backend" {
 
 ## S3 Permissions
 
-The module creates an IAM role with the following S3 permissions for the specified bucket:
-- `s3:ListBucket` - List objects in the bucket
-- `s3:GetObject` - Read objects from the bucket
-- `s3:PutObject` - Write objects to the bucket
+The module creates an IAM role with the following S3 permissions for both data and manifests buckets:
+- `s3:ListBucket` - List objects in the buckets
+- `s3:GetObject` - Read objects from the buckets
+- `s3:PutObject` - Write objects to the buckets
+
+## Container Image
+
+The module uses a fixed container image: `ghcr.io/mahieddine-ichir/kockpit/kockpit-backend-application-aws` with configurable tags via the `image_tag` variable.
+
+## Security Groups
+
+The module creates comprehensive security group rules:
+- **ECS Security Group**: Allows inbound traffic on container port and optional health check port
+- **ALB → ECS**: Ingress rules on ECS security group from ALB security group
+- **LB → ECS**: Egress rules on ALB security group to ECS security group
 
 ## Load Balancer Integration
 
-The module creates a target group that needs to be manually attached to your load balancer listener rules. You can use the `target_group_arn` output to configure your load balancer routing.
+The module automatically creates an ALB listener rule with the specified priority and path pattern. The listener rule forwards matching traffic to the ECS service target group.
 
-Example load balancer listener rule:
-```hcl
-resource "aws_lb_listener_rule" "backend" {
-  listener_arn = var.load_balancer_listener_arn
-  priority     = 100
+**Key Configuration:**
+- `listener_rule_priority`: Set to a low number (1-10) for higher precedence
+- `path_pattern`: URL pattern to match (e.g., "/backend/*")
+- Automatic security group rules for ALB ↔ ECS communication
 
-  action {
-    type             = "forward"
-    target_group_arn = module.kockpit_backend.target_group_arn
-  }
+## Architecture
 
-  condition {
-    path_pattern {
-      values = ["/api/*"]
-    }
-  }
-}
 ```
+Internet → ALB → ECS Tasks (Fargate)
+            ↓
+       [Security Groups]
+            ↓
+    S3 (Data & Manifests) + OpenSearch + Kinesis (optional)
+```
+
+## Environment Variables
+
+The module automatically configures these environment variables for the Kockpit application:
+- `KOCKPIT_AWS_REGION` / `KOCKPIT_SDK_AWS_REGION` / `aws.region`
+- `KOCKPIT_ENV`
+- `SPRING_PROFILES_ACTIVE=aws`
+- `OPENSEARCH_ENDPOINTS` / `kockpit.audit.stream.opensearch.endpoints`
+- `kockpit.aws.s3.bucket` / `kockpit.manifests.aws.s3.bucket`
+- `kockpit.audit.notification.kinesis.stream_name` (if provided)
