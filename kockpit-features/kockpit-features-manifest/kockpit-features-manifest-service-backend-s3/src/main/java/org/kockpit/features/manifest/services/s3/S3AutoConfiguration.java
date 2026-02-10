@@ -19,8 +19,7 @@ public class S3AutoConfiguration {
 
     @Bean
     S3Client s3Client(
-            @Value("${kockpit.sdk.aws.region}") String region,
-            AwsCredentialsProvider credentialsProvider
+            @Value("${kockpit.aws.region}") String region
     ) {
         return S3Client.builder()
                 .region(Region.of(region))
