@@ -103,7 +103,7 @@ variable "desired_count" {
 variable "health_check_path" {
   description = "Health check path for the target group"
   type        = string
-  default     = "/health"
+  default     = "/actuator/health"
 }
 
 variable "health_check_port" {
