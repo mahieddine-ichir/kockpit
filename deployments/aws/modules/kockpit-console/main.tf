@@ -299,14 +299,17 @@ resource "aws_s3_object" "console_files" {
 }
 
 # CloudFront invalidation after deployment
-resource "aws_cloudfront_invalidation" "console_invalidation" {
-  count           = var.auto_deploy ? 1 : 0
-  distribution_id = aws_cloudfront_distribution.console_distribution.id
-  paths           = ["/*"]
+resource "null_resource" "console_invalidation" {
+  count = var.auto_deploy ? 1 : 0
+
+  triggers = {
+    distribution_id = aws_cloudfront_distribution.console_distribution.id
+    files_hash      = md5(join("", [for file in aws_s3_object.console_files : file.etag]))
+  }
+
+  provisioner "local-exec" {
+    command = "aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.console_distribution.id} --paths '/*'"
+  }
 
   depends_on = [aws_s3_object.console_files]
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
