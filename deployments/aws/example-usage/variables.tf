@@ -31,6 +31,11 @@ variable "load_balancer_arn" {
   type        = string
 }
 
+variable "lb_security_group_id" {
+  description = "Security group ID of the load balancer"
+  type        = string
+}
+
 variable "s3_bucket_name" {
   description = "S3 bucket name for IAM permissions (can be same as kockpit_data_s3_bucket)"
   type        = string

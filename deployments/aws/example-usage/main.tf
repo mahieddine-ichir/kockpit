@@ -25,6 +25,7 @@ module "kockpit_console_backend" {
   private_subnet_ids    = var.private_subnet_ids
   ecs_cluster_name      = var.ecs_cluster_name
   load_balancer_arn     = var.load_balancer_arn
+  lb_security_group_id  = var.lb_security_group_id
   s3_bucket_name        = var.s3_bucket_name  # For IAM permissions
 
   # Kockpit-specific configuration
