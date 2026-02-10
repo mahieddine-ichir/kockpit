@@ -264,7 +264,7 @@ resource "null_resource" "download_and_extract_ui" {
 
 # Upload files to S3
 resource "aws_s3_object" "console_files" {
-  for_each = var.auto_deploy ? fileset("${path.module}/temp/dist", "**/*") : {}
+  for_each = var.auto_deploy ? fileset("${path.module}/temp/dist", "**/*") : toset([])
 
   bucket = aws_s3_bucket.console_bucket.id
   key    = each.value
