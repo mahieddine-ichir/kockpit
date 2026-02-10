@@ -17,15 +17,9 @@ data "aws_vpc" "main" {
   id = var.vpc_id
 }
 
-data "aws_subnets" "private" {
-  filter {
-    name   = "vpc-id"
-    values = [var.vpc_id]
-  }
-  filter {
-    name   = "tag:Name"
-    values = var.private_subnet_names
-  }
+# Use the provided subnet IDs directly
+locals {
+  private_subnet_ids = var.private_subnet_ids
 }
 
 data "aws_ecs_cluster" "main" {
@@ -241,7 +235,7 @@ resource "aws_ecs_service" "main" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = data.aws_subnets.private.ids
+    subnets          = local.private_subnet_ids
     security_groups  = [aws_security_group.ecs_service.id]
     assign_public_ip = false
   }

@@ -22,7 +22,7 @@ module "kockpit_console_backend" {
 
   # Required infrastructure inputs (existing resources)
   vpc_id                = var.vpc_id
-  private_subnet_names  = var.private_subnet_names
+  private_subnet_ids    = var.private_subnet_ids
   ecs_cluster_name      = var.ecs_cluster_name
   load_balancer_arn     = var.load_balancer_arn
   s3_bucket_name        = var.s3_bucket_name  # For IAM permissions
