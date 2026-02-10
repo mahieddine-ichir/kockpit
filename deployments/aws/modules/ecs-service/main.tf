@@ -36,8 +36,12 @@ data "aws_lb" "main" {
   arn = var.load_balancer_arn
 }
 
-data "aws_s3_bucket" "main" {
-  bucket = var.s3_bucket_name
+data "aws_s3_bucket" "kockpit_data" {
+  bucket = var.kockpit_data_s3_bucket
+}
+
+data "aws_s3_bucket" "kockpit_manifests" {
+  bucket = var.kockpit_manifests_s3_bucket
 }
 
 # IAM role for ECS task execution
@@ -101,8 +105,12 @@ resource "aws_iam_role_policy" "s3_access_policy" {
           "s3:ListBucket"
         ]
         Resource = [
-          data.aws_s3_bucket.main.arn,
-          "${data.aws_s3_bucket.main.arn}/*"
+          # Kockpit data bucket
+          data.aws_s3_bucket.kockpit_data.arn,
+          "${data.aws_s3_bucket.kockpit_data.arn}/*",
+          # Kockpit manifests bucket
+          data.aws_s3_bucket.kockpit_manifests.arn,
+          "${data.aws_s3_bucket.kockpit_manifests.arn}/*"
         ]
       }
     ]
@@ -198,7 +206,7 @@ resource "aws_lb_target_group" "main" {
     interval            = 30
     path                = var.health_check_path
     matcher             = "200"
-    port                = "traffic-port"
+    port                = var.health_check_port
     protocol            = "HTTP"
   }
 

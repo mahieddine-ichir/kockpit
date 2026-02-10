@@ -86,6 +86,12 @@ variable "health_check_path" {
   default     = "/health"
 }
 
+variable "health_check_port" {
+  description = "Health check port for the target group"
+  type        = string
+  default     = "traffic-port"
+}
+
 # Logging Configuration
 variable "log_retention_days" {
   description = "CloudWatch log retention period in days"
