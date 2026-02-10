@@ -20,6 +20,8 @@ data "aws_vpc" "main" {
 # Use the provided subnet IDs directly
 locals {
   private_subnet_ids = var.private_subnet_ids
+  # Determine health check port: if "traffic-port", use container_port; otherwise parse the port number
+  health_check_port_number = var.health_check_port == "traffic-port" ? var.container_port : tonumber(var.health_check_port)
 }
 
 data "aws_ecs_cluster" "main" {
@@ -120,6 +122,17 @@ resource "aws_security_group" "ecs_service" {
     cidr_blocks = [data.aws_vpc.main.cidr_block]
   }
 
+  # Additional ingress rule for health check port if different from container port
+  dynamic "ingress" {
+    for_each = local.health_check_port_number != var.container_port ? [1] : []
+    content {
+      from_port   = local.health_check_port_number
+      to_port     = local.health_check_port_number
+      protocol    = "tcp"
+      cidr_blocks = [data.aws_vpc.main.cidr_block]
+    }
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -152,12 +165,20 @@ resource "aws_ecs_task_definition" "main" {
       name  = var.service_name
       image = local.container_image
 
-      portMappings = [
-        {
-          containerPort = var.container_port
-          protocol      = "tcp"
-        }
-      ]
+      portMappings = concat(
+        [
+          {
+            containerPort = var.container_port
+            protocol      = "tcp"
+          }
+        ],
+        local.health_check_port_number != var.container_port ? [
+          {
+            containerPort = local.health_check_port_number
+            protocol      = "tcp"
+          }
+        ] : []
+      )
 
       environment = local.environment_variables
 
@@ -195,9 +216,9 @@ resource "aws_lb_target_group" "main" {
 
   health_check {
     enabled             = true
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 5
+    healthy_threshold   = 3
+    unhealthy_threshold = 5
+    timeout             = 10
     interval            = 30
     path                = var.health_check_path
     matcher             = "200"
