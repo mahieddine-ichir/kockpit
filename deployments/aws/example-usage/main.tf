@@ -15,7 +15,7 @@ provider "aws" {
 # Deploy Kockpit Console Backend using the module
 module "kockpit_console_backend" {
   # Use Git source - replace with your actual repository
-  source = "git::https://github.com/your-org/kockpit.git//deployments/aws/modules/ecs-service?ref=main"
+  source = "git::https://github.com/your-org/kockpit.git//deployments/aws/modules/kockpit-console-backend?ref=main"
 
   # AWS Configuration
   aws_region = var.aws_region
