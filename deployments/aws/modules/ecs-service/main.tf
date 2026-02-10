@@ -166,18 +166,6 @@ resource "aws_security_group_rule" "lb_to_ecs_container_port" {
   description              = "Allow load balancer to reach ECS service on container port ${var.container_port}"
 }
 
-resource "aws_security_group_rule" "lb_to_ecs_health_port" {
-  count                    = local.health_check_port_number != var.container_port ? 1 : 0
-  type                     = "egress"
-  from_port                = local.health_check_port_number
-  to_port                  = local.health_check_port_number
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.ecs_service.id
-  security_group_id        = var.lb_security_group_id
-  description              = "Allow load balancer to reach ECS service on health check port ${local.health_check_port_number}"
-}
-
-
 # ECS Task Definition
 resource "aws_ecs_task_definition" "main" {
   family                   = var.service_name
