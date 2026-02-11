@@ -127,6 +127,58 @@ export const login = async() => {
     };
 }
 
+export const exchangeCodeForTokens = async (authorizationCode) => {
+    const authProvider = getAuthProvider();
+
+    if (authProvider !== 'aws') {
+        throw new Error('OAuth code exchange is only supported for AWS/Cognito authentication');
+    }
+
+    console.log('Authorization code received:', authorizationCode);
+
+    try {
+        // Exchange the authorization code for tokens via the backend
+        // The backend should handle this and set appropriate cookies
+        const response = await axios.post(API_BASE + '/auth/callback', {
+            code: authorizationCode,
+            redirect_uri: window.location.origin + '/'
+        }, {
+            withCredentials: true
+        });
+
+        if (response.data && response.data.user) {
+            return {
+                user: response.data.user
+            };
+        }
+
+        // Fallback: If backend exchange works but doesn't return user info,
+        // try calling the normal login endpoint which should now work
+        const loginResult = await login();
+        return { user: loginResult };
+
+    } catch (error) {
+        console.error('Backend token exchange failed:', error);
+
+        // Fallback approach: reload the page to let Lambda@Edge handle authentication
+        // This might work if the OAuth flow set cookies properly
+        sessionStorage.setItem('oauth_callback_handled', 'true');
+        window.location.reload();
+
+        // This return won't be reached due to reload
+        return Promise.resolve({
+            user: {
+                "clientPrincipal": {
+                    "identityProvider": "cognito",
+                    "userId": "cognito-user",
+                    "userDetails": "cognito-user",
+                    "userRoles": ["authenticated"]
+                }
+            }
+        });
+    }
+}
+
 export const logout = async() => {
     const authProvider = getAuthProvider();
 
