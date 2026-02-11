@@ -69,6 +69,11 @@ variable "backend_alb_domain" {
   description = "Domain name of the backend ALB for API proxy (optional)"
   type        = string
   default     = null
+
+  validation {
+    condition = var.backend_alb_domain == null || can(regex("^[a-zA-Z0-9][a-zA-Z0-9-._]*[a-zA-Z0-9]$", var.backend_alb_domain))
+    error_message = "backend_alb_domain must be a valid domain name or null."
+  }
 }
 
 # Console UI Configuration
