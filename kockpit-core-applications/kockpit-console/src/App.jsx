@@ -5,12 +5,13 @@ import Sidebar from "./sidebar/Sidebar.jsx";
 import AuditListPage from "./audits/pages/AuditListPage.jsx";
 import DetailsPage from "./audits/pages/DetailsPage.jsx";
 import DomainEnv from "./components/DomainEnv.jsx";
-import {login, exchangeCodeForTokens} from "./services/api.js";
+import {login} from "./services/api.js";
 import FeatureFlippingPage from "./feature-flipping/feature.jsx";
 import AppIdDashboard from "./home/Home.jsx";
 import HealthIndicatorsDashboard from "./health/Health.jsx";
 import ConfigManager from "./dyna-config/dyna-config.jsx";
 import ManifestPage from "./manifest/ManifestPage.jsx";
+import CallbackPage from "./auth/CallbackPage.jsx";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -23,40 +24,28 @@ function App() {
     const [configIndex, setConfigIndex] = useState(0);
 
     useEffect(() => {
-        // Check if we're returning from Cognito OAuth
-        const urlParams = new URLSearchParams(window.location.search);
-        const authCode = urlParams.get('code');
-        const error = urlParams.get('error');
+        // Check if user is stored from OAuth callback
+        const storedUser = localStorage.getItem('cognito_user');
+        if (storedUser) {
+            try {
+                const user = JSON.parse(storedUser);
+                setUser(user);
+                setLoading(false);
+                return;
+            } catch (e) {
+                console.error('Error parsing stored user:', e);
+                localStorage.removeItem('cognito_user');
+            }
+        }
 
-        if (error) {
-            console.error('OAuth error:', error);
+        // Normal login flow
+        login().then(logged => {
+            setUser(logged);
             setLoading(false);
-            return;
-        }
-
-        if (authCode) {
-            // Clear the URL parameters after capturing them
-            window.history.replaceState({}, document.title, window.location.pathname);
-
-            // Exchange authorization code for tokens
-            exchangeCodeForTokens(authCode).then(tokenData => {
-                if (tokenData && tokenData.user) {
-                    setUser(tokenData.user);
-                } else {
-                    console.error('Failed to get user info from token exchange');
-                }
-                setLoading(false);
-            }).catch(error => {
-                console.error('Token exchange failed:', error);
-                setLoading(false);
-            });
-        } else {
-            // Normal login flow
-            login().then(logged => {
-                setUser(logged);
-                setLoading(false);
-            })
-        }
+        }).catch(error => {
+            console.error('Login failed:', error);
+            setLoading(false);
+        });
     }, []);
 
     function onDomainEnvChanged(domain, env, selectedIndex) {
@@ -95,26 +84,33 @@ function App() {
                             <DomainEnv domainEnvChanged={onDomainEnvChanged} onConfigLoaded={onConfigLoaded} selectedIndex={configIndex} onSelectedIndex={setConfigIndex} />
                         </div>
                         <div className='screens-section-container'>
-                    {
-                        config && user ?
-                            <div className="flex">
-                                <div
-                                    className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
-                                    <Routes>
-                                        <Route path='/home' element={<AppIdDashboard domain={domain} env={env} />} />
-                                        <Route path='/health' element={<HealthIndicatorsDashboard domain={domain} env={env} />} />
-                                        <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} selectedIdx={configIndex} />} />
-                                        <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env} selectedIdx={configIndex} />} />
-                                        <Route path='/feature-flipping' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
-                                        <Route path='/feature-flipping/:service' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
-                                        <Route path='/dyna-config' element={<ConfigManager domain={domain} env={env} config={config} />} />
-                                        <Route path='/dyna-config/:service' element={<ConfigManager domain={domain} env={env} config={config} />} />
-                                        <Route path='/manifest' element={<ManifestPage />} />
-                                        <Route path="*" element={<Navigate to="/home" replace={true}/>}/>
-                                    </Routes>
-                                </div>
-                            </div> : null
-                    }
+                            <Routes>
+                                <Route path='/auth/callback' element={<CallbackPage />} />
+                                <Route path='*' element={
+                                    config && user ? (
+                                        <div className="flex">
+                                            <div className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
+                                                <Routes>
+                                                    <Route path='/home' element={<AppIdDashboard domain={domain} env={env} />} />
+                                                    <Route path='/health' element={<HealthIndicatorsDashboard domain={domain} env={env} />} />
+                                                    <Route path='/audits' element={<AuditListPage domain={domain} env={env} config={config} selectedIdx={configIndex} />} />
+                                                    <Route path="/audits/:id" element={<DetailsPage domain={domain} env={env} selectedIdx={configIndex} />} />
+                                                    <Route path='/feature-flipping' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
+                                                    <Route path='/feature-flipping/:service' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
+                                                    <Route path='/dyna-config' element={<ConfigManager domain={domain} env={env} config={config} />} />
+                                                    <Route path='/dyna-config/:service' element={<ConfigManager domain={domain} env={env} config={config} />} />
+                                                    <Route path='/manifest' element={<ManifestPage />} />
+                                                    <Route path="*" element={<Navigate to="/home" replace={true}/>}/>
+                                                </Routes>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center justify-center min-h-screen">
+                                            <div>Loading...</div>
+                                        </div>
+                                    )
+                                } />
+                            </Routes>
                         </div>
                     </div>
                 </div>
