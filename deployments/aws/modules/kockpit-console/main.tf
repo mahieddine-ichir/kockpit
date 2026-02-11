@@ -121,7 +121,7 @@ locals {
 
 # CloudFront Origin Request Policy for API proxy
 resource "aws_cloudfront_origin_request_policy" "api_proxy_policy" {
-  count = var.backend_alb_domain != null ? 1 : 0
+  count = var.backend_alb_domain != null && var.backend_alb_domain != "" ? 1 : 0
   name  = "${var.service_name}-${var.kockpit_env}-api-proxy-policy"
 
   cookies_config {
@@ -151,7 +151,7 @@ resource "aws_cloudfront_distribution" "console_distribution" {
 
   # ALB origin (conditional)
   dynamic "origin" {
-    for_each = var.backend_alb_domain != null ? [1] : []
+    for_each = var.backend_alb_domain != null && var.backend_alb_domain != "" ? [1] : []
     content {
       domain_name = var.backend_alb_domain
       origin_id   = "ALB-Backend"
@@ -193,7 +193,7 @@ resource "aws_cloudfront_distribution" "console_distribution" {
 
   # API proxy cache behavior (conditional)
   dynamic "ordered_cache_behavior" {
-    for_each = var.backend_alb_domain != null ? [1] : []
+    for_each = var.backend_alb_domain != null && var.backend_alb_domain != "" ? [1] : []
     content {
       path_pattern     = "/backend/*"
       allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
