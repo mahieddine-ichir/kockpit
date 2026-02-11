@@ -59,7 +59,7 @@ variable "aliases" {
 }
 
 variable "acm_certificate_arn" {
-  description = "ARN of the ACM certificate for custom domains (required if aliases are specified)"
+  description = "ARN of the ACM certificate for custom domains (optional if create_certificate is true)"
   type        = string
   default     = null
 
@@ -67,6 +67,12 @@ variable "acm_certificate_arn" {
     condition = var.acm_certificate_arn == null || can(regex("^arn:aws:acm:us-east-1:", var.acm_certificate_arn))
     error_message = "ACM certificate must be in us-east-1 region for CloudFront. ARN should start with 'arn:aws:acm:us-east-1:'."
   }
+}
+
+variable "create_certificate" {
+  description = "Whether to create an ACM certificate for custom domains"
+  type        = bool
+  default     = true
 }
 
 # Backend Integration
