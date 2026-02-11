@@ -131,7 +131,7 @@ resource "aws_cloudfront_origin_request_policy" "api_proxy_policy" {
   headers_config {
     header_behavior = "whitelist"
     headers {
-      items = ["Authorization", "Content-Type", "Accept", "Host"]
+      items = ["Content-Type", "Accept", "Host"]
     }
   }
 
