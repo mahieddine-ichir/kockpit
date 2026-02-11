@@ -39,10 +39,10 @@ resource "aws_cognito_user_pool_client" "console_client" {
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_scopes                = ["openid", "profile", "email"]
 
-  # Callback URLs - use custom domains or placeholder for CloudFront
+  # Callback URLs - use root path for simplicity
   callback_urls = var.aliases != null && length(var.aliases) > 0 ? [
-    for alias in var.aliases : "https://${alias}/auth/callback"
-  ] : ["https://CLOUDFRONT_DOMAIN_PLACEHOLDER/auth/callback"]
+    for alias in var.aliases : "https://${alias}/"
+  ] : ["https://CLOUDFRONT_DOMAIN_PLACEHOLDER/"]
 
   logout_urls = var.aliases != null && length(var.aliases) > 0 ? [
     for alias in var.aliases : "https://${alias}/"
@@ -88,7 +88,7 @@ resource "null_resource" "update_cognito_callback" {
       aws cognito-idp update-user-pool-client \
         --user-pool-id ${local.cognito_user_pool_id} \
         --client-id ${local.cognito_client_id} \
-        --callback-urls https://${aws_cloudfront_distribution.console_distribution.domain_name}/auth/callback \
+        --callback-urls https://${aws_cloudfront_distribution.console_distribution.domain_name}/ \
         --logout-urls https://${aws_cloudfront_distribution.console_distribution.domain_name}/
     EOT
   }
