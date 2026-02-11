@@ -223,10 +223,10 @@ resource "aws_cloudfront_distribution" "console_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = var.aliases == null ? true : false
-    acm_certificate_arn            = var.acm_certificate_arn
-    ssl_support_method             = var.aliases != null ? "sni-only" : null
-    minimum_protocol_version       = var.aliases != null ? "TLSv1.2_2021" : null
+    cloudfront_default_certificate = var.aliases == null || length(var.aliases) == 0 ? true : false
+    acm_certificate_arn            = var.aliases != null && length(var.aliases) > 0 ? var.acm_certificate_arn : null
+    ssl_support_method             = var.aliases != null && length(var.aliases) > 0 ? "sni-only" : null
+    minimum_protocol_version       = var.aliases != null && length(var.aliases) > 0 ? "TLSv1.2_2021" : null
   }
 
   tags = var.tags
