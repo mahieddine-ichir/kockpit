@@ -342,3 +342,19 @@ resource "null_resource" "console_invalidation" {
 
   depends_on = [aws_s3_object.console_files]
 }
+
+# Route 53 DNS records for custom domains
+resource "aws_route53_record" "console_domain" {
+  count   = var.create_route53_records && var.route53_zone_id != null && var.aliases != null && length(var.aliases) > 0 ? length(var.aliases) : 0
+  zone_id = var.route53_zone_id
+  name    = var.aliases[count.index]
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.console_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.console_distribution.hosted_zone_id
+    evaluate_target_health = false
+  }
+
+  depends_on = [aws_cloudfront_distribution.console_distribution]
+}

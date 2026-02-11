@@ -75,6 +75,18 @@ output "certificate_validation_options" {
   value = var.create_certificate && var.aliases != null && length(var.aliases) > 0 ? aws_acm_certificate.console_cert[0].domain_validation_options : null
 }
 
+# Route 53 Information
+output "route53_records" {
+  description = "Route 53 DNS records created"
+  value = var.create_route53_records && var.route53_zone_id != null ? [
+    for record in aws_route53_record.console_domain : {
+      name = record.name
+      type = record.type
+      fqdn = record.fqdn
+    }
+  ] : []
+}
+
 # Debug Information
 output "debug_certificate_config" {
   description = "Debug information for certificate configuration"
