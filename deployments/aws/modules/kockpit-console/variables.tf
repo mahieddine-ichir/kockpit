@@ -105,3 +105,16 @@ variable "auto_deploy" {
   type        = bool
   default     = true
 }
+
+# Route 53 Configuration
+variable "route53_zone_id" {
+  description = "Route 53 hosted zone ID for creating DNS records (optional)"
+  type        = string
+  default     = null
+}
+
+variable "create_route53_records" {
+  description = "Whether to create Route 53 DNS records for custom domains"
+  type        = bool
+  default     = false
+}

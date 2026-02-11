@@ -85,6 +85,10 @@ module "kockpit_console" {
   create_certificate  = var.create_ssl_certificate
   acm_certificate_arn = var.existing_certificate_arn
 
+  # Route 53 DNS automation (optional)
+  route53_zone_id        = var.route53_zone_id
+  create_route53_records = var.create_route53_records
+
   # UI Configuration
   auto_deploy             = var.auto_deploy_ui
   console_ui_version     = var.console_ui_version

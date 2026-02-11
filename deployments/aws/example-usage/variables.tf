@@ -154,6 +154,19 @@ variable "console_ui_download_url" {
   default     = "https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-aws-dist.zip"
 }
 
+# Route 53 DNS Configuration
+variable "route53_zone_id" {
+  description = "Route 53 hosted zone ID for DNS records (optional)"
+  type        = string
+  default     = null
+}
+
+variable "create_route53_records" {
+  description = "Create Route 53 DNS records automatically"
+  type        = bool
+  default     = false
+}
+
 variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)
