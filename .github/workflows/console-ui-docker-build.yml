@@ -83,8 +83,7 @@ jobs:
           # Create AWS-specific config.js with /backend API prefix
           cat > public/config.js << 'EOF'
           window.ENV = {
-              VITE_API_BASE: '/backend', // AWS CloudFront API prefix
-              AUTH_PROVIDER: 'aws'       // Explicit AWS authentication
+              VITE_API_BASE: '/backend' // AWS CloudFront API prefix
           }
           EOF
 
