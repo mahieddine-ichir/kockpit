@@ -7,8 +7,10 @@ on:
       - '*'
     paths-ignore:
       - 'kockpit-rules/kockpit-rules-designer/**'
+      - 'kockpit-core-applications/kockpit-console/**'
+      - 'deployments/**'
+      - '.github/workflows/**'
       - '**.md'
-      - '.github/workflows/rules-designer-s3.yml'
   # Allow manual deployment
   workflow_dispatch:
     inputs:
