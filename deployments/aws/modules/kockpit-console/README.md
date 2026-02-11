@@ -243,6 +243,8 @@ terraform output kockpit_console
    ```
 
 5. **Wait for certificate validation** (usually 5-10 minutes after DNS records are added)
+   - Terraform will automatically wait for certificate validation before creating CloudFront distribution
+   - You can monitor progress in AWS ACM console (us-east-1 region)
 
 6. **Test access:**
 ```bash
@@ -264,9 +266,10 @@ Access via: `https://d123456789.cloudfront.net` (from `cloudfront_domain_name` o
 
 ### Troubleshooting Custom Domains
 
-- **Certificate validation failing**: Check DNS records are correctly added
+- **Certificate validation failing**: Check DNS records are correctly added and wait 5-10 minutes
+- **CloudFront SSL errors**: Ensure certificate is fully validated (ISSUED status) in ACM console (us-east-1 region)
 - **Domain not resolving**: Verify CNAME points to CloudFront domain
-- **SSL errors**: Ensure certificate is validated in ACM console (us-east-1 region)
+- **Terraform timeout on certificate validation**: DNS records may not be propagated yet, check with DNS administrator
 - **403 Forbidden**: Check S3 bucket policy and CloudFront OAC configuration
 
 ## Troubleshooting Auto-Deployment
