@@ -179,8 +179,8 @@ If you set `auto_deploy = false`, you can manually upload files to the S3 bucket
 curl -L -o console-ui-dist.zip https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-dist.zip
 unzip console-ui-dist.zip
 
-# Upload to S3
-aws s3 sync dist/ s3://your-bucket-name/ --delete
+# Upload to S3 (files are at root level, not in a dist/ subdirectory)
+aws s3 sync ./ s3://your-bucket-name/ --delete --exclude "*.zip"
 
 # Invalidate CloudFront cache
 aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
@@ -268,6 +268,33 @@ Access via: `https://d123456789.cloudfront.net` (from `cloudfront_domain_name` o
 - **Domain not resolving**: Verify CNAME points to CloudFront domain
 - **SSL errors**: Ensure certificate is validated in ACM console (us-east-1 region)
 - **403 Forbidden**: Check S3 bucket policy and CloudFront OAC configuration
+
+## Troubleshooting Auto-Deployment
+
+If the S3 bucket is empty despite `auto_deploy = true`:
+
+1. **Check if the download succeeded**: In your consuming project, look for temp files:
+   ```bash
+   find .terraform/modules/*/temp -name "*.html" 2>/dev/null
+   ```
+
+2. **Verify archive extraction**: Check if files are extracted correctly:
+   ```bash
+   find .terraform/modules/*/temp -type f | head -10
+   ```
+
+3. **Manual deployment workaround**: Use the manual deployment commands above
+
+4. **Debug Terraform resource**: Check the S3 objects resource:
+   ```bash
+   terraform state list | grep aws_s3_object
+   terraform state show 'module.kockpit_console.aws_s3_object.console_files["index.html"]'
+   ```
+
+5. **Common issues**:
+   - Archive structure changed: Files should be at root level, not in a subdirectory
+   - Network issues during download: Check curl command in logs
+   - Permissions: Ensure AWS credentials have S3 upload permissions
 
 ## Notes
 

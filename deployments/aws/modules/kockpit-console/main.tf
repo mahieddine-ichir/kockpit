@@ -280,11 +280,11 @@ resource "null_resource" "download_and_extract_ui" {
 
 # Upload files to S3
 resource "aws_s3_object" "console_files" {
-  for_each = var.auto_deploy ? fileset("${path.module}/temp/dist", "**/*") : toset([])
+  for_each = var.auto_deploy ? toset([for f in fileset("${path.module}/temp", "**/*") : f if !endswith(f, ".zip")]) : toset([])
 
   bucket = aws_s3_bucket.console_bucket.id
   key    = each.value
-  source = "${path.module}/temp/dist/${each.value}"
+  source = "${path.module}/temp/${each.value}"
 
   content_type = lookup({
     "html" = "text/html"
@@ -303,7 +303,7 @@ resource "aws_s3_object" "console_files" {
     "eot"  = "application/vnd.ms-fontobject"
   }, reverse(split(".", each.value))[0], "application/octet-stream")
 
-  etag = filemd5("${path.module}/temp/dist/${each.value}")
+  etag = filemd5("${path.module}/temp/${each.value}")
 
   depends_on = [null_resource.download_and_extract_ui]
 
