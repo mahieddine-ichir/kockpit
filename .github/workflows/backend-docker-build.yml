@@ -10,6 +10,7 @@ on:
       - 'kockpit-features/**'
       - 'kockpit-backends/**'
       - 'kockpit-core-applications/**'
+      - '!kockpit-core-applications/kockpit-console/**'
       - 'pom.xml'
   pull_request:
     branches:
@@ -20,6 +21,7 @@ on:
       - 'kockpit-features/**'
       - 'kockpit-backends/**'
       - 'kockpit-core-applications/**'
+      - '!kockpit-core-applications/kockpit-console/**'
       - 'pom.xml'
   workflow_dispatch:
 
