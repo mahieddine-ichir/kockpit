@@ -118,3 +118,28 @@ variable "create_route53_records" {
   type        = bool
   default     = false
 }
+
+# Cognito Authentication Configuration
+variable "enable_cognito_auth" {
+  description = "Enable AWS Cognito authentication for CloudFront"
+  type        = bool
+  default     = false
+}
+
+variable "cognito_user_pool_id" {
+  description = "AWS Cognito User Pool ID"
+  type        = string
+  default     = null
+}
+
+variable "cognito_user_pool_domain" {
+  description = "AWS Cognito User Pool domain (e.g., myapp.auth.us-east-1.amazoncognito.com)"
+  type        = string
+  default     = null
+}
+
+variable "cognito_client_id" {
+  description = "AWS Cognito App Client ID"
+  type        = string
+  default     = null
+}

@@ -205,7 +205,7 @@ resource "aws_cloudfront_distribution" "console_distribution" {
     forwarded_values {
       query_string = false
       cookies {
-        forward = "none"
+        forward = var.enable_cognito_auth ? "all" : "none"
       }
     }
 
@@ -214,6 +214,16 @@ resource "aws_cloudfront_distribution" "console_distribution" {
     default_ttl            = 3600
     max_ttl                = 86400
     compress               = true
+
+    # Lambda@Edge for Cognito authentication
+    dynamic "lambda_function_association" {
+      for_each = var.enable_cognito_auth ? [1] : []
+      content {
+        event_type   = "viewer-request"
+        lambda_arn   = aws_lambda_function.cognito_auth[0].qualified_arn
+        include_body = false
+      }
+    }
   }
 
   # API proxy cache behavior (conditional)

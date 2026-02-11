@@ -87,6 +87,27 @@ output "route53_records" {
   ] : []
 }
 
+# Cognito Information
+output "cognito_user_pool_id" {
+  description = "Cognito User Pool ID"
+  value       = var.enable_cognito_auth ? local.cognito_user_pool_id : null
+}
+
+output "cognito_client_id" {
+  description = "Cognito App Client ID"
+  value       = var.enable_cognito_auth ? local.cognito_client_id : null
+}
+
+output "cognito_domain" {
+  description = "Cognito authentication domain"
+  value       = var.enable_cognito_auth ? local.cognito_domain : null
+}
+
+output "cognito_login_url" {
+  description = "Cognito login URL"
+  value = var.enable_cognito_auth ? "https://${local.cognito_domain}.auth.${var.aws_region}.amazoncognito.com/login" : null
+}
+
 # Debug Information
 output "debug_certificate_config" {
   description = "Debug information for certificate configuration"
