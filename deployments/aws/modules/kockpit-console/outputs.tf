@@ -59,3 +59,15 @@ output "deployment_status" {
     console_version       = var.console_ui_version
   }
 }
+
+# Debug Information
+output "debug_certificate_config" {
+  description = "Debug information for certificate configuration"
+  value = {
+    aliases                        = var.aliases
+    aliases_length                = var.aliases != null ? length(var.aliases) : 0
+    acm_certificate_arn           = var.acm_certificate_arn
+    using_default_certificate     = var.aliases == null || length(var.aliases) == 0
+    certificate_arn_will_be_used  = var.aliases != null && length(var.aliases) > 0 ? var.acm_certificate_arn : null
+  }
+}
