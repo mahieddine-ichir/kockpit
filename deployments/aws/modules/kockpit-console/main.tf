@@ -16,6 +16,29 @@ provider "aws" {
   region = var.aws_region
 }
 
+# Provider for ACM certificates (must be us-east-1 for CloudFront)
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+}
+
+# ACM Certificate for custom domains (must be in us-east-1 for CloudFront)
+resource "aws_acm_certificate" "console_cert" {
+  count             = var.aliases != null && length(var.aliases) > 0 && var.create_certificate ? 1 : 0
+  provider          = aws.us_east_1
+  domain_name       = var.aliases[0]
+  subject_alternative_names = length(var.aliases) > 1 ? slice(var.aliases, 1, length(var.aliases)) : []
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "kockpit-console-${var.kockpit_env}-cert"
+  })
+}
+
 # S3 bucket for hosting the web application
 resource "aws_s3_bucket" "console_bucket" {
   bucket = "${var.bucket_name_prefix}-${var.kockpit_env}"
@@ -224,7 +247,9 @@ resource "aws_cloudfront_distribution" "console_distribution" {
 
   viewer_certificate {
     cloudfront_default_certificate = var.aliases == null || length(var.aliases) == 0 ? true : false
-    acm_certificate_arn            = var.aliases != null && length(var.aliases) > 0 ? var.acm_certificate_arn : null
+    acm_certificate_arn            = var.aliases != null && length(var.aliases) > 0 ? (
+      var.acm_certificate_arn != null ? var.acm_certificate_arn : aws_acm_certificate.console_cert[0].arn
+    ) : null
     ssl_support_method             = var.aliases != null && length(var.aliases) > 0 ? "sni-only" : null
     minimum_protocol_version       = var.aliases != null && length(var.aliases) > 0 ? "TLSv1.2_2021" : null
   }

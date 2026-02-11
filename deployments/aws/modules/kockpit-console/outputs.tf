@@ -60,6 +60,21 @@ output "deployment_status" {
   }
 }
 
+# Certificate Information
+output "certificate_arn" {
+  description = "ARN of the SSL certificate (created or provided)"
+  value = var.aliases != null && length(var.aliases) > 0 ? (
+    var.acm_certificate_arn != null ? var.acm_certificate_arn : (
+      var.create_certificate ? aws_acm_certificate.console_cert[0].arn : null
+    )
+  ) : null
+}
+
+output "certificate_validation_options" {
+  description = "Certificate validation options for DNS validation"
+  value = var.create_certificate && var.aliases != null && length(var.aliases) > 0 ? aws_acm_certificate.console_cert[0].domain_validation_options : null
+}
+
 # Debug Information
 output "debug_certificate_config" {
   description = "Debug information for certificate configuration"
@@ -67,7 +82,12 @@ output "debug_certificate_config" {
     aliases                        = var.aliases
     aliases_length                = var.aliases != null ? length(var.aliases) : 0
     acm_certificate_arn           = var.acm_certificate_arn
+    create_certificate            = var.create_certificate
     using_default_certificate     = var.aliases == null || length(var.aliases) == 0
-    certificate_arn_will_be_used  = var.aliases != null && length(var.aliases) > 0 ? var.acm_certificate_arn : null
+    certificate_arn_will_be_used  = var.aliases != null && length(var.aliases) > 0 ? (
+      var.acm_certificate_arn != null ? var.acm_certificate_arn : (
+        var.create_certificate ? "will_be_created" : null
+      )
+    ) : null
   }
 }
