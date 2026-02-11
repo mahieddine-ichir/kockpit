@@ -113,7 +113,7 @@ module "kockpit_console" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| aws_region | AWS region where resources will be created | `string` | `"us-west-2"` | no |
+| aws_region | AWS region where resources will be created | `string` | `"eu-west-1"` | no |
 | service_name | Name of the service (used for resource naming) | `string` | `"kockpit-console"` | no |
 | bucket_name_prefix | Prefix for the S3 bucket name (will be suffixed with random string) | `string` | `"kockpit-console"` | no |
 | default_root_object | Default root object for CloudFront distribution | `string` | `"index.html"` | no |

@@ -86,7 +86,7 @@ module "kockpit_backend" {
 | opensearch_endpoints | OpenSearch cluster endpoints | `string` | n/a | yes |
 | kockpit_data_s3_bucket | S3 bucket for Kockpit data storage | `string` | n/a | yes |
 | kockpit_manifests_s3_bucket | S3 bucket for Kockpit manifests storage | `string` | n/a | yes |
-| aws_region | AWS region where resources will be created | `string` | `"us-west-2"` | no |
+| aws_region | AWS region where resources will be created | `string` | `"eu-west-1"` | no |
 | service_name | Name of the ECS service | `string` | `"kockpit-console-backend"` | no |
 | kockpit_env | Kockpit environment (dev, staging, prod) | `string` | `"dev"` | no |
 | image_tag | Docker image tag for the kockpit backend application | `string` | `"latest"` | no |
