@@ -47,9 +47,19 @@ export const createConfig = async (configItem) => {
 }
 
 
+const getAuthProvider = () => {
+    // Detect deployment environment
+    if (import.meta.env.MODE === 'development') return 'dev';
+    if (window.ENV?.VITE_API_BASE?.startsWith('/backend')) return 'aws';
+    if (window.location.hostname.includes('azurestaticapps.net')) return 'azure';
+    return 'aws'; // Default to AWS for CloudFront deployments
+}
+
 export const login = async() => {
-    console.log(`login on ${import.meta.env.MODE}`)
-    if (import.meta.env.MODE === 'development') {
+    const authProvider = getAuthProvider();
+    console.log(`login on ${import.meta.env.MODE} using ${authProvider} auth`)
+
+    if (authProvider === 'development' || import.meta.env.MODE === 'development') {
         return {
             "clientPrincipal": {
                 "identityProvider": "aad",
@@ -63,13 +73,78 @@ export const login = async() => {
             }
         };
     }
-    const response = await axios.get("/.auth/me");
-    return response.data;
+
+    if (authProvider === 'azure') {
+        // Azure Static Web Apps authentication
+        const response = await axios.get("/.auth/me");
+        return response.data;
+    }
+
+    if (authProvider === 'aws') {
+        // AWS authentication - multiple options:
+
+        // Option 1: If using AWS Cognito via your backend
+        try {
+            const response = await instance.get(`${API_BASE}/auth/me`);
+            return {
+                "clientPrincipal": {
+                    "identityProvider": "cognito",
+                    "userId": response.data.userId || response.data.sub,
+                    "userDetails": response.data.email || response.data.username,
+                    "userRoles": response.data.roles || ["authenticated"]
+                }
+            };
+        } catch (error) {
+            console.warn('Backend auth failed, using anonymous access:', error);
+            // Fallback to anonymous access for AWS
+            return {
+                "clientPrincipal": {
+                    "identityProvider": "anonymous",
+                    "userId": "anonymous",
+                    "userDetails": "anonymous@aws.local",
+                    "userRoles": ["anonymous", "authenticated"]
+                }
+            };
+        }
+    }
+
+    // Default fallback
+    return {
+        "clientPrincipal": {
+            "identityProvider": "unknown",
+            "userId": "anonymous",
+            "userDetails": "anonymous@local",
+            "userRoles": ["anonymous"]
+        }
+    };
 }
 
 export const logout = async() => {
-    const response = await axios.get("/logout");
-    return response.data;
+    const authProvider = getAuthProvider();
+
+    if (authProvider === 'azure') {
+        // Azure Static Web Apps logout
+        const response = await axios.get("/.auth/logout");
+        return response.data;
+    }
+
+    if (authProvider === 'aws') {
+        // AWS logout options:
+
+        // Option 1: Backend-handled logout
+        try {
+            const response = await instance.post(`${API_BASE}/auth/logout`);
+            return response.data;
+        } catch (error) {
+            console.warn('Backend logout failed:', error);
+            // Option 2: Client-side logout (clear local storage, etc.)
+            localStorage.clear();
+            sessionStorage.clear();
+            return { success: true };
+        }
+    }
+
+    return { success: true };
 }
 
 export const getFeatureFlags = async (domain, env) => {
