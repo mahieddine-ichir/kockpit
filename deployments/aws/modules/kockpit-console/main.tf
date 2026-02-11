@@ -9,10 +9,6 @@ terraform {
       source  = "hashicorp/null"
       version = "~> 3.0"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.0"
-    }
   }
 }
 
@@ -20,17 +16,12 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Random suffix for unique bucket naming
-resource "random_id" "bucket_suffix" {
-  byte_length = 4
-}
-
 # S3 bucket for hosting the web application
 resource "aws_s3_bucket" "console_bucket" {
-  bucket = "${var.bucket_name_prefix}-${var.kockpit_env}-${random_id.bucket_suffix.hex}"
+  bucket = "${var.bucket_name_prefix}-${var.kockpit_env}"
 
   tags = merge(var.tags, {
-    Name        = "${var.bucket_name_prefix}-${var.kockpit_env}-${random_id.bucket_suffix.hex}"
+    Name        = "${var.bucket_name_prefix}-${var.kockpit_env}"
     Purpose     = "Kockpit Console UI"
     Environment = var.kockpit_env
   })
