@@ -39,14 +39,14 @@ resource "aws_cognito_user_pool_client" "console_client" {
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_scopes                = ["openid", "profile", "email"]
 
-  # Callback URLs
+  # Callback URLs - use custom domains or placeholder for CloudFront
   callback_urls = var.aliases != null && length(var.aliases) > 0 ? [
     for alias in var.aliases : "https://${alias}/auth/callback"
-  ] : ["https://${aws_cloudfront_distribution.console_distribution.domain_name}/auth/callback"]
+  ] : ["https://CLOUDFRONT_DOMAIN_PLACEHOLDER/auth/callback"]
 
   logout_urls = var.aliases != null && length(var.aliases) > 0 ? [
     for alias in var.aliases : "https://${alias}/"
-  ] : ["https://${aws_cloudfront_distribution.console_distribution.domain_name}/"]
+  ] : ["https://CLOUDFRONT_DOMAIN_PLACEHOLDER/"]
 
   # Token validity
   access_token_validity  = 1  # 1 hour
@@ -72,4 +72,29 @@ locals {
   cognito_user_pool_id     = var.cognito_user_pool_id != null ? var.cognito_user_pool_id : (var.enable_cognito_auth ? aws_cognito_user_pool.console_pool[0].id : null)
   cognito_client_id        = var.cognito_client_id != null ? var.cognito_client_id : (var.enable_cognito_auth ? aws_cognito_user_pool_client.console_client[0].id : null)
   cognito_domain          = var.cognito_user_pool_domain != null ? var.cognito_user_pool_domain : (var.enable_cognito_auth ? aws_cognito_user_pool_domain.console_domain[0].domain : null)
+}
+
+# Update Cognito client with actual CloudFront domain (after CloudFront is created)
+resource "null_resource" "update_cognito_callback" {
+  count = var.enable_cognito_auth && var.cognito_auto_callback_update && var.cognito_client_id == null && (var.aliases == null || length(var.aliases) == 0) ? 1 : 0
+
+  triggers = {
+    cloudfront_domain = aws_cloudfront_distribution.console_distribution.domain_name
+    client_id = local.cognito_client_id
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      aws cognito-idp update-user-pool-client \
+        --user-pool-id ${local.cognito_user_pool_id} \
+        --client-id ${local.cognito_client_id} \
+        --callback-urls https://${aws_cloudfront_distribution.console_distribution.domain_name}/auth/callback \
+        --logout-urls https://${aws_cloudfront_distribution.console_distribution.domain_name}/
+    EOT
+  }
+
+  depends_on = [
+    aws_cloudfront_distribution.console_distribution,
+    aws_cognito_user_pool_client.console_client
+  ]
 }

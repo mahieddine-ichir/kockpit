@@ -143,3 +143,9 @@ variable "cognito_client_id" {
   type        = string
   default     = null
 }
+
+variable "cognito_auto_callback_update" {
+  description = "Automatically update Cognito callback URLs with CloudFront domain"
+  type        = bool
+  default     = true
+}
