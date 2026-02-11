@@ -293,7 +293,7 @@ resource "null_resource" "download_and_extract_ui" {
 
 # Upload files to S3
 resource "aws_s3_object" "console_files" {
-  for_each = var.auto_deploy ? toset([for f in fileset("${path.module}/temp", "**/*") : f if !endswith(f, ".zip")]) : toset([])
+  for_each = var.auto_deploy ? toset([for f in try(fileset("${path.module}/temp", "**/*"), []) : f if !endswith(f, ".zip")]) : toset([])
 
   bucket = aws_s3_bucket.console_bucket.id
   key    = each.value
@@ -329,7 +329,7 @@ resource "aws_s3_object" "console_files" {
 
 # CloudFront invalidation after deployment
 resource "null_resource" "console_invalidation" {
-  count = var.auto_deploy ? 1 : 0
+  count = var.auto_deploy && length(aws_s3_object.console_files) > 0 ? 1 : 0
 
   triggers = {
     distribution_id = aws_cloudfront_distribution.console_distribution.id
