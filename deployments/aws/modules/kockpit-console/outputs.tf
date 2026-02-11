@@ -65,7 +65,7 @@ output "certificate_arn" {
   description = "ARN of the SSL certificate (created or provided)"
   value = var.aliases != null && length(var.aliases) > 0 ? (
     var.acm_certificate_arn != null ? var.acm_certificate_arn : (
-      var.create_certificate ? aws_acm_certificate.console_cert[0].arn : null
+      var.create_certificate ? aws_acm_certificate_validation.console_cert_validation[0].certificate_arn : null
     )
   ) : null
 }
@@ -86,7 +86,7 @@ output "debug_certificate_config" {
     using_default_certificate     = var.aliases == null || length(var.aliases) == 0
     certificate_arn_will_be_used  = var.aliases != null && length(var.aliases) > 0 ? (
       var.acm_certificate_arn != null ? var.acm_certificate_arn : (
-        var.create_certificate ? "will_be_created" : null
+        var.create_certificate ? "will_be_created_and_validated" : null
       )
     ) : null
   }

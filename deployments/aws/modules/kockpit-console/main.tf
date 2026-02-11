@@ -39,6 +39,17 @@ resource "aws_acm_certificate" "console_cert" {
   })
 }
 
+# Certificate validation (waits for DNS validation to complete)
+resource "aws_acm_certificate_validation" "console_cert_validation" {
+  count           = var.aliases != null && length(var.aliases) > 0 && var.create_certificate ? 1 : 0
+  provider        = aws.us_east_1
+  certificate_arn = aws_acm_certificate.console_cert[0].arn
+
+  timeouts {
+    create = "10m"
+  }
+}
+
 # S3 bucket for hosting the web application
 resource "aws_s3_bucket" "console_bucket" {
   bucket = "${var.bucket_name_prefix}-${var.kockpit_env}"
@@ -248,7 +259,7 @@ resource "aws_cloudfront_distribution" "console_distribution" {
   viewer_certificate {
     cloudfront_default_certificate = var.aliases == null || length(var.aliases) == 0 ? true : false
     acm_certificate_arn            = var.aliases != null && length(var.aliases) > 0 ? (
-      var.acm_certificate_arn != null ? var.acm_certificate_arn : aws_acm_certificate.console_cert[0].arn
+      var.acm_certificate_arn != null ? var.acm_certificate_arn : aws_acm_certificate_validation.console_cert_validation[0].certificate_arn
     ) : null
     ssl_support_method             = var.aliases != null && length(var.aliases) > 0 ? "sni-only" : null
     minimum_protocol_version       = var.aliases != null && length(var.aliases) > 0 ? "TLSv1.2_2021" : null
