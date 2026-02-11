@@ -60,9 +60,37 @@ resource "aws_lb_listener_rule" "kockpit_api" {
 
   condition {
     path_pattern {
-      values = ["/api/*", "/actuator/*"]
+      values = ["/backend/*"]  # Changed to /backend/* for CloudFront integration
     }
   }
 
   tags = var.tags
+}
+
+# Deploy Kockpit Console Frontend with CloudFront API integration
+module "kockpit_console" {
+  # Use Git source - replace with your actual repository
+  source = "git::https://github.com/your-org/kockpit.git//deployments/aws/modules/kockpit-console?ref=main"
+
+  # Basic configuration
+  service_name = "kockpit-console"
+  kockpit_env  = var.environment
+  aws_region   = var.aws_region
+
+  # CloudFront + API Integration: Connect frontend to backend ALB
+  backend_alb_domain = replace(module.kockpit_console_backend.service_url, "https://", "")
+
+  # Custom domain configuration (optional)
+  aliases             = var.console_domain_aliases
+  create_certificate  = var.create_ssl_certificate
+  acm_certificate_arn = var.existing_certificate_arn
+
+  # UI Configuration
+  auto_deploy             = var.auto_deploy_ui
+  console_ui_version     = var.console_ui_version
+  console_ui_download_url = var.console_ui_download_url
+
+  tags = var.tags
+
+  depends_on = [module.kockpit_console_backend]
 }

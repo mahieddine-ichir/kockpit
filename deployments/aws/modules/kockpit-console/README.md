@@ -116,7 +116,7 @@ module "kockpit_console" {
 | aws_region | AWS region where resources will be created | `string` | `"eu-west-1"` | no |
 | service_name | Name of the service (used for resource naming) | `string` | `"kockpit-console"` | no |
 | kockpit_env | Kockpit environment (dev, staging, prod) | `string` | `"dev"` | no |
-| bucket_name_prefix | Prefix for the S3 bucket name (will include environment) | `string` | `"kockpit-console"` | no |
+| bucket_name_prefix | Prefix for the S3 bucket name (environment will be appended automatically) | `string` | `"kockpit-console"` | no |
 | default_root_object | Default root object for CloudFront distribution | `string` | `"index.html"` | no |
 | price_class | CloudFront price class | `string` | `"PriceClass_100"` | no |
 | aliases | List of CNAMEs (alternate domain names) for the distribution | `list(string)` | `null` | no |
@@ -124,7 +124,7 @@ module "kockpit_console" {
 | create_certificate | Whether to create an ACM certificate for custom domains | `bool` | `true` | no |
 | backend_alb_domain | Domain name of the backend ALB for API proxy | `string` | `null` | no |
 | console_ui_version | Version tag for cache busting when updating the UI | `string` | `"latest"` | no |
-| console_ui_download_url | URL to download the console UI distribution zip | `string` | `"https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-dist.zip"` | no |
+| console_ui_download_url | URL to download the console UI distribution zip (AWS build with /backend API prefix) | `string` | `"https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-aws-dist.zip"` | no |
 | auto_deploy | Whether to automatically download and deploy the console UI | `bool` | `true` | no |
 | tags | Tags to apply to all resources | `map(string)` | `{"Environment": "production", "Project": "kockpit", "ManagedBy": "terraform"}` | no |
 
@@ -301,6 +301,7 @@ If the S3 bucket is empty despite `auto_deploy = true`:
 
 ## Notes
 
+- **S3 Bucket Naming**: Bucket name will be `{bucket_name_prefix}-{kockpit_env}` (e.g., "kockpit-console-dev"). Avoid including environment in the prefix to prevent double environment suffixes.
 - **Certificate Requirements**: For custom domains, ACM certificates must be in the `us-east-1` region for CloudFront
 - **DNS Configuration**: You'll need to create CNAME/ALIAS records pointing your custom domain to the CloudFront distribution
 - **Backend Integration**: When using `backend_alb_domain`, ensure your ALB accepts traffic from CloudFront edge locations
