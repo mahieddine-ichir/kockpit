@@ -30,7 +30,7 @@ variable "kockpit_env" {
 
 # S3 Configuration
 variable "bucket_name_prefix" {
-  description = "Prefix for the S3 bucket name (will include environment)"
+  description = "Prefix for the S3 bucket name (environment will be appended automatically)"
   type        = string
   default     = "kockpit-console"
 }
@@ -97,7 +97,7 @@ variable "console_ui_version" {
 variable "console_ui_download_url" {
   description = "URL to download the console UI distribution zip"
   type        = string
-  default     = "https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-dist.zip"
+  default     = "https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-aws-dist.zip"
 }
 
 variable "auto_deploy" {

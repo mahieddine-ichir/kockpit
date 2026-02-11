@@ -35,3 +35,35 @@ output "task_role_arn" {
   description = "Task role ARN (has S3 permissions)"
   value       = module.kockpit_console_backend.task_role_arn
 }
+
+# Console Frontend Outputs
+output "console_url" {
+  description = "URL to access the Kockpit Console"
+  value       = module.kockpit_console.console_url
+}
+
+output "console_api_url" {
+  description = "API URL through CloudFront (same domain as console)"
+  value       = "${module.kockpit_console.console_url}/backend"
+}
+
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID"
+  value       = module.kockpit_console.cloudfront_distribution_id
+}
+
+output "s3_bucket_name" {
+  description = "S3 bucket name for console UI"
+  value       = module.kockpit_console.s3_bucket_id
+}
+
+# Integration Summary
+output "integration_summary" {
+  description = "Summary of the complete integration"
+  value = {
+    console_frontend_url = module.kockpit_console.console_url
+    api_through_cloudfront = "${module.kockpit_console.console_url}/backend"
+    direct_api_url = module.kockpit_console_backend.service_url
+    architecture = "Frontend (CloudFront + S3) → API Proxy → Backend (ALB + ECS)"
+  }
+}

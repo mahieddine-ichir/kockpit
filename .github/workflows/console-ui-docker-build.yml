@@ -46,7 +46,7 @@ jobs:
 #        run: npm run lint
 #        working-directory: kockpit-core-applications/kockpit-console
 
-      - name: Build Application
+      - name: Build Application (Default)
         run: npm run build
         working-directory: kockpit-core-applications/kockpit-console
         env:
@@ -56,16 +56,69 @@ jobs:
         run: cp ./staticwebapp.config.json ./dist/
         working-directory: kockpit-core-applications/kockpit-console
 
-      - name: Create Zip Artifact
+      - name: Create Default Zip Artifact
         run: |
           cd kockpit-core-applications/kockpit-console/dist
           zip -r ../../../console-ui-dist.zip .
 
-      - name: Upload Build Artifact
+      - name: Build Application (AWS CloudFront)
+        run: |
+          # Create AWS-specific config.js with /backend API prefix
+          mkdir -p aws-build/public
+          cat > aws-build/public/config.js << 'EOF'
+          window.ENV = {
+              VITE_API_BASE: '/backend' // AWS CloudFront API prefix
+          }
+          EOF
+
+          # Copy source files for AWS build
+          cp -r src aws-build/
+          cp -r public/* aws-build/public/
+          cp package.json package-lock.json vite.config.js tailwind.config.js postcss.config.js eslint.config.js aws-build/
+          cp staticwebapp.config.json aws-build/
+
+          # Create AWS-specific vite config
+          cat > aws-build/vite.config.js << 'EOF'
+          import { defineConfig } from 'vite'
+          import react from '@vitejs/plugin-react'
+
+          export default defineConfig({
+            plugins: [react()],
+            base: '/',
+            define: {
+              __BUILD_TIME__: JSON.stringify(process.env.VITE_BUILD_TIME || new Date().toISOString()),
+            },
+            build: {
+              outDir: 'dist',
+              rollupOptions: {
+                output: {
+                  manualChunks: undefined,
+                }
+              }
+            }
+          })
+          EOF
+
+          # Install dependencies and build AWS version
+          cd aws-build
+          npm ci
+          npm run build
+        working-directory: kockpit-core-applications/kockpit-console
+        env:
+          VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
+
+      - name: Create AWS CloudFront Zip Artifact
+        run: |
+          cd kockpit-core-applications/kockpit-console/aws-build/dist
+          zip -r ../../../../console-ui-aws-dist.zip .
+
+      - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: console-ui-build-${{ github.ref_name }}
-          path: console-ui-dist.zip
+          name: console-ui-builds-${{ github.ref_name }}
+          path: |
+            console-ui-dist.zip
+            console-ui-aws-dist.zip
           retention-days: 30
 
       - name: Upload to GitHub Release
@@ -74,11 +127,21 @@ jobs:
         with:
           tag_name: console-ui-${{ github.ref_name }}-latest
           name: Console UI Build - ${{ github.ref_name }}
-          files: console-ui-dist.zip
+          files: |
+            console-ui-dist.zip
+            console-ui-aws-dist.zip
           body: |
             Automated build of Console UI from branch: ${{ github.ref_name }}
             Commit: ${{ github.sha }}
             Build Date: ${{ github.event.head_commit.timestamp }}
+
+            **Builds included:**
+            - `console-ui-dist.zip`: Standard build (API calls to `/api`)
+            - `console-ui-aws-dist.zip`: AWS CloudFront build (API calls to `/backend/api`)
+
+            **For AWS CloudFront integration:**
+            Use `console-ui-aws-dist.zip` with your Terraform kockpit-console module.
+            This build is pre-configured to work with CloudFront API proxy at `/backend/*`.
           prerelease: ${{ github.ref_name != 'main' }}
           fail_on_unmatched_files: true
 

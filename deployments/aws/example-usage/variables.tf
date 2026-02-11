@@ -117,6 +117,43 @@ variable "additional_env_vars" {
   default = []
 }
 
+# Console Frontend Configuration
+variable "console_domain_aliases" {
+  description = "Custom domain names for the console (optional)"
+  type        = list(string)
+  default     = null
+}
+
+variable "create_ssl_certificate" {
+  description = "Create SSL certificate for custom domains"
+  type        = bool
+  default     = true
+}
+
+variable "existing_certificate_arn" {
+  description = "Existing ACM certificate ARN (optional)"
+  type        = string
+  default     = null
+}
+
+variable "auto_deploy_ui" {
+  description = "Automatically deploy console UI files"
+  type        = bool
+  default     = true
+}
+
+variable "console_ui_version" {
+  description = "Console UI version for cache busting"
+  type        = string
+  default     = "latest"
+}
+
+variable "console_ui_download_url" {
+  description = "URL to download console UI distribution (AWS version with /backend API prefix)"
+  type        = string
+  default     = "https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-aws-dist.zip"
+}
+
 variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)
