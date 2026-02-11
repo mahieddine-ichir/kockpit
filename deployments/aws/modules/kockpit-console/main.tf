@@ -283,10 +283,12 @@ resource "null_resource" "download_and_extract_ui" {
     EOT
   }
 
+  /*
   provisioner "local-exec" {
     when    = destroy
     command = "rm -rf ${path.module}/temp"
   }
+   */
 }
 
 # Upload files to S3
