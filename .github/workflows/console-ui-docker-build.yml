@@ -63,22 +63,32 @@ jobs:
 
       - name: Build Application (AWS CloudFront)
         run: |
+          # Create clean AWS build directory
+          rm -rf aws-build
+          mkdir aws-build
+          cd aws-build
+
+          # Copy entire project structure (excluding node_modules and dist)
+          cp -r ../src .
+          cp -r ../public .
+          cp ../index.html .
+          cp ../package.json .
+          cp ../package-lock.json .
+          cp ../vite.config.js . 2>/dev/null || echo "vite.config.js not found, will create"
+          cp ../tailwind.config.js . 2>/dev/null || echo "tailwind.config.js not found"
+          cp ../postcss.config.js . 2>/dev/null || echo "postcss.config.js not found"
+          cp ../eslint.config.js . 2>/dev/null || echo "eslint.config.js not found"
+          cp ../staticwebapp.config.json . 2>/dev/null || echo "staticwebapp.config.json not found"
+
           # Create AWS-specific config.js with /backend API prefix
-          mkdir -p aws-build/public
-          cat > aws-build/public/config.js << 'EOF'
+          cat > public/config.js << 'EOF'
           window.ENV = {
               VITE_API_BASE: '/backend' // AWS CloudFront API prefix
           }
           EOF
 
-          # Copy source files for AWS build
-          cp -r src aws-build/
-          cp -r public/* aws-build/public/
-          cp package.json package-lock.json vite.config.js tailwind.config.js postcss.config.js eslint.config.js aws-build/
-          cp staticwebapp.config.json aws-build/
-
-          # Create AWS-specific vite config
-          cat > aws-build/vite.config.js << 'EOF'
+          # Create AWS-optimized vite config
+          cat > vite.config.js << 'EOF'
           import { defineConfig } from 'vite'
           import react from '@vitejs/plugin-react'
 
@@ -89,18 +99,12 @@ jobs:
               __BUILD_TIME__: JSON.stringify(process.env.VITE_BUILD_TIME || new Date().toISOString()),
             },
             build: {
-              outDir: 'dist',
-              rollupOptions: {
-                output: {
-                  manualChunks: undefined,
-                }
-              }
+              outDir: 'dist'
             }
           })
           EOF
 
           # Install dependencies and build AWS version
-          cd aws-build
           npm ci
           npm run build
         working-directory: kockpit-core-applications/kockpit-console
