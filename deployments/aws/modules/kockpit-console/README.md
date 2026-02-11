@@ -115,11 +115,13 @@ module "kockpit_console" {
 |------|-------------|------|---------|:--------:|
 | aws_region | AWS region where resources will be created | `string` | `"eu-west-1"` | no |
 | service_name | Name of the service (used for resource naming) | `string` | `"kockpit-console"` | no |
-| bucket_name_prefix | Prefix for the S3 bucket name (will be suffixed with random string) | `string` | `"kockpit-console"` | no |
+| kockpit_env | Kockpit environment (dev, staging, prod) | `string` | `"dev"` | no |
+| bucket_name_prefix | Prefix for the S3 bucket name (will include environment) | `string` | `"kockpit-console"` | no |
 | default_root_object | Default root object for CloudFront distribution | `string` | `"index.html"` | no |
 | price_class | CloudFront price class | `string` | `"PriceClass_100"` | no |
 | aliases | List of CNAMEs (alternate domain names) for the distribution | `list(string)` | `null` | no |
-| acm_certificate_arn | ARN of the ACM certificate for custom domains | `string` | `null` | no |
+| acm_certificate_arn | ARN of the ACM certificate for custom domains (optional if create_certificate is true) | `string` | `null` | no |
+| create_certificate | Whether to create an ACM certificate for custom domains | `bool` | `true` | no |
 | backend_alb_domain | Domain name of the backend ALB for API proxy | `string` | `null` | no |
 | console_ui_version | Version tag for cache busting when updating the UI | `string` | `"latest"` | no |
 | console_ui_download_url | URL to download the console UI distribution zip | `string` | `"https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-dist.zip"` | no |
@@ -184,9 +186,93 @@ aws s3 sync dist/ s3://your-bucket-name/ --delete
 aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
 ```
 
+## Custom Domain Setup
+
+The module supports custom domains with automatic SSL certificate creation. Here are the setup options:
+
+### Option 1: Use a Domain You Control
+
+If you own a domain and have DNS control through Terraform:
+
+```hcl
+module "kockpit_console" {
+  # ... other configuration
+  aliases             = ["console.yourdomain.com"]
+  create_certificate  = true
+}
+```
+
+### Option 2: Corporate Domain (Manual DNS Setup)
+
+For corporate domains like `kockpit-console.wcplatform-dev.aws.accor.com` where DNS is managed externally:
+
+1. **Configure the module:**
+```hcl
+module "kockpit_console" {
+  # ... other configuration
+  aliases             = ["kockpit-console.wcplatform-dev.aws.accor.com"]
+  create_certificate  = true
+}
+```
+
+2. **Apply Terraform:**
+```bash
+terraform apply
+```
+
+3. **Get certificate validation records:**
+```bash
+terraform output kockpit_console
+# Look for certificate_validation_options
+```
+
+4. **Contact your DNS administrator** to add two types of records:
+
+   **a) Certificate Validation (Required for SSL):**
+   ```
+   Type: CNAME
+   Name: _acme-challenge.kockpit-console.wcplatform-dev.aws.accor.com
+   Value: <validation_record_from_output>
+   ```
+
+   **b) Domain Pointing (Required for access):**
+   ```
+   Type: CNAME
+   Name: kockpit-console.wcplatform-dev.aws.accor.com
+   Value: d123456789.cloudfront.net  # (from cloudfront_domain_name output)
+   ```
+
+5. **Wait for certificate validation** (usually 5-10 minutes after DNS records are added)
+
+6. **Test access:**
+```bash
+curl -I https://kockpit-console.wcplatform-dev.aws.accor.com
+```
+
+### Option 3: No Custom Domain (Simplest)
+
+Skip custom domains and use the CloudFront URL directly:
+
+```hcl
+module "kockpit_console" {
+  # ... other configuration
+  # Don't set aliases or create_certificate
+}
+```
+
+Access via: `https://d123456789.cloudfront.net` (from `cloudfront_domain_name` output)
+
+### Troubleshooting Custom Domains
+
+- **Certificate validation failing**: Check DNS records are correctly added
+- **Domain not resolving**: Verify CNAME points to CloudFront domain
+- **SSL errors**: Ensure certificate is validated in ACM console (us-east-1 region)
+- **403 Forbidden**: Check S3 bucket policy and CloudFront OAC configuration
+
 ## Notes
 
 - **Certificate Requirements**: For custom domains, ACM certificates must be in the `us-east-1` region for CloudFront
 - **DNS Configuration**: You'll need to create CNAME/ALIAS records pointing your custom domain to the CloudFront distribution
 - **Backend Integration**: When using `backend_alb_domain`, ensure your ALB accepts traffic from CloudFront edge locations
 - **Cost Optimization**: Use `PriceClass_100` for cost-effective delivery to US and Europe only
+- **Certificate Validation**: DNS validation records must be added to your domain's DNS zone before the certificate becomes active
