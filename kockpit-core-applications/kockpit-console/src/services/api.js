@@ -50,9 +50,28 @@ export const createConfig = async (configItem) => {
 const getAuthProvider = () => {
     // Detect deployment environment
     if (import.meta.env.MODE === 'development') return 'dev';
+
+    // Check for explicit configuration first
+    if (window.ENV?.AUTH_PROVIDER) return window.ENV.AUTH_PROVIDER;
+
+    // AWS detection: Check for backend API prefix (our CloudFront setup)
     if (window.ENV?.VITE_API_BASE?.startsWith('/backend')) return 'aws';
+
+    // Azure detection: Multiple methods
     if (window.location.hostname.includes('azurestaticapps.net')) return 'azure';
-    return 'aws'; // Default to AWS for CloudFront deployments
+
+    // Check if Azure auth endpoints exist
+    if (typeof fetch !== 'undefined') {
+        // Try to detect Azure by checking for /.auth/me endpoint (async detection won't work here)
+        // Instead, use other indicators
+    }
+
+    // Check for Azure Static Web Apps specific headers/features
+    if (window.staticWebApps || window.location.pathname.startsWith('/.auth/')) return 'azure';
+
+    // Fallback logic: assume Azure if no AWS indicators
+    // This is safer since Azure custom domains are more common
+    return window.ENV?.VITE_API_BASE?.startsWith('/backend') ? 'aws' : 'azure';
 }
 
 export const login = async() => {
