@@ -46,7 +46,12 @@ function CallbackPage() {
             }
         };
 
-        handleCallback();
+        // Call async function and handle any unhandled promise rejections
+        handleCallback().catch((err) => {
+            console.error('Unhandled error in handleCallback:', err);
+            setError('An unexpected error occurred during authentication');
+            setLoading(false);
+        });
     }, [navigate]);
 
     if (loading) {

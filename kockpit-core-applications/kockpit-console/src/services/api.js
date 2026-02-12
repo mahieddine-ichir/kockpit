@@ -129,9 +129,19 @@ export const login = async() => {
 
 export const exchangeCodeForTokens = async (authorizationCode) => {
     const authProvider = getAuthProvider();
+    const apiBase = getApiBase();
 
-    if (authProvider !== 'aws') {
-        throw new Error('OAuth code exchange is only supported for AWS/Cognito authentication');
+    console.log('Debug OAuth - API Base:', apiBase);
+    console.log('Debug OAuth - Auth Provider:', authProvider);
+    console.log('Debug OAuth - Import Meta Mode:', import.meta.env.MODE);
+    console.log('Debug OAuth - Window ENV:', window.ENV);
+
+    // Allow AWS OAuth even in development mode or if provider detection fails
+    if (authProvider !== 'aws' && window.location.hostname.includes('aws.accor.com')) {
+        console.warn('Forcing AWS auth provider for AWS domain');
+        // Continue with AWS OAuth flow
+    } else if (authProvider !== 'aws') {
+        throw new Error(`OAuth code exchange is only supported for AWS/Cognito authentication. Current provider: ${authProvider}, API Base: ${apiBase}`);
     }
 
     console.log('Authorization code received:', authorizationCode);
