@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {useEffect, useState} from "react";
 
 const getApiBase = () => {
     // Try runtime config first, then fallback to build-time env, then default
@@ -63,6 +64,19 @@ const getAuthProvider = () => {
     return 'dev';
 }
 
+export const useUserAws = () => {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        fetch('/api/me', { credentials: 'include' })
+            .then(res => res.json())
+            .then(setUser)
+            .catch(() => setUser(null));
+    }, []);
+
+    return user; // { name, email, login, sub, ... }
+}
+
 export const login = async() => {
     const authProvider = getAuthProvider();
     console.log(`login on ${import.meta.env.MODE} using ${authProvider} auth`)
@@ -89,9 +103,6 @@ export const login = async() => {
     }
 
     if (authProvider === 'aws') {
-        // AWS authentication - multiple options:
-
-        // Option 1: If using AWS Cognito via your backend
         try {
             const response = await instance.get(`${API_BASE}/auth/me`);
             return {
@@ -125,98 +136,6 @@ export const login = async() => {
             "userRoles": ["anonymous"]
         }
     };
-}
-
-export const exchangeCodeForTokens = async (authorizationCode) => {
-    const authProvider = getAuthProvider();
-    const apiBase = getApiBase();
-
-    console.log('Debug OAuth - API Base:', apiBase);
-    console.log('Debug OAuth - Auth Provider:', authProvider);
-    console.log('Debug OAuth - Import Meta Mode:', import.meta.env.MODE);
-    console.log('Debug OAuth - Window ENV:', window.ENV);
-
-    // Allow AWS OAuth even in development mode or if provider detection fails
-    if (authProvider !== 'aws' && window.location.hostname.includes('aws.accor.com')) {
-        console.warn('Forcing AWS auth provider for AWS domain');
-        // Continue with AWS OAuth flow
-    } else if (authProvider !== 'aws') {
-        throw new Error(`OAuth code exchange is only supported for AWS/Cognito authentication. Current provider: ${authProvider}, API Base: ${apiBase}`);
-    }
-
-    console.log('Authorization code received:', authorizationCode);
-
-    try {
-        // For AWS with Lambda@Edge, we can try multiple approaches:
-
-        // Approach 1: Try backend token exchange if available
-        try {
-            const response = await axios.post(API_BASE + '/auth/callback', {
-                code: authorizationCode,
-                redirect_uri: window.location.origin + '/auth/callback'
-            }, {
-                withCredentials: true
-            });
-
-            if (response.data && response.data.user) {
-                return { user: response.data.user };
-            }
-        } catch (backendError) {
-            console.warn('Backend token exchange not available:', backendError.message);
-        }
-
-        // Approach 2: Call Cognito token endpoint directly (client-side)
-        // This is a simplified approach - in production, you'd want this server-side
-        const tokenResponse = await fetch('https://wcpconsole-dev.auth.eu-west-1.amazoncognito.com/oauth2/token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                grant_type: 'authorization_code',
-                client_id: '3l0sphtgrivrp3bspafpd8q442', // You should make this configurable
-                code: authorizationCode,
-                redirect_uri: window.location.origin + '/auth/callback'
-            })
-        });
-
-        if (tokenResponse.ok) {
-            const tokens = await tokenResponse.json();
-
-            // Set access token as cookie for Lambda@Edge to pick up
-            document.cookie = `access_token=${tokens.access_token}; path=/; secure; samesite=strict`;
-
-            // Parse user info from ID token (basic)
-            const userInfo = {
-                "clientPrincipal": {
-                    "identityProvider": "cognito",
-                    "userId": "cognito-user",
-                    "userDetails": "cognito-user",
-                    "userRoles": ["authenticated"]
-                }
-            };
-
-            return { user: userInfo };
-        }
-
-        throw new Error('Token exchange failed');
-
-    } catch (error) {
-        console.error('Token exchange failed:', error);
-
-        // Final fallback: Return basic authenticated user
-        // Lambda@Edge should handle the authentication from here
-        return {
-            user: {
-                "clientPrincipal": {
-                    "identityProvider": "cognito",
-                    "userId": "cognito-authenticated",
-                    "userDetails": "cognito-authenticated",
-                    "userRoles": ["authenticated"]
-                }
-            }
-        };
-    }
 }
 
 export const logout = async() => {

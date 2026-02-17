@@ -64,10 +64,11 @@ resource "null_resource" "lambda_build" {
       # Create the main Lambda function
       cat > index.js << 'EOF'
 ${templatefile("${path.module}/lambda-auth.js", {
-  cognito_user_pool_id = local.cognito_user_pool_id
-  cognito_client_id    = local.cognito_client_id
-  cognito_domain      = local.cognito_domain
-  cognito_region      = var.aws_region
+  cognito_user_pool_id   = local.cognito_user_pool_id
+  cognito_client_id      = local.cognito_client_id
+  cognito_client_secret  = "Todo"
+  cognito_domain         = local.cognito_domain
+  cognito_region         = var.aws_region
 })}
 EOF
     EOT

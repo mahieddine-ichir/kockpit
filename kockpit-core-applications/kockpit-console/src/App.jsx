@@ -11,7 +11,6 @@ import AppIdDashboard from "./home/Home.jsx";
 import HealthIndicatorsDashboard from "./health/Health.jsx";
 import ConfigManager from "./dyna-config/dyna-config.jsx";
 import ManifestPage from "./manifest/ManifestPage.jsx";
-import CallbackPage from "./auth/CallbackPage.jsx";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -85,7 +84,6 @@ function App() {
                         </div>
                         <div className='screens-section-container'>
                             <Routes>
-                                <Route path='/auth/callback' element={<CallbackPage />} />
                                 <Route path='*' element={
                                     config && user ? (
                                         <div className="flex">
