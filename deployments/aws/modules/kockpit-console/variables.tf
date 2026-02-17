@@ -144,6 +144,13 @@ variable "cognito_client_id" {
   default     = null
 }
 
+// check if client_secret is necessary
+variable "cognito_client_secret" {
+  description = "AWS Cognito App Client Secret"
+  type        = string
+  default     = null
+}
+
 variable "cognito_auto_callback_update" {
   description = "Automatically update Cognito callback URLs with CloudFront domain"
   type        = bool

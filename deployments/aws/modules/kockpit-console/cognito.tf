@@ -32,7 +32,7 @@ resource "aws_cognito_user_pool_client" "console_client" {
   count                = var.enable_cognito_auth && var.cognito_client_id == null ? 1 : 0
   name                 = "${var.service_name}-${var.kockpit_env}-client"
   user_pool_id         = var.cognito_user_pool_id != null ? var.cognito_user_pool_id : aws_cognito_user_pool.console_pool[0].id
-  generate_secret      = false  # Public client for SPA
+  generate_secret      = true
 
   # OAuth configuration
   allowed_oauth_flows                  = ["code"]
@@ -71,7 +71,8 @@ resource "aws_cognito_user_pool_domain" "console_domain" {
 locals {
   cognito_user_pool_id     = var.cognito_user_pool_id != null ? var.cognito_user_pool_id : (var.enable_cognito_auth ? aws_cognito_user_pool.console_pool[0].id : null)
   cognito_client_id        = var.cognito_client_id != null ? var.cognito_client_id : (var.enable_cognito_auth ? aws_cognito_user_pool_client.console_client[0].id : null)
-  cognito_domain          = var.cognito_user_pool_domain != null ? var.cognito_user_pool_domain : (var.enable_cognito_auth ? aws_cognito_user_pool_domain.console_domain[0].domain : null)
+  cognito_client_secret    = var.cognito_client_secret != null ? var.cognito_client_secret : (var.enable_cognito_auth ? aws_cognito_user_pool_client.console_client[0].client_secret : null)
+  cognito_domain           = var.cognito_user_pool_domain != null ? var.cognito_user_pool_domain : (var.enable_cognito_auth ? aws_cognito_user_pool_domain.console_domain[0].domain : null)
 }
 
 # Update Cognito client with actual CloudFront domain (after CloudFront is created)
