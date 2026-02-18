@@ -1,10 +1,7 @@
 import axios from 'axios';
 import {useEffect, useState} from "react";
+import {getApiBase} from './config.js';
 
-const getApiBase = () => {
-    // Try runtime config first, then fallback to build-time env, then default
-    return window.ENV?.VITE_API_BASE || import.meta.env.VITE_API_BASE || '/api';
-}
 const API_BASE = getApiBase();
 console.log('API_BASE:', API_BASE);
 
@@ -104,7 +101,7 @@ export const login = async() => {
 
     if (authProvider === 'aws') {
         try {
-            const response = await instance.get(`${API_BASE}/auth/me`);
+            const response = await instance.get(`/auth/me`);
             return {
                 "clientPrincipal": {
                     "identityProvider": "cognito",
@@ -152,7 +149,7 @@ export const logout = async() => {
 
         // Option 1: Backend-handled logout
         try {
-            const response = await instance.post(`${API_BASE}/auth/logout`);
+            const response = await instance.post(`/auth/logout`);
             return response.data;
         } catch (error) {
             console.warn('Backend logout failed:', error);

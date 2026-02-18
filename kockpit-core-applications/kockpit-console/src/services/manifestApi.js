@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {getApiBase} from './config.js';
 
-const API_BASE = "/api";
+const API_BASE = getApiBase();
 
 const instance = axios.create({
     withCredentials: true,
