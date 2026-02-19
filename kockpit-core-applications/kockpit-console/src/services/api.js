@@ -45,34 +45,28 @@ export const createConfig = async (configItem) => {
 }
 
 
+// fixme inject provider on build
 const getAuthProvider = () => {
     // Detect deployment environment
     if (import.meta.env.MODE === 'development') return 'dev';
 
-    // Simple and reliable detection based on API base URL:
-    // Azure: /api
-    // AWS:   /backend
-    const apiBase = getApiBase();
+    // Check URL/domain to detect AWS vs Azure
+    const hostname = window.location.hostname;
 
-    if (apiBase.startsWith('/backend')) return 'aws';
-    if (apiBase.startsWith('/api')) return 'azure';
+    // AWS domains typically contain 'aws' or 'amazonaws'
+    if (hostname.includes('aws') || hostname.includes('amazonaws') || hostname.includes('cloudfront')) {
+        return 'aws';
+    }
+
+    // Azure domains typically contain 'azure' or 'staticwebapps'
+    if (hostname.includes('azure') || hostname.includes('staticwebapps')) {
+        return 'azure';
+    }
 
     // Fallback for development or unknown configurations
     return 'dev';
 }
 
-export const useUserAws = () => {
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        fetch('/api/me', { credentials: 'include' })
-            .then(res => res.json())
-            .then(setUser)
-            .catch(() => setUser(null));
-    }, []);
-
-    return user; // { name, email, login, sub, ... }
-}
 
 export const login = async() => {
     const authProvider = getAuthProvider();
@@ -101,17 +95,18 @@ export const login = async() => {
 
     if (authProvider === 'aws') {
         try {
-            const response = await instance.get(`/auth/me`);
+            // Call the Lambda@Edge /auth/me endpoint directly (not through API base)
+            const response = await axios.get('/auth/me', { withCredentials: true });
             return {
                 "clientPrincipal": {
                     "identityProvider": "cognito",
-                    "userId": response.data.userId || response.data.sub,
+                    "userId": response.data.userId,
                     "userDetails": response.data.email || response.data.username,
                     "userRoles": response.data.roles || ["authenticated"]
                 }
             };
         } catch (error) {
-            console.warn('Backend auth failed, using anonymous access:', error);
+            console.warn('Lambda@Edge auth/me failed:', error);
             // Fallback to anonymous access for AWS
             return {
                 "clientPrincipal": {
