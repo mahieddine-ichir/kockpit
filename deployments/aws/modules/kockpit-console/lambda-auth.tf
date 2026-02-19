@@ -62,13 +62,13 @@ resource "null_resource" "lambda_build" {
       npm install --production
 
       # Create the main Lambda function
-      cat > index.js << 'EOF'
+      cat > index.js <<EOF
 ${templatefile("${path.module}/lambda-auth.js", {
   cognito_user_pool_id   = local.cognito_user_pool_id
+  cognito_region         = local.cognito_region
   cognito_client_id      = local.cognito_client_id
-  cognito_client_secret  = "Todo"
+  cognito_client_secret  = local.cognito_client_secret
   cognito_domain         = local.cognito_domain
-  cognito_region         = var.aws_region
 })}
 EOF
     EOT
