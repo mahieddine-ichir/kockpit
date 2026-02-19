@@ -35,7 +35,7 @@ module "kockpit_backend" {
 
   # Kockpit configuration
   kockpit_env                   = "production"
-  opensearch_endpoints          = "search-domain.region.es.amazonaws.com:443"
+  opensearch_endpoints          = "https://search-domain.region.es.amazonaws.com:443"
   kockpit_data_s3_bucket       = "kockpit-data-production"
   kockpit_manifests_s3_bucket  = "kockpit-manifests-production"
 
@@ -165,3 +165,52 @@ The module automatically configures these environment variables for the Kockpit 
 - `OPENSEARCH_ENDPOINTS` / `kockpit.audit.stream.opensearch.endpoints`
 - `kockpit.aws.s3.bucket` / `kockpit.manifests.aws.s3.bucket`
 - `kockpit.audit.notification.kinesis.stream_name` (if provided)
+
+## OpenSearch Configuration
+
+⚠️ **Important**: OpenSearch connectivity requires proper HTTPS configuration:
+
+### HTTPS Connection Required
+AWS OpenSearch Service domains use **HTTPS by default**. The backend service must connect using the correct protocol and port:
+
+```hcl
+# ✅ Correct - Use HTTPS URL with port 443
+opensearch_endpoints = "https://search-your-domain.region.es.amazonaws.com:443"
+
+# ❌ Incorrect - HTTP will cause connection timeouts
+opensearch_endpoints = "http://search-your-domain.region.es.amazonaws.com:9200"
+```
+
+### Environment Variable Configuration
+The module sets these OpenSearch-related environment variables:
+```bash
+OPENSEARCH_ENDPOINTS=https://search-domain.region.es.amazonaws.com:443
+kockpit.audit.stream.opensearch.endpoints=https://search-domain.region.es.amazonaws.com:443
+```
+
+### Common Issues and Solutions
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Connection timeouts | Using HTTP instead of HTTPS | Update `opensearch_endpoints` to use `https://` |
+| SSL handshake failures | Port mismatch (9200 vs 443) | Use port 443 for HTTPS connections |
+| Access denied | Missing IAM permissions | Ensure ECS task role has OpenSearch permissions |
+
+### IAM Permissions for OpenSearch
+If your OpenSearch domain uses IAM-based access control, ensure the ECS task role includes:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "es:ESHttpGet",
+        "es:ESHttpPost",
+        "es:ESHttpPut",
+        "es:ESHttpDelete"
+      ],
+      "Resource": "arn:aws:es:region:account:domain/your-domain/*"
+    }
+  ]
+}
+```
