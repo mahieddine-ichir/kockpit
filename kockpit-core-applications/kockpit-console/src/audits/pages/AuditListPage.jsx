@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {advancedSearchAudits, fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
 import {BookmarkIcon, CheckCircleIcon, ClipboardDocumentListIcon, EyeIcon, FunnelIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {MagnifyingGlassIcon} from '@heroicons/react/20/solid';
@@ -342,6 +343,7 @@ const DateRangeControl = ({ searchTerms, addTerm, clearTerm }) => {
 
 
 const AuditListPage = ({ domain, env, config, selectedIdx }) => {
+  const navigate = useNavigate();
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
