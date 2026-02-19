@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /backend/api
+    context-path: /api
 
 springdoc:
   api-docs:
