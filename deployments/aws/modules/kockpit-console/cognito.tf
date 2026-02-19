@@ -73,6 +73,7 @@ locals {
   cognito_client_id        = var.cognito_client_id != null ? var.cognito_client_id : (var.enable_cognito_auth ? aws_cognito_user_pool_client.console_client[0].id : null)
   cognito_client_secret    = var.cognito_client_secret != null ? var.cognito_client_secret : (var.enable_cognito_auth ? aws_cognito_user_pool_client.console_client[0].client_secret : null)
   cognito_domain           = var.cognito_user_pool_domain != null ? var.cognito_user_pool_domain : (var.enable_cognito_auth ? aws_cognito_user_pool_domain.console_domain[0].domain : null)
+  cognito_region           = var.aws_region != null ? var.aws_region : (var.enable_cognito_auth ? var.aws_region : null)
 }
 
 # Update Cognito client with actual CloudFront domain (after CloudFront is created)

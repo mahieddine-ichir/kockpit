@@ -138,7 +138,7 @@ locals {
 
   cache_behaviors = var.backend_alb_domain != null ? [
     {
-      path_pattern     = "/backend/*"
+      path_pattern     = "/api/*"
       target_origin_id = "ALB-Backend"
     }
   ] : []
@@ -230,7 +230,7 @@ resource "aws_cloudfront_distribution" "console_distribution" {
   dynamic "ordered_cache_behavior" {
     for_each = var.backend_alb_domain != null && var.backend_alb_domain != "" ? [1] : []
     content {
-      path_pattern     = "/backend/*"
+      path_pattern     = "/api/*"
       allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
       cached_methods   = ["GET", "HEAD", "OPTIONS"]
       target_origin_id = "ALB-Backend"
