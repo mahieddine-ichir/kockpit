@@ -85,7 +85,7 @@ public class OpensearchV3IndexManager {
                     .replace("${index_pattern}", indexPrefix + "*")
                     .replace("${policy_id}", policyId);
 
-            try (Response response = client.generic().execute(new CreateTemplateRequest("_index_template/" + indexPrefix, templateJson.getBytes(StandardCharsets.UTF_8)))) {
+            try (Response response = client.generic().execute(new CreateTemplateRequest(indexPrefix, templateJson.getBytes(StandardCharsets.UTF_8)))) {
                 log.debug("Created template {} -> response = {}", indexPrefix, response.getStatus());
             }
         } catch (Exception e) {
