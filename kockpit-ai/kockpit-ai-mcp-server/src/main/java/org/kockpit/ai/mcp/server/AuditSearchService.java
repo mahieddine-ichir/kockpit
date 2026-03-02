@@ -45,7 +45,7 @@ public class AuditSearchService {
     @Value("${opensearch.search.index_version:wcp}")
     private String indexVersion;
 
-    @Tool(name = "search-audits-by-traceId", description = "Search Audits by traceId for a given domain and env")
+    @Tool(name = "search-audits-by-traceId", description = "Search Audits by traceId for a given domain and environment")
     @SneakyThrows
     public AuditReportPage searchByTraceId(
             @ToolParam(description = "audits/requests Trace ID (traceId)") String traceId,
@@ -93,7 +93,7 @@ public class AuditSearchService {
         return runRequest(from, size, searchSourceBuilder, index);
     }
 
-    @Tool(name = "search-audits", description = "Search all Audits by domain, environment (or env) and application Id (or appId)")
+    @Tool(name = "search-audits", description = "Search all Audits by domain, environment and application Id (or appId)")
     @SneakyThrows
     public AuditReportPage search(
             @ToolParam(required = false, description = "audits domain") String domain,
