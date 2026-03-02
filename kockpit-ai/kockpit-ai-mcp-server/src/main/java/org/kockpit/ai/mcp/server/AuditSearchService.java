@@ -39,7 +39,7 @@ public class AuditSearchService {
 
     private final ElasticSearchClientWrapper client;
 
-    @Value("${opensearch.env:dev}")
+    @Value("${opensearch.env:*}")
     private String defaultEnv;
 
     @Value("${opensearch.search.index_version:wcp}")
@@ -48,9 +48,9 @@ public class AuditSearchService {
     @Tool(name = "search-audits-by-traceId", description = "Search Audits by traceId for a given domain and env")
     @SneakyThrows
     public AuditReportPage searchByTraceId(
-            @ToolParam(required = true, description = "audits/requests Trace ID (traceId)") String traceId,
+            @ToolParam(description = "audits/requests Trace ID (traceId)") String traceId,
             @ToolParam(required = false, description = "audits domain, default to all domains (*)") String domain,
-            @ToolParam(required = false, description = "audits environment, or env, default to running env") String env,
+            @ToolParam(required = false, description = "audits environment, if not specified, do a search on all existing environments") String environment,
             @ToolParam(required = false, description = "start/from for paging, default to 0") Integer from,
             @ToolParam(required = false, description = "max number of audits per search, default to 25, max to 50") Integer size
     ) {
@@ -63,7 +63,7 @@ public class AuditSearchService {
 
         String index = "%s-auditdata-%s-read".formatted(
                 nonNull(domain) ? domain : "*",
-                nonNull(env) ? env : defaultEnv
+                nonNull(environment) ? environment : defaultEnv
         );
 
         IndexKeyValuesForNested indexKeyValuesForNested = resolveIndexKeyValuesPath(indexVersion);
@@ -97,7 +97,7 @@ public class AuditSearchService {
     @SneakyThrows
     public AuditReportPage search(
             @ToolParam(required = false, description = "audits domain") String domain,
-            @ToolParam(required = false, description = "audits environment, or env") String env,
+            @ToolParam(required = false, description = "audits environment") String environment,
             @ToolParam(required = false, description = "audits application Id, or appId") String appId,
             @ToolParam(required = false, description = "start/from for paging, default to 0") Integer from,
             @ToolParam(required = false, description = "max number of audits per search, default to 25, max to 50") Integer size
@@ -108,7 +108,7 @@ public class AuditSearchService {
         String index = "%s-auditdata-%s-read";
         index = index.formatted(
                 nonNull(domain) ? domain : "*",
-                nonNull(env) ? env : "*"
+                nonNull(environment) ? environment : defaultEnv
         );
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
