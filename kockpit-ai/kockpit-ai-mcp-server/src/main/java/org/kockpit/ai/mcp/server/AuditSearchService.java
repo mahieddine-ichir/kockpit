@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.TotalHits;
 import org.apache.lucene.search.join.ScoreMode;
+import org.kockpit.ai.mcp.server.dto.AuditDataPage;
 import org.kockpit.ai.mcp.server.dto.AuditReport;
 import org.kockpit.ai.mcp.server.dto.AuditReportPage;
 import org.opensearch.action.search.SearchRequest;
@@ -23,7 +24,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -125,12 +128,80 @@ public class AuditSearchService {
         return runRequest(from, size, searchSourceBuilder, index);
     }
 
+    @Tool(name = "get-kengine-flows", description = "Get kengine.flows audits from the original (decompressed) audit report for a given traceId")
+    @SneakyThrows
+    public AuditDataPage getKengineFlows(
+            @ToolParam(description = "audits/requests Trace ID (traceId)") String traceId,
+            @ToolParam(required = false, description = "audits domain, default to all domains (*)") String domain,
+            @ToolParam(required = false, description = "audits environment, if not specified, searches all environments") String environment,
+            @ToolParam(required = false, description = "start/from for paging, default to 0") Integer from,
+            @ToolParam(required = false, description = "max number of audits per search, default to 25, max to 50") Integer size
+    ) {
+        return fetchAuditDataPage(traceId, domain, environment, from, size, AuditReportHelper::extractKengineFlowsAudits);
+    }
+
+    @Tool(name = "get-builtin-httpexchanges", description = "Get builtin.httpexchanges audits from the original (decompressed) audit report for a given traceId")
+    @SneakyThrows
+    public AuditDataPage getBuiltinHttpExchanges(
+            @ToolParam(description = "audits/requests Trace ID (traceId)") String traceId,
+            @ToolParam(required = false, description = "audits domain, default to all domains (*)") String domain,
+            @ToolParam(required = false, description = "audits environment, if not specified, searches all environments") String environment,
+            @ToolParam(required = false, description = "start/from for paging, default to 0") Integer from,
+            @ToolParam(required = false, description = "max number of audits per search, default to 25, max to 50") Integer size
+    ) {
+        return fetchAuditDataPage(traceId, domain, environment, from, size, AuditReportHelper::extractBuiltinHttpExchangesAudits);
+    }
+
+    @SneakyThrows
+    private AuditDataPage fetchAuditDataPage(String traceId, String domain, String environment, Integer from, Integer size,
+                                             Function<String, List<Map<String, Object>>> extractor) {
+        from = isNull(from) ? 0 : max(from, 0);
+        size = isNull(size) ? 25 : min(size, 50);
+
+        String index = "%s-auditdata-%s-read".formatted(
+                nonNull(domain) ? domain : "*",
+                nonNull(environment) ? environment : defaultEnv
+        );
+
+        IndexKeyValuesForNested indexKeyValuesForNested = resolveIndexKeyValuesPath(indexVersion);
+
+        BoolQueryBuilder traceIdQuery = QueryBuilders.boolQuery()
+                .must(termsQuery(indexKeyValuesForNested.keyPath(), "traceId", "X-B3-TraceId"))
+                .must(matchQuery(indexKeyValuesForNested.valuePath(), traceId));
+
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
+                .query(QueryBuilders.nestedQuery(indexKeyValuesForNested.rootPath(), traceIdQuery, ScoreMode.None))
+                .sort(new FieldSortBuilder("start").order(SortOrder.DESC))
+                .trackTotalHits(true)
+                .from(from)
+                .size(size);
+
+        SearchRequest searchRequest = new SearchRequest().source(searchSourceBuilder).indices(index);
+        SearchResponse searchResponse = client.search(searchRequest);
+
+        List<Map<String, Object>> items = Arrays.stream(searchResponse.getHits().getHits())
+                .map(hit -> AuditReportHelper.convertFromString(hit.getSourceAsString()))
+                .filter(doc -> nonNull(doc.getCompressedOriginalJsonValue()))
+                .map(doc -> AuditReportHelper.decompressOriginalJson(doc.getCompressedOriginalJsonValue()))
+                .flatMap(json -> extractor.apply(json).stream())
+                .toList();
+
+        return AuditDataPage.builder()
+                .items(items)
+                .totalSize(Optional.ofNullable(searchResponse.getHits())
+                        .map(SearchHits::getTotalHits)
+                        .map(TotalHits::value)
+                        .orElse(0L))
+                .from(from)
+                .size(size)
+                .build();
+    }
+
     private AuditReportPage runRequest(Integer from, Integer size, SearchSourceBuilder searchSourceBuilder, String index) {
         try {
-            SearchRequest searchRequest =
-                    new SearchRequest()
-                            .source(searchSourceBuilder)
-                            .indices(index);
+            SearchRequest searchRequest = new SearchRequest()
+                    .source(searchSourceBuilder)
+                    .indices(index);
 
             SearchResponse searchResponse = client.search(searchRequest);
             List<AuditReport> items = Arrays.stream(searchResponse.getHits().getHits())
