@@ -33,9 +33,6 @@ public class AuditReport {
 
   private Integer ttl;
 
-  @Deprecated
-  private List<Map<String, Object>> extensions;
-
   private List<Map<String, Object>> audits;
 
   private List<Map<String, Object>> indexedKeyValues;
