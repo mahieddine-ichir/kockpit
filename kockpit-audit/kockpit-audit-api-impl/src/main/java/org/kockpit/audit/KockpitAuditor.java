@@ -134,6 +134,24 @@ class KockpitAuditor implements AuditorService {
     notificationAuditReportManager.addAuditReport(auditReport);
   }
 
+  @Override
+  public AuditReport currentAuditReport() {
+    return isAuditStarted() ? AuditReportContainer.getAuditReport() : null;
+  }
+
+  @Override
+  public void executeWithAuditReport(AuditReport report, Runnable task) {
+    if (report == null) {
+      return;
+    }
+    AuditReportContainer.setAuditReport(report);
+    try {
+      task.run();
+    } finally {
+      AuditReportContainer.resetReport();
+    }
+  }
+
   private String retrieveHostName() {
     try {
       return InetAddress.getLocalHost().getHostName();
