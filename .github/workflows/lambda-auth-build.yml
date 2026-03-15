@@ -1,0 +1,54 @@
+name: Build Lambda Auth Package
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'deployments/aws/modules/kockpit-console/lambda-auth.js'
+      - 'deployments/aws/modules/kockpit-console/lambda-package.json'
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    name: Build and Publish Lambda Auth Zip
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: deployments/aws/modules/kockpit-console/lambda-package.json
+
+      - name: Install Dependencies
+        run: npm install --production
+        working-directory: deployments/aws/modules/kockpit-console
+
+      - name: Package Lambda
+        run: |
+          mkdir -p lambda-dist
+          cp lambda-auth.js lambda-dist/
+          cp -r node_modules lambda-dist/
+          cd lambda-dist
+          zip -r ../lambda-auth.zip .
+        working-directory: deployments/aws/modules/kockpit-console
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: lambda-auth-${{ github.ref_name }}-latest
+          name: Lambda Auth Build - ${{ github.ref_name }}
+          files: deployments/aws/modules/kockpit-console/lambda-auth.zip
+          body: |
+            Automated build of Lambda Auth from branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+          prerelease: ${{ github.ref_name != 'main' }}
+          fail_on_unmatched_files: true

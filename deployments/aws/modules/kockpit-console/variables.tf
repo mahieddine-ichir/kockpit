@@ -100,6 +100,13 @@ variable "console_ui_download_url" {
   default     = "https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-aws-dist.zip"
 }
 
+# Lambda Auth Configuration
+variable "lambda_auth_zip_url" {
+  description = "URL to download the pre-built lambda-auth zip (node_modules + lambda-auth.js)"
+  type        = string
+  default     = "https://github.com/mahieddine-ichir/kockpit/releases/download/lambda-auth-dev-latest/lambda-auth.zip"
+}
+
 variable "auto_deploy" {
   description = "Whether to automatically download and deploy the console UI"
   type        = bool
