@@ -27,9 +27,10 @@ jobs:
           node-version: '18'
           cache: 'npm'
           cache-dependency-path: deployments/aws/modules/kockpit-console/lambda-package.json
+          # Note: lambda-package.json is copied to package.json before npm install
 
       - name: Install Dependencies
-        run: npm install --production
+        run: cp lambda-package.json package.json && npm install --omit=dev
         working-directory: deployments/aws/modules/kockpit-console
 
       - name: Package Lambda
