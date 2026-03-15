@@ -181,6 +181,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Next Steps:**" >> $GITHUB_STEP_SUMMARY
           echo "1. Add these secrets to GitHub:" >> $GITHUB_STEP_SUMMARY
-          echo "   - \`S3_BUCKET\` or \`S3_BUCKET_${{ steps.env.outputs.environment | upper }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "   - \`CLOUDFRONT_DISTRIBUTION_ID\` or \`CLOUDFRONT_DISTRIBUTION_ID_${{ steps.env.outputs.environment | upper }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "   - \`S3_BUCKET\` or \`S3_BUCKET_$(echo '${{ steps.env.outputs.environment }}' | tr '[:lower:]' '[:upper:]')\`" >> $GITHUB_STEP_SUMMARY
+          echo "   - \`CLOUDFRONT_DISTRIBUTION_ID\` or \`CLOUDFRONT_DISTRIBUTION_ID_$(echo '${{ steps.env.outputs.environment }}' | tr '[:lower:]' '[:upper:]')\`" >> $GITHUB_STEP_SUMMARY
           echo "2. Run the deployment workflow to deploy the Rules Designer" >> $GITHUB_STEP_SUMMARY
