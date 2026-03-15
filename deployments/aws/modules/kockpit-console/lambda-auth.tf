@@ -45,39 +45,37 @@ resource "aws_lambda_function" "cognito_auth" {
   tags = var.tags
 }
 
-# Build Lambda function with dependencies
-resource "null_resource" "lambda_build" {
+# Download pre-built lambda zip (node_modules + lambda-auth.js) from CI release
+resource "null_resource" "lambda_download" {
   count = var.enable_cognito_auth ? 1 : 0
 
   triggers = {
-    lambda_code = filemd5("${path.module}/lambda-auth.js")
-    package_json = filemd5("${path.module}/lambda-package.json")
+    zip_url = var.lambda_auth_zip_url
   }
 
   provisioner "local-exec" {
-    command = <<-EOT
-      mkdir -p ${path.module}/lambda-build
-      cp ${path.module}/lambda-package.json ${path.module}/lambda-build/package.json
-      cd ${path.module}/lambda-build
-      npm install --production
-
-      # Create the main Lambda function
-      cat > index.js <<EOF
-${templatefile("${path.module}/lambda-auth.js", {
-  cognito_user_pool_id   = local.cognito_user_pool_id
-  cognito_region         = local.cognito_region
-  cognito_client_id      = local.cognito_client_id
-  cognito_client_secret  = local.cognito_client_secret
-  cognito_domain         = local.cognito_domain
-})}
-EOF
-    EOT
+    command = "mkdir -p ${path.module}/lambda-build && curl -L -o ${path.module}/lambda-build/lambda-auth-prebuilt.zip ${var.lambda_auth_zip_url} && cd ${path.module}/lambda-build && unzip -o lambda-auth-prebuilt.zip && rm lambda-auth-prebuilt.zip"
   }
 
   provisioner "local-exec" {
-    when = destroy
+    when    = destroy
     command = "rm -rf ${path.module}/lambda-build"
   }
+}
+
+# Render lambda-auth.js template into index.js with environment-specific values
+resource "local_file" "lambda_index" {
+  count    = var.enable_cognito_auth ? 1 : 0
+  content  = templatefile("${path.module}/lambda-build/lambda-auth.js", {
+    cognito_user_pool_id  = local.cognito_user_pool_id
+    cognito_region        = local.cognito_region
+    cognito_client_id     = local.cognito_client_id
+    cognito_client_secret = local.cognito_client_secret
+    cognito_domain        = local.cognito_domain
+  })
+  filename = "${path.module}/lambda-build/index.js"
+
+  depends_on = [null_resource.lambda_download]
 }
 
 # Create the Lambda function zip
@@ -87,5 +85,7 @@ data "archive_file" "lambda_auth_zip" {
   output_path = "${path.module}/lambda-auth.zip"
   source_dir  = "${path.module}/lambda-build"
 
-  depends_on = [null_resource.lambda_build]
+  excludes = ["lambda-auth.js"]
+
+  depends_on = [local_file.lambda_index]
 }
