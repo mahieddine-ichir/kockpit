@@ -66,7 +66,7 @@ resource "null_resource" "lambda_download" {
 # Render lambda-auth.js template into index.js with environment-specific values
 resource "local_file" "lambda_index" {
   count    = var.enable_cognito_auth ? 1 : 0
-  content  = templatefile("${path.module}/lambda-build/lambda-auth.js", {
+  content  = templatefile("${path.module}/lambda-auth.js", {
     cognito_user_pool_id  = local.cognito_user_pool_id
     cognito_region        = local.cognito_region
     cognito_client_id     = local.cognito_client_id
