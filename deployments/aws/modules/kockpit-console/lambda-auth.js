@@ -6,8 +6,7 @@ const COGNITO_USER_POOL_ID = '${cognito_user_pool_id}';
 const COGNITO_REGION = '${cognito_region}';
 const COGNITO_CLIENT_ID = '${cognito_client_id}';
 const COGNITO_CLIENT_SECRET = '${cognito_client_secret}';
-const COGNITO_DOMAIN = 'wcpconsole-dev';
-const CODE_VERSION = '1.0-1';
+const COGNITO_DOMAIN = '${cognito_domain}';
 
 // JWKS client for Cognito
 const client = jwksClient({
