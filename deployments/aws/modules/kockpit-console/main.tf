@@ -290,7 +290,8 @@ resource "null_resource" "download_and_extract_ui" {
         set -e
         mkdir -p ${path.module}/temp
         curl -L -o ${path.module}/temp/console-ui-dist.zip ${var.console_ui_download_url}
-        cd ${path.module}/temp && unzip -o console-ui-dist.zip && rm console-ui-dist.zip
+        unzip -o ${path.module}/temp/console-ui-dist.zip -d ${path.module}/temp
+        rm ${path.module}/temp/console-ui-dist.zip
         aws s3 sync ${path.module}/temp/ s3://${aws_s3_bucket.console_bucket.id}/ --delete
         aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.console_distribution.id} --paths "/*"
         rm -rf ${path.module}/temp
