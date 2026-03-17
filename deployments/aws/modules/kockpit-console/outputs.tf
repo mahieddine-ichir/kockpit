@@ -49,14 +49,10 @@ output "console_url" {
 # Deployment Information
 output "deployment_status" {
   description = "Status of the console deployment"
-  value = var.auto_deploy ? {
-    s3_files_deployed      = length(aws_s3_object.console_files)
+  value = {
+    s3_sync_deployed       = var.auto_deploy ? "completed" : "skipped"
     cloudfront_invalidated = var.auto_deploy ? "completed" : "skipped"
-    console_version       = var.console_ui_version
-  } : {
-    s3_files_deployed      = 0
-    cloudfront_invalidated = "skipped"
-    console_version       = var.console_ui_version
+    console_version        = var.console_ui_version
   }
 }
 
