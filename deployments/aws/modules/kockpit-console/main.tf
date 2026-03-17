@@ -280,10 +280,25 @@ resource "aws_cloudfront_distribution" "console_distribution" {
 
 # Download and extract the console UI
 resource "null_resource" "download_and_extract_ui" {
+  count = var.auto_deploy ? 1 : 0
   triggers = {
-    version = var.console_ui_version
+    always = timestamp()
   }
 
+  provisioner "local-exec" {
+    command = <<-EOT
+        set -e
+        mkdir -p ${path.module}/temp
+        curl -L -o ${path.module}/temp/console-ui-dist.zip ${var.console_ui_download_url}
+        cd ${path.module}/temp && unzip -o console-ui-dist.zip && rm console-ui-dist.zip
+        aws s3 sync ${path.module}/temp/ s3://${aws_s3_bucket.console_bucket.id}/ --delete
+        aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.console_distribution.id} --paths "/*"
+        rm -rf ${path.module}/temp
+      EOT
+  }
+
+  depends_on = [aws_cloudfront_distribution.console_distribution]
+  /*
   provisioner "local-exec" {
     command = <<-EOT
       mkdir -p ${path.module}/temp
@@ -291,7 +306,7 @@ resource "null_resource" "download_and_extract_ui" {
       cd ${path.module}/temp
       unzip -o console-ui-dist.zip
     EOT
-  }
+   */
 
   /*
   provisioner "local-exec" {
@@ -299,58 +314,6 @@ resource "null_resource" "download_and_extract_ui" {
     command = "rm -rf ${path.module}/temp"
   }
    */
-}
-
-# Upload files to S3
-resource "aws_s3_object" "console_files" {
-  for_each = var.auto_deploy ? toset([for f in try(fileset("${path.module}/temp", "**/*"), []) : f if !endswith(f, ".zip")]) : toset([])
-
-  bucket = aws_s3_bucket.console_bucket.id
-  key    = each.value
-  source = "${path.module}/temp/${each.value}"
-
-  content_type = lookup({
-    "html" = "text/html"
-    "css"  = "text/css"
-    "js"   = "application/javascript"
-    "json" = "application/json"
-    "png"  = "image/png"
-    "jpg"  = "image/jpeg"
-    "jpeg" = "image/jpeg"
-    "gif"  = "image/gif"
-    "svg"  = "image/svg+xml"
-    "ico"  = "image/x-icon"
-    "woff" = "font/woff"
-    "woff2" = "font/woff2"
-    "ttf"  = "font/ttf"
-    "eot"  = "application/vnd.ms-fontobject"
-  }, reverse(split(".", each.value))[0], "application/octet-stream")
-
-  etag = filemd5("${path.module}/temp/${each.value}")
-
-  depends_on = [null_resource.download_and_extract_ui]
-
-  lifecycle {
-    ignore_changes = [etag]
-  }
-
-  tags = var.tags
-}
-
-# CloudFront invalidation after deployment
-resource "null_resource" "console_invalidation" {
-  count = var.auto_deploy && length(aws_s3_object.console_files) > 0 ? 1 : 0
-
-  triggers = {
-    distribution_id = aws_cloudfront_distribution.console_distribution.id
-    files_hash      = md5(join("", [for file in aws_s3_object.console_files : file.etag]))
-  }
-
-  provisioner "local-exec" {
-    command = "aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.console_distribution.id} --paths '/*'"
-  }
-
-  depends_on = [aws_s3_object.console_files]
 }
 
 # Route 53 DNS records for custom domains
