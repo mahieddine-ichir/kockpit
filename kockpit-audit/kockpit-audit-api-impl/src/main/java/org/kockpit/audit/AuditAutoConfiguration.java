@@ -33,7 +33,7 @@ class AuditAutoConfiguration {
     return new AuditPostProcessor(auditModuleIntegrations, auditObfuscationServiceImpl);
   }
 
-  @ConditionalOnProperty(value = "kockpit.audit.trace.enabled", havingValue = "true", matchIfMissing = true)
+  @ConditionalOnProperty(value = "kockpit.audit.trace.enabled", havingValue = "true")
   @ConditionalOnMissingBean(AuditReportNotificationService.class)
   @Bean
   AuditReportNotificationService auditReportNotificationService() {

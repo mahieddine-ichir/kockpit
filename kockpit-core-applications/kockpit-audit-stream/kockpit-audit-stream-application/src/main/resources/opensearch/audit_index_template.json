@@ -6,7 +6,8 @@
     "settings": {
       "number_of_shards": 5,
       "number_of_replicas": 0,
-      "index.plugins.index_state_management.policy_id": "${policy_id}"
+      "index.plugins.index_state_management.policy_id": "${policy_id}",
+      "index.plugins.index_state_management.rollover_alias": "${write_alias}"
     },
     "mappings": {
       "properties": {

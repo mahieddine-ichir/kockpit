@@ -15,6 +15,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -30,13 +31,19 @@ public class KafkaAuditServiceAutoConfiguration {
   AuditReportNotificationService kafkaAuditReportNotificationService(
           KafkaTemplate<String, byte[]> kafkaTemplate,
           @Value("${kockpit.audit.notification.kafka.topic}") String topic) {
+    log.info("✅ Kafka Audit notification topic: {}", topic);
     return new KafkaAuditReportNotificationService(kafkaTemplate, topic);
   }
 
   @Bean
   ProducerFactory<String, byte[]> producerFactory(KafkaProperties kafkaProperties) {
+    List<String> producerBootstrapServers = kafkaProperties.getProducer().getBootstrapServers();
+    List<String> bootstrapServers = (producerBootstrapServers != null && !producerBootstrapServers.isEmpty())
+            ? producerBootstrapServers
+            : kafkaProperties.getBootstrapServers();
+    log.info("✅ Kafka Audit producer bootstrap servers: {}", bootstrapServers);
     Map<String, Object> configProps = new HashMap<>(kafkaProperties.getProducer().getProperties());
-    configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
+    configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
     configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
     return new DefaultKafkaProducerFactory<>(configProps);

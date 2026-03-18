@@ -50,7 +50,7 @@ public class OpensearchAuditConsumerConfiguration {
 
     @Bean
     public OpensearchV3IndexManager opensearchV3IndexManager(OpenSearchClient openSearchClient) {
-        return new OpensearchV3IndexManager(openSearchClient);
+        return new OpensearchV3IndexManager(openSearchClient, true); // fixme through config
     }
 
     @Bean("opensearch")
