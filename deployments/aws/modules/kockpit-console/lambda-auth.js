@@ -156,6 +156,10 @@ async function handleCallback(request) {
     });
 
     const tokens = await tokenResponse.json();
+    if (!tokenResponse.ok || !tokens.id_token) {
+        console.log('Token exchange failed:', JSON.stringify(tokens));
+        return redirectToCognito(request);
+    }
 
     const response = {
         status: '302',
