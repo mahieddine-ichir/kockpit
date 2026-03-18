@@ -100,3 +100,47 @@ resource "null_resource" "update_cognito_callback" {
     aws_cognito_user_pool_client.console_client
   ]
 }
+
+resource "null_resource" "register_cognito_callbacks" {
+  count = var.enable_cognito_auth && var.cognito_client_id != null && length(var.aliases) > 0 ? 1 : 0
+
+  triggers = {
+    aliases   = join(",", var.aliases)
+    client_id = var.cognito_client_id
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+        set -e
+
+        # Read current client config
+        CLIENT=$(aws cognito-idp describe-user-pool-client \
+          --user-pool-id ${local.cognito_user_pool_id} \
+          --client-id ${local.cognito_client_id} \
+          --region ${var.aws_region} \
+          --query 'UserPoolClient' --output json)
+
+        # Append kockpit URLs if not already present
+        %{for alias in var.aliases}
+        CLIENT=$(echo $CLIENT | jq \
+          --arg cb "https://${alias}/auth/callback" \
+          --arg lo "https://${alias}/" \
+          '.CallbackURLs += [$cb] | .CallbackURLs |= unique |
+           .LogoutURLs  += [$lo] | .LogoutURLs  |= unique')
+        %{endfor}
+
+        # Update client (cognito update requires all fields)
+        aws cognito-idp update-user-pool-client \
+          --user-pool-id ${local.cognito_user_pool_id} \
+          --client-id ${local.cognito_client_id} \
+          --region ${var.aws_region} \
+          --callback-urls $(echo $CLIENT | jq -r '.CallbackURLs | join(" ")') \
+          --logout-urls   $(echo $CLIENT | jq -r '.LogoutURLs  | join(" ")') \
+          --supported-identity-providers $(echo $CLIENT | jq -r '.SupportedIdentityProviders | join(" ")') \
+          --allowed-o-auth-flows         $(echo $CLIENT | jq -r '.AllowedOAuthFlows | join(" ")') \
+          --allowed-o-auth-scopes        $(echo $CLIENT | jq -r '.AllowedOAuthScopes | join(" ")') \
+          --allowed-o-auth-flows-user-pool-client \
+          --explicit-auth-flows          $(echo $CLIENT | jq -r '.ExplicitAuthFlows | join(" ")')
+    EOT
+  }
+}

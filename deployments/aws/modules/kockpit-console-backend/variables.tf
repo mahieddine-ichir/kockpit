@@ -56,7 +56,7 @@ variable "listener_rule_priority" {
 variable "path_pattern" {
   description = "Path pattern for the listener rule (e.g., '/api/*')"
   type        = string
-  default     = "/*"
+  default     = "/api/*"
 }
 
 # Container Configuration
