@@ -35,6 +35,7 @@ resource "aws_lambda_function" "cognito_auth" {
   filename      = "${path.module}/lambda-auth-placeholder.zip"
 
   lifecycle {
+    create_before_destroy = true
     ignore_changes = [filename, source_code_hash]
   }
 
