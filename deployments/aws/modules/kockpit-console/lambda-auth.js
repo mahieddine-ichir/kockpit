@@ -68,6 +68,8 @@ exports.handler = async (event) => {
             return redirectToCognito(request);
         }
 
+        console.log('Token prefix:', token.substring(0, 10), 'length:', token.length, 'dots:', (token.match(/\./g)||[]).length);
+
         // Verify JWT token
         await new Promise((resolve, reject) => {
             jwt.verify(token, getKey, {

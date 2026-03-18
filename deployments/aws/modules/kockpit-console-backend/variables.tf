@@ -79,7 +79,7 @@ variable "container_port" {
 variable "cpu_architecture" {
   description = "CPU architecture for the ECS task (ARM64 or X86_64)"
   type        = string
-  default     = "ARM64"
+  default     = "X86_64"
   validation {
     condition     = contains(["ARM64", "X86_64"], var.cpu_architecture)
     error_message = "CPU architecture must be either ARM64 or X86_64."
