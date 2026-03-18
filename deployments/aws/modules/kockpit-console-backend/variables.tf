@@ -42,11 +42,6 @@ variable "load_balancer_arn" {
   type        = string
 }
 
-variable "load_balancer_listener_arn" {
-  description = "ARN of the existing load balancer listener"
-  type        = string
-}
-
 variable "lb_security_group_id" {
   description = "Security group ID of the load balancer"
   type        = string
