@@ -153,6 +153,10 @@ resource "aws_security_group_rule" "health_check_lb_http-ingress" {
   source_security_group_id = var.lb_security_group_id
   security_group_id        = aws_security_group.ecs_service.id
   description              = "Allow access for target group health check ${var.container_port}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Egress rules for load balancer security group to reach ECS service
