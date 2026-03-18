@@ -166,6 +166,42 @@ resource "aws_security_group_rule" "lb_to_ecs_container_port" {
   description              = "Allow load balancer to reach ECS service on container port ${var.container_port}"
 }
 
+resource "aws_security_group_rule" "lb_to_ecs_health_check_port" {
+  count                    = local.health_check_port_number != var.container_port ? 1 : 0
+  type                     = "ingress"
+  from_port                = local.health_check_port_number
+  to_port                  = local.health_check_port_number
+  protocol                 = "tcp"
+  source_security_group_id = var.lb_security_group_id
+  security_group_id        = aws_security_group.ecs_service.id
+  description              = "Allow LB health check on port ${local.health_check_port_number}"
+}
+
+resource "aws_security_group_rule" "lb_to_ecs_health_check_port_egress" {
+  count                    = local.health_check_port_number != var.container_port ? 1 : 0
+  type                     = "egress"
+  from_port                = local.health_check_port_number
+  to_port                  = local.health_check_port_number
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.ecs_service.id
+  security_group_id        = var.lb_security_group_id
+  description              = "Allow LB to reach ECS health check port ${local.health_check_port_number}"
+}
+
+data "aws_ec2_managed_prefix_list" "cloudfront" {
+  name = "com.amazonaws.global.cloudfront.origin-facing"
+}
+
+resource "aws_security_group_rule" "lb_http_from_cloudfront" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  prefix_list_ids   = [data.aws_ec2_managed_prefix_list.cloudfront.id]
+  security_group_id = var.lb_security_group_id
+  description       = "Allow CloudFront to reach ALB on port 80"
+}
+
 # ECS Task Definition
 resource "aws_ecs_task_definition" "main" {
   family                   = var.service_name
