@@ -29,15 +29,15 @@ resource "aws_cognito_user_pool" "console_pool" {
 
 # Cognito User Pool Client
 resource "aws_cognito_user_pool_client" "console_client" {
-  count                = var.enable_cognito_auth && var.cognito_client_id == null ? 1 : 0
-  name                 = "${var.service_name}-${var.kockpit_env}-client"
-  user_pool_id         = var.cognito_user_pool_id != null ? var.cognito_user_pool_id : aws_cognito_user_pool.console_pool[0].id
-  generate_secret      = true
+  count           = var.enable_cognito_auth && var.cognito_client_id == null ? 1 : 0
+  name            = "${var.service_name}-${var.kockpit_env}-client"
+  user_pool_id    = var.cognito_user_pool_id != null ? var.cognito_user_pool_id : aws_cognito_user_pool.console_pool[0].id
+  generate_secret = true
 
   # OAuth configuration
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_flows_user_pool_client = true
-  allowed_oauth_scopes                = ["openid", "profile", "email"]
+  allowed_oauth_scopes                 = ["openid", "profile", "email"]
 
   # Callback URLs - use /auth/callback
   callback_urls = var.aliases != null && length(var.aliases) > 0 ? [
@@ -50,7 +50,7 @@ resource "aws_cognito_user_pool_client" "console_client" {
 
   # Token validity
   access_token_validity  = 1  # 1 hour
-  id_token_validity     = 1  # 1 hour
+  id_token_validity      = 1  # 1 hour
   refresh_token_validity = 30 # 30 days
 
   token_validity_units {
@@ -62,18 +62,18 @@ resource "aws_cognito_user_pool_client" "console_client" {
 
 # Cognito User Pool Domain
 resource "aws_cognito_user_pool_domain" "console_domain" {
-  count       = var.enable_cognito_auth && var.cognito_user_pool_domain == null ? 1 : 0
-  domain      = "${var.service_name}-${var.kockpit_env}-auth"
+  count        = var.enable_cognito_auth && var.cognito_user_pool_domain == null ? 1 : 0
+  domain       = "${var.service_name}-${var.kockpit_env}-auth"
   user_pool_id = var.cognito_user_pool_id != null ? var.cognito_user_pool_id : aws_cognito_user_pool.console_pool[0].id
 }
 
 # Locals for Cognito configuration
 locals {
-  cognito_user_pool_id     = var.cognito_user_pool_id != null ? var.cognito_user_pool_id : (var.enable_cognito_auth ? aws_cognito_user_pool.console_pool[0].id : null)
-  cognito_client_id        = var.cognito_client_id != null ? var.cognito_client_id : (var.enable_cognito_auth ? aws_cognito_user_pool_client.console_client[0].id : null)
-  cognito_client_secret    = var.cognito_client_secret != null ? var.cognito_client_secret : (var.enable_cognito_auth ? aws_cognito_user_pool_client.console_client[0].client_secret : null)
-  cognito_domain           = var.cognito_user_pool_domain != null ? var.cognito_user_pool_domain : (var.enable_cognito_auth ? aws_cognito_user_pool_domain.console_domain[0].domain : null)
-  cognito_region           = var.aws_region != null ? var.aws_region : (var.enable_cognito_auth ? var.aws_region : null)
+  cognito_user_pool_id  = var.cognito_user_pool_id != null ? var.cognito_user_pool_id : (var.enable_cognito_auth ? aws_cognito_user_pool.console_pool[0].id : null)
+  cognito_client_id     = var.cognito_client_id != null ? var.cognito_client_id : (var.enable_cognito_auth ? aws_cognito_user_pool_client.console_client[0].id : null)
+  cognito_client_secret = var.cognito_client_secret != null ? var.cognito_client_secret : (var.enable_cognito_auth ? aws_cognito_user_pool_client.console_client[0].client_secret : null)
+  cognito_domain        = var.cognito_user_pool_domain != null ? var.cognito_user_pool_domain : (var.enable_cognito_auth ? aws_cognito_user_pool_domain.console_domain[0].domain : null)
+  cognito_region        = var.aws_region != null ? var.aws_region : (var.enable_cognito_auth ? var.aws_region : null)
 }
 
 # Update Cognito client with actual CloudFront domain (after CloudFront is created)
@@ -82,7 +82,7 @@ resource "null_resource" "update_cognito_callback" {
 
   triggers = {
     cloudfront_domain = aws_cloudfront_distribution.console_distribution.domain_name
-    client_id = local.cognito_client_id
+    client_id         = local.cognito_client_id
   }
 
   provisioner "local-exec" {

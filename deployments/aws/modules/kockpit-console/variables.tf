@@ -64,7 +64,7 @@ variable "acm_certificate_arn" {
   default     = null
 
   validation {
-    condition = var.acm_certificate_arn == null || can(regex("^arn:aws:acm:us-east-1:", var.acm_certificate_arn))
+    condition     = var.acm_certificate_arn == null || can(regex("^arn:aws:acm:us-east-1:", var.acm_certificate_arn))
     error_message = "ACM certificate must be in us-east-1 region for CloudFront. ARN should start with 'arn:aws:acm:us-east-1:'."
   }
 }
@@ -82,7 +82,7 @@ variable "backend_alb_domain" {
   default     = null
 
   validation {
-    condition = var.backend_alb_domain == null || can(regex("^[a-zA-Z0-9][a-zA-Z0-9-._]*[a-zA-Z0-9]$", var.backend_alb_domain))
+    condition     = var.backend_alb_domain == null || can(regex("^[a-zA-Z0-9][a-zA-Z0-9-._]*[a-zA-Z0-9]$", var.backend_alb_domain))
     error_message = "backend_alb_domain must be a valid domain name or null."
   }
 }
