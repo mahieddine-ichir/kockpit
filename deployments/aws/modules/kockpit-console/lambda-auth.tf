@@ -6,8 +6,8 @@ resource "aws_iam_role" "lambda_edge_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action    = "sts:AssumeRole"
-      Effect    = "Allow"
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
       Principal = {
         Service = ["lambda.amazonaws.com", "edgelambda.amazonaws.com"]
       }
@@ -36,7 +36,7 @@ resource "aws_lambda_function" "cognito_auth" {
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes = [filename, source_code_hash]
+    ignore_changes        = [filename, source_code_hash]
   }
 
   tags = var.tags
@@ -90,7 +90,7 @@ resource "null_resource" "deploy_lambda_auth" {
         echo "Deployed Lambda@Edge: $NEW_ARN"
         rm -rf $BUILD_DIR /tmp/lambda-auth-final.zip
       EOT
-    }
+  }
 
   depends_on = [aws_iam_role_policy_attachment.lambda_edge_basic]
 }

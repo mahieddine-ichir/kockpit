@@ -68,7 +68,7 @@ output "certificate_arn" {
 
 output "certificate_validation_options" {
   description = "Certificate validation options for DNS validation"
-  value = var.create_certificate && var.aliases != null && length(var.aliases) > 0 ? aws_acm_certificate.console_cert[0].domain_validation_options : null
+  value       = var.create_certificate && var.aliases != null && length(var.aliases) > 0 ? aws_acm_certificate.console_cert[0].domain_validation_options : null
 }
 
 # Route 53 Information
@@ -101,19 +101,19 @@ output "cognito_domain" {
 
 output "cognito_login_url" {
   description = "Cognito login URL"
-  value = var.enable_cognito_auth ? "https://${local.cognito_domain}.auth.${var.aws_region}.amazoncognito.com/login" : null
+  value       = var.enable_cognito_auth ? "https://${local.cognito_domain}.auth.${var.aws_region}.amazoncognito.com/login" : null
 }
 
 # Debug Information
 output "debug_certificate_config" {
   description = "Debug information for certificate configuration"
   value = {
-    aliases                        = var.aliases
-    aliases_length                = var.aliases != null ? length(var.aliases) : 0
-    acm_certificate_arn           = var.acm_certificate_arn
-    create_certificate            = var.create_certificate
-    using_default_certificate     = var.aliases == null || length(var.aliases) == 0
-    certificate_arn_will_be_used  = var.aliases != null && length(var.aliases) > 0 ? (
+    aliases                   = var.aliases
+    aliases_length            = var.aliases != null ? length(var.aliases) : 0
+    acm_certificate_arn       = var.acm_certificate_arn
+    create_certificate        = var.create_certificate
+    using_default_certificate = var.aliases == null || length(var.aliases) == 0
+    certificate_arn_will_be_used = var.aliases != null && length(var.aliases) > 0 ? (
       var.acm_certificate_arn != null ? var.acm_certificate_arn : (
         var.create_certificate ? "will_be_created_and_validated" : null
       )

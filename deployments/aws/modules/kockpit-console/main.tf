@@ -24,11 +24,11 @@ provider "aws" {
 
 # ACM Certificate for custom domains (must be in us-east-1 for CloudFront)
 resource "aws_acm_certificate" "console_cert" {
-  count             = var.aliases != null && length(var.aliases) > 0 && var.create_certificate ? 1 : 0
-  provider          = aws.us_east_1
-  domain_name       = var.aliases[0]
+  count                     = var.aliases != null && length(var.aliases) > 0 && var.create_certificate ? 1 : 0
+  provider                  = aws.us_east_1
+  domain_name               = var.aliases[0]
   subject_alternative_names = length(var.aliases) > 1 ? slice(var.aliases, 1, length(var.aliases)) : []
-  validation_method = "DNS"
+  validation_method         = "DNS"
 
   lifecycle {
     create_before_destroy = true
@@ -268,11 +268,11 @@ resource "aws_cloudfront_distribution" "console_distribution" {
 
   viewer_certificate {
     cloudfront_default_certificate = var.aliases == null || length(var.aliases) == 0 ? true : false
-    acm_certificate_arn            = var.aliases != null && length(var.aliases) > 0 ? (
+    acm_certificate_arn = var.aliases != null && length(var.aliases) > 0 ? (
       var.acm_certificate_arn != null ? var.acm_certificate_arn : aws_acm_certificate_validation.console_cert_validation[0].certificate_arn
     ) : null
-    ssl_support_method             = var.aliases != null && length(var.aliases) > 0 ? "sni-only" : null
-    minimum_protocol_version       = var.aliases != null && length(var.aliases) > 0 ? "TLSv1.2_2021" : null
+    ssl_support_method       = var.aliases != null && length(var.aliases) > 0 ? "sni-only" : null
+    minimum_protocol_version = var.aliases != null && length(var.aliases) > 0 ? "TLSv1.2_2021" : null
   }
 
   tags = var.tags
