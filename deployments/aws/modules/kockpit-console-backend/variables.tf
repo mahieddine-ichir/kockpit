@@ -37,6 +37,11 @@ variable "ecs_cluster_name" {
   type        = string
 }
 
+variable "load_balancer_arn" {
+  description = "ARN of the load balancer to create the HTTP listener on"
+  type        = string
+}
+
 variable "load_balancer_listener_arn" {
   description = "ARN of the existing load balancer listener"
   type        = string
