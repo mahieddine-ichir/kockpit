@@ -172,11 +172,11 @@ async function handleCallback(request) {
             'set-cookie': [
                 {
                     key: 'Set-Cookie',
-                    value: `id_token=$${tokens.id_token}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=3600`
+                    value: `id_token=${tokens.id_token}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=3600`
                 },
                 {
                     key: 'Set-Cookie',
-                    value: `access_token=$${tokens.access_token}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=3600`
+                    value: `access_token=${tokens.access_token}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=3600`
                 },
             ],
         },
