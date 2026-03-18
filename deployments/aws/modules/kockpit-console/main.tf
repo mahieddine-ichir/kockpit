@@ -220,7 +220,7 @@ resource "aws_cloudfront_distribution" "console_distribution" {
       for_each = var.enable_cognito_auth ? [1] : []
       content {
         event_type   = "viewer-request"
-        lambda_arn   = data.aws_lambda_function.cognito_auth[0].qualified_arn
+        lambda_arn   = aws_lambda_function.cognito_auth[0].qualified_arn
         include_body = false
       }
     }

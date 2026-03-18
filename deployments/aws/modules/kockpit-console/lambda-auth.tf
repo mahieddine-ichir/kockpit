@@ -23,6 +23,26 @@ resource "aws_iam_role_policy_attachment" "lambda_edge_basic" {
   role       = aws_iam_role.lambda_edge_role[0].name
 }
 
+resource "aws_lambda_function" "cognito_auth" {
+  count         = var.enable_cognito_auth ? 1 : 0
+  provider      = aws.us_east_1
+  function_name = "${var.service_name}-${var.kockpit_env}-cognito-auth"
+  role          = aws_iam_role.lambda_edge_role[0].arn
+  handler       = "index.handler"
+  runtime       = "nodejs18.x"
+  publish       = true
+  timeout       = 5
+  filename      = "${path.module}/lambda-auth-placeholder.zip"
+
+  lifecycle {
+    ignore_changes = [filename, source_code_hash]
+  }
+
+  tags = var.tags
+
+  depends_on = [aws_iam_role_policy_attachment.lambda_edge_basic]
+}
+
 resource "null_resource" "deploy_lambda_auth" {
   count = var.enable_cognito_auth ? 1 : 0
 
@@ -74,9 +94,3 @@ resource "null_resource" "deploy_lambda_auth" {
   depends_on = [aws_iam_role_policy_attachment.lambda_edge_basic]
 }
 
-data "aws_lambda_function" "cognito_auth" {
-  count         = var.enable_cognito_auth ? 1 : 0
-  provider      = aws.us_east_1
-  function_name = "${var.service_name}-${var.kockpit_env}-cognito-auth"
-  depends_on    = [null_resource.deploy_lambda_auth]
-}
