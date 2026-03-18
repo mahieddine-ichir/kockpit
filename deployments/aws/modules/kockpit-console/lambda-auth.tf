@@ -1,3 +1,4 @@
+# Lambda@Edge function for Cognito authentication
 resource "aws_iam_role" "lambda_edge_role" {
   count = var.enable_cognito_auth ? 1 : 0
   name  = "${var.service_name}-${var.kockpit_env}-lambda-edge-role"
@@ -71,34 +72,4 @@ resource "null_resource" "deploy_lambda_auth" {
     }
 
   depends_on = [aws_iam_role_policy_attachment.lambda_edge_basic]
-}
-
-# Lambda@Edge function for Cognito authentication
-resource "aws_iam_role" "lambda_edge_role" {
-  count = var.enable_cognito_auth ? 1 : 0
-  name  = "${var.service_name}-${var.kockpit_env}-lambda-edge-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = [
-            "lambda.amazonaws.com",
-            "edgelambda.amazonaws.com"
-          ]
-        }
-      }
-    ]
-  })
-
-  tags = var.tags
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_edge_basic" {
-  count      = var.enable_cognito_auth ? 1 : 0
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-  role       = aws_iam_role.lambda_edge_role[0].name
 }
