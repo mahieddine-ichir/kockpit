@@ -273,6 +273,19 @@ resource "aws_lb_listener_rule" "main" {
   tags = var.tags
 }
 
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = var.load_balancer_arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.main.arn
+  }
+
+  tags = var.tags
+}
+
 # ECS Service
 resource "aws_ecs_service" "main" {
   name            = var.service_name
