@@ -6,6 +6,9 @@ server:
 spring:
   application:
     name: kockpit-samples-all
+  kafka:
+    producer:
+      bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
 
 kockpit:
   domain: kockpit

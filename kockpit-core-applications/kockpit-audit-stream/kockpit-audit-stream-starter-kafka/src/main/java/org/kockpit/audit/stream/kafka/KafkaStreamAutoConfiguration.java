@@ -2,6 +2,7 @@ package org.kockpit.audit.stream.kafka;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -26,8 +27,10 @@ public class KafkaStreamAutoConfiguration {
             ApplicationEventPublisher applicationEventPublisher
     ) {
         return new KafkaStreamListener(
-                new ObjectMapper().configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false),
-                applicationEventPublisher
+                new ObjectMapper().registerModule(new JavaTimeModule())
+                        .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                , applicationEventPublisher
         );
     }
 

@@ -1,6 +1,12 @@
 {
   "policy": {
     "description": "Rollover policy based on 30GB size or 1 day age",
+    "ism_template": [
+      {
+        "index_patterns": ["${index_pattern}"],
+        "priority": 100
+      }
+    ],
     "default_state": "hot",
     "states": [
       {

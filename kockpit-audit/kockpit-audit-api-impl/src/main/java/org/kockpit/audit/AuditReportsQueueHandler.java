@@ -103,7 +103,7 @@ class AuditReportsQueueHandler {
             return;
         }
 
-        log.trace("Polled {} records ({} bytes) in {} ms", polledRecords.size(), totalSize, System.currentTimeMillis() - currentTimeMillis);
+        log.trace("-> Polled {} records ({} bytes) in {} ms", polledRecords.size(), totalSize, System.currentTimeMillis() - currentTimeMillis);
         this.notify(polledRecords);
     }
 }
