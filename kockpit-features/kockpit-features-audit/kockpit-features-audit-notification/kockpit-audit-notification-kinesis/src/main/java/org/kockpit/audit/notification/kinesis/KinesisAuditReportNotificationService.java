@@ -37,10 +37,13 @@ record KinesisAuditReportNotificationService(
             return;
         }
         try {
-            PutRecordsRequest putRecordsRequest = PutRecordsRequest.builder()
-                    .streamName(streamName)
-                    .records(putRecordsRequestEntries)
-                    .build();
+            PutRecordsRequest.Builder requestBuilder = PutRecordsRequest.builder().records(putRecordsRequestEntries);
+            if (streamName.startsWith("arn:")) {
+                requestBuilder.streamARN(streamName);
+            } else {
+                requestBuilder.streamName(streamName);
+            }
+            PutRecordsRequest putRecordsRequest = requestBuilder.build();
             PutRecordsResponse putRecordsResponse = kinesisAsyncClient.putRecords(putRecordsRequest).get();
             if (putRecordsResponse.failedRecordCount() > 0) {
                 putRecordsResponse.records().stream().filter(record -> Objects.nonNull(record.errorCode()))
