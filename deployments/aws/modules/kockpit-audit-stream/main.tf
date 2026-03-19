@@ -17,25 +17,15 @@ data "aws_vpc" "main" {
   id = var.vpc_id
 }
 
-# Use the provided subnet IDs directly
-locals {
-  private_subnet_ids = var.private_subnet_ids
-  # Determine health check port: if "traffic-port", use container_port; otherwise parse the port number
-  health_check_port_number = var.health_check_port == "traffic-port" ? var.container_port : tonumber(var.health_check_port)
-}
-
 data "aws_ecs_cluster" "main" {
   cluster_name = var.ecs_cluster_name
 }
 
 data "aws_caller_identity" "current" {}
 
-data "aws_s3_bucket" "kockpit_data" {
-  bucket = var.kockpit_data_s3_bucket
-}
-
-data "aws_s3_bucket" "kockpit_manifests" {
-  bucket = var.kockpit_manifests_s3_bucket
+locals {
+  private_subnet_ids       = var.private_subnet_ids
+  health_check_port_number = var.health_check_port == "traffic-port" ? var.container_port : tonumber(var.health_check_port)
 }
 
 # IAM role for ECS task execution
@@ -83,9 +73,9 @@ resource "aws_iam_role" "ecs_task_role" {
   tags = var.tags
 }
 
-# IAM policy for S3 access
-resource "aws_iam_role_policy" "s3_access_policy" {
-  name = "${var.service_name}-s3-access"
+# IAM policy for Kinesis consumer access
+resource "aws_iam_role_policy" "kinesis_consumer_policy" {
+  name = "${var.service_name}-kinesis-consumer"
   role = aws_iam_role.ecs_task_role.id
 
   policy = jsonencode({
@@ -94,18 +84,72 @@ resource "aws_iam_role_policy" "s3_access_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:ListBucket"
+          "kinesis:GetRecords",
+          "kinesis:GetShardIterator",
+          "kinesis:DescribeStream",
+          "kinesis:DescribeStreamSummary",
+          "kinesis:ListShards",
+          "kinesis:ListStreams",
+          "kinesis:SubscribeToShard"
         ]
-        Resource = [
-          # Kockpit data bucket
-          data.aws_s3_bucket.kockpit_data.arn,
-          "${data.aws_s3_bucket.kockpit_data.arn}/*",
-          # Kockpit manifests bucket
-          data.aws_s3_bucket.kockpit_manifests.arn,
-          "${data.aws_s3_bucket.kockpit_manifests.arn}/*"
+        Resource = "arn:aws:kinesis:${var.aws_region}:${data.aws_caller_identity.current.account_id}:stream/${var.kinesis_stream_name}"
+      }
+    ]
+  })
+}
+
+# IAM policy for DynamoDB access (KCL lease/checkpoint table)
+resource "aws_iam_role_policy" "dynamodb_kcl_policy" {
+  name = "${var.service_name}-dynamodb-kcl"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:CreateTable",
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Scan",
+          "dynamodb:Query",
+          "dynamodb:DescribeTable",
+          "dynamodb:DescribeTimeToLive",
+          "dynamodb:UpdateTimeToLive",
+          "dynamodb:TagResource",
+          "dynamodb:DescribeContributorInsights",
+          "dynamodb:UpdateContributorInsights",
+          "dynamodb:DescribeContinuousBackups"
         ]
+        Resource = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/${var.kinesis_app_name}"
+      }
+    ]
+  })
+}
+
+# IAM policy for OpenSearch access
+resource "aws_iam_role_policy" "opensearch_policy" {
+  name = "${var.service_name}-opensearch"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "es:ESHttpGet",
+          "es:ESHttpPost",
+          "es:ESHttpPut",
+          "es:ESHttpDelete",
+          "es:ESHttpHead",
+          "es:DescribeElasticsearchDomains",
+          "es:ListDomainNames"
+        ]
+        Resource = "*"
       }
     ]
   })
@@ -147,22 +191,21 @@ resource "aws_security_group" "ecs_service" {
   })
 }
 
-resource "aws_security_group_rule" "health_check_lb_http-ingress" {
+resource "aws_security_group_rule" "lb_to_ecs_container_port_ingress" {
   type                     = "ingress"
   from_port                = var.container_port
   to_port                  = var.container_port
   protocol                 = "tcp"
   source_security_group_id = var.lb_security_group_id
   security_group_id        = aws_security_group.ecs_service.id
-  description              = "Allow access for target group health check ${var.container_port}"
+  description              = "Allow LB to reach ECS service on container port ${var.container_port}"
 
   lifecycle {
     create_before_destroy = true
   }
 }
 
-# Egress rules for load balancer security group to reach ECS service
-resource "aws_security_group_rule" "lb_to_ecs_container_port" {
+resource "aws_security_group_rule" "lb_to_ecs_container_port_egress" {
   type                     = "egress"
   from_port                = var.container_port
   to_port                  = var.container_port
@@ -172,7 +215,7 @@ resource "aws_security_group_rule" "lb_to_ecs_container_port" {
   description              = "Allow load balancer to reach ECS service on container port ${var.container_port}"
 }
 
-resource "aws_security_group_rule" "lb_to_ecs_health_check_port" {
+resource "aws_security_group_rule" "lb_to_ecs_health_check_port_ingress" {
   count                    = local.health_check_port_number != var.container_port ? 1 : 0
   type                     = "ingress"
   from_port                = local.health_check_port_number
@@ -194,18 +237,12 @@ resource "aws_security_group_rule" "lb_to_ecs_health_check_port_egress" {
   description              = "Allow LB to reach ECS health check port ${local.health_check_port_number}"
 }
 
-data "aws_ec2_managed_prefix_list" "cloudfront" {
-  name = "com.amazonaws.global.cloudfront.origin-facing"
-}
+# CloudWatch Log Group
+resource "aws_cloudwatch_log_group" "main" {
+  name              = "/ecs/${var.service_name}"
+  retention_in_days = var.log_retention_days
 
-resource "aws_security_group_rule" "lb_http_from_cloudfront" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  prefix_list_ids   = [data.aws_ec2_managed_prefix_list.cloudfront.id]
-  security_group_id = var.lb_security_group_id
-  description       = "Allow CloudFront to reach ALB on port 80"
+  tags = var.tags
 }
 
 # ECS Task Definition
@@ -261,14 +298,6 @@ resource "aws_ecs_task_definition" "main" {
   tags = var.tags
 }
 
-# CloudWatch Log Group
-resource "aws_cloudwatch_log_group" "main" {
-  name              = "/ecs/${var.service_name}"
-  retention_in_days = var.log_retention_days
-
-  tags = var.tags
-}
-
 # Target Group
 resource "aws_lb_target_group" "main" {
   name        = "${var.service_name}-tg"
@@ -280,9 +309,9 @@ resource "aws_lb_target_group" "main" {
   health_check {
     enabled             = true
     healthy_threshold   = 3
-    unhealthy_threshold = 5
-    timeout             = 10
-    interval            = 30
+    unhealthy_threshold = var.health_check_unhealthy_threshold
+    timeout             = var.health_check_timeout
+    interval            = var.health_check_interval
     path                = var.health_check_path
     matcher             = "200"
     port                = var.health_check_port
@@ -294,14 +323,29 @@ resource "aws_lb_target_group" "main" {
   })
 }
 
-resource "aws_lb_listener" "http" {
-  load_balancer_arn = var.load_balancer_arn
-  port              = 80
-  protocol          = "HTTP"
+# ALB Listener Rule (attaches to an existing listener)
+resource "aws_lb_listener_rule" "main" {
+  listener_arn = var.lb_listener_arn
+  priority     = var.listener_rule_priority
 
-  default_action {
+  action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.main.arn
+  }
+
+  condition {
+    path_pattern {
+      values = var.path_patterns
+    }
+  }
+
+  dynamic "condition" {
+    for_each = length(var.http_methods) > 0 ? [1] : []
+    content {
+      http_request_method {
+        values = var.http_methods
+      }
+    }
   }
 
   tags = var.tags
@@ -327,7 +371,7 @@ resource "aws_ecs_service" "main" {
     container_port   = var.container_port
   }
 
-  depends_on = [aws_lb_listener.http]
+  depends_on = [aws_lb_listener_rule.main]
 
   tags = var.tags
 }
