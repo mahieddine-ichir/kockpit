@@ -30,6 +30,7 @@ const COMPONENTS = [
     title: 'Request & Response',
     key: 'request',
     icon: ArrowLeftRight,
+    disabled: (request) => !request['audits']?.find(audit => audit.type === 'builtin.web'),
     view: (request) => <RequestResponseTab request={request} />
   },
   {
@@ -57,21 +58,27 @@ const DetailTabs = ({ request }) => {
       <div>
         <div className="border-b border-slate-100 px-6 pt-4">
           <nav className="flex gap-2">
-            {COMPONENTS.map(({ key, title, icon: Icon }) => (
+            {COMPONENTS.map(({ key, title, icon: Icon, disabled }) => {
+              const isDisabled = disabled?.(request) ?? false;
+              return (
                 <button
                     key={key}
-                    onClick={() => setActiveTab(key)}
+                    onClick={() => !isDisabled && setActiveTab(key)}
+                    disabled={isDisabled}
                     className={`px-4 py-2 rounded-t-lg font-semibold text-sm transition-all duration-150 focus:outline-none flex items-center gap-2
-                ${activeTab === key
-                        ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm'
-                        : 'text-slate-500 hover:text-blue-600 hover:bg-slate-50 border-b-2 border-transparent'}
+                ${isDisabled
+                        ? 'text-slate-300 border-b-2 border-transparent cursor-not-allowed'
+                        : activeTab === key
+                          ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm'
+                          : 'text-slate-500 hover:text-blue-600 hover:bg-slate-50 border-b-2 border-transparent'}
               `}
                     style={{ minWidth: 110 }}
                 >
                   <Icon className="w-4 h-4" />
                   <span>{title}</span>
                 </button>
-            ))}
+              );
+            })}
           </nav>
         </div>
         <div className="py-6 px-6">
