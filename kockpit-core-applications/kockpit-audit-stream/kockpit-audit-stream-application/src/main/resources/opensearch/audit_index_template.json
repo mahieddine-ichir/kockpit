@@ -75,7 +75,8 @@
               "type": "keyword"
             },
             "events": {
-              "type": "object"
+              "type": "object",
+              "dynamic": false
             }
           }
         }
