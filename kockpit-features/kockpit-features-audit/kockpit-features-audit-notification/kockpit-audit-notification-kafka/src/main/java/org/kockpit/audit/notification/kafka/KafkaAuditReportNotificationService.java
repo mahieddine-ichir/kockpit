@@ -18,8 +18,12 @@ record KafkaAuditReportNotificationService(
     }
 
     void publishEvents(List<AuditReportWrapper> auditReports) {
-        // sample events in an array
-        auditReports.forEach(report -> producerClient.send(topic, key(report), report.data()));
+        auditReports.forEach(report -> producerClient.send(topic, key(report), report.data())
+                .whenComplete((result, ex) -> {
+                    if (ex != null) {
+                        log.error("Error sending record to kafka topic {}", topic, ex);
+                    }
+                }));
     }
 
     private String key(AuditReportWrapper report) {
