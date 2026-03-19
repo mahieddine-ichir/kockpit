@@ -48,12 +48,11 @@ public class AuditSearchService {
     @Value("${opensearch.search.index_version:wcp}")
     private String indexVersion;
 
-    @Tool(name = "search-audits-by-traceId", description = "Search Audits by traceId for a given domain and environment")
+    @Tool(name = "search-audits-by-traceId", description = "Search Audits by traceId for a given domain")
     @SneakyThrows
     public AuditReportPage searchByTraceId(
             @ToolParam(description = "audits/requests Trace ID (traceId)") String traceId,
             @ToolParam(required = false, description = "audits domain, default to all domains (*)") String domain,
-            @ToolParam(required = false, description = "audits environment, if not specified, do a search on all existing environments") String environment,
             @ToolParam(required = false, description = "start/from for paging, default to 0") Integer from,
             @ToolParam(required = false, description = "max number of audits per search, default to 25, max to 50") Integer size
     ) {
@@ -66,7 +65,7 @@ public class AuditSearchService {
 
         String index = "%s-auditdata-%s-read".formatted(
                 nonNull(domain) ? domain : "*",
-                nonNull(environment) ? environment : defaultEnv
+                defaultEnv
         );
 
         IndexKeyValuesForNested indexKeyValuesForNested = resolveIndexKeyValuesPath(indexVersion);
@@ -96,48 +95,15 @@ public class AuditSearchService {
         return runRequest(from, size, searchSourceBuilder, index);
     }
 
-    @Tool(name = "search-audits", description = "Search all Audits by domain, environment and application Id (or appId)")
-    @SneakyThrows
-    public AuditReportPage search(
-            @ToolParam(required = false, description = "audits domain") String domain,
-            @ToolParam(required = false, description = "audits environment") String environment,
-            @ToolParam(required = false, description = "audits application Id, or appId") String appId,
-            @ToolParam(required = false, description = "start/from for paging, default to 0") Integer from,
-            @ToolParam(required = false, description = "max number of audits per search, default to 25, max to 50") Integer size
-    ) {
-        from = isNull(from) ? 0 : max(from, 0);
-        size = isNull(size) ? 25 : min(size, 50);
-
-        String index = "%s-auditdata-%s-read";
-        index = index.formatted(
-                nonNull(domain) ? domain : "*",
-                nonNull(environment) ? environment : defaultEnv
-        );
-
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        Optional.ofNullable(appId).ifPresent(e -> boolQueryBuilder.must(matchQuery("appId", e)));
-
-        SearchSourceBuilder searchSourceBuilder =
-                new SearchSourceBuilder()
-                        .query(boolQueryBuilder)
-                        .sort(new FieldSortBuilder("start").order(SortOrder.DESC))
-                        .trackTotalHits(true)
-                        .from(from)
-                        .size(size);
-
-        return runRequest(from, size, searchSourceBuilder, index);
-    }
-
     @Tool(name = "get-kengine-flows", description = "Get kengine.flows audits from the original (decompressed) audit report for a given traceId")
     @SneakyThrows
     public AuditDataPage getKengineFlows(
             @ToolParam(description = "audits/requests Trace ID (traceId)") String traceId,
             @ToolParam(required = false, description = "audits domain, default to all domains (*)") String domain,
-            @ToolParam(required = false, description = "audits environment, if not specified, searches all environments") String environment,
             @ToolParam(required = false, description = "start/from for paging, default to 0") Integer from,
             @ToolParam(required = false, description = "max number of audits per search, default to 25, max to 50") Integer size
     ) {
-        return fetchAuditDataPage(traceId, domain, environment, from, size, AuditReportHelper::extractKengineFlowsAudits);
+        return fetchAuditDataPage(traceId, domain, from, size, AuditReportHelper::extractKengineFlowsAudits);
     }
 
     @Tool(name = "get-builtin-httpexchanges", description = "Get builtin.httpexchanges audits from the original (decompressed) audit report for a given traceId")
@@ -145,22 +111,21 @@ public class AuditSearchService {
     public AuditDataPage getBuiltinHttpExchanges(
             @ToolParam(description = "audits/requests Trace ID (traceId)") String traceId,
             @ToolParam(required = false, description = "audits domain, default to all domains (*)") String domain,
-            @ToolParam(required = false, description = "audits environment, if not specified, searches all environments") String environment,
             @ToolParam(required = false, description = "start/from for paging, default to 0") Integer from,
             @ToolParam(required = false, description = "max number of audits per search, default to 25, max to 50") Integer size
     ) {
-        return fetchAuditDataPage(traceId, domain, environment, from, size, AuditReportHelper::extractBuiltinHttpExchangesAudits);
+        return fetchAuditDataPage(traceId, domain, from, size, AuditReportHelper::extractBuiltinHttpExchangesAudits);
     }
 
     @SneakyThrows
-    private AuditDataPage fetchAuditDataPage(String traceId, String domain, String environment, Integer from, Integer size,
+    private AuditDataPage fetchAuditDataPage(String traceId, String domain, Integer from, Integer size,
                                              Function<String, List<Map<String, Object>>> extractor) {
         from = isNull(from) ? 0 : max(from, 0);
         size = isNull(size) ? 25 : min(size, 50);
 
         String index = "%s-auditdata-%s-read".formatted(
                 nonNull(domain) ? domain : "*",
-                nonNull(environment) ? environment : defaultEnv
+                defaultEnv
         );
 
         IndexKeyValuesForNested indexKeyValuesForNested = resolveIndexKeyValuesPath(indexVersion);
