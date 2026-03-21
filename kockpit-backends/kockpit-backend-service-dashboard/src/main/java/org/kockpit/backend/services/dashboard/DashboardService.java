@@ -126,7 +126,7 @@ public class DashboardService {
             }
         }
 
-        Request request = new Request("POST", "%s/_search".formatted(getAuditAliasName(domain, index, env)));
+        Request request = new Request("POST", "/%s/_search".formatted(getAuditAliasName(domain, index, env)));
         request.setJsonEntity(entity);
 
         Response response = restClient.performRequest(request);

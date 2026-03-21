@@ -124,7 +124,7 @@ module "kockpit_console" {
 | create_certificate | Whether to create an ACM certificate for custom domains | `bool` | `true` | no |
 | backend_alb_domain | Domain name of the backend ALB for API proxy | `string` | `null` | no |
 | console_ui_version | Version tag for cache busting when updating the UI | `string` | `"latest"` | no |
-| console_ui_download_url | URL to download the console UI distribution zip (AWS build with /backend API prefix) | `string` | `"https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-aws-dist.zip"` | no |
+| console_ui_download_url | URL to download the console UI distribution zip | `string` | `"https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-dist.zip"` | no |
 | auto_deploy | Whether to automatically download and deploy the console UI | `bool` | `true` | no |
 | tags | Tags to apply to all resources | `map(string)` | `{"Environment": "production", "Project": "kockpit", "ManagedBy": "terraform"}` | no |
 
@@ -162,7 +162,7 @@ Internet → CloudFront → S3 Bucket (Static Files)
 
 3. **API Integration**:
    - Optional backend ALB integration
-   - Proxies `/backend/*` requests to your API
+   - Proxies requests to your API
    - Proper header forwarding for authentication
 
 4. **Security**:
