@@ -42,17 +42,17 @@ const getDurationColor = (duration) => {
 const highlightJson = (json) => {
     return json
         .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
-            let cls = 'text-purple-400'; // number
+            let cls = 'text-purple-700'; // number
             if (/^"/.test(match)) {
                 if (/:$/.test(match)) {
-                    cls = 'text-blue-400 font-semibold'; // key
+                    cls = 'text-blue-700 font-semibold'; // key
                 } else {
-                    cls = 'text-green-400'; // string
+                    cls = 'text-green-700'; // string
                 }
             } else if (/true|false/.test(match)) {
-                cls = 'text-orange-400 font-semibold'; // boolean
+                cls = 'text-orange-600 font-semibold'; // boolean
             } else if (/null/.test(match)) {
-                cls = 'text-red-400 font-semibold'; // null
+                cls = 'text-red-600 font-semibold'; // null
             }
             return `<span class="${cls}">${match}</span>`;
         });
@@ -192,7 +192,7 @@ function HttpExchangeTab({ request }) {
                                                                     value={ex['httpAuditedRequest'].body || ''}
                                                                 />
                                                             </div>
-                                                            <div className="bg-gray-900 p-4 max-h-64 overflow-auto">
+                                                            <div className="bg-gray-50 p-4 max-h-64 overflow-auto">
                                                                 {ex['httpAuditedRequest'].body ? (
                                                                     <pre
                                                                         className="text-xs font-mono leading-relaxed"
@@ -243,7 +243,7 @@ function HttpExchangeTab({ request }) {
                                                                     value={ex['httpAuditedResponse'].payload || ''}
                                                                 />
                                                             </div>
-                                                            <div className="bg-gray-900 p-4 max-h-64 overflow-auto">
+                                                            <div className="bg-gray-50 p-4 max-h-64 overflow-auto">
                                                                 {ex['httpAuditedResponse'].payload ? (
                                                                     <pre
                                                                         className="text-xs font-mono leading-relaxed"
