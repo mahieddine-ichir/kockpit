@@ -97,7 +97,7 @@ variable "console_ui_version" {
 variable "console_ui_download_url" {
   description = "URL to download the console UI distribution zip"
   type        = string
-  default     = "https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-aws-dist.zip"
+  default     = "https://github.com/mahieddine-ichir/kockpit/releases/download/console-ui-dev-latest/console-ui-dist.zip"
 }
 
 # Lambda Auth Configuration
