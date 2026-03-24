@@ -30,12 +30,14 @@ data "aws_ecs_cluster" "main" {
 
 data "aws_caller_identity" "current" {}
 
-data "aws_s3_bucket" "kockpit_data" {
+resource "aws_s3_bucket" "kockpit_data" {
   bucket = var.kockpit_data_s3_bucket
+  tags   = var.tags
 }
 
-data "aws_s3_bucket" "kockpit_manifests" {
+resource "aws_s3_bucket" "kockpit_manifests" {
   bucket = var.kockpit_manifests_s3_bucket
+  tags   = var.tags
 }
 
 # IAM role for ECS task execution
@@ -100,11 +102,11 @@ resource "aws_iam_role_policy" "s3_access_policy" {
         ]
         Resource = [
           # Kockpit data bucket
-          data.aws_s3_bucket.kockpit_data.arn,
-          "${data.aws_s3_bucket.kockpit_data.arn}/*",
+          aws_s3_bucket.kockpit_data.arn,
+          "${aws_s3_bucket.kockpit_data.arn}/*",
           # Kockpit manifests bucket
-          data.aws_s3_bucket.kockpit_manifests.arn,
-          "${data.aws_s3_bucket.kockpit_manifests.arn}/*"
+          aws_s3_bucket.kockpit_manifests.arn,
+          "${aws_s3_bucket.kockpit_manifests.arn}/*"
         ]
       }
     ]
