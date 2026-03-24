@@ -36,6 +36,14 @@ public class StorageAccountPublisher implements Publisher {
         }
     }
 
+    @Override
+    public void cleanup() {
+        blobContainerClient.listBlobs().stream()
+                .filter(blob -> blob.getName().endsWith(".json"))
+                .forEach(blob -> blobContainerClient.getBlobClient(blob.getName()).deleteIfExists());
+    }
+
+
     static String formatFilename(String domain, String env, String appId, String type) {
         if (Objects.isNull(appId)) {
             return "%s/%s/%s".formatted(domain, env, type);
