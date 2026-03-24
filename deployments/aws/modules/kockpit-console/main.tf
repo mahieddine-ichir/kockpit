@@ -12,10 +12,6 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = var.aws_region
-}
-
 # Provider for ACM certificates (must be us-east-1 for CloudFront)
 provider "aws" {
   alias  = "us_east_1"
