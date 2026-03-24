@@ -2,8 +2,9 @@ terraform {
   required_version = ">= 1.0"
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.59.0"
+      source                = "hashicorp/aws"
+      version               = ">= 4.59.0"
+      configuration_aliases = [aws.us_east_1]
     }
     null = {
       source  = "hashicorp/null"
@@ -15,7 +16,7 @@ terraform {
 # ACM Certificate for custom domains (must be in us-east-1 for CloudFront)
 resource "aws_acm_certificate" "console_cert" {
   count                     = var.aliases != null && length(var.aliases) > 0 && var.create_certificate ? 1 : 0
-  provider                  = aws.us-east-1
+  provider                  = aws.us_east_1
   domain_name               = var.aliases[0]
   subject_alternative_names = length(var.aliases) > 1 ? slice(var.aliases, 1, length(var.aliases)) : []
   validation_method         = "DNS"
