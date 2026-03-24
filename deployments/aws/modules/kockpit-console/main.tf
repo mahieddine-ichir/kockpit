@@ -12,12 +12,6 @@ terraform {
   }
 }
 
-# Provider for ACM certificates (must be us-east-1 for CloudFront)
-provider "aws" {
-  alias  = "us_east_1"
-  region = "us-east-1"
-}
-
 # ACM Certificate for custom domains (must be in us-east-1 for CloudFront)
 resource "aws_acm_certificate" "console_cert" {
   count                     = var.aliases != null && length(var.aliases) > 0 && var.create_certificate ? 1 : 0
