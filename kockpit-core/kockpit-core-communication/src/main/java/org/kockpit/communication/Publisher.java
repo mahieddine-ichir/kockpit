@@ -4,4 +4,6 @@ public interface Publisher {
 
     void publish(Message message);
 
+    default void cleanup() {}
+
 }

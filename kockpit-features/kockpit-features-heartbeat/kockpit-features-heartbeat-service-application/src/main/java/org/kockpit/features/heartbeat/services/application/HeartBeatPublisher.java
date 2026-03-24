@@ -25,10 +25,11 @@ public class HeartBeatPublisher {
 
     void start(String domain, String env, String appId, String instanceId, Duration triggerPeriod) {
         log.info("Start heartBeat for domain {}, env {}, scheduler {}", domain, env, triggerPeriod);
+        publisher.cleanup();
         taskScheduler.schedule(() -> {
             log.trace("heartBeat for domain {}, env {} and appId {}", domain, env, appId);
             publisher.publish(new Message(
-                    instanceId,
+                    appId,
                     serviceDefinition.name(),
                     domain,
                     env,
@@ -40,6 +41,6 @@ public class HeartBeatPublisher {
 
     @PreDestroy
     void onStop() {
-        // TODO - remove message (heartbeat)
+        log.info("HeartBeat stopped");
     }
 }

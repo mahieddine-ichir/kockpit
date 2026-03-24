@@ -10,10 +10,9 @@ import org.kockpit.communication.Publisher;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static java.util.Objects.isNull;
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -34,20 +33,32 @@ public class FileSystemPublisher implements Publisher {
         }
     }
 
+
+    @SneakyThrows
+    @Override
+    public void cleanup() {
+        Path root = Paths.get(localDirectory);
+        if (!Files.exists(root)) {
+            return;
+        }
+        try (var stream = Files.walk(root)) {
+            stream.filter(p -> p.toString().endsWith(".json"))
+                    .forEach(file -> {
+                        try {
+                            Files.delete(file);
+                            log.info("Cleaned up stale heartbeat file {}", file);
+                        } catch (Exception e) {
+                            log.warn("Could not delete stale heartbeat file {}", file, e);
+                        }
+                    });
+        }
+    }
+
     static File getDirectory(String localDirectory, String domain, String env) {
         File directory = Paths.get(localDirectory, domain, env).toFile();
         if (! directory.exists() && !directory.mkdirs()) {
             log.error("Cannot create directory {}", directory.getAbsolutePath());
         }
         return directory;
-    }
-
-    static String getMessageAudience(Message message) {
-        if (isEmpty(message.getHeaders())) {
-            return null;
-        } else {
-            Object o = message.getHeaders().get("audience");
-            return isNull(o) ? null : o.toString() ;
-        }
     }
 }

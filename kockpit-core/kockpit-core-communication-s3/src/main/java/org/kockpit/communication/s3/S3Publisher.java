@@ -7,7 +7,10 @@ import org.kockpit.communication.Message;
 import org.kockpit.communication.Publisher;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
@@ -42,6 +45,17 @@ public class S3Publisher implements Publisher {
 
             s3Client.putObject(putObjectRequest, RequestBody.fromBytes(jsonBytes));
         }
+    }
+
+
+    @Override
+    public void cleanup() {
+        ListObjectsV2Iterable pages = s3Client.listObjectsV2Paginator(
+                ListObjectsV2Request.builder().bucket(bucketName).build());
+        pages.contents().stream()
+                .filter(obj -> obj.key().endsWith(".json"))
+                .forEach(obj -> s3Client.deleteObject(
+                        DeleteObjectRequest.builder().bucket(bucketName).key(obj.key()).build()));
     }
 
     static String formatFilename(String domain, String env, String appId, String type) {
