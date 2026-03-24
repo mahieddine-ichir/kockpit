@@ -8,10 +8,6 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = var.aws_region
-}
-
 # Data sources for existing infrastructure
 data "aws_vpc" "main" {
   id = var.vpc_id
