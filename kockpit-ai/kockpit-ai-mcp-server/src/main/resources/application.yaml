@@ -10,11 +10,12 @@ spring:
         version: 2.0.0
         type: sync
         stdio: false
-        protocol: streamable
+        protocol: stateless
         streamable-http:
           keep-alive-interval: 30s
+          mcp-endpoint: /mcp
 
 logging.pattern.console:
 
 opensearch:
-    endpoints: localhost
+    endpoints: localhost:9200
