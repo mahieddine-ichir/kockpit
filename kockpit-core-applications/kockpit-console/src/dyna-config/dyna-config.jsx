@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Edit} from 'lucide-react';
+import {Edit, Check, X} from 'lucide-react';
 import {AdjustmentsHorizontalIcon} from '@heroicons/react/24/outline';
 import {useSearchParams} from "react-router-dom";
 import {updateDynaConfig} from "../services/api.js";
@@ -36,20 +36,38 @@ const KeyItem = ({keyItem, updateKeyValue}) => {
                     <span className="text-sm font-medium text-slate-700 px-3 py-1.5 bg-slate-100 rounded-lg">
                         {String(keyItem.value)}
                     </span>
-                    <button
-                        onClick={() => {
-                            if (editingKey === keyItem.key) {
-                                saveValue();
-                            } else {
+                    {editingKey === keyItem.key ? (
+                        <>
+                            <button
+                                onClick={saveValue}
+                                className="p-2 border border-green-400 rounded-lg hover:bg-green-50 text-green-600"
+                                title="Confirm"
+                            >
+                                <Check className="h-4 w-4" />
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setEditingKey(null);
+                                    setValue(keyItem.value);
+                                }}
+                                className="p-2 border border-red-300 rounded-lg hover:bg-red-50 text-red-500"
+                                title="Cancel"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </>
+                    ) : (
+                        <button
+                            onClick={() => {
                                 setEditingKey(keyItem.key);
                                 setValue(keyItem.value);
-                            }
-                        }}
-                        className="p-2 border border-slate-300 rounded-lg hover:bg-slate-50"
-                        title={editingKey === keyItem.key ? "Done editing" : "Edit value"}
-                    >
-                        <Edit className="h-4 w-4 text-slate-600" />
-                    </button>
+                            }}
+                            className="p-2 border border-slate-300 rounded-lg hover:bg-slate-50"
+                            title="Edit value"
+                        >
+                            <Edit className="h-4 w-4 text-slate-600" />
+                        </button>
+                    )}
                 </div>
             </div>
 

@@ -11,13 +11,14 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.PeriodicTrigger;
 
 import java.time.Duration;
+import java.util.List;
 
 
 @RequiredArgsConstructor
 @Slf4j
 public class HeartBeatPublisher {
 
-    private final Publisher publisher;
+    private final List<Publisher> publishers;
 
     private final TaskScheduler taskScheduler;
 
@@ -25,17 +26,17 @@ public class HeartBeatPublisher {
 
     void start(String domain, String env, String appId, String instanceId, Duration triggerPeriod) {
         log.info("Start heartBeat for domain {}, env {}, scheduler {}", domain, env, triggerPeriod);
-        publisher.cleanup();
+        publishers.forEach(Publisher::cleanup);
         taskScheduler.schedule(() -> {
             log.trace("heartBeat for domain {}, env {} and appId {}", domain, env, appId);
-            publisher.publish(new Message(
+            publishers.forEach(publisher -> publisher.publish(new Message(
                     appId,
                     serviceDefinition.name(),
                     domain,
                     env,
                     appId,
                     HeartBeatDto.builder().instanceId(instanceId).appId(appId).build()
-            ));
+            )));
         }, new PeriodicTrigger(triggerPeriod));
     }
 
