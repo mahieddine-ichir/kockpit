@@ -3,6 +3,7 @@ package org.kockpit.communication.s3;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.Message;
 import org.kockpit.communication.Publisher;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -10,12 +11,12 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 @RequiredArgsConstructor
+@Slf4j
 public class S3Publisher implements Publisher {
 
     private final S3Client s3Client;
@@ -32,7 +33,7 @@ public class S3Publisher implements Publisher {
                 message.getType()
         );
         String key = "%s/%s.json".formatted(path, message.getId());
-
+        createFolders(path);
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             objectMapper.writeValue(os, message);
             byte[] jsonBytes = os.toByteArray();
@@ -44,18 +45,35 @@ public class S3Publisher implements Publisher {
                     .build();
 
             s3Client.putObject(putObjectRequest, RequestBody.fromBytes(jsonBytes));
+        } catch (Exception e) {
+            log.error("Error creating S3 object: key {}, bucket {}", key, bucketName, e);
+            throw new RuntimeException(e);
         }
     }
 
-
     @Override
     public void cleanup() {
-        ListObjectsV2Iterable pages = s3Client.listObjectsV2Paginator(
-                ListObjectsV2Request.builder().bucket(bucketName).build());
-        pages.contents().stream()
+        ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder().bucket(bucketName);
+        s3Client.listObjectsV2Paginator(requestBuilder.build())
+                .contents().stream()
                 .filter(obj -> obj.key().endsWith(".json"))
                 .forEach(obj -> s3Client.deleteObject(
                         DeleteObjectRequest.builder().bucket(bucketName).key(obj.key()).build()));
+    }
+
+    private void createFolders(String path) {
+        StringBuilder current = new StringBuilder();
+        for (String segment : path.split("/")) {
+            current.append(segment).append("/");
+            s3Client.putObject(
+                    PutObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(current.toString())
+                            .contentType("application/x-directory")
+                            .build(),
+                    RequestBody.empty()
+            );
+        }
     }
 
     static String formatFilename(String domain, String env, String appId, String type) {

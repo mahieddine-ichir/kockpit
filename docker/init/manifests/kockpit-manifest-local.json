@@ -1,0 +1,155 @@
+{
+  "domain": "kockpit",
+  "env": "local",
+  "services": [
+    {
+      "type": "audit",
+      "name": "Kockpit Audits",
+      "id": "audit-local",
+      "config": {
+        "columns": [
+          "appId",
+          "requestId",
+          "method",
+          "path",
+          "duration",
+          "start",
+          "status"
+        ],
+        "search_columns": [
+          {
+            "name": "httpStatus",
+            "type": "options",
+            "options": [200, 201, 400, 404, 401, 500],
+            "path": "indexedKeyValues.httpStatus"
+          },
+          {
+            "name": "appId",
+            "type": "options",
+            "options": [
+              "any-app",
+              "sample-app",
+              "kockpit-backend-application",
+              "kockpit-audit-stream"
+            ]
+          },
+          {
+            "name": "httpMethod",
+            "type": "options",
+            "options": ["GET", "POST", "PUT", "DELETE"],
+            "path": "indexedKeyValues.httpMethod"
+          }
+        ],
+        "saved_filters": [
+          {
+            "name": "samples-api, Create en erreur",
+            "filters": [
+              {
+                "path": "appId",
+                "values": [
+                  "rcu-api"
+                ]
+              },
+              {
+                "name": "method",
+                "path": "indexedKeyValues.httpMethod",
+                "values": [
+                  "POST",
+                  "PUT"
+                ]
+              },
+              {
+                "name": "status",
+                "path": "indexedKeyValues.httpStatus",
+                "values": [
+                  400,
+                  401,
+                  404,
+                  500
+                ]
+              }
+            ]
+          },
+          {
+            "name": "rcu-api, OK",
+            "filters": [
+              {
+                "name": "appId",
+                "values": [
+                  "rcu-api"
+                ]
+              },
+              {
+                "name": "method",
+                "path": "indexedKeyValues.httpMethod",
+                "values": [
+                  "POST"
+                ]
+              },
+              {
+                "name": "status",
+                "path": "indexedKeyValues.httpStatus",
+                "values": [
+                  200,
+                  201
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "feature-flipping",
+      "name": "Kockpit Sample Application",
+      "id": "kockpit-samples-all",
+      "config": {
+        "keys": [
+          {
+            "key": "compression.enabled",
+            "enabled": true,
+            "comment": "Enable/Disable compression flag"
+          }
+        ]
+      }
+    },
+    {
+      "type": "dyna-config",
+      "name": "Legacy",
+      "id": "default",
+      "config": {
+        "keys": [
+          {
+            "key" : "application.client.apim.referential.timeout",
+            "value": 1000,
+            "description": "legacy value"
+          },
+          {
+            "key": "migration.pattern",
+            "value": "[s-z]",
+            "description": "Pattern de migration des comptes"
+          },
+          {
+            "key": "key2.boolean",
+            "value": false,
+            "description": "Boolean value"
+          }
+        ]
+      }
+    },
+    {
+      "type": "dyna-config",
+      "name": "Sample App",
+      "id": "default2",
+      "config": {
+        "keys": [
+          {
+            "key": "any.key",
+            "value": "any value",
+            "description": "Demo value"
+          }
+        ]
+      }
+    }
+  ]
+}

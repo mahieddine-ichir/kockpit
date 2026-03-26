@@ -161,7 +161,8 @@ const AppIdDashboard = ({domain, env}) => {
         setLoading(true);
 
         Promise.all([
-            getAppDistributionData(domain, env, selectedTimeRange).then(data => {
+            getAppDistributionData(domain, env, selectedTimeRange).then(rawData => {
+                const data = Array.isArray(rawData) ? rawData : [];
                 setAppDistributionData(data);
                 const totalDocs = data.reduce((sum, app) => sum + app.count, 0);
                 setTotalRequests(totalDocs);
@@ -177,8 +178,9 @@ const AppIdDashboard = ({domain, env}) => {
             }),
 
             getStatusDistributionByAppId(domain, env, selectedTimeRange).then(data => {
-                setStatusByAppData(data);
-                setStatusDistribution(generateStatusDistribution(data));
+                const arrayData = Array.isArray(data) ? data : [];
+                setStatusByAppData(arrayData);
+                setStatusDistribution(generateStatusDistribution(arrayData));
             }),
 
             getOverTimeByAppId(domain, env, '1d').then(data => {
@@ -191,7 +193,7 @@ const AppIdDashboard = ({domain, env}) => {
                     return d;
                 });//.sort((a, b) => a.hour - b.hour);
                  */
-                setTimeSeriesData(data);
+                setTimeSeriesData(Array.isArray(data) ? data : []);
             })
         ]).finally(() => {
             setLoading(false);

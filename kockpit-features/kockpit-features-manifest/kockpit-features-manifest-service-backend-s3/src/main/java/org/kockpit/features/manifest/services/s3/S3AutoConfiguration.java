@@ -3,6 +3,7 @@ package org.kockpit.features.manifest.services.s3;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -17,7 +18,9 @@ public class S3AutoConfiguration {
         return DefaultCredentialsProvider.builder().build();
     }
 
+    // fixme keep?
     @Bean
+    @ConditionalOnMissingBean(S3Client.class)
     S3Client s3Client(
             @Value("${kockpit.aws.region}") String region
     ) {

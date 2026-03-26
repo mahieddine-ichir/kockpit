@@ -2,6 +2,8 @@ package org.kockpit.communication.s3;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.common.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.Consumer;
 import org.kockpit.communication.Publisher;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,10 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
+
+import java.net.URI;
+import java.util.Optional;
 
 @AutoConfiguration
 @ConditionalOnProperty(
@@ -20,6 +26,7 @@ import software.amazon.awssdk.services.s3.S3Client;
         havingValue = "true",
         matchIfMissing = true
 )
+@Slf4j
 public class S3CommunicationAutoConfiguration {
 
     @Bean
@@ -51,11 +58,30 @@ public class S3CommunicationAutoConfiguration {
     @Bean
     @Primary
     S3Client s3Client(
-            @Value("${aws.region}") String region
+            @Value("${kockpit.aws.region}") String region,
+            @Value("${kockpit.communication.s3.endpoint:}") Optional<String> optionalEndpoint
     ) {
-        return S3Client.builder()
-                .region(Region.of(region))
-                .credentialsProvider(awsCredentialsProvider())
-                .build();
+        return optionalEndpoint
+                .map(String::trim)
+                .filter(StringUtils::isNotEmpty)
+                .map(endpoint -> {
+                    log.info("➡️ s3 endpoint: {}", endpoint);
+                    return S3Client.builder()
+                            .region(Region.of(region))
+                            .endpointOverride(URI.create(endpoint))
+                            //.credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
+                            .serviceConfiguration(S3Configuration.builder()
+                                    .chunkedEncodingEnabled(false)
+                                    .pathStyleAccessEnabled(true)
+                                    .build())
+                            .build();
+
+                }).orElseGet(() -> {
+                    log.info("➡️ Initialize s3 client using AWS Credentials");
+                    return S3Client.builder()
+                            .region(Region.of(region))
+                            .credentialsProvider(awsCredentialsProvider())
+                            .build();
+                });
     }
 }
