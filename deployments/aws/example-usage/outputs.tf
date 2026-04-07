@@ -57,6 +57,17 @@ output "s3_bucket_name" {
   value       = module.kockpit_console.s3_bucket_id
 }
 
+# Kinesis-to-S3 Consumer Outputs
+output "kinesis_s3_service_name" {
+  description = "Name of the Kinesis-to-S3 ECS service"
+  value       = module.kockpit_kinesis_s3.ecs_service_name
+}
+
+output "kinesis_s3_log_group_name" {
+  description = "CloudWatch log group for the Kinesis-to-S3 consumer"
+  value       = module.kockpit_kinesis_s3.log_group_name
+}
+
 # Integration Summary
 output "integration_summary" {
   description = "Summary of the complete integration"

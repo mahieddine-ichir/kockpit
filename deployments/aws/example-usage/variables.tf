@@ -167,6 +167,18 @@ variable "create_route53_records" {
   default     = false
 }
 
+# Kinesis-to-S3 Consumer Configuration
+variable "kinesis_s3_output_bucket" {
+  description = "S3 bucket name where the Kinesis-to-S3 consumer writes audit records"
+  type        = string
+}
+
+variable "kinesis_s3_key_prefix" {
+  description = "Key prefix for audit records written to S3 by the Kinesis consumer"
+  type        = string
+  default     = "records"
+}
+
 variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)

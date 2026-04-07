@@ -98,3 +98,27 @@ module "kockpit_console" {
 
   depends_on = [module.kockpit_console_backend]
 }
+
+# Deploy Kockpit Kinesis-to-S3 consumer
+module "kockpit_kinesis_s3" {
+  source = "git::https://github.com/your-org/kockpit.git//deployments/aws/modules/kockpit-kinesis-s3?ref=main"
+
+  # AWS Configuration
+  aws_region = var.aws_region
+
+  # Required infrastructure inputs (existing resources)
+  vpc_id             = var.vpc_id
+  private_subnet_ids = var.private_subnet_ids
+  ecs_cluster_name   = var.ecs_cluster_name
+
+  # Kinesis source stream
+  kinesis_stream_name = var.kinesis_stream_name
+
+  # S3 destination bucket
+  s3_bucket_name = var.kinesis_s3_output_bucket
+
+  # Optional overrides
+  s3_key_prefix = var.kinesis_s3_key_prefix
+
+  tags = var.tags
+}
