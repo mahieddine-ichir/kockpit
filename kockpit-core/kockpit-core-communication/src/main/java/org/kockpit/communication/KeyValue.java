@@ -1,4 +1,7 @@
 package org.kockpit.communication;
 
-public record KeyValue() {
+public record KeyValue(
+        String key,
+        Object value
+) {
 }

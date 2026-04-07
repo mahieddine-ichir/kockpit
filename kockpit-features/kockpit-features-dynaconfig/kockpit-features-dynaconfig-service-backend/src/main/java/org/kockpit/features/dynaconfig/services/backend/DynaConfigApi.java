@@ -22,7 +22,7 @@ public class DynaConfigApi {
             @RequestParam String key,
             @RequestBody DynaConfigDto dynaConfigDto
     ) {
-        log.debug("dyna-config {} value?, {} (domain {}, env {})", key, dynaConfigDto.getValue(), domain, env);
+        log.debug("Update dyna-config key {}, value {} (domain {}, env {}, appId {})", key, dynaConfigDto.getValue(), domain, env, id);
         return ResponseEntity.ok(dynaConfigService.update(domain, env, id, dynaConfigDto));
     }
 }

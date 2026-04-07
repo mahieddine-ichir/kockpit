@@ -35,14 +35,14 @@ public class HeartBeatApi {
                 .filter(message -> message.getDomain().equals(domain) && message.getEnv().equals(env))
                 .map(message -> {
                     HeartBeatDto heartBeatDto = objectMapper.convertValue(message.getBody(), HeartBeatDto.class);
-                    return new Message(
-                            message.getId(),
-                            message.getType(),
-                            message.getDomain(),
-                            message.getEnv(),
-                            message.getAppId(),
-                            heartBeatDto
-                    );
+                    return Message.builder()
+                            .appId(message.getAppId())
+                            .type(message.getType())
+                            .domain(message.getDomain())
+                            .env(message.getEnv())
+                            .id(message.getId())
+                            .body(heartBeatDto)
+                            .build();
                 })
                 //.filter(message -> new Date(message.getCreationDate()).toInstant().isAfter(Instant.now().minus(activeThresholdMinutes, ChronoUnit.MINUTES)))
                 .toList();

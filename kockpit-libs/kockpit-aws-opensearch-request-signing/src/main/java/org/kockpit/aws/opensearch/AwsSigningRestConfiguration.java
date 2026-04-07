@@ -26,8 +26,8 @@ class AwsSigningRestConfiguration {
   @Bean
   @Primary
   OpenSearchClient openSearchClient(
-          @Value("${aws.region}") String region,
-          @Value("${kockpit.audit.stream.opensearch.endpoints}") String endpoint,
+          @Value("${kockpit.aws.region}") String region,
+          @Value("${kockpit.audit.stream.opensearch.endpoints:}") String endpoint,
           SdkHttpClient sdkHttpClient) {
 
       log.info("➡️ OpenSearch endpoint (AWS): {}", endpoint);

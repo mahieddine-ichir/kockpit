@@ -7,7 +7,6 @@ import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.net.InetAddress;
 import java.time.Duration;
+import java.util.List;
 
 import static java.util.Objects.isNull;
 
@@ -30,7 +30,7 @@ public class HeartBeatServiceAppAutoConfiguration {
 
     @Bean
     InitializingBean heartBeatPublisher(
-            Publisher publisher,
+            List<Publisher> publishers,
             TaskScheduler taskScheduler,
             SdkApplicationProperties applicationProperties,
             HeartBeatServiceDefinition serviceDefinition,
@@ -41,7 +41,7 @@ public class HeartBeatServiceAppAutoConfiguration {
         if (isNull(instanceId)) {
             instanceId = resolveHostname();
         }
-        new HeartBeatPublisher(publisher, taskScheduler, serviceDefinition)
+        new HeartBeatPublisher(publishers, taskScheduler, serviceDefinition)
                 .start(applicationProperties.getDomain(), applicationProperties.getEnv(), applicationProperties.getAppId(), instanceId, Duration.parse(clientScheduling));
         return () -> {};
     }

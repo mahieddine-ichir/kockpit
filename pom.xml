@@ -59,7 +59,8 @@
 		<module>kockpit-backends</module>
 		<module>kockpit-ai</module>
         <module>kockpit-samples</module>
-	</modules>
+        <module>kockpit-core/kockpit-core-communication-legacy</module>
+    </modules>
 
 	<profiles>
 		<profile>
