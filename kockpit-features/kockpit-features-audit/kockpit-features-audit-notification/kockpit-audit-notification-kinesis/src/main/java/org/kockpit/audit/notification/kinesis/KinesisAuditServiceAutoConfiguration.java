@@ -50,7 +50,7 @@ public class KinesisAuditServiceAutoConfiguration {
 
   @Bean("kinesisProducerClient")
   KinesisAsyncClient kinesisAsyncClient(
-          @Value("${aws.region}") String regionString,
+          @Value("${kockpit.aws.region}") String regionString,
           @Value("${kockpit.audit.notification.kinesis.endpoint:}") Optional<String> kinesisEndpoint
   ) {
       Region region = Region.of(regionString);

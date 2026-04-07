@@ -14,13 +14,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class FeatureFlippingService {
 
-    private final Publisher publisher;
+    private final List<Publisher> publishers;
 
     private final FeatureFlippingServiceDefinition featureFlippingServiceDefinition;
 
     public FeatureFlippingDto update(String domain, String env, String appId, FeatureFlippingDto featureFlippingDto) {
-        publisher.publish(new Message(featureFlippingDto.getKey(), featureFlippingServiceDefinition.name(), domain, env, appId, featureFlippingDto, Map.of("audience", appId)));
+        publishers.forEach(publisher -> this.update(publisher, domain, env, appId, featureFlippingDto));
         return featureFlippingDto;
+    }
+
+    private void update(Publisher publisher, String domain, String env, String appId, FeatureFlippingDto featureFlippingDto) {
+        publisher.publish(new Message(featureFlippingDto.getKey(), featureFlippingServiceDefinition.name(), domain, env, appId, featureFlippingDto, Map.of("audience", appId)));
     }
 
     public List<FeatureFlippingDto> getHistory(String domain, String env) {
