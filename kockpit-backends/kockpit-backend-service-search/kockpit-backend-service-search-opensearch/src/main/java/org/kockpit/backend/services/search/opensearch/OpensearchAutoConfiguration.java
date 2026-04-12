@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.HttpRequestInterceptor;
+import org.apache.hc.core5.util.TimeValue;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestClientBuilder;
 import org.opensearch.client.RestHighLevelClient;
@@ -18,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @AutoConfiguration
 @Slf4j
@@ -77,9 +79,14 @@ public class OpensearchAutoConfiguration {
                 """, endpoints);
 
         RestClientBuilder builder = RestClient.builder(httpHosts);
-        if (! CollectionUtils.isEmpty(interceptors)) {
-            interceptors.forEach(interceptor -> builder.setHttpClientConfigCallback(hacb -> hacb.addRequestInterceptorLast(interceptor)));
-        }
+        builder.setHttpClientConfigCallback(hacb -> {
+            hacb.evictExpiredConnections();
+            hacb.evictIdleConnections(TimeValue.of(30, TimeUnit.SECONDS));
+            if (!CollectionUtils.isEmpty(interceptors)) {
+                interceptors.forEach(hacb::addRequestInterceptorLast);
+            }
+            return hacb;
+        });
         return builder;
     }
 }

@@ -1,4 +1,4 @@
-package org.kockpit.communication.legacy;
+package org.kockpit.communication.legacy.dynaconfig;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class PropertyUpdateMessageRequestDto {
 
     @JsonProperty("__type__")
+    @Builder.Default
     private String type = "com.accor.wcp.sdk.service.dynaconfig.communication.PropertyUpdateMessageRequestDto";
 
     private String propertyName;

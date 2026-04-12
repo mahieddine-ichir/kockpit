@@ -16,6 +16,10 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+@ConditionalOnProperty(
+        value = "kockpit.audit.enabled",
+        havingValue = "true"
+)
 @Configuration
 public class WebAuditAutoConfiguration {
 

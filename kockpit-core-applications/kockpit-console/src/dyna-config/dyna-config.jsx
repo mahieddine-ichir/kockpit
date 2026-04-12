@@ -4,10 +4,16 @@ import {AdjustmentsHorizontalIcon} from '@heroicons/react/24/outline';
 import {useSearchParams} from "react-router-dom";
 import {updateDynaConfig} from "../services/api.js";
 import Stats from "../components/StatsComponent.jsx";
+import {loadSettings} from "../settings/useSettings.js";
 
 const KeyItem = ({keyItem, updateKeyValue}) => {
     const [editingKey, setEditingKey] = useState(null);
     const [value, setValue] = useState(keyItem.value);
+    const [expanded, setExpanded] = useState(false);
+
+    const truncateLimit = loadSettings().dynaConfigTruncateLimit;
+    const strValue = String(keyItem.value);
+    const isLong = strValue.length > truncateLimit;
 
     const saveValue = () => {
         updateKeyValue({
@@ -33,8 +39,8 @@ const KeyItem = ({keyItem, updateKeyValue}) => {
                     )}
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-sm font-medium text-slate-700 px-3 py-1.5 bg-slate-100 rounded-lg">
-                        {String(keyItem.value)}
+                    <span className="text-sm font-medium text-slate-700 px-3 py-1.5 bg-slate-100 rounded-lg max-w-xs truncate" title={isLong ? strValue : undefined}>
+                        {isLong ? strValue.slice(0, truncateLimit) + '…' : strValue}
                     </span>
                     {editingKey === keyItem.key ? (
                         <>
@@ -71,16 +77,40 @@ const KeyItem = ({keyItem, updateKeyValue}) => {
                 </div>
             </div>
 
+            {isLong && editingKey !== keyItem.key && (
+                <div className="border-t border-slate-100 pt-3">
+                    <p className="text-sm text-slate-700 font-mono break-all whitespace-pre-wrap">
+                        {expanded ? strValue : strValue.slice(0, truncateLimit) + '…'}
+                    </p>
+                    <button
+                        onClick={() => setExpanded(e => !e)}
+                        className="text-xs text-blue-500 hover:underline mt-1"
+                    >
+                        {expanded ? 'Show less' : 'Show more'}
+                    </button>
+                </div>
+            )}
+
             {editingKey === keyItem.key && (
                 <div className="border-t border-slate-100 pt-3">
                     <label className="block text-xs text-slate-500 mb-1">Value</label>
-                    <input
-                        type="text"
-                        value={value}
-                        onChange={e => setValue(e.target.value)}
-                        className="w-full border border-slate-300 rounded-lg px-2 py-1 text-sm"
-                        placeholder="Enter value..."
-                    />
+                    {isLong ? (
+                        <textarea
+                            value={value}
+                            onChange={e => setValue(e.target.value)}
+                            rows={4}
+                            className="w-full border border-slate-300 rounded-lg px-2 py-1 text-sm font-mono resize-y"
+                            placeholder="Enter value..."
+                        />
+                    ) : (
+                        <input
+                            type="text"
+                            value={value}
+                            onChange={e => setValue(e.target.value)}
+                            className="w-full border border-slate-300 rounded-lg px-2 py-1 text-sm"
+                            placeholder="Enter value..."
+                        />
+                    )}
                 </div>
             )}
         </div>

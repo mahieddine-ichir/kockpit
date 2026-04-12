@@ -12,7 +12,7 @@ spring:
 
 kockpit:
   domain: kockpit
-  env: local
+  env: dev
   app-id: ${spring.application.name}
 
   communication:
@@ -54,8 +54,6 @@ kockpit:
     enabled: false
     polling:
       enabled: false
-
-
 
 logging:
   level:

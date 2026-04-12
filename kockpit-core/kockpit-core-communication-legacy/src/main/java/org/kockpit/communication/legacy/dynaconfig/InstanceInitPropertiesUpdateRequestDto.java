@@ -1,4 +1,4 @@
-package org.kockpit.communication.legacy;
+package org.kockpit.communication.legacy.dynaconfig;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -15,6 +15,7 @@ import java.util.List;
 public class InstanceInitPropertiesUpdateRequestDto {
 
     @JsonProperty("__type__")
+    @Builder.Default
     private String type = "com.accor.wcp.sdk.service.dynaconfig.communication.InstanceInitPropertiesUpdateRequestDto";
 
     private List<PropertyUpdateMessageRequestDto> updates;

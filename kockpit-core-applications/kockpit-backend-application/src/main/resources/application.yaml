@@ -68,3 +68,6 @@ kockpit:
         topic: ${NOTIFICATION_TOPIC:audits}
 
 
+  legacy:
+    aws:
+      region: eu-west-1

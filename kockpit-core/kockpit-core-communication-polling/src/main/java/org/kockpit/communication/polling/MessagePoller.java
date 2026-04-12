@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 public class MessagePoller {
 
-    private final Consumer consumer;
+    private final List<Consumer> consumers;
 
     private final MessageCache messageCache;
 
@@ -28,9 +28,23 @@ public class MessagePoller {
 
     void start(String domain, String env, String appId, Duration triggerPeriod) {
         log.info("Start {} for domain {} and env {}, scheduler at periodic {}", serviceDefinition.name(), domain, env, triggerPeriod);
-        taskScheduler.schedule(() -> consumer.poll(domain, env, appId, serviceDefinition.name())
-                .stream()
-                .peek(message -> onMessageListeners.forEach(onMessageListener -> onMessageListener.onMessage(message)))
+        taskScheduler.schedule(() -> consumers.stream()
+                .flatMap(consumer -> consumer.poll(domain, env, appId, serviceDefinition.name()).stream())
+                .peek(message -> onMessageListeners.forEach(onMessageListener -> {
+                    onMessageListener.onMessage(message);
+
+                    // fixme publish an acknowledgement
+                    /*
+                    publisher.publish(Message.builder()
+                                    .appId(message.getAppId())
+                                    .creationDate(Instant.now().getEpochSecond())
+                                    .domain(message.getDomain())
+                                    .env(message.getEnv())
+                                    .id(message.getId())
+                                    .type(message.getType()+"-ack")
+                            .build());
+                     */
+                }))
                 .forEach(messageCache::add), new PeriodicTrigger(triggerPeriod));
     }
 }

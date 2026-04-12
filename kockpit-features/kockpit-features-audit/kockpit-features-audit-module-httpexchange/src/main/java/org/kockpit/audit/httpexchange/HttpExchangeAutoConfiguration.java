@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -102,6 +104,27 @@ public class HttpExchangeAutoConfiguration {
       return new AuditWebClientCustomizer(
               new AuditExchangeFilterFunction(
                       auditorEventService, auditorService, bodyAuditObfuscators, filterAuthorizationHeader));
+    }
+  }
+
+  @Configuration
+  @ConditionalOnClass(RestClient.class)
+  @ConditionalOnBean(AuditorEventService.class)
+  class RestClientAuditConfiguration {
+
+    @Bean
+    @ConditionalOnProperty(
+            prefix = "kockpit.audit.http",
+            name = "disabled",
+            havingValue = "false",
+            matchIfMissing = true)
+    @Order
+    RestClientCustomizer auditRestClientCustomizer(
+            AuditorEventService auditorEventService,
+            @Autowired(required = false) List<AuditObfuscator> bodyAuditObfuscators) {
+      return new AuditRestClientCustomizer(
+              new AuditClientHttpRequestInterceptor(
+                      auditorEventService, bodyAuditObfuscators, filterAuthorizationHeader));
     }
   }
 }

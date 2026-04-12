@@ -11,6 +11,7 @@ import AppIdDashboard from "./home/Home.jsx";
 import HealthIndicatorsDashboard from "./health/Health.jsx";
 import ConfigManager from "./dyna-config/dyna-config.jsx";
 import ManifestPage from "./manifest/ManifestPage.jsx";
+import SettingsPage from "./settings/SettingsPage.jsx";
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -98,6 +99,7 @@ function App() {
                                                     <Route path='/dyna-config' element={<ConfigManager domain={domain} env={env} config={config} />} />
                                                     <Route path='/dyna-config/:service' element={<ConfigManager domain={domain} env={env} config={config} />} />
                                                     <Route path='/manifest' element={<ManifestPage />} />
+                                                    <Route path='/settings' element={<SettingsPage />} />
                                                     <Route path="*" element={<Navigate to="/home" replace={true}/>}/>
                                                 </Routes>
                                             </div>

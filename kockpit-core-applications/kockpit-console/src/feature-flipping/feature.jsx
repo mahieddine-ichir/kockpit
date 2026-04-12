@@ -52,7 +52,7 @@ const FeatureFlippingPage = ({ domain, env, config }) => {
             let service = config['services'].find(service => service.type === 'feature-flipping' && service.id === serviceId);
             console.log(`service ${JSON.stringify(service)}`);
             if (service) {
-                if (service['config'] && service['config'].keys) {
+                if (Array.isArray(service['config']?.keys)) {
                     setFlags([...service['config'].keys]);
                 }
                 setServiceName(service.name || service.label || 'Feature Flipping');

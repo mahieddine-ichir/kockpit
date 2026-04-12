@@ -2,6 +2,10 @@ package org.kockpit.communication.legacy;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kockpit.communication.legacy.dynaconfig.DynaConfigLegacyConsumer;
+import org.kockpit.communication.legacy.dynaconfig.DynaConfigLegacyPublisher;
+import org.kockpit.communication.legacy.featureflipping.FeatureFlippingLegacyPublisher;
+import org.kockpit.communication.legacy.health.HealthLegacyConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -19,6 +23,11 @@ import software.amazon.awssdk.services.s3.S3Client;
 @AutoConfiguration
 public class LegacyAutoConfiguration {
 
+    @ConditionalOnProperty(
+            value = "kockpit.legacy.dyna-config.enabled",
+            havingValue = "true",
+            matchIfMissing = true
+    )
     @Bean
     DynaConfigLegacyPublisher dynaConfigLegacyPublisher(
             S3Client s3Client,
@@ -27,10 +36,48 @@ public class LegacyAutoConfiguration {
         return new DynaConfigLegacyPublisher(
                 s3Client,
                 bucketName,
-                new ObjectMapper()
-                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                        .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+                legacyObjectMapper()
         );
+    }
+
+    @ConditionalOnProperty(
+            value = "kockpit.legacy.feature-flipping.enabled",
+            havingValue = "true",
+            matchIfMissing = true
+    )
+    @Bean
+    FeatureFlippingLegacyPublisher featureFlippingLegacyPublisher(
+            S3Client s3Client,
+            @Value("${kockpit.legacy.aws.s3.bucket}") String bucketName
+    ) {
+        return new FeatureFlippingLegacyPublisher(s3Client, bucketName, legacyObjectMapper());
+    }
+
+    @Bean
+    DynaConfigLegacyConsumer dynaConfigLegacyConsumer(
+            S3Client s3Client,
+            @Value("${kockpit.legacy.aws.s3.bucket}") String bucketName
+    ) {
+        return new DynaConfigLegacyConsumer(s3Client, bucketName, legacyObjectMapper());
+    }
+
+    @Bean
+    @ConditionalOnProperty(
+            value = "kockpit.legacy.heartbit.enabled",
+            havingValue = "true",
+            matchIfMissing = true
+    )
+    HealthLegacyConsumer healthLegacyConsumer(
+            S3Client s3Client,
+            @Value("${kockpit.legacy.aws.s3.bucket}") String bucketName
+    ) {
+        return new HealthLegacyConsumer(s3Client, bucketName, legacyObjectMapper());
+    }
+
+    private ObjectMapper legacyObjectMapper() {
+        return new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
     }
 
     AwsCredentialsProvider awsCredentialsProvider() {
@@ -40,11 +87,12 @@ public class LegacyAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(S3Client.class)
     S3Client s3Client(
-            @Value("${aws.region}") String region
+            @Value("${kockpit.legacy.aws.region}") String region
     ) {
         return S3Client.builder()
                 .region(Region.of(region))
                 .credentialsProvider(awsCredentialsProvider())
+                .crossRegionAccessEnabled(true)
                 .build();
     }
 }

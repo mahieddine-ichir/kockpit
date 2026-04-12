@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.kockpit.features.dynaconfig.service.DynaConfigServiceDefinition.DYNA_CONFIG;
+
 @RestController
 @RequestMapping("/dyna-config")
 public class DynaConfigPocApi implements OnMessageListener {
@@ -22,8 +24,9 @@ public class DynaConfigPocApi implements OnMessageListener {
 
     @Override
     public void onMessage(Message message) {
-        if (message.getType().equals("DynaConfig")) {
-            keys.put(message.getId(), message.getBody());
+        if (message.getService().equals(DYNA_CONFIG)) {
+            message.getKeyValues().forEach(keyValue ->
+                    keys.put(keyValue.key(), keyValue.value()));
         }
     }
 }

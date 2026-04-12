@@ -13,7 +13,7 @@ import java.util.Objects;
 public class DynaConfigServiceAutoConfiguration {
 
     @Bean
-    DynaConfigEvaluatorService evaluate(MessageCache messageCache, DynaConfigServiceDefinition dynaConfigServiceDefinition) {
+    DynaConfigEvaluatorService dynaConfigEvaluatorService(MessageCache messageCache, DynaConfigServiceDefinition dynaConfigServiceDefinition) {
         return new DynaConfigEvaluatorService(messageCache, new ObjectMapper(), dynaConfigServiceDefinition);
     }
 
