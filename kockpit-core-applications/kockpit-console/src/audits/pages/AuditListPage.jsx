@@ -156,17 +156,23 @@ const Filters = ({filters, onSelectedFilter, value}) => {
     )
 }
 
+const OPTION_LABEL_LIMIT = 30;
+const truncateOption = (val) => {
+    const s = String(val);
+    return s.length > OPTION_LABEL_LIMIT ? s.slice(0, OPTION_LABEL_LIMIT) + '…' : s;
+};
+
 const SelectFilter = ({ placeholder, value, onChange, options }) => {
     return (
         <div className="relative">
             <select
                 value={value ?? ''}
                 onChange={(e) => onChange(e.target.value)}
-                className="min-w-[140px] rounded-xl border border-slate-300 py-2.5 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm hover:border-slate-400 transition-colors"
+                className="w-full max-w-[200px] rounded-xl border border-slate-300 py-2.5 pl-3 pr-8 text-sm bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm hover:border-slate-400 transition-colors"
             >
                 <option value="">{placeholder}</option>
                 {options.map(opt => (
-                    <option key={String(opt)} value={opt}>{opt}</option>
+                    <option key={String(opt)} value={opt} title={String(opt)}>{truncateOption(opt)}</option>
                 ))}
             </select>
         </div>
