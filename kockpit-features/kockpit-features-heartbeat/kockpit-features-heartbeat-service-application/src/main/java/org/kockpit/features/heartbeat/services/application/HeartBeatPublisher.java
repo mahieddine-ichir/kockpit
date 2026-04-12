@@ -29,14 +29,14 @@ public class HeartBeatPublisher {
         publishers.forEach(Publisher::cleanup);
         taskScheduler.schedule(() -> {
             log.trace("heartBeat for domain {}, env {} and appId {}", domain, env, appId);
-            publishers.forEach(publisher -> publisher.publish(new Message(
-                    appId,
-                    serviceDefinition.name(),
-                    domain,
-                    env,
-                    appId,
-                    HeartBeatDto.builder().instanceId(instanceId).appId(appId).build()
-            )));
+            publishers.forEach(publisher -> publisher.publish(Message.builder()
+                    .id(appId)
+                    .service(serviceDefinition.name())
+                    .domain(domain)
+                    .env(env)
+                    .appId(appId)
+                    .body(HeartBeatDto.builder().instanceId(instanceId).appId(appId).build())
+                    .build()));
         }, new PeriodicTrigger(triggerPeriod));
     }
 

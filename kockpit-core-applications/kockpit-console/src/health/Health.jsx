@@ -4,6 +4,7 @@ import {
     RefreshCw, Clock, Server, Wifi, WifiOff
 } from 'lucide-react';
 import {getHealth} from "../services/api.js";
+import {loadSettings} from "../settings/useSettings.js";
 
 const HealthIndicatorsDashboard = ({domain, env}) => {
     const [indicators, setIndicators] = useState([]);
@@ -17,6 +18,14 @@ const HealthIndicatorsDashboard = ({domain, env}) => {
     useEffect(() => {
         loadIndicators();
     }, []);
+
+    // Auto-refresh based on settings
+    useEffect(() => {
+        const refreshRate = loadSettings().healthRefreshRate;
+        if (!refreshRate || refreshRate <= 0) return;
+        const interval = setInterval(loadIndicators, refreshRate * 1000);
+        return () => clearInterval(interval);
+    }, [domain, env]);
 
     // Mettre à jour l'heure actuelle toutes les secondes
     useEffect(() => {

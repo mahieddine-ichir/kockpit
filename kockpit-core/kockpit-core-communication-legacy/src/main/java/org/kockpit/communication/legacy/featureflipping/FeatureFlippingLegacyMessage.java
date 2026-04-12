@@ -1,5 +1,6 @@
-package org.kockpit.communication.legacy;
+package org.kockpit.communication.legacy.featureflipping;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DynaConfigLegacyMessage {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class FeatureFlippingLegacyMessage {
 
     private String internalType;
     private String messageId;
@@ -17,6 +19,5 @@ public class DynaConfigLegacyMessage {
     private String domain;
     private String env;
     private String applicationId;
-    private String instanceId;
-    private InstanceInitPropertiesUpdateRequestDto message;
+    private Object message;
 }

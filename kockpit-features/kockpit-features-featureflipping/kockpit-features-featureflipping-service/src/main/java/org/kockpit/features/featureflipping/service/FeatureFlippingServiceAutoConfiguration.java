@@ -1,21 +1,19 @@
 package org.kockpit.features.featureflipping.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kockpit.communication.MessageCache;
 import org.kockpit.sdk.SdkApplicationProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Objects;
 
 @AutoConfiguration
+@ConditionalOnProperty(
+        value = "kockpit.feature-flipping.enabled",
+        havingValue = "true"
+)
 public class FeatureFlippingServiceAutoConfiguration {
-
-    @Bean
-    FeatureFlippingEvaluatorService evaluate(MessageCache messageCache, FeatureFlippingServiceDefinition featureFlippingServiceDefinition) {
-        return new FeatureFlippingEvaluatorService(messageCache, new ObjectMapper(), featureFlippingServiceDefinition);
-    }
 
     @Bean
     FeatureFlippingServiceDefinition featureFlippingServiceDefinition(

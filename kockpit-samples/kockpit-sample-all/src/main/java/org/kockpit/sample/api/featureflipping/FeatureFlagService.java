@@ -3,31 +3,35 @@ package org.kockpit.sample.api.featureflipping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.kockpit.communication.Message;
 import org.kockpit.core.sdk.OnMessageListener;
 import org.kockpit.features.featureflipping.service.FeatureFlippingDto;
-import org.kockpit.features.featureflipping.service.FeatureFlippingServiceDefinition;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.kockpit.features.featureflipping.service.FeatureFlippingServiceDefinition.FEATURE_FLIPPING;
 
 @Component
 @RequiredArgsConstructor
 public class FeatureFlagService implements OnMessageListener {
 
-    @Setter
     @Getter
-    @Value("${compression.enabled:true}")
-    private boolean compressionEnabled;
+    private final Map<String, Boolean> keys = new HashMap<>();
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void onMessage(Message message) {
-        if (message.getType().equals(FeatureFlippingServiceDefinition.FEATURE_FLIPPING)) {
-            FeatureFlippingDto featureFlippingDto = new ObjectMapper()
+        if (message.getService().equals(FEATURE_FLIPPING)) {
+            FeatureFlippingDto featureFlippingDto = objectMapper
                     .convertValue(message.getBody(), FeatureFlippingDto.class);
-            if (featureFlippingDto.getKey().equals("compression.enabled")) {
-                this.compressionEnabled = featureFlippingDto.getEnabled();
-            }
+            keys.put(featureFlippingDto.getKey(), featureFlippingDto.getEnabled());
         }
+    }
+
+    Boolean get(String key) {
+        return keys.getOrDefault(key, false);
     }
 }

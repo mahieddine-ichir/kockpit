@@ -8,9 +8,9 @@ import org.kockpit.communication.Consumer;
 import org.kockpit.communication.Publisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -55,8 +55,8 @@ public class S3CommunicationAutoConfiguration {
         return DefaultCredentialsProvider.builder().build();
     }
 
+    @ConditionalOnMissingBean(S3Client.class)
     @Bean
-    @Primary
     S3Client s3Client(
             @Value("${kockpit.aws.region}") String region,
             @Value("${kockpit.communication.s3.endpoint:}") Optional<String> optionalEndpoint
@@ -69,7 +69,6 @@ public class S3CommunicationAutoConfiguration {
                     return S3Client.builder()
                             .region(Region.of(region))
                             .endpointOverride(URI.create(endpoint))
-                            //.credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
                             .serviceConfiguration(S3Configuration.builder()
                                     .chunkedEncodingEnabled(false)
                                     .pathStyleAccessEnabled(true)
@@ -81,6 +80,7 @@ public class S3CommunicationAutoConfiguration {
                     return S3Client.builder()
                             .region(Region.of(region))
                             .credentialsProvider(awsCredentialsProvider())
+                            .crossRegionAccessEnabled(true)
                             .build();
                 });
     }

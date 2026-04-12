@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {advancedSearchAudits, fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
 import {BookmarkIcon, CheckCircleIcon, ClipboardDocumentListIcon, EyeIcon, FunnelIcon, XMarkIcon} from '@heroicons/react/24/outline';
+import {loadSettings} from '../../settings/useSettings.js';
 import {MagnifyingGlassIcon} from '@heroicons/react/20/solid';
 import {RefreshCw} from 'lucide-react';
 import StatusBadge from '../../components/StatusBadge.jsx';
@@ -346,11 +347,12 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
   const navigate = useNavigate();
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [lastExecutedSearch, setLastExecutedSearch] = useState('');
   const [lastExecutedSearchTerms, setLastExecutedSearchTerms] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(50);
+  const [itemsPerPage, setItemsPerPage] = useState(() => loadSettings().auditDefaultPageSize);
   const [totalCount, setTotalCount] = useState(0);
   const [searchTerms, setSearchTerms] = useState([]);
   const [filter, setFilter] = useState({});
@@ -400,23 +402,34 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
   function loadData() {
       setLastExecutedSearch(search.trim());
       setLastExecutedSearchTerms([...searchTerms]);
+      setError(null);
+
+      const onError = (err) => {
+          console.error('Failed to load audits:', err);
+          setError(err?.response?.data?.message || err?.message || 'Failed to load audit data.');
+          setLoading(false);
+      };
 
       if (searchTerms.length > 0) {
           setLoading(true);
           console.info(`load data, searchTerms ${JSON.stringify(searchTerms)}`);
-          advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
-              setAudits(data.items);
-              setTotalCount(data.total_count);
-              setLoading(false);
-          });
+          advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
+              .then(data => {
+                  setAudits(data.items);
+                  setTotalCount(data.total_count);
+                  setLoading(false);
+              })
+              .catch(onError);
       } else if (search || search.trim().length > 0) {
           setLoading(true);
           console.info(`load data, search ${JSON.stringify(search)}`);
-          searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage).then(data => {
-              setAudits(data.items);
-              setTotalCount(data.total_count);
-              setLoading(false);
-          });
+          searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
+              .then(data => {
+                  setAudits(data.items);
+                  setTotalCount(data.total_count);
+                  setLoading(false);
+              })
+              .catch(onError);
       } else {
           console.log(`loading all data: ${domain}, ${env}, ${itemsPerPage}, ${(currentPage - 1) * itemsPerPage}`);
           fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
@@ -424,13 +437,13 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
                   if (data && data.items && data.items.length > 0) {
                       setAudits(data.items);
                       setTotalCount(data.total_count);
-                    } else {
-                        console.log(`no data found!`)
-                      //setAudits([]);
-                      //setTotalCount(0);
+                  } else {
+                      setAudits([]);
+                      setTotalCount(0);
                   }
                   setLoading(false);
-              });
+              })
+              .catch(onError);
       }
   }
 
@@ -666,6 +679,11 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
                     totalItems={totalCount}
                 />
             </div>
+            {error && (
+                <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                    {error}
+                </div>
+            )}
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
                 <table className="min-w-full divide-y divide-slate-200">
                     <thead className="bg-slate-50">

@@ -28,8 +28,8 @@ public class S3Consumer implements Consumer {
 
     @Override
     public List<Message> poll(String domain, String env, String appId, String type) {
-        log.trace("Polling messages for domain {}, env {}, appId {}, type {}", domain, env, appId, type);
         String prefix = formatFilename(domain, env, appId, type);
+        log.trace("Polling messages for domain {}, env {}, appId {}, type {} (bucket {}, prefix {})", domain, env, appId, type, bucketName, prefix);
 
         ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
                 .bucket(bucketName)

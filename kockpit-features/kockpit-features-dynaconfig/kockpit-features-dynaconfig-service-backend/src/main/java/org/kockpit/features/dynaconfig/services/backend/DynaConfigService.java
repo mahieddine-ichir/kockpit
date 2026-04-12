@@ -6,11 +6,12 @@ import org.kockpit.communication.KeyValue;
 import org.kockpit.communication.Message;
 import org.kockpit.communication.Publisher;
 import org.kockpit.features.dynaconfig.service.DynaConfigDto;
-import org.kockpit.features.dynaconfig.service.DynaConfigServiceDefinition;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
+
+import static org.kockpit.features.dynaconfig.service.DynaConfigServiceDefinition.DYNA_CONFIG;
 
 @Component
 @RequiredArgsConstructor
@@ -19,8 +20,6 @@ public class DynaConfigService {
 
     private final List<Publisher> publishers;
 
-    private final DynaConfigServiceDefinition dynaConfigServiceDefinition;
-
     DynaConfigDto update(String domain, String env, String appId, DynaConfigDto dynaConfigDto) {
         publishers.forEach(publisher ->
                 silentPublish(publisher,
@@ -28,7 +27,8 @@ public class DynaConfigService {
                             .appId(appId)
                             .domain(domain)
                             .env(env)
-                            .type(dynaConfigServiceDefinition.name())
+                            .service(DYNA_CONFIG)
+                            .type("update")
                             .id(dynaConfigDto.getKey())
                             .keyValues(List.of(
                                     new KeyValue(dynaConfigDto.getKey(), dynaConfigDto.getValue())
