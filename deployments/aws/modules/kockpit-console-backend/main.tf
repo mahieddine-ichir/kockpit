@@ -88,25 +88,34 @@ resource "aws_iam_role_policy" "s3_access_policy" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:ListBucket",
-          "s3:DeleteObject"
-        ]
-        Resource = [
-          # Kockpit data bucket
-          aws_s3_bucket.kockpit_data.arn,
-          "${aws_s3_bucket.kockpit_data.arn}/*",
-          # Kockpit manifests bucket
-          aws_s3_bucket.kockpit_manifests.arn,
-          "${aws_s3_bucket.kockpit_manifests.arn}/*"
-        ]
-      }
-    ]
+    Statement = concat(
+      [
+        {
+          Effect = "Allow"
+          Action = [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:ListBucket",
+            "s3:DeleteObject"
+          ]
+          Resource = [
+            # Kockpit data bucket
+            aws_s3_bucket.kockpit_data.arn,
+            "${aws_s3_bucket.kockpit_data.arn}/*",
+            # Kockpit manifests bucket
+            aws_s3_bucket.kockpit_manifests.arn,
+            "${aws_s3_bucket.kockpit_manifests.arn}/*"
+          ]
+        }
+      ],
+      var.kms_key_arn != null ? [
+        {
+          Effect   = "Allow"
+          Action   = ["kms:GenerateDataKey", "kms:Decrypt"]
+          Resource = var.kms_key_arn
+        }
+      ] : []
+    )
   })
 }
 
