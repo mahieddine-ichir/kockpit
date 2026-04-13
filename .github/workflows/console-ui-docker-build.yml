@@ -81,6 +81,7 @@ jobs:
             Build Date: ${{ github.event.head_commit.timestamp }}
           prerelease: ${{ github.ref_name != 'main' }}
           fail_on_unmatched_files: true
+          overwrite: true
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
