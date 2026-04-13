@@ -152,6 +152,12 @@ variable "kinesis_stream_name" {
   default     = ""
 }
 
+variable "kms_key_arn" {
+  description = "ARN of the KMS key to grant GenerateDataKey and Decrypt permissions (optional)"
+  type        = string
+  default     = null
+}
+
 # Additional Environment Variables
 variable "additional_environment_variables" {
   description = "Additional environment variables to pass to the container"
