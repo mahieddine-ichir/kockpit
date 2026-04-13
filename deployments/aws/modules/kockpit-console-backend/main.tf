@@ -94,7 +94,8 @@ resource "aws_iam_role_policy" "s3_access_policy" {
         Action = [
           "s3:GetObject",
           "s3:PutObject",
-          "s3:ListBucket"
+          "s3:ListBucket",
+          "s3:DeleteObject"
         ]
         Resource = [
           # Kockpit data bucket
