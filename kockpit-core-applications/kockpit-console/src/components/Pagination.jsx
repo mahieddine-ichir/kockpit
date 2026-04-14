@@ -8,7 +8,7 @@ const Pagination = ({
                         totalItems
                     }) => {
 
-    const selections = [10, 25, 50, 100];
+    const selections = [...new Set([10, 25, 50, 100, itemsPerPage])].sort((a, b) => a - b);
     const handleFirst = () => {
         onPageChange(1, itemsPerPage);
     }
@@ -38,7 +38,7 @@ const Pagination = ({
         <div className="flex items-center justify-end space-x-2 w-full mb-1">
             <div className="flex items-center space-x-2">
                 <select
-                    defaultValue={itemsPerPage}
+                    value={itemsPerPage}
                     onChange={handleItemsPerPageInput}
                     className="rounded border border-gray-300 px-2 py-1 text-sm bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none w-20"
                 >
