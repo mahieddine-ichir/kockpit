@@ -72,7 +72,7 @@ export default function SettingsPage() {
                             onChange={e => handleChange('auditDefaultPageSize', Number(e.target.value))}
                             className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm"
                         >
-                            {[10, 25, 50, 100, 200].map(n => (
+                            {[10, 25, 50, 100].map(n => (
                                 <option key={n} value={n}>{n}</option>
                             ))}
                         </select>
