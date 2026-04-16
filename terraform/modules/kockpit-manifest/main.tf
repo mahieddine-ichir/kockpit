@@ -1,18 +1,3 @@
-terraform {
-  required_version = ">= 1.3"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-      configuration_aliases = [aws.default]
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "~> 2.0"
-    }
-  }
-}
-
 locals {
   feature_flipping_entries = [
     for svc in var.feature_flipping_services : {
@@ -76,8 +61,9 @@ locals {
   }
 
   manifest_json     = jsonencode(local.manifest)
-  resolved_s3_key   = coalesce(var.s3_key, "${var.domain}-${var.env}-manifest.json")
-  resolved_out_path = coalesce(var.output_path, "${path.root}/${var.domain}-${var.env}-manifest.json")
+  resolved_s3_key    = coalesce(var.s3_key, "${var.domain}-${var.env}-manifest.json")
+  resolved_blob_name = coalesce(var.azure_blob_name, "${var.domain}-${var.env}-manifest.json")
+  resolved_out_path  = coalesce(var.output_path, "${path.root}/${var.domain}-${var.env}-manifest.json")
 }
 
 resource "local_file" "manifest" {
@@ -87,7 +73,6 @@ resource "local_file" "manifest" {
 
 resource "aws_s3_object" "manifest" {
   count        = var.s3_bucket != null ? 1 : 0
-  provider     = aws.default
   bucket       = var.s3_bucket
   key          = local.resolved_s3_key
   content      = local.manifest_json
@@ -98,4 +83,14 @@ resource "aws_s3_object" "manifest" {
     Environment = var.env
     ManagedBy   = "Terraform"
   }
+}
+
+resource "azurerm_storage_blob" "manifest" {
+  count                  = var.azure_storage_container != null ? 1 : 0
+  name                   = local.resolved_blob_name
+  storage_account_name   = var.azure_storage_account
+  storage_container_name = var.azure_storage_container
+  type                   = "Block"
+  source_content         = local.manifest_json
+  content_type           = "application/json"
 }
