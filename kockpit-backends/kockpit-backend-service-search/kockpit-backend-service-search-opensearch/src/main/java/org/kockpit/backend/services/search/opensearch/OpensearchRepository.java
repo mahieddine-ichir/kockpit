@@ -148,7 +148,7 @@ public class OpensearchRepository implements SearchService {
                 log.trace("basic search on multiple-paths {}", path);
                 Stream.of(path.split(","))
                         .map(String::trim)
-                        .forEach(p -> rootBoolQueryBuilder.should(termsQuery(p, values)));
+                        .forEach(p -> this.buildQueryWithSamePath(p, values, rootBoolQueryBuilder));
             } else {
                 log.trace("basic search on path {}", path);
                 if (values.size() == 1) {
