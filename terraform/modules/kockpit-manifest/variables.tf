@@ -19,35 +19,6 @@ variable "output_path" {
   default     = null
 }
 
-variable "s3_bucket" {
-  description = "S3 bucket name to upload the manifest to (optional, AWS only)"
-  type        = string
-  default     = null
-}
-
-variable "s3_key" {
-  description = "S3 object key for the manifest (defaults to <domain>-<env>-manifest.json, AWS only)"
-  type        = string
-  default     = null
-}
-
-variable "azure_storage_account" {
-  description = "Azure Storage Account name to upload the manifest to (optional, Azure only)"
-  type        = string
-  default     = null
-}
-
-variable "azure_storage_container" {
-  description = "Azure Blob Storage container name (optional, Azure only)"
-  type        = string
-  default     = null
-}
-
-variable "azure_blob_name" {
-  description = "Azure blob name for the manifest (defaults to <domain>-<env>-manifest.json, Azure only)"
-  type        = string
-  default     = null
-}
 
 # ── Feature Flipping ─────────────────────────────────────────────────────────
 
