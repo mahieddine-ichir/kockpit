@@ -6,10 +6,6 @@ provider "aws" {
 module "manifest" {
   source = "../../"
 
-  providers = {
-    aws.default = aws.default
-  }
-
   domain = "kockpit"
   env    = "dev"
   name   = "Kockpit samples"
