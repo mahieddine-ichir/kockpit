@@ -1,17 +1,9 @@
-provider "aws" {
-  alias  = "default"
-  region = "eu-west-1"
-}
-
 module "manifest" {
   source = "../../"
 
   domain = "kockpit"
   env    = "dev"
   name   = "Kockpit samples"
-
-  # Optional: write to S3
-  # s3_bucket = "my-manifests-bucket"
 
   feature_flipping_services = [
     {
@@ -70,8 +62,8 @@ module "manifest" {
           path    = "indexedKeyValues.httpStatus"
         },
         {
-          name = "appId"
-          type = "options"
+          name    = "appId"
+          type    = "options"
           options = ["kockpit-app-1", "kockpit-app-2"]
         },
         {
@@ -84,6 +76,36 @@ module "manifest" {
     }
   ]
 }
+
+# ── Upload to S3 (AWS) ────────────────────────────────────────────────────────
+# The bucket is expected to already exist (created by the parent project).
+
+resource "aws_s3_object" "manifest" {
+  bucket       = "my-manifests-bucket"
+  key          = "kockpit-dev-manifest.json"
+  content      = module.manifest.manifest_json
+  content_type = "application/json"
+
+  tags = {
+    Domain      = "kockpit"
+    Environment = "dev"
+    ManagedBy   = "Terraform"
+  }
+}
+
+# ── Upload to Azure Blob Storage ──────────────────────────────────────────────
+# The storage account and container are expected to already exist.
+
+resource "azurerm_storage_blob" "manifest" {
+  name                   = "kockpit-dev-manifest.json"
+  storage_account_name   = "mystorageaccount"
+  storage_container_name = "manifests"
+  type                   = "Block"
+  source_content         = module.manifest.manifest_json
+  content_type           = "application/json"
+}
+
+# ── Outputs ───────────────────────────────────────────────────────────────────
 
 output "manifest_json" {
   value = module.manifest.manifest_json
