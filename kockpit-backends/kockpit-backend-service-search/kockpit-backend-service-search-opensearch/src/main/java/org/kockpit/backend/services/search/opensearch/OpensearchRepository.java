@@ -123,38 +123,54 @@ public class OpensearchRepository implements SearchService {
 
     private void buildQueryWithSamePath(String path, List<Object> values, BoolQueryBuilder rootBoolQueryBuilder) {
         log.trace("search on path {}, for values {}", path, values);
-        // indexedKeyValues -> nested search
-        if (path.startsWith("indexedKeyValues")) {
-            log.trace("nested search for indexedKeyValues on path {}", path);
-            BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-            String key = path.substring("indexedKeyValues".length() + 1);
-            buildQueryForIndexedKeyValues(key, values, boolQueryBuilder);
-            NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
-            rootBoolQueryBuilder.must(nestedQueryBuilder);
-
-        } else if ("start".equals(path) || "end".equals(path)) {
-            log.trace("time-base search on path {}", path);
-            // timestamp search
-            long value = (long) values.get(0);
-            if ("start".equals(path)) {
-                rootBoolQueryBuilder.must(rangeQuery(path).gte(value));
-            }
-            if ("end".equals(path)) {
-                rootBoolQueryBuilder.must(rangeQuery(path).lt(value));
-            }
+        if (path.contains(",")) {
+            Stream.of(path.split(",")).map(String::trim)
+                    .forEach(p -> {
+                        if (p.startsWith("indexedKeyValues")) {
+                            BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+                            String key = p.substring("indexedKeyValues".length() + 1);
+                            buildQueryForIndexedKeyValues(key, values, boolQueryBuilder);
+                            NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
+                            rootBoolQueryBuilder.must(nestedQueryBuilder);
+                        } else {
+                            rootBoolQueryBuilder.should(termsQuery(p, values));
+                        }
+                    });
         } else {
-            // for multiple paths search
-            if (path.contains(",")) {
-                log.trace("basic search on multiple-paths {}", path);
-                Stream.of(path.split(","))
-                        .map(String::trim)
-                        .forEach(p -> this.buildQueryWithSamePath(p, values, rootBoolQueryBuilder));
+
+            // indexedKeyValues -> nested search
+            if (path.startsWith("indexedKeyValues")) {
+                log.trace("nested search for indexedKeyValues on path {}", path);
+                BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+                String key = path.substring("indexedKeyValues".length() + 1);
+                buildQueryForIndexedKeyValues(key, values, boolQueryBuilder);
+                NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
+                rootBoolQueryBuilder.must(nestedQueryBuilder);
+
+            } else if ("start".equals(path) || "end".equals(path)) {
+                log.trace("time-base search on path {}", path);
+                // timestamp search
+                long value = (long) values.get(0);
+                if ("start".equals(path)) {
+                    rootBoolQueryBuilder.must(rangeQuery(path).gte(value));
+                }
+                if ("end".equals(path)) {
+                    rootBoolQueryBuilder.must(rangeQuery(path).lt(value));
+                }
             } else {
-                log.trace("basic search on path {}", path);
-                if (values.size() == 1) {
-                    rootBoolQueryBuilder.must(matchQuery(path, values.get(0)));
+                // for multiple paths search
+                if (path.contains(",")) {
+                    log.trace("basic search on multiple-paths {}", path);
+                    Stream.of(path.split(","))
+                            .map(String::trim)
+                            .forEach(p -> rootBoolQueryBuilder.should(termsQuery(p, values)));
                 } else {
-                    rootBoolQueryBuilder.must(termsQuery(path, values));
+                    log.trace("basic search on path {}", path);
+                    if (values.size() == 1) {
+                        rootBoolQueryBuilder.must(matchQuery(path, values.get(0)));
+                    } else {
+                        rootBoolQueryBuilder.must(termsQuery(path, values));
+                    }
                 }
             }
         }
