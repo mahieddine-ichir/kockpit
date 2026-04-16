@@ -66,6 +66,19 @@ locals {
   resolved_out_path  = coalesce(var.output_path, "${path.root}/${var.domain}-${var.env}-manifest.json")
 }
 
+locals {
+  allowed_service_types = toset(["audit", "dyna-config", "feature-flipping"])
+}
+
+check "service_types" {
+  assert {
+    condition = alltrue([
+      for s in local.manifest.services : contains(local.allowed_service_types, s.type)
+    ])
+    error_message = "All service types must be one of: audit, dyna-config, feature-flipping."
+  }
+}
+
 resource "local_file" "manifest" {
   content  = local.manifest_json
   filename = local.resolved_out_path
