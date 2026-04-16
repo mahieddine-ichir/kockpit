@@ -133,7 +133,11 @@ public class OpensearchRepository implements SearchService {
                             NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
                             rootBoolQueryBuilder.must(nestedQueryBuilder);
                         } else {
-                            rootBoolQueryBuilder.should(termsQuery(p, values));
+                            if (values.size() == 1) {
+                                rootBoolQueryBuilder.must(matchQuery(p, values.get(0)));
+                            } else {
+                                rootBoolQueryBuilder.must(termsQuery(p, values));
+                            }
                         }
                     });
         } else {
