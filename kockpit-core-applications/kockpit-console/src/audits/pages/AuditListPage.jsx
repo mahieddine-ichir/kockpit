@@ -12,12 +12,13 @@ import CopyButton from "../../components/CopyButton.jsx";
 import SearchTerm from "./components/SearchTerm.jsx";
 
 function formatLabel(col) {
+  const primary = col.split('|')[0];
   let label = '';
-  for (let i = 0; i < col.length; i++) {
-    if (col[i].match(/[A-Z]/) != null) {
-      label += ' ' + col[i];
+  for (let i = 0; i < primary.length; i++) {
+    if (primary[i].match(/[A-Z]/) != null) {
+      label += ' ' + primary[i];
     } else {
-      label += col[i];
+      label += primary[i];
     }
   }
   return label.trim();
@@ -31,11 +32,10 @@ function fetchIndexedValue(audit, key) {
 }
 
 const fetch = (audit, key) => {
-    let value = audit[key];
-    if (value === undefined) {
-        return fetchIndexedValue(audit, key);
-    } else {
-        return value;
+    const keys = key.split('|');
+    for (const k of keys) {
+        const value = audit[k] ?? fetchIndexedValue(audit, k);
+        if (value !== undefined) return value;
     }
 }
 
