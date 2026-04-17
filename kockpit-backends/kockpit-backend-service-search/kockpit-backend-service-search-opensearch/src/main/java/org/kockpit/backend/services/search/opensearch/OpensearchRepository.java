@@ -124,31 +124,27 @@ public class OpensearchRepository implements SearchService {
     private void buildQueryWithSamePath(String path, List<Object> values, BoolQueryBuilder rootBoolQueryBuilder) {
         log.trace("search on path {}, for values {}", path, values);
         if (path.contains(",")) {
+            BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
             Stream.of(path.split(",")).map(String::trim)
                     .forEach(p -> {
                         if (p.startsWith("indexedKeyValues")) {
-                            BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
                             String key = p.substring("indexedKeyValues".length() + 1);
-                            buildQueryForIndexedKeyValues(key, values, boolQueryBuilder);
-                            NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
-                            rootBoolQueryBuilder.must(nestedQueryBuilder);
+                            boolQueryBuilder.should(buildQueryForIndexedKeyValues(key, values));
                         } else {
                             if (values.size() == 1) {
-                                rootBoolQueryBuilder.must(matchQuery(p, values.get(0)));
+                                boolQueryBuilder.should(matchQuery(p, values.get(0)));
                             } else {
-                                rootBoolQueryBuilder.must(termsQuery(p, values));
+                                boolQueryBuilder.should(termsQuery(p, values));
                             }
                         }
                     });
+            rootBoolQueryBuilder.must(boolQueryBuilder);
         } else {
-
             // indexedKeyValues -> nested search
             if (path.startsWith("indexedKeyValues")) {
                 log.trace("nested search for indexedKeyValues on path {}", path);
-                BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
                 String key = path.substring("indexedKeyValues".length() + 1);
-                buildQueryForIndexedKeyValues(key, values, boolQueryBuilder);
-                NestedQueryBuilder nestedQueryBuilder = nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
+                NestedQueryBuilder nestedQueryBuilder = buildQueryForIndexedKeyValues(key, values);
                 rootBoolQueryBuilder.must(nestedQueryBuilder);
 
             } else if ("start".equals(path) || "end".equals(path)) {
@@ -162,35 +158,29 @@ public class OpensearchRepository implements SearchService {
                     rootBoolQueryBuilder.must(rangeQuery(path).lt(value));
                 }
             } else {
-                // for multiple paths search
-                if (path.contains(",")) {
-                    log.trace("basic search on multiple-paths {}", path);
-                    Stream.of(path.split(","))
-                            .map(String::trim)
-                            .forEach(p -> rootBoolQueryBuilder.should(termsQuery(p, values)));
+                log.trace("basic search on path {}", path);
+                if (values.size() == 1) {
+                    rootBoolQueryBuilder.must(matchQuery(path, values.get(0)));
                 } else {
-                    log.trace("basic search on path {}", path);
-                    if (values.size() == 1) {
-                        rootBoolQueryBuilder.must(matchQuery(path, values.get(0)));
-                    } else {
-                        rootBoolQueryBuilder.must(termsQuery(path, values));
-                    }
+                    rootBoolQueryBuilder.must(termsQuery(path, values));
                 }
             }
         }
     }
 
-    private void buildQueryForIndexedKeyValues(String name, List<?> values, BoolQueryBuilder rootBoolQueryBuilder) {
-        log.debug("Searching {} in [{}]", name, values);
+    private NestedQueryBuilder buildQueryForIndexedKeyValues(String name, List<?> values) {
+        log.trace("Searching {} in [{}]", name, values);
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         if (values.size() == 1) {
-            rootBoolQueryBuilder
+            boolQueryBuilder
                     .must(matchQuery("indexedKeyValues.key", name))
                     .must(matchQuery("indexedKeyValues.value", values.get(0)));
         } else {
-            rootBoolQueryBuilder
+            boolQueryBuilder
                     .must(matchQuery("indexedKeyValues.key", name))
                     .must(termsQuery("indexedKeyValues.value", values));
         }
+        return nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
     }
 
     private Page runQuery(BoolQueryBuilder rootBoolQueryBuilder, String domain, String env, Integer start, Integer size) throws Exception {

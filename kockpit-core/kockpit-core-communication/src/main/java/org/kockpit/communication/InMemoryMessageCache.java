@@ -2,10 +2,7 @@ package org.kockpit.communication;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -17,7 +14,9 @@ public class InMemoryMessageCache implements MessageCache {
     public void add(Message message) {
         String key = message.getType();
         cache.putIfAbsent(key, new ConcurrentHashMap<>());
-        cache.get(key).put(message.getId(), message);
+        if (Objects.nonNull(message.getId())) {
+            cache.get(key).put(message.getId(), message);
+        }
     }
 
     @Override
