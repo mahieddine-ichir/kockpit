@@ -98,16 +98,21 @@ public class OpensearchV3IndexManager {
     }
 
     @SneakyThrows
+    private boolean templateExists(String name) {
+        try (Response response = client.generic().execute(Requests.builder()
+                .method("HEAD")
+                .endpoint("_index_template/" + name)
+                .build())) {
+            return isOk(response.getStatus());
+        }
+    }
+
+    @SneakyThrows
     void createIndexTemplate(String indexPrefix, String policyId, String aliasWrite) {
         try {
-            try (Response checkResponse = client.generic().execute(Requests.builder()
-                    .method("HEAD")
-                    .endpoint("_index_template/" + indexPrefix)
-                    .build())) {
-                if (isOk(checkResponse.getStatus())) {
-                    log.trace("✅ Template {} already exists, skipping creation", indexPrefix);
-                    return;
-                }
+            if (templateExists(indexPrefix) || templateExists(indexPrefix + "_template")) {
+                log.trace("✅ Template {} already exists, skipping creation", indexPrefix);
+                return;
             }
 
             log.info("➡️ Creating Template {} for policy {}", indexPrefix, policyId);
