@@ -69,6 +69,10 @@ public class OpensearchV3IndexManager {
         return status / 100 == 2;
     }
 
+    private boolean isCircuitBreaker(int status) {
+        return status == 429;
+    }
+
     private void doCreatePolicy(String policyId, Integer ttl, String policyJson) {
         try {
             log.info("➡️ Creating ISM policy with ID: {} and TTL: {}d", policyId, ttl);
@@ -81,6 +85,8 @@ public class OpensearchV3IndexManager {
                     .build());
             if (isOk(response.getStatus())) {
                 log.info("✅ Created policy {}, ttl {}", policyId, ttl);
+            } else if (isCircuitBreaker(response.getStatus())) {
+                log.warn("⚠️ OpenSearch circuit breaker triggered creating ISM policy {}, will retry next cycle", policyId);
             } else {
                 log.error("❌ Failed to create ISM policy {} with TTL {}: response {}: {}", policyId, ttl, response.getStatus(), response.getBody().map(Body::bodyAsString).orElse(null));
                 throw new RuntimeException("❌ Policy creation failed with status " + response.getStatus());
@@ -128,6 +134,8 @@ public class OpensearchV3IndexManager {
                     .build())) {
                 if (isOk(response.getStatus())) {
                     log.info("✅ Template created for indexPrefix {}", indexPrefix);
+                } else if (isCircuitBreaker(response.getStatus())) {
+                    log.warn("⚠️ OpenSearch circuit breaker triggered creating template {}, will retry next cycle", indexPrefix);
                 } else {
                     log.error("❌ Create Template {} failed with status {}: {}", indexPrefix, response.getStatus(), response.getBody().map(Body::bodyAsString).orElse(null));
                     throw new RuntimeException("Create Template " + indexPrefix + " failed with status " + response.getStatus());
