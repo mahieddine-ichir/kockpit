@@ -60,7 +60,8 @@ public class OpensearchAuditConsumerConfiguration {
             AuditorService auditorService, AuditorKeyValueService auditorKeyValueService, AuditorEventService auditorEventService,
             SdkApplicationProperties sdkApplicationProperties,
             @Value("${kockpit.audit.stream.opensearch.index_suffix}") String indexSuffix,
-            @Value("${kockpit.audit.stream.opensearch.ttl_default_in_days}") Integer ttlDefaultInDays
+            @Value("${kockpit.audit.stream.opensearch.ttl_default_in_days}") Integer ttlDefaultInDays,
+            @Value("${kockpit.audit.stream.opensearch.bulk_batch_size:100}") int bulkBatchSize
     ) {
         return new AuditConsumerForOpensearch(
                 openSearchClient,
@@ -69,7 +70,8 @@ public class OpensearchAuditConsumerConfiguration {
                 sdkApplicationProperties,
                 opensearchObjectMapper(),
                 indexSuffix,
-                ttlDefaultInDays
+                ttlDefaultInDays,
+                bulkBatchSize
         );
     }
 

@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
@@ -60,6 +61,8 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
     private final String indexSuffix;
 
     private final Integer ttlDefaultInDays;
+
+    private final int bulkBatchSize;
 
     @PostConstruct
     public void start() {
@@ -109,18 +112,21 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
                     // ensure the index exists (template, policy and aliases)
                     opensearchV3IndexManager.ensureIndexExists(indexName, aliasWrite, aliasRead, indexPrefix, indexMetadata.getTtl());
 
-                    // index requests
-                    BulkRequest bulkRequest = BulkRequest.of(b -> b
-                            .operations(auditIndexRequestsGrouped.stream()
-                                    .map(auditIndexRequest -> toBulkOperation(auditIndexRequest, aliasWrite))
-                                    .toList())
-                    );
-
+                    // index requests — split into batches to avoid 413
+                    List<List<AuditReport>> batches = partition(auditIndexRequestsGrouped, bulkBatchSize);
                     try {
-                        BulkResponse bulkResponse = bulkRequest(bulkRequest);
+                        BulkResponse lastResponse = null;
+                        for (List<AuditReport> batch : batches) {
+                            BulkRequest bulkRequest = BulkRequest.of(b -> b
+                                    .operations(batch.stream()
+                                            .map(auditIndexRequest -> toBulkOperation(auditIndexRequest, aliasWrite))
+                                            .toList())
+                            );
+                            lastResponse = bulkRequest(bulkRequest);
+                        }
                         log.debug("indexing {} for {} took {} ms", auditIndexRequestsGrouped.size(), indexMetadata, System.currentTimeMillis() - now);
-                        if (auditStarter) {
-                            auditResponseOk(bulkResponse);
+                        if (auditStarter && lastResponse != null) {
+                            auditResponseOk(lastResponse);
                         }
 
                     } catch (Exception e) {
@@ -200,6 +206,12 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
     private boolean skipAudit(List<AuditReport> auditReports) {
         return auditReports.isEmpty() ||
                 auditReports.iterator().next().getAppId().equals(sdkApplicationProperties.getAppId());
+    }
+
+    private static <T> List<List<T>> partition(List<T> list, int size) {
+        return IntStream.range(0, (list.size() + size - 1) / size)
+                .mapToObj(i -> list.subList(i * size, Math.min((i + 1) * size, list.size())))
+                .toList();
     }
 
     @SneakyThrows
