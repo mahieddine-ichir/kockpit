@@ -63,16 +63,15 @@ public abstract class AuditReportHelper {
         .filter(audit -> domainHasMock || requestPathContainsMock(audit))
         .map(audit -> {
           Map<String, Object> result = new LinkedHashMap<>();
-          result.put("request", audit.get("request"));
-          result.put("response", audit.get("response"));
+          result.put("request", audit.get("httpAuditedRequest"));
+          result.put("response", audit.get("httpAuditedResponse"));
           return result;
         })
         .toList();
   }
 
-  @SuppressWarnings("unchecked")
   private static boolean requestPathContainsMock(Map<String, Object> exchange) {
-    Object request = exchange.get("request");
+    Object request = exchange.get("httpAuditedRequest");
     if (request instanceof Map<?, ?> requestMap) {
       Object uri = requestMap.get("uri");
       return uri instanceof String uriStr && uriStr.toLowerCase().contains("mock");
