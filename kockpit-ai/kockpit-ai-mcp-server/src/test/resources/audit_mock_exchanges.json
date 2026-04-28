@@ -1,0 +1,59 @@
+{
+  "domain": "rcu",
+  "env": "bch",
+  "appId": "offers-engine",
+  "version": "1.0.0",
+  "requestId": "00000000-0000-0000-0000-000000000042",
+  "audits": [
+    {
+      "type": "builtin.httpexchanges",
+      "events": [
+        {
+          "startTime": 1777368415671,
+          "endTime": 1777368415746,
+          "httpAuditedRequest": {
+            "uri": "http://offers-api-wiremock-bch.offers-apps-bch.local:8081/irmaprocess/v3.1/offer",
+            "headers": {
+              "Content-Type": ["application/json"],
+              "X-Mock": ["BCH_GET_OFFERS_BY_ID_PATH"],
+              "Accept": ["application/octet-stream, */*"],
+              "Content-Length": ["441"]
+            },
+            "body": "{\"cro\":\"INT\"}",
+            "method": "POST",
+            "params": null
+          },
+          "httpAuditedResponse": {
+            "headers": {
+              "Content-Type": ["application/json;charset=UTF-8"],
+              "Matched-Stub-Id": ["764a35a3-eb55-484f-9279-836d06c670cc"]
+            },
+            "payload": "Response has not been audited because payload size (1170 KB) exceeded max allowed size 100 KB",
+            "status": 200
+          }
+        },
+        {
+          "startTime": 1777368415800,
+          "endTime": 1777368415850,
+          "httpAuditedRequest": {
+            "uri": "http://real-api.offers-apps-bch.local:8080/pricing/v1/price",
+            "headers": {
+              "Content-Type": ["application/json"]
+            },
+            "body": "{}",
+            "method": "GET",
+            "params": null
+          },
+          "httpAuditedResponse": {
+            "headers": {
+              "Content-Type": ["application/json;charset=UTF-8"]
+            },
+            "payload": "{\"price\":100}",
+            "status": 200
+          }
+        }
+      ],
+      "computeFunctions": null
+    }
+  ]
+}
