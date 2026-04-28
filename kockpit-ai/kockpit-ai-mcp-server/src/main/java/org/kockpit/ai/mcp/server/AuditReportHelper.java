@@ -50,6 +50,7 @@ public abstract class AuditReportHelper {
   }
 
   @SneakyThrows
+  @SuppressWarnings("unchecked")
   public static List<Map<String, Object>> extractMockHttpExchanges(String originalJson) {
     AuditReport report = objectMapper.readValue(originalJson, AuditReport.class);
     if (report.getAudits() == null) {
@@ -60,18 +61,23 @@ public abstract class AuditReportHelper {
 
     return report.getAudits().stream()
         .filter(audit -> "builtin.httpexchanges".equals(audit.get("type")))
-        .filter(audit -> domainHasMock || requestPathContainsMock(audit))
-        .map(audit -> {
+        .flatMap(audit -> {
+          Object eventsObj = audit.get("events");
+          if (!(eventsObj instanceof List<?> events)) return java.util.stream.Stream.of();
+          return ((List<Map<String, Object>>) events).stream();
+        })
+        .filter(event -> domainHasMock || eventPathContainsMock(event))
+        .map(event -> {
           Map<String, Object> result = new LinkedHashMap<>();
-          result.put("request", audit.get("httpAuditedRequest"));
-          result.put("response", audit.get("httpAuditedResponse"));
+          result.put("request", event.get("httpAuditedRequest"));
+          result.put("response", event.get("httpAuditedResponse"));
           return result;
         })
         .toList();
   }
 
-  private static boolean requestPathContainsMock(Map<String, Object> exchange) {
-    Object request = exchange.get("httpAuditedRequest");
+  private static boolean eventPathContainsMock(Map<String, Object> event) {
+    Object request = event.get("httpAuditedRequest");
     if (request instanceof Map<?, ?> requestMap) {
       Object uri = requestMap.get("uri");
       return uri instanceof String uriStr && uriStr.toLowerCase().contains("mock");

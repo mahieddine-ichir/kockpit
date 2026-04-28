@@ -95,6 +95,47 @@ class AuditReportHelperTest {
     }
 
     @Test
+    void extract_mockHttpExchanges_filtersByWiremockUri() throws IOException {
+        String originalJson = new String(this.getClass().getResourceAsStream("/audit_mock_exchanges.json").readAllBytes());
+
+        List<Map<String, Object>> result = AuditReportHelper.extractMockHttpExchanges(originalJson);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(1, result.size(), "Only the wiremock event should be returned");
+
+        Map<String, Object> exchange = result.get(0);
+        Assertions.assertTrue(exchange.containsKey("request"));
+        Assertions.assertTrue(exchange.containsKey("response"));
+
+        Map<?, ?> request = (Map<?, ?>) exchange.get("request");
+        Assertions.assertTrue(request.get("uri").toString().contains("wiremock"),
+                "Returned request URI should contain 'wiremock'");
+
+        Map<?, ?> response = (Map<?, ?>) exchange.get("response");
+        Assertions.assertEquals(200, response.get("status"));
+    }
+
+    @Test
+    void extract_mockHttpExchanges_domainContainsMock_returnsAllEvents() throws IOException {
+        String originalJson = new String(this.getClass().getResourceAsStream("/audit_mock_exchanges.json").readAllBytes())
+                .replace("\"domain\": \"rcu\"", "\"domain\": \"rcu-mock\"");
+
+        List<Map<String, Object>> result = AuditReportHelper.extractMockHttpExchanges(originalJson);
+
+        Assertions.assertEquals(2, result.size(), "All events should be returned when domain contains 'mock'");
+    }
+
+    @Test
+    void extract_mockHttpExchanges_noMockEvents_returnsEmpty() throws IOException {
+        String originalJson = new String(this.getClass().getResourceAsStream("/audit_mock_exchanges.json").readAllBytes())
+                .replace("wiremock", "realservice");
+
+        List<Map<String, Object>> result = AuditReportHelper.extractMockHttpExchanges(originalJson);
+
+        Assertions.assertTrue(result.isEmpty(), "No events should match when neither domain nor URI contains 'mock'");
+    }
+
+    @Test
     void extract_audits_unknownType_returnsEmpty() throws IOException {
         String hitAsSource = new String(this.getClass().getResourceAsStream("/audit_1.json").readAllBytes());
         AuditReportDocument auditReportDocument = AuditReportHelper.convertFromString(hitAsSource);
