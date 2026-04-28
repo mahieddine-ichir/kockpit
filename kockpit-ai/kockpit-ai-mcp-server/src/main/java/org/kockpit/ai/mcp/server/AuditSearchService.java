@@ -106,6 +106,17 @@ public class AuditSearchService {
         return fetchAuditDataPage(traceId, domain, from, size, AuditReportHelper::extractKengineFlowsAudits);
     }
 
+    @Tool(name = "get-mock-httpexchanges", description = "Get builtin.httpexchanges where domain or request path contains 'mock', returning only request and response for each matching exchange")
+    @SneakyThrows
+    public AuditDataPage getMockHttpExchanges(
+            @ToolParam(description = "audits/requests Trace ID (traceId)") String traceId,
+            @ToolParam(required = false, description = "audits domain, default to all domains (*)") String domain,
+            @ToolParam(required = false, description = "start/from for paging, default to 0") Integer from,
+            @ToolParam(required = false, description = "max number of audits per search, default to 25, max to 50") Integer size
+    ) {
+        return fetchAuditDataPage(traceId, domain, from, size, AuditReportHelper::extractMockHttpExchanges);
+    }
+
     @Tool(name = "get-builtin-httpexchanges", description = "Get builtin.httpexchanges audits from the original (decompressed) audit report for a given traceId")
     @SneakyThrows
     public AuditDataPage getBuiltinHttpExchanges(
