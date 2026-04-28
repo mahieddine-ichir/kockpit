@@ -11,6 +11,7 @@ import org.opensearch.search.SearchHit;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -46,6 +47,37 @@ public abstract class AuditReportHelper {
 
   public static List<Map<String, Object>> extractBuiltinHttpExchangesAudits(String originalJson) {
     return extractAuditsByType(originalJson, "builtin.httpexchanges");
+  }
+
+  @SneakyThrows
+  public static List<Map<String, Object>> extractMockHttpExchanges(String originalJson) {
+    AuditReport report = objectMapper.readValue(originalJson, AuditReport.class);
+    if (report.getAudits() == null) {
+      return List.of();
+    }
+    boolean domainHasMock = report.getDomain() != null
+            && report.getDomain().toLowerCase().contains("mock");
+
+    return report.getAudits().stream()
+        .filter(audit -> "builtin.httpexchanges".equals(audit.get("type")))
+        .filter(audit -> domainHasMock || requestPathContainsMock(audit))
+        .map(audit -> {
+          Map<String, Object> result = new LinkedHashMap<>();
+          result.put("request", audit.get("request"));
+          result.put("response", audit.get("response"));
+          return result;
+        })
+        .toList();
+  }
+
+  @SuppressWarnings("unchecked")
+  private static boolean requestPathContainsMock(Map<String, Object> exchange) {
+    Object request = exchange.get("request");
+    if (request instanceof Map<?, ?> requestMap) {
+      Object uri = requestMap.get("uri");
+      return uri instanceof String uriStr && uriStr.toLowerCase().contains("mock");
+    }
+    return false;
   }
 
   @SneakyThrows
