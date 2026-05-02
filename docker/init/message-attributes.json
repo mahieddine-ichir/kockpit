@@ -1,0 +1,14 @@
+{
+  "firstAttribute":{
+    "DataType":"String",
+    "StringValue":"hello world"
+  },
+  "secondAttribute":{
+    "DataType":"String",
+    "StringValue":"goodbye world"
+  },
+  "NumberAttribute":{
+    "DataType":"Number",
+    "StringValue":"1983"
+  }
+}

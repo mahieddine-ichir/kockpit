@@ -14,4 +14,8 @@ public class HeartBeatDto {
     private String instanceId;
 
     private String appId;
+
+    private String startupId;
+
+    private Boolean ended;
 }

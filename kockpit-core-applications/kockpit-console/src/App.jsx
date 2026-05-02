@@ -10,6 +10,7 @@ import FeatureFlippingPage from "./feature-flipping/feature.jsx";
 import AppIdDashboard from "./home/Home.jsx";
 import HealthIndicatorsDashboard from "./health/Health.jsx";
 import ConfigManager from "./dyna-config/dyna-config.jsx";
+import CachePage from "./cache/CachePage.jsx";
 import ManifestPage from "./manifest/ManifestPage.jsx";
 import SettingsPage from "./settings/SettingsPage.jsx";
 
@@ -98,6 +99,7 @@ function App() {
                                                     <Route path='/feature-flipping/:service' element={<FeatureFlippingPage domain={domain} env={env} config={config} />} />
                                                     <Route path='/dyna-config' element={<ConfigManager domain={domain} env={env} config={config} />} />
                                                     <Route path='/dyna-config/:service' element={<ConfigManager domain={domain} env={env} config={config} />} />
+                                                    <Route path='/cache' element={<CachePage domain={domain} env={env} />} />
                                                     <Route path='/manifest' element={<ManifestPage />} />
                                                     <Route path='/settings' element={<SettingsPage />} />
                                                     <Route path="*" element={<Navigate to="/home" replace={true}/>}/>

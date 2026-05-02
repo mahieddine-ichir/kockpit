@@ -1,0 +1,6 @@
+{
+  "purchasedOfferId": "ACCFR202100140", "result": { "result": "KO",
+    "errorCode": "invalid_date",
+    "errorDescription": "policy cannoft be cancelled (max date was Wed Oct 13 2021 09:46:32 GMT+0000)"
+  }
+}

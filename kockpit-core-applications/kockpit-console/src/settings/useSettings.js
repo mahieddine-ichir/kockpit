@@ -21,10 +21,18 @@ export function useSettings() {
     const [settings, setSettings] = useState(loadSettings);
 
     const updateSetting = (key, value) => {
-        const updated = {...settings, [key]: value};
+        setSettings(prev => {
+            const updated = {...prev, [key]: value};
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+            return updated;
+        });
+    };
+
+    const saveSettings = (newSettings) => {
+        const updated = {...DEFAULTS, ...newSettings};
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
         setSettings(updated);
     };
 
-    return {settings, updateSetting};
+    return {settings, updateSetting, saveSettings};
 }

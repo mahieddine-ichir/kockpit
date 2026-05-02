@@ -5,4 +5,6 @@ import org.kockpit.communication.Message;
 public interface OnMessageListener {
 
     void onMessage(Message message);
+
+    default void republish() {}
 }

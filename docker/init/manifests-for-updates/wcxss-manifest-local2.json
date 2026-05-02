@@ -1,0 +1,134 @@
+{
+  "domain": "wcxss",
+  "env": "local",
+  "groups": ["XSS2"],
+  "applications": [
+    {
+      "id": "wcxss-insurance2",
+      "label": "Insurance Local 2",
+      "subDomain": "insurance",
+      "services": {
+        "audit": [
+          {
+            "name": "wcxss-insurance",
+            "label": "API Insurance Local 2",
+            "appIds": [
+              "wcxss-insurance-quotation",
+              "wcxss-insurance-purchase"
+            ],
+            "resultColumns": [
+              {
+                "name": "start",
+                "label": "Start",
+                "renderer": "date"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "renderer": "substring"
+              },
+              {
+                "name": "KResult",
+                "label": "K Result",
+                "renderer": "result"
+              },
+              {
+                "name": "origin",
+                "label": "Origin"
+              },
+              {
+                "name": "httpMethod",
+                "label": "Method"
+              },
+              {
+                "name": "requestUri",
+                "label": "Url"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "renderer": "status"
+              },
+              {
+                "name": "duration",
+                "label": "Duration",
+                "renderer": "duration"
+              },
+              {
+                "name": "orderId",
+                "label": "Order"
+              },
+              {
+                "name": "quotationId",
+                "label": "Quotation",
+                "renderer": "substring"
+              },
+              {
+                "name": "purchasedOfferId",
+                "label": "Purchase",
+                "renderer": "substring"
+              }
+            ],
+            "searchMetadatas": [
+              {
+                "name": "start",
+                "label": "Start date",
+                "description": "Start date",
+                "type": "Date"
+              },
+              {
+                "name": "origin",
+                "label": "Origin",
+                "description": "Origin",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpMethod",
+                "label": "HTTP Method",
+                "description": "Method",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "httpStatus",
+                "label": "Status",
+                "description": "Request HTTP Status",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "traceId",
+                "label": "Trace ID",
+                "description": "Trace ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "orderId",
+                "label": "Order ID",
+                "description": "Order ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "quotationId",
+                "label": "Quotation ID",
+                "description": "Quotation ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              },
+              {
+                "name": "purchaseId",
+                "label": "Purchase ID",
+                "description": "Purchase ID",
+                "type": "extension",
+                "subtype": "builtin.kv"
+              }
+            ]
+          }
+        ]
+      }
+    },
+  ]
+}

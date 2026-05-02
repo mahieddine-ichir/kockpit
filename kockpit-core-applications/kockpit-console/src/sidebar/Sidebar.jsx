@@ -8,6 +8,7 @@ import {
     ChevronDoubleRightIcon,
     ChevronDownIcon,
     ChevronRightIcon,
+    CircleStackIcon,
     ClipboardDocumentListIcon,
     Cog6ToothIcon,
     DocumentTextIcon,
@@ -17,6 +18,7 @@ import {
     UserIcon,
     ServerIcon
 } from '@heroicons/react/24/outline';
+import {ToggleRight} from 'lucide-react';
 import {logout} from "../services/api.js";
 
 const UserInfo = ({collapsed, currentUser, logout}) => {
@@ -124,11 +126,13 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
                       navItems.map((navItem) => {
                           let icon;
                           if (navItem.type === 'feature-flipping') {
-                              icon = <FlagIcon className="h-5 w-5" />;
+                              icon = <ToggleRight className="h-5 w-5" />;
                           } else if (navItem.type === 'audits') {
                               icon = <ClipboardDocumentListIcon className="h-5 w-5" />;
                           } else if (navItem.type === 'dyna-config') {
                               icon = <AdjustmentsHorizontalIcon className="h-5 w-5" />;
+                          } else if (navItem.type === 'cache') {
+                              icon = <CircleStackIcon className="h-5 w-5" />;
                           } else {
                               icon = <DocumentTextIcon className="h-5 w-5" />;
                           }

@@ -158,9 +158,13 @@ export const logout = async() => {
     return { success: true };
 }
 
-export const getFeatureFlags = async (domain, env) => {
-    const response = await instance.get(`/${domain}/${env}/feature-flipping`);
+export const getFeatureFlags = async (domain, env, serviceId) => {
+    const response = await instance.get(`/${domain}/${env}/feature-flipping/${serviceId}`);
     return response.data;
+};
+
+export const syncFeatureFlags = async (domain, env, serviceId) => {
+    await instance.post(`/${domain}/${env}/feature-flipping/${serviceId}/_sync`);
 };
 
 export const updateFeatureFlag = async (domain, env, serviceId, flag) => {
@@ -193,6 +197,28 @@ export const getOverTimeByAppId = async (domain, env, timeRange) => {
 export const getHealth = async (domain, env) => {
     const response = await instance.get(`${domain}/${env}/heartbeat`);
     return response.data;
+};
+
+export const getCacheStats = async (domain, env, serviceId) => {
+    const response = await instance.get(`/${domain}/${env}/cache/${serviceId}`);
+    return response.data;
+};
+
+export const clearCache = async (domain, env, serviceId) => {
+    await instance.post(`/${domain}/${env}/cache/${serviceId}/_clear`);
+};
+
+export const resetCacheStats = async (domain, env, serviceId) => {
+    await instance.post(`/${domain}/${env}/cache/${serviceId}/_reset-stats`);
+};
+
+export const getDynaConfig = async (domain, env, serviceId) => {
+    const response = await instance.get(`/${domain}/${env}/dyna-config/${serviceId}`);
+    return response.data;
+};
+
+export const syncDynaConfig = async (domain, env, serviceId) => {
+    await instance.post(`/${domain}/${env}/dyna-config/${serviceId}/_sync`);
 };
 
 export const updateDynaConfig = async (domain, env, serviceId, config) => {

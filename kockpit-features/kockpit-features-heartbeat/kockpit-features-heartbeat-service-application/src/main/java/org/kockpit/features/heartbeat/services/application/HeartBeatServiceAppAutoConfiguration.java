@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
 
@@ -41,8 +42,9 @@ public class HeartBeatServiceAppAutoConfiguration {
         if (isNull(instanceId)) {
             instanceId = resolveHostname();
         }
+        String startupId = UUID.randomUUID().toString();
         new HeartBeatPublisher(publishers, taskScheduler, serviceDefinition)
-                .start(applicationProperties.getDomain(), applicationProperties.getEnv(), applicationProperties.getAppId(), instanceId, Duration.parse(clientScheduling));
+                .start(applicationProperties.getDomain(), applicationProperties.getEnv(), applicationProperties.getAppId(), instanceId, startupId, Duration.parse(clientScheduling));
         return () -> {};
     }
 

@@ -1,0 +1,35 @@
+{
+  "size": 0,
+  "aggs": {
+    "by_app": {
+      "terms": {
+        "field": "appId",
+        "size": 10
+      },
+      "aggs": {
+        "avg_duration": {
+          "nested": {
+            "path": "indexedKeyValues"
+          },
+          "aggs": {
+            "filter_duration": {
+              "filter": {
+                "term": {
+                  "indexedKeyValues.key": "duration"
+                }
+              },
+              "aggs": {
+                "avg_value": {
+                  "avg": {
+                    "field": "indexedKeyValues.valueInteger"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

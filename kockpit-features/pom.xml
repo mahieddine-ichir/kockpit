@@ -16,6 +16,7 @@
         <module>kockpit-features-dynaconfig</module>
         <module>kockpit-features-audit</module>
         <module>kockpit-features-manifest</module>
+        <module>kockpit-features-cache</module>
     </modules>
 
 </project>

@@ -1,0 +1,129 @@
+#!/bin/bash
+
+op=$1
+url=localhost:9200
+
+function reindex() {
+  curl -H "Content-Type: application/json" -sX POST "$url/_reindex?wait_for_completion=false" -d '{
+    "source": {
+        "index": "'"$1"'"
+      },
+      "dest": {
+        "index": "'"$2"'"
+      }
+    }
+  '
+}
+
+function add_to_alias() {
+  curl -H "Content-Type: application/json" -sX POST $url/_aliases -d'
+    {
+      "actions": [
+        {
+          "add": {
+            "index": "'"$1"'",
+            "alias": "'"$2"'"
+          }
+        }
+      ]
+    }'
+}
+
+function remove_from_alias() {
+  curl -H "Content-Type: application/json" -sX POST $url/_aliases -d'
+    {
+      "actions": [
+        {
+          "remove": {
+              "index": "'"$1"'",
+              "alias": "'"$2"'"
+          }
+        }
+      ]
+    }'
+}
+
+function delete_index() {
+  index=$1
+  read  -r -p "Delete index '""$index""', (y/n) ? " response
+  case "$response" in
+    [yY][eE][sS]|[yY])
+      echo "Deleting index $index ..."
+      curl -sX DELETE "$url/$index"
+      ;;
+    [nN][oO]|[nN])
+      echo "Deletion cancelled!!!"
+      ;;
+    *)
+      echo "Invalid input. Please enter 'y' or 'n'."
+      ;;
+  esac
+}
+
+function list_indices() {
+  pattern=$1
+  curl -sX GET "$url/_cat/indices/$pattern" | awk '{print $3}'
+}
+
+function migrate() {
+    domain=$1
+    env=$2
+    index=$3
+    read  -r -p "Migrate index '""$index""', (y/n) ? " response
+    case "$response" in
+      [yY][eE][sS]|[yY])
+        new_index=${index}.v2
+        echo "Migrating index $index (onto $new_index)..."
+        # create v2 index
+        echo "- creating index $new_index"
+        curl -sX PUT $url/"$new_index"
+        echo
+        # reindex
+        echo "- reindex $index to $new_index"
+        reindex "$index" "$new_index"
+        echo
+        # add new index to read alias
+        alias="$domain-audit-data-$env-read"
+        echo "- adding $new_index to read alias $alias"
+        add_to_alias "$new_index" "$alias"
+        echo
+        # remove old from read alias
+        echo "- removing $index from read alias $alias"
+        remove_from_alias "$index" "$alias"
+        echo
+        ;;
+      *)
+        echo "... cancelled!!!"
+        ;;
+    esac
+}
+
+case $op in
+'delete')
+  delete_index $2
+  ;;
+'list')
+  domain=$2
+  env=$3
+  list_indices "$domain-audit-data-$env-ttl*"
+  ;;
+'count')
+  domain=$2
+  env=$3
+  for index in $(list_indices "$domain-audit-data-$env-ttl*")
+  do
+    count=$(curl -s "$url/$index/_count" | jq '.count')
+    echo "$index -> $count"
+  done
+  ;;
+'migrate')
+  migrate "$2" "$3" "$4"
+  ;;
+'inspect')
+  echo "- Check index alias ... "
+  curl -s $url/"$2"/_alias
+  ;;
+*)
+  echo "Invalid input!"
+  ;;
+esac

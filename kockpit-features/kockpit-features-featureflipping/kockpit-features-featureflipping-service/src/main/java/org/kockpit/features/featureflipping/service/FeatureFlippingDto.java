@@ -13,6 +13,12 @@ import java.util.Date;
 @AllArgsConstructor
 public class FeatureFlippingDto {
 
+    private String domain;
+
+    private String env;
+
+    private String appId;
+
     private String key;
 
     private Date expirationDate;

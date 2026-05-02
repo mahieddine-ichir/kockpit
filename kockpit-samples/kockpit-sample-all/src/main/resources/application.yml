@@ -12,7 +12,7 @@ spring:
 
 kockpit:
   domain: kockpit
-  env: dev
+  env: local
   app-id: ${spring.application.name}
 
   communication:

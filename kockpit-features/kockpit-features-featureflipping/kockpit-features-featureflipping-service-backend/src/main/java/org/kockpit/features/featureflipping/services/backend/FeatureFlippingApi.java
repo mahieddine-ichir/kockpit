@@ -16,6 +16,15 @@ public class FeatureFlippingApi {
 
     private final FeatureFlippingService featureFlippingService;
 
+    @GetMapping
+    ResponseEntity<List<FeatureFlippingDto>> get(
+            @PathVariable String domain,
+            @PathVariable String env,
+            @PathVariable String id
+    ) {
+        return ResponseEntity.ok(featureFlippingService.get(domain, env, id));
+    }
+
     @PutMapping
     ResponseEntity<FeatureFlippingDto> update(
             @PathVariable String domain,
@@ -26,6 +35,16 @@ public class FeatureFlippingApi {
     ) {
         log.debug("Feature Flipping {} enabled?, {} (domain {}, env {})", key, featureFlippingDto.getEnabled(), domain, env);
         return ResponseEntity.ok(featureFlippingService.update(domain, env, id, featureFlippingDto));
+    }
+
+    @PostMapping("_sync")
+    ResponseEntity<Void> sync(
+            @PathVariable String domain,
+            @PathVariable String env,
+            @PathVariable String id
+    ) {
+        featureFlippingService.republish();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("history")

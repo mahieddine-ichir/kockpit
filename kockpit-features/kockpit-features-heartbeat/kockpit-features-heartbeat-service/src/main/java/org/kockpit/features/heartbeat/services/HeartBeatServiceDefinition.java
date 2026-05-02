@@ -1,16 +1,12 @@
 package org.kockpit.features.heartbeat.services;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.kockpit.core.sdk.ServiceDefinition;
 
 @RequiredArgsConstructor
 public class HeartBeatServiceDefinition implements ServiceDefinition {
 
-    public static final String SERVICE_NAME = "HeartBeat";
-
-    @Getter
-    private final boolean pollingEnabled;
+    public static final String SERVICE_NAME = "heartbeat";
 
     @Override
     public String name() {
@@ -18,7 +14,7 @@ public class HeartBeatServiceDefinition implements ServiceDefinition {
     }
 
     @Override
-    public String audience() {
-        return null;
+    public boolean isPollingEnabled() {
+        return false;
     }
 }

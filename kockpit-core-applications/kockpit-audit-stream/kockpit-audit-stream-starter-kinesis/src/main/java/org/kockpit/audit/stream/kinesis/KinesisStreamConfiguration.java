@@ -159,7 +159,7 @@ public class KinesisStreamConfiguration {
                 kinesisAsyncClient,
                 streamName,
                 applicationName,
-                new KclRecordProcessor(applicationEventPublisher),
+                new KclRecordProcessor(),
                 applicationEventPublisher,
                 recordLimit,
                 shardCoordinator,

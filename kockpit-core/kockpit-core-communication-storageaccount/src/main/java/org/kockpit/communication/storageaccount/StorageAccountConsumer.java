@@ -25,7 +25,11 @@ public class StorageAccountConsumer implements Consumer {
 
     @Override
     public List<Message> poll(String domain, String env, String appId, String type) {
-        String filePattern = formatFilename(domain, env, appId, type);
+        String filePattern = appId != null
+                ? formatFilename(domain, env, appId, type)
+                : domain + "/" + env + "/";
+        log.trace("Polling messages for domain {}, env {}, appId {}, type {} (prefix {})", domain, env, appId, type, filePattern);
+
         return blobContainerClient.listBlobs()
                 .stream()
                 .filter(blobItem -> blobItem.getName().startsWith(filePattern))

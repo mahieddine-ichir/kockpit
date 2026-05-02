@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Edit, Check, X} from 'lucide-react';
+import {Edit, Check, X, RefreshCw} from 'lucide-react';
 import {AdjustmentsHorizontalIcon} from '@heroicons/react/24/outline';
 import {useSearchParams} from "react-router-dom";
-import {updateDynaConfig} from "../services/api.js";
+import {getDynaConfig, syncDynaConfig, updateDynaConfig} from "../services/api.js";
 import Stats from "../components/StatsComponent.jsx";
 import {loadSettings} from "../settings/useSettings.js";
 
@@ -122,18 +122,26 @@ export default function ConfigManager({domain, env, config}) {
     const serviceId = searchParams.get('service') || null;
     const [keys, setKeys] = useState([]);
     const [serviceName, setServiceName] = useState('Dyna Config');
+    const [syncing, setSyncing] = useState(false);
 
     useEffect(() => {
-        if (config['services']) {
-            let service = config['services']
-                .find(service => service.type === 'dyna-config' && service.id === serviceId);
-            if (service) {
-                if (service.config && service.config.keys) {
-                    setKeys([...service.config.keys]);
-                }
-                setServiceName(service.name || service.label || 'Dyna Config');
-            }
-        }
+        if (!config['services'] || !serviceId) return;
+        const service = config['services']
+            .find(s => s.type === 'dyna-config' && s.id === serviceId);
+        if (!service) return;
+
+        setServiceName(service.name || service.label || 'Dyna Config');
+        const manifestKeys = service.config?.keys ?? [];
+
+        getDynaConfig(domain, env, serviceId)
+            .then(apiValues => {
+                const valueMap = Object.fromEntries(apiValues.map(v => [v.key, v.value]));
+                setKeys(manifestKeys.map(k => ({
+                    ...k,
+                    value: k.key in valueMap ? valueMap[k.key] : k.value
+                })));
+            })
+            .catch(() => setKeys([...manifestKeys]));
     }, [domain, env, config, serviceId]);
 
     const updateKeyValue = (key) => {
@@ -145,17 +153,37 @@ export default function ConfigManager({domain, env, config}) {
     const totalKeys = keys.length;
     const modifiedKeys = 0; // TODO: implement modification tracking
 
+    const handleSync = () => {
+        setSyncing(true);
+        syncDynaConfig(domain, env, serviceId)
+            .then(() => getDynaConfig(domain, env, serviceId))
+            .then(apiValues => {
+                const valueMap = Object.fromEntries(apiValues.map(v => [v.key, v.value]));
+                setKeys(prev => prev.map(k => k.key in valueMap ? { ...k, value: valueMap[k.key] } : k));
+            })
+            .finally(() => setSyncing(false));
+    };
+
     return (
         <div className="min-h-screen bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
-                        <AdjustmentsHorizontalIcon className="h-8 w-8 text-blue-600" />
-                        {serviceName}
-                    </h1>
-                    <p className="text-slate-600">
-                        Dyna Config
-                    </p>
+                <div className="mb-8 flex items-start justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
+                            <AdjustmentsHorizontalIcon className="h-8 w-8 text-blue-600" />
+                            {serviceName}
+                        </h1>
+                        <p className="text-slate-600">Dyna Config</p>
+                    </div>
+                    <button
+                        onClick={handleSync}
+                        disabled={syncing}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium shadow-sm"
+                        title="Force republish all config to consumers"
+                    >
+                        <RefreshCw className={`h-4 w-4 ${syncing ? 'animate-spin' : ''}`} />
+                        {syncing ? 'Syncing…' : 'Sync'}
+                    </button>
                 </div>
 
                 {/* Stats Cards */}

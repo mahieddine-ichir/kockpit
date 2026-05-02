@@ -4,7 +4,9 @@ public interface ServiceDefinition {
 
     String name();
 
-    String audience();
+    default String audience() {
+        return null;
+    }
 
     default boolean isPollingEnabled() {
         return true;
