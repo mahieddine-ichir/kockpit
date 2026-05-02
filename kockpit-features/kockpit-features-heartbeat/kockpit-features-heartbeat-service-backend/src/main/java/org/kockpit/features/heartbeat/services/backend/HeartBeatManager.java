@@ -45,17 +45,29 @@ public class HeartBeatManager implements OnMessageListener {
                 .removeIf(e -> now - e.getValue().getCreationDate() > instanceTtl.toMillis());
 
         String key = instanceKey(message);
-        Message previous = instancesCache.put(key, message);
-        //fixme how to detect restarts !
-        // if (previous == null) {
-            log.trace("new/returned instance detected for {}", key);
-            applicationEventPublisher.publishEvent(
-                    HeartBeatDto.builder()
-                            .appId(message.getAppId())
-                            .ended(false)
-                            .build()
-            );
-        //}
+
+        if (isEnded(message)) {
+            instancesCache.remove(key);
+            log.trace("instance ended, removed from cache: {}", key);
+            return;
+        }
+
+        instancesCache.put(key, message);
+        log.trace("new/returned instance detected for {}", key);
+        applicationEventPublisher.publishEvent(
+                HeartBeatDto.builder()
+                        .appId(message.getAppId())
+                        .ended(false)
+                        .build()
+        );
+    }
+
+    private boolean isEnded(Message message) {
+        if (message.getBody() instanceof Map<?, ?> body) {
+            Object ended = body.get("ended");
+            return Boolean.TRUE.equals(ended) || "true".equalsIgnoreCase(String.valueOf(ended));
+        }
+        return false;
     }
 
     private String instanceKey(Message message) {
