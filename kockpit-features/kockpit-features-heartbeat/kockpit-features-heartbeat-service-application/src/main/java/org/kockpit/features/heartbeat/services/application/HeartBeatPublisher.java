@@ -24,9 +24,19 @@ public class HeartBeatPublisher {
 
     private final HeartBeatServiceDefinition serviceDefinition;
 
+    private String domain;
+    private String env;
+    private String appId;
+    private String instanceId;
+    private String startupId;
+
     void start(String domain, String env, String appId, String instanceId, String startupId, Duration triggerPeriod) {
+        this.domain = domain;
+        this.env = env;
+        this.appId = appId;
+        this.instanceId = instanceId;
+        this.startupId = startupId;
         log.info("Start heartBeat for domain {}, env {}, scheduler {}, startupId {}", domain, env, triggerPeriod, startupId);
-        publishers.forEach(Publisher::cleanup);
         taskScheduler.schedule(() -> {
             log.trace("heartBeat for domain {}, env {} and appId {}", domain, env, appId);
             publishers.forEach(publisher -> publisher.publish(Message.builder()
@@ -36,6 +46,7 @@ public class HeartBeatPublisher {
                     .domain(domain)
                     .env(env)
                     .appId(appId)
+                    .creationDate(System.currentTimeMillis())
                     .body(HeartBeatDto.builder().instanceId(instanceId).appId(appId).startupId(startupId).build())
                     .build()));
         }, new PeriodicTrigger(triggerPeriod));
@@ -43,6 +54,16 @@ public class HeartBeatPublisher {
 
     @PreDestroy
     void onStop() {
-        log.info("HeartBeat stopped");
+        log.info("HeartBeat stopped for domain {}, env {}, appId {}", domain, env, appId);
+        publishers.forEach(publisher -> publisher.publish(Message.builder()
+                .id(appId)
+                .service(serviceDefinition.name())
+                .type(serviceDefinition.name())
+                .domain(domain)
+                .env(env)
+                .appId(appId)
+                .creationDate(System.currentTimeMillis())
+                .body(HeartBeatDto.builder().instanceId(instanceId).appId(appId).startupId(startupId).ended(true).build())
+                .build()));
     }
 }

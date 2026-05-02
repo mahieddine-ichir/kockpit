@@ -17,7 +17,7 @@ const HealthIndicatorsDashboard = ({domain, env}) => {
     // Charger les données initiales
     useEffect(() => {
         loadIndicators();
-    }, []);
+    }, [domain, env]);
 
     // Auto-refresh based on settings
     useEffect(() => {
