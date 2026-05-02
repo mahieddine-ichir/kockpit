@@ -14,7 +14,7 @@ public class ManifestBackendService {
 
     private final ManifestBackendRepository manifestBackendRepository;
 
-    List<ManifestDto> list() {
+    public List<ManifestDto> list() {
         return manifestBackendRepository.findAll();
     }
 

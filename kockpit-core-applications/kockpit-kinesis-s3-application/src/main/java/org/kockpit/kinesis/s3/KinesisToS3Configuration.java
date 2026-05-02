@@ -2,22 +2,49 @@ package org.kockpit.kinesis.s3;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.kinesis.KinesisClient;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @Slf4j
 public class KinesisToS3Configuration {
+
+    @Bean
+    KinesisClient kinesisClient(
+            @Value("${kockpit.kinesis-to-s3.kinesis.endpoint:}") Optional<String> endpointOpt,
+            @Value("${aws.region}") String awsRegion
+    ) {
+        return endpointOpt
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .map(endpoint -> {
+                    log.info("Kinesis endpoint override: {}", endpoint);
+                    return KinesisClient.builder()
+                            .endpointOverride(URI.create(endpoint))
+                            .region(Region.of(awsRegion))
+                            .build();
+                }).orElseGet(() -> {
+                    log.info("Initializing Kinesis client using AWS credentials");
+                    return KinesisClient.builder()
+                            .region(Region.of(awsRegion))
+                            .credentialsProvider(DefaultCredentialsProvider.create())
+                            .build();
+                });
+    }
 
     @Bean
     S3Client s3Client(
@@ -28,31 +55,49 @@ public class KinesisToS3Configuration {
                 .map(String::trim)
                 .filter(s -> !s.isBlank())
                 .map(endpoint -> {
-                    log.info("➡️ S3 endpoint override: {}", endpoint);
+                    log.info("S3 endpoint override: {}", endpoint);
                     return S3Client.builder()
                             .endpointOverride(URI.create(endpoint))
                             .region(Region.of(awsRegion))
                             .forcePathStyle(true)
                             .build();
                 }).orElseGet(() -> {
-                    log.info("➡️ Initialize S3 client using AWS Credentials");
+                    log.info("Initializing S3 client using AWS credentials");
                     return S3Client.builder()
                             .region(Region.of(awsRegion))
-                            .credentialsProvider(DefaultCredentialsProvider.builder().build())
+                            .credentialsProvider(DefaultCredentialsProvider.create())
                             .build();
                 });
     }
 
     @Bean
-    KinesisToS3Consumer kinesisToS3Consumer(
+    KinesisToS3Writer kinesisToS3Writer(
             S3Client s3Client,
-            @Value("${kockpit.kinesis-to-s3.s3.bucket}") String bucketName,
-            @Value("${kockpit.kinesis-to-s3.s3.key-prefix:records}") String keyPrefix
+            @Value("${kockpit.kinesis-to-s3.s3.bucket}") String bucketName
     ) {
         ObjectMapper objectMapper = new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                .registerModule(new JavaTimeModule());
-        return new KinesisToS3Consumer(s3Client, bucketName, keyPrefix, objectMapper);
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return new KinesisToS3Writer(s3Client, bucketName, objectMapper, new KinesisRecordMapper());
+    }
+
+    @Bean(destroyMethod = "shutdown")
+    ScheduledExecutorService kinesisReaderScheduler(
+            KinesisClient kinesisClient,
+            KinesisToS3Writer writer,
+            @Value("${kockpit.kinesis-to-s3.kinesis.stream-names}") String streamNamesConfig,
+            @Value("${kockpit.kinesis-to-s3.kinesis.record-limit:100}") int recordLimit,
+            @Value("${kockpit.kinesis-to-s3.kinesis.read-interval-ms:5000}") long intervalMs
+    ) {
+        List<String> streamNames = Arrays.stream(streamNamesConfig.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .toList();
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(streamNames.size());
+        streamNames.forEach(streamName -> {
+            KinesisReader reader = new KinesisReader(kinesisClient, streamName, recordLimit, writer);
+            scheduler.scheduleWithFixedDelay(reader::poll, 0, intervalMs, TimeUnit.MILLISECONDS);
+        });
+        log.info("Started Kinesis readers for streams: {}", streamNames);
+        return scheduler;
     }
 }

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {updateFeatureFlag} from "../services/api.js";
-import {Clock, Flag} from "lucide-react";
+import {getFeatureFlags, syncFeatureFlags, updateFeatureFlag} from "../services/api.js";
+import {Clock, RefreshCw, ToggleRight} from "lucide-react";
 import {useSearchParams} from "react-router-dom";
 import Stats from "../components/StatsComponent.jsx";
 
@@ -46,18 +46,22 @@ const FeatureFlippingPage = ({ domain, env, config }) => {
     const [activeTab, setActiveTab] = useState("properties");
     const [flags, setFlags] = useState([]);
     const [serviceName, setServiceName] = useState('Feature Flipping');
+    const [syncing, setSyncing] = useState(false);
 
     useEffect(() => {
-        if (config['services']) {
-            let service = config['services'].find(service => service.type === 'feature-flipping' && service.id === serviceId);
-            console.log(`service ${JSON.stringify(service)}`);
-            if (service) {
-                if (Array.isArray(service['config']?.keys)) {
-                    setFlags([...service['config'].keys]);
-                }
-                setServiceName(service.name || service.label || 'Feature Flipping');
-            }
-        }
+        if (!config['services'] || !serviceId) return;
+        const service = config['services'].find(s => s.type === 'feature-flipping' && s.id === serviceId);
+        if (!service) return;
+
+        setServiceName(service.name || service.label || 'Feature Flipping');
+        const manifestFlags = service.config?.keys ?? [];
+
+        getFeatureFlags(domain, env, serviceId)
+            .then(apiFlags => {
+                const stateMap = Object.fromEntries(apiFlags.map(f => [f.key, f]));
+                setFlags(manifestFlags.map(f => f.key in stateMap ? { ...f, ...stateMap[f.key] } : f));
+            })
+            .catch(() => setFlags([...manifestFlags]));
     }, [domain, env, config, serviceId]);
 
     const handleToggle = (flag) => {
@@ -81,17 +85,37 @@ const FeatureFlippingPage = ({ domain, env, config }) => {
     const totalKeys = flags.length;
     const modifiedKeys = 0; // TODO: track modifications
 
+    const handleSync = () => {
+        setSyncing(true);
+        syncFeatureFlags(domain, env, serviceId)
+            .then(() => getFeatureFlags(domain, env, serviceId))
+            .then(apiFlags => {
+                const stateMap = Object.fromEntries(apiFlags.map(f => [f.key, f]));
+                setFlags(prev => prev.map(f => f.key in stateMap ? { ...f, ...stateMap[f.key] } : f));
+            })
+            .finally(() => setSyncing(false));
+    };
+
     return (
         <div className="min-h-screen bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
-                        <Flag className="h-8 w-8 text-blue-600" />
-                        {serviceName}
-                    </h1>
-                    <p className="text-slate-600">
-                        Feature Flipping
-                    </p>
+                <div className="mb-8 flex items-start justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
+                            <ToggleRight className="h-8 w-8 text-blue-600" />
+                            {serviceName}
+                        </h1>
+                        <p className="text-slate-600">Feature Flipping</p>
+                    </div>
+                    <button
+                        onClick={handleSync}
+                        disabled={syncing}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium shadow-sm"
+                        title="Force republish all flags to consumers"
+                    >
+                        <RefreshCw className={`h-4 w-4 ${syncing ? 'animate-spin' : ''}`} />
+                        {syncing ? 'Syncing…' : 'Sync'}
+                    </button>
                 </div>
 
                 {/* Stats Cards */}

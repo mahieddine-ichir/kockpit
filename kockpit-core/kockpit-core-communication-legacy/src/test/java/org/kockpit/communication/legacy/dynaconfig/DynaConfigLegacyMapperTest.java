@@ -51,7 +51,7 @@ class DynaConfigLegacyMapperTest {
         Message message = dynaConfigLegacyMapper.toMessage(legacy);
 
         assertThat(message.getId()).isEqualTo("d12fc6dd-2a7e-4c89-9137-3b3ea5084811");
-        assertThat(message.getService()).isEqualTo("dyna-config");
+        assertThat(message.getService()).isEqualTo("dynaconfig");
         assertThat(message.getType()).isEqualTo("update");
         assertThat(message.getDomain()).isEqualTo("wcplatform");
         assertThat(message.getEnv()).isEqualTo("dev");

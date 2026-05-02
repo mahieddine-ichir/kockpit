@@ -24,18 +24,19 @@ public class HeartBeatPublisher {
 
     private final HeartBeatServiceDefinition serviceDefinition;
 
-    void start(String domain, String env, String appId, String instanceId, Duration triggerPeriod) {
-        log.info("Start heartBeat for domain {}, env {}, scheduler {}", domain, env, triggerPeriod);
+    void start(String domain, String env, String appId, String instanceId, String startupId, Duration triggerPeriod) {
+        log.info("Start heartBeat for domain {}, env {}, scheduler {}, startupId {}", domain, env, triggerPeriod, startupId);
         publishers.forEach(Publisher::cleanup);
         taskScheduler.schedule(() -> {
             log.trace("heartBeat for domain {}, env {} and appId {}", domain, env, appId);
             publishers.forEach(publisher -> publisher.publish(Message.builder()
                     .id(appId)
                     .service(serviceDefinition.name())
+                    .type(serviceDefinition.name())
                     .domain(domain)
                     .env(env)
                     .appId(appId)
-                    .body(HeartBeatDto.builder().instanceId(instanceId).appId(appId).build())
+                    .body(HeartBeatDto.builder().instanceId(instanceId).appId(appId).startupId(startupId).build())
                     .build()));
         }, new PeriodicTrigger(triggerPeriod));
     }

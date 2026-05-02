@@ -23,7 +23,7 @@ public class DynaConfigMessageListener implements OnMessageListener {
 
     @Override
     public void onMessage(Message message) {
-        if (!DynaConfigServiceDefinition.DYNA_CONFIG.equals(message.getType())) {
+        if (!DynaConfigServiceDefinition.DYNA_CONFIG.equals(message.getService())) {
             return;
         }
         DynaConfigDto dto = objectMapper.convertValue(message.getBody(), DynaConfigDto.class);

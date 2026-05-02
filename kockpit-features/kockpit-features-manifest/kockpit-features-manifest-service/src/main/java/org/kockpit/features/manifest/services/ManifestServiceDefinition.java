@@ -5,7 +5,7 @@ import org.kockpit.core.sdk.ServiceDefinition;
 
 public class ManifestServiceDefinition implements ServiceDefinition {
 
-    public static final String SERVICE_NAME = "Manifest";
+    public static final String SERVICE_NAME = "manifest";
 
     @Getter
     private final boolean enabled;
@@ -17,10 +17,5 @@ public class ManifestServiceDefinition implements ServiceDefinition {
     @Override
     public String name() {
         return SERVICE_NAME;
-    }
-
-    @Override
-    public String audience() {
-        return null;
     }
 }

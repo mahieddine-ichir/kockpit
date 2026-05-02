@@ -23,9 +23,9 @@ public class FeatureFlippingServiceAutoConfiguration {
 
     ) {
         if (Objects.isNull(audience)) {
-            return new FeatureFlippingServiceDefinition(sdkApplicationProperties.getAppId(), pollingEnabled);
+            return new FeatureFlippingServiceDefinition(sdkApplicationProperties.getAppId());
         } else {
-            return new FeatureFlippingServiceDefinition(audience, pollingEnabled);
+            return new FeatureFlippingServiceDefinition(audience);
         }
     }
 }

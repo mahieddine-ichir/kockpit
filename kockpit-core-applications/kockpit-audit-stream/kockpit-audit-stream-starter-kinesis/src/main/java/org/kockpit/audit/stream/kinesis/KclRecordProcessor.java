@@ -3,7 +3,6 @@ package org.kockpit.audit.stream.kinesis;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,8 +13,6 @@ import java.util.zip.GZIPInputStream;
 @Slf4j
 @RequiredArgsConstructor
 public class KclRecordProcessor {
-
-    private final ApplicationEventPublisher applicationEventPublisher;
 
     @SneakyThrows
     String read(byte[] message) {

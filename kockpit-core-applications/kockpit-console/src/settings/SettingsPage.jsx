@@ -14,7 +14,7 @@ const SettingRow = ({label, description, children}) => (
 );
 
 export default function SettingsPage() {
-    const {updateSetting} = useSettings();
+    const {saveSettings} = useSettings();
     const [draft, setDraft] = useState(loadSettings);
     const [saved, setSaved] = useState(false);
 
@@ -24,7 +24,7 @@ export default function SettingsPage() {
     };
 
     const handleSave = () => {
-        Object.entries(draft).forEach(([key, value]) => updateSetting(key, value));
+        saveSettings(draft);
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
     };

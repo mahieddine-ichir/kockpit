@@ -29,12 +29,11 @@ public class DynaConfigLegacyMapper {
         if (legacy == null || legacy.getMessage() == null) {
             return null;
         }
-
         InstanceInitPropertiesUpdateRequestDto request =
                 objectMapper.convertValue(legacy.getMessage(), InstanceInitPropertiesUpdateRequestDto.class);
         return Message.builder()
                 .id(legacy.getMessageId())
-                .service("dyna-config")
+                .service("dynaconfig")
                 .type("update")
                 .domain(legacy.getDomain())
                 .env(legacy.getEnv())
@@ -97,9 +96,24 @@ public class DynaConfigLegacyMapper {
         return message.getKeyValues().stream()
                 .map(keyValue -> PropertyUpdateMessageRequestDto.builder()
                         .propertyName(keyValue.key())
-                        .newValue(keyValue.value())
+                        .newValue(toNewValue(keyValue.value()))
                         .build())
                 .toList();
+    }
+
+    private String toNewValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof List<?> list && !list.isEmpty()) {
+            if (list.get(0) == null) {
+                return null;
+            } else {
+                return list.get(0).toString();
+            }
+        } else {
+            return value.toString();
+        }
     }
 
 }

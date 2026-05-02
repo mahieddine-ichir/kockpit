@@ -30,7 +30,7 @@ public class S3Publisher implements Publisher {
                 message.getDomain(),
                 message.getEnv(),
                 message.getAppId(),
-                message.getType()
+                message.getService()
         );
         String key = "%s/%s.json".formatted(path, message.getId());
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -60,11 +60,11 @@ public class S3Publisher implements Publisher {
                         DeleteObjectRequest.builder().bucket(bucketName).key(obj.key()).build()));
     }
 
-    static String formatFilename(String domain, String env, String appId, String type) {
+    static String formatFilename(String domain, String env, String appId, String service) {
         if (Objects.isNull(appId)) {
-            return "%s/%s/%s".formatted(domain, env, type);
+            return "%s/%s/%s".formatted(domain, env, service);
         } else {
-            return "%s/%s/%s/%s".formatted(domain, env, appId, type);
+            return "%s/%s/%s/%s".formatted(domain, env, appId, service);
         }
     }
 }

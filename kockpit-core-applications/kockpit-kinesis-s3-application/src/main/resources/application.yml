@@ -6,24 +6,14 @@ aws:
   region: ${AWS_REGION:us-east-1}
 
 kockpit:
-  audit:
-    stream:
-      kinesis:
-        stream_name: ${KINESIS_STREAM_NAME}
-        application_name: ${KINESIS_APPLICATION_NAME:kockpit-kinesis-s3}
-        endpoint: ${KINESIS_ENDPOINT:}
-        read_interval_ms: ${KINESIS_READ_INTERVAL_MS:5000}
-        shard_acquisition_interval_ms: ${KINESIS_SHARD_ACQUISITION_INTERVAL_MS:30000}
-        record_limit: ${KINESIS_RECORD_LIMIT:100}
-      dynamodb:
-        endpoint: ${DYNAMODB_ENDPOINT:}
-      cloudwatch:
-        endpoint: ${CLOUDWATCH_ENDPOINT:}
-      trace: ${AUDIT_STREAM_TRACE:false}
   kinesis-to-s3:
+    kinesis:
+      stream-names: ${KINESIS_STREAM_NAMES}
+      endpoint: ${KINESIS_ENDPOINT:}
+      read-interval-ms: ${KINESIS_READ_INTERVAL_MS:5000}
+      record-limit: ${KINESIS_RECORD_LIMIT:100}
     s3:
       bucket: ${S3_BUCKET}
-      key-prefix: ${S3_KEY_PREFIX:records}
       endpoint: ${S3_ENDPOINT:}
 
 management:

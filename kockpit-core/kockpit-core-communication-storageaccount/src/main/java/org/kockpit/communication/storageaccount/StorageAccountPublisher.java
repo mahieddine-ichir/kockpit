@@ -26,7 +26,7 @@ public class StorageAccountPublisher implements Publisher {
                 message.getDomain(),
                 message.getEnv(),
                 message.getAppId(),
-                message.getType()
+                message.getService()
         );
         String fileName = "%s/%s.json".formatted(blobName, message.getId());
         BlobClient blobClient = blobContainerClient.getBlobClient(fileName);
@@ -44,11 +44,11 @@ public class StorageAccountPublisher implements Publisher {
     }
 
 
-    static String formatFilename(String domain, String env, String appId, String type) {
+    static String formatFilename(String domain, String env, String appId, String service) {
         if (Objects.isNull(appId)) {
-            return "%s/%s/%s".formatted(domain, env, type);
+            return "%s/%s/%s".formatted(domain, env, service);
         } else {
-            return "%s/%s/%s/%s".formatted(domain, env, appId, type);
+            return "%s/%s/%s/%s".formatted(domain, env, appId, service);
         }
     }
 }

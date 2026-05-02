@@ -12,9 +12,6 @@ public class DynaConfigServiceDefinition implements ServiceDefinition {
     @Getter
     private final String audience;
 
-    @Getter
-    private final boolean pollingEnabled;
-
     @Override
     public String name() {
         return DYNA_CONFIG;

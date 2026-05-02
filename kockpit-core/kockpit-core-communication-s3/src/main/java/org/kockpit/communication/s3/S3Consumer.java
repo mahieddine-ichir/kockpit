@@ -13,6 +13,7 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +29,10 @@ public class S3Consumer implements Consumer {
 
     @Override
     public List<Message> poll(String domain, String env, String appId, String type) {
-        String prefix = formatFilename(domain, env, appId, type);
+        // null appId means cross-app: scan all apps under domain/env
+        String prefix = appId != null
+                ? formatFilename(domain, env, appId, type)
+                : domain + "/" + env + "/";
         log.trace("Polling messages for domain {}, env {}, appId {}, type {} (bucket {}, prefix {})", domain, env, appId, type, bucketName, prefix);
 
         ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
@@ -40,15 +44,16 @@ public class S3Consumer implements Consumer {
                 .contents()
                 .stream()
                 .filter(obj -> !obj.key().endsWith("/"))
+                .filter(obj -> appId != null || obj.key().contains("/" + type + "/"))
                 .map(this::read)
                 .filter(Objects::nonNull)
-                .sorted((o1, o2) -> Math.toIntExact(o1.getCreationDate() - o2.getCreationDate()))
+                .filter(message -> message.getService() != null)
+                .sorted(Comparator.comparingLong(Message::getCreationDate))
                 .toList();
     }
 
     private Message read(S3Object s3Object) {
         try {
-            log.info("Reading S3 object {}", s3Object.key());
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                     .bucket(bucketName)
                     .key(s3Object.key())
