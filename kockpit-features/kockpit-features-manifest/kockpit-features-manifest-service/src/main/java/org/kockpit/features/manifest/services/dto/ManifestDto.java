@@ -20,4 +20,6 @@ public class ManifestDto {
     private String name;
 
     private List<ServiceDto> services;
+
+    private List<PolicyDto> policies;
 }
