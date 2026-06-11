@@ -18,7 +18,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-        </dependencies>
+                <!-- Jackson 2 explicite (ObjectMapper local) ; version geree par jackson-2-bom du parent Boot 4 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+</dependencies>
     </dependencyManagement>
 
     <dependencies>
