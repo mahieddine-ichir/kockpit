@@ -2,7 +2,7 @@ package org.kockpit.communication.legacy;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micrometer.common.util.StringUtils;
+import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.legacy.dynaconfig.DynaConfigLegacyConsumer;
 import org.kockpit.communication.legacy.dynaconfig.DynaConfigLegacyPublisher;
@@ -99,7 +99,7 @@ public class LegacyAutoConfiguration {
     ) {
         return optionalEndpoint
                 .map(String::trim)
-                .filter(StringUtils::isNotEmpty)
+                .filter(StringUtils::hasLength)
                 .map(endpoint -> {
                     log.info("➡️ s3 legacy endpoint: {}", endpoint);
                     return S3Client.builder()
