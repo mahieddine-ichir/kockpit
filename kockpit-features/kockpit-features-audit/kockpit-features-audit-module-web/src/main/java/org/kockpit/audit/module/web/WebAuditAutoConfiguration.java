@@ -1,5 +1,7 @@
 package org.kockpit.audit.module.web;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+
 import org.kockpit.audit.api.AuditorEventService;
 import org.kockpit.audit.api.AuditorKeyValueService;
 import org.kockpit.audit.api.AuditorService;
@@ -12,7 +14,6 @@ import org.kockpit.audit.module.web.skipped.ActuatorSkipAuditor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
         value = "kockpit.audit.enabled",
         havingValue = "true"
 )
-@Configuration
+@AutoConfiguration
 public class WebAuditAutoConfiguration {
 
   @Value("${kockpit.audit.http.origin.header:X-KOCKPIT-Origin}")

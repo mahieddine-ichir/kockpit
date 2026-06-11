@@ -1,5 +1,7 @@
 package org.kockpit.audit.httpexchange;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+
 import org.kockpit.audit.api.AuditorEventService;
 import org.kockpit.audit.api.AuditorService;
 import org.kockpit.audit.httpexchange.obfuscator.AuditObfuscator;
@@ -21,7 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(RestTemplate.class)
 public class HttpExchangeAutoConfiguration {
 
