@@ -11,7 +11,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
@@ -39,7 +39,12 @@
             <artifactId>spring-boot-properties-migrator</artifactId>
             <scope>runtime</scope>
         </dependency>
-    </dependencies>
+            <!-- Jackson 2 explicite (mappers locaux / client OpenSearch) ; versions gerees par jackson-2-bom du parent Boot 4 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+</dependencies>
 
     <profiles>
         <!-- storage-based features communication layer -->
