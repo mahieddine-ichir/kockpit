@@ -66,11 +66,11 @@ jobs:
           gpg --list-secret-keys --keyid-format=long || echo "No GPG keys found"
 
       - name: Build and Install Project
-        run: mvn clean install -DskipTests -DskipITs
+        run: mvn clean install -Dmaven.test.skip=true
 
       - name: Deploy kockpit-features to Maven Central
         if: github.event.inputs.deploy_modules == 'features'
-        run: mvn deploy -Pcentral -f kockpit-features/pom.xml -DskipTests -DskipITs
+        run: mvn deploy -Pcentral -f kockpit-features/pom.xml -Dmaven.test.skip=true
         env:
           MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
