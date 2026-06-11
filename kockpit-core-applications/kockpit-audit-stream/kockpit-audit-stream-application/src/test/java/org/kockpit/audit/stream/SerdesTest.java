@@ -1,23 +1,25 @@
 package org.kockpit.audit.stream;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kockpit.audit.stream.api.model.AuditReport;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Disabled
+/**
+ * Valide le contrat de deserialisation audit.json -> AuditReport avec le mapper Jackson 2
+ * configure comme dans KafkaStreamAutoConfiguration (le chemin reel de consommation),
+ * et non le bean ObjectMapper auto-configure par Boot (Jackson 3 depuis Boot 4).
+ */
 public class SerdesTest {
 
-    @Autowired
-    ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @Test
     void on_audit_json() throws IOException {
