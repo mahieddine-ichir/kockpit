@@ -151,7 +151,7 @@ public class AuditClientHttpRequestInterceptor implements ClientHttpRequestInter
 
   private HttpHeaders getHttpHeaders(HttpHeaders httpHeaders) {
     HttpHeaders headersWithoutAuthorization = new HttpHeaders();
-    httpHeaders.entrySet().stream()
+    httpHeaders.headerSet().stream()
         .filter(
             header ->
                 !filterAuthorizationHeader || !AUTHORIZATION.equalsIgnoreCase(header.getKey()))
