@@ -1,0 +1,1345 @@
+Configuration property changes between `3.5.8` and `4.0.0`
+
+
+
+== Deprecated in 4.0.0
+
+|======================
+| Key | Replacement | Reason
+
+| `spring.http.client.connect-timeout`
+| `spring.http.clients.connect-timeout`
+|
+
+| `spring.http.client.factory`
+| `spring.http.clients.imperative.factory`
+|
+
+| `spring.http.client.read-timeout`
+| `spring.http.clients.read-timeout`
+|
+
+| `spring.http.client.redirects`
+| `spring.http.clients.redirects`
+|
+
+| `spring.http.client.ssl.bundle`
+| `spring.http.clients.ssl.bundle`
+|
+
+| `spring.http.reactiveclient.connect-timeout`
+| `spring.http.clients.connect-timeout`
+|
+
+| `spring.http.reactiveclient.connector`
+| `spring.http.clients.reactive.connector`
+|
+
+| `spring.http.reactiveclient.read-timeout`
+| `spring.http.clients.read-timeout`
+|
+
+| `spring.http.reactiveclient.redirects`
+| `spring.http.clients.redirects`
+|
+
+| `spring.http.reactiveclient.ssl.bundle`
+| `spring.http.clients.ssl.bundle`
+|
+|======================
+
+
+
+== Added in 4.0.0
+
+|======================
+| Key | Default value | Description
+
+| `logging.console.enabled`
+|
+| Whether to enable console-based logging.
+
+| `management.brave.tracing.span-joining-supported`
+| `false`
+| Whether the propagation type and tracing backend support sharing the span ID between client and server spans.
+
+| `management.endpoints.jackson.isolated-json-mapper`
+| `true`
+| Whether to use an isolated JsonMapper to serialize endpoint JSON.
+
+| `management.endpoints.jackson2.isolated-object-mapper` (deprecated)
+| `true`
+| Whether to use an isolated object mapper to serialize endpoint JSON.
+
+| `management.health.mongodb.enabled`
+| `true`
+| Whether to enable MongoDB health check.
+
+| `management.logging.export.otlp.enabled`
+| `true`
+| Whether auto-configuration of logging is enabled to export logs over OTLP.
+
+| `management.metrics.mongodb.command.enabled`
+| `true`
+| Whether to enable Mongo client command metrics.
+
+| `management.metrics.mongodb.connectionpool.enabled`
+| `true`
+| Whether to enable Mongo connection pool metrics.
+
+| `management.metrics.observations.ignored-meters`
+|
+| Meters that should be ignored when recoding observations.
+
+| `management.opentelemetry.logging.export.otlp.compression`
+| `none`
+| Method used to compress the payload.
+
+| `management.opentelemetry.logging.export.otlp.connect-timeout`
+| `10s`
+| Connect timeout for the OTel collector connection.
+
+| `management.opentelemetry.logging.export.otlp.endpoint`
+|
+| URL to the OTel collector's HTTP API.
+
+| `management.opentelemetry.logging.export.otlp.headers`
+|
+| Custom HTTP headers you want to pass to the collector, for example auth headers.
+
+| `management.opentelemetry.logging.export.otlp.timeout`
+| `10s`
+| Call timeout for the OTel Collector to process an exported batch of data.
+
+| `management.opentelemetry.logging.export.otlp.transport`
+| `http`
+| Transport used to send the logs.
+
+| `management.opentelemetry.tracing.export.include-unsampled`
+| `false`
+| Whether unsampled spans should be exported.
+
+| `management.opentelemetry.tracing.export.max-batch-size`
+| `512`
+| Maximum batch size for each export.
+
+| `management.opentelemetry.tracing.export.max-queue-size`
+| `2048`
+| Maximum number of spans that are kept in the queue before they will be dropped.
+
+| `management.opentelemetry.tracing.export.otlp.compression`
+| `none`
+| Method used to compress the payload.
+
+| `management.opentelemetry.tracing.export.otlp.connect-timeout`
+| `10s`
+| Connect timeout for the OTel collector connection.
+
+| `management.opentelemetry.tracing.export.otlp.endpoint`
+|
+| URL to the OTel collector's HTTP API.
+
+| `management.opentelemetry.tracing.export.otlp.headers`
+|
+| Custom HTTP headers you want to pass to the collector, for example auth headers.
+
+| `management.opentelemetry.tracing.export.otlp.timeout`
+| `10s`
+| Call timeout for the OTel Collector to process an exported batch of data.
+
+| `management.opentelemetry.tracing.export.otlp.transport`
+| `http`
+| Transport used to send the spans.
+
+| `management.opentelemetry.tracing.export.schedule-delay`
+| `5s`
+| The delay interval between two consecutive exports.
+
+| `management.opentelemetry.tracing.export.timeout`
+| `30s`
+| Maximum time an export will be allowed to run before being cancelled.
+
+| `management.stackdriver.metrics.export.auto-create-metric-descriptors`
+| `true`
+| Whether it should be attempted to create a metric descriptor before writing a time series.
+
+| `management.tracing.export.enabled`
+| `true`
+| Whether auto-configuration of tracing is enabled to export and propagate traces.
+
+| `management.tracing.export.otlp.enabled`
+| `true`
+| Whether auto-configuration of tracing is enabled to export OTLP traces.
+
+| `management.tracing.export.zipkin.connect-timeout`
+| `1s`
+| Connection timeout for requests to Zipkin.
+
+| `management.tracing.export.zipkin.enabled`
+| `true`
+| Whether auto-configuration of tracing is enabled to export Zipkin traces.
+
+| `management.tracing.export.zipkin.encoding`
+| `json`
+| How to encode the POST body to the Zipkin API.
+
+| `management.tracing.export.zipkin.endpoint`
+| `http://localhost:9411/api/v2/spans`
+| URL to the Zipkin API.
+
+| `management.tracing.export.zipkin.read-timeout`
+| `10s`
+| Read timeout for requests to Zipkin.
+
+| `server.tomcat.resource.cache-max-size`
+| `10MB`
+| Maximum size of the static resource cache.
+
+| `spring.batch.jdbc.continue-on-error`
+| `true`
+| Whether initialization should continue when an error occurs when applying a schema script.
+
+| `spring.data.mongodb.representation.big-decimal`
+| `unspecified`
+| Representation to use when converting a BigDecimal.
+
+| `spring.data.redis.masterreplica.nodes`
+|
+| Static list of "host:port" pairs to use, at least one entry is required.
+
+| `spring.datasource.hikari.credentials-provider-class-name`
+|
+|
+
+| `spring.datasource.oracleucp.connection-wait-timeout-while-service-down`
+|
+|
+
+| `spring.elasticsearch.api-key`
+|
+| API key for authentication with Elasticsearch.
+
+| `spring.elasticsearch.restclient.sniffer.enabled`
+| `false`
+| Whether the sniffer is enabled.
+
+| `spring.flyway.callback-locations`
+|
+| Locations of callbacks.
+
+| `spring.flyway.powershell-executable`
+|
+| PowerShell executable to use for running PowerShell scripts.
+
+| `spring.graphql.rsocket.preferred-json-mapper`
+| `jackson`
+| Preferred JSON mapper to use.
+
+| `spring.http.clients.connect-timeout`
+|
+| Default connect timeout for a client HTTP request.
+
+| `spring.http.clients.imperative.factory`
+|
+| Default factory used for a client HTTP request.
+
+| `spring.http.clients.reactive.connector`
+|
+| Default connector used for a client HTTP request.
+
+| `spring.http.clients.read-timeout`
+|
+| Default read timeout for a client HTTP request.
+
+| `spring.http.clients.redirects`
+|
+| Handling for HTTP redirects.
+
+| `spring.http.clients.ssl.bundle`
+|
+| SSL bundle to use.
+
+| `spring.http.codecs.preferred-json-mapper`
+| `jackson`
+| Preferred JSON mapper to use for HTTP encoding and decoding.
+
+| `spring.http.converters.string-encoding-charset`
+| `UTF-8`
+| Charset to use for String conversion.
+
+| `spring.http.serviceclient`
+|
+| HTTP Service Client definitions
+
+| `spring.integration.jdbc.continue-on-error`
+| `true`
+| Whether initialization should continue when an error occurs when applying a schema script.
+
+| `spring.jackson.cbor.read`
+|
+| Jackson on/off token reader features that are specific to CBOR.
+
+| `spring.jackson.cbor.write`
+|
+| Jackson on/off token writer features that are specific to CBOR.
+
+| `spring.jackson.datatype.datetime`
+|
+| Jackson on/off features for DateTimes.
+
+| `spring.jackson.find-and-add-modules`
+| `true`
+| Whether to find and add modules to the auto-configured JsonMapper.Builder using MapperBuilder.findAndAddModules(ClassLoader).
+
+| `spring.jackson.json.read`
+|
+| Jackson on/off token reader features that are specific to JSON.
+
+| `spring.jackson.json.write`
+|
+| Jackson on/off token writer features that are specific to JSON.
+
+| `spring.jackson.use-jackson2-defaults`
+| `false`
+| Whether to configure Jackson 3 with the same defaults as Spring Boot previously used for Jackson 2.
+
+| `spring.jackson.xml.read`
+|
+| Jackson on/off token reader features that are specific to XML.
+
+| `spring.jackson.xml.write`
+|
+| Jackson on/off token writer features that are specific to XML.
+
+| `spring.jackson2.constructor-detector` (deprecated)
+| `default`
+| Strategy to use to auto-detect constructor, and in particular behavior with single-argument constructors.
+
+| `spring.jackson2.datatype.enum` (deprecated)
+|
+| Jackson on/off features for enums.
+
+| `spring.jackson2.datatype.json-node` (deprecated)
+|
+| Jackson on/off features for JsonNodes.
+
+| `spring.jackson2.date-format` (deprecated)
+|
+| Date format string or a fully-qualified date format class name.
+
+| `spring.jackson2.default-leniency` (deprecated)
+|
+| Global default setting (if any) for leniency.
+
+| `spring.jackson2.default-property-inclusion` (deprecated)
+|
+| Controls the inclusion of properties during serialization.
+
+| `spring.jackson2.deserialization` (deprecated)
+|
+| Jackson on/off features that affect the way Java objects are deserialized.
+
+| `spring.jackson2.generator` (deprecated)
+|
+| Jackson on/off features for generators.
+
+| `spring.jackson2.locale` (deprecated)
+|
+| Locale used for formatting.
+
+| `spring.jackson2.mapper` (deprecated)
+|
+| Jackson general purpose on/off features.
+
+| `spring.jackson2.parser` (deprecated)
+|
+| Jackson on/off features for parsers.
+
+| `spring.jackson2.property-naming-strategy` (deprecated)
+|
+| One of the constants on Jackson's PropertyNamingStrategies.
+
+| `spring.jackson2.serialization` (deprecated)
+|
+| Jackson on/off features that affect the way Java objects are serialized.
+
+| `spring.jackson2.time-zone` (deprecated)
+|
+| Time zone used when formatting dates.
+
+| `spring.jackson2.visibility` (deprecated)
+|
+| Jackson visibility thresholds that can be used to limit which methods (and fields) are auto-detected.
+
+| `spring.kafka.retry.topic.backoff.jitter`
+| `0`
+| Jitter value for the base retry attempt, randomly subtracted or added to the calculated delay, resulting in a value between 'delay - jitter' and 'delay + jitter' but never below the base delay or above the max delay.
+
+| `spring.mongodb.additional-hosts`
+|
+| Additional server hosts.
+
+| `spring.mongodb.authentication-database`
+|
+| Authentication database name.
+
+| `spring.mongodb.database`
+|
+| Database name.
+
+| `spring.mongodb.host`
+|
+| Mongo server host.
+
+| `spring.mongodb.password`
+|
+| Login password of the mongo server.
+
+| `spring.mongodb.port`
+|
+| Mongo server port.
+
+| `spring.mongodb.protocol`
+| `mongodb`
+| Protocol to be used for the MongoDB connection.
+
+| `spring.mongodb.replica-set-name`
+|
+| Required replica set name for the cluster.
+
+| `spring.mongodb.representation.uuid`
+| `unspecified`
+| Representation to use when converting a UUID to a BSON binary value.
+
+| `spring.mongodb.ssl.bundle`
+|
+| SSL bundle name.
+
+| `spring.mongodb.ssl.enabled`
+|
+| Whether to enable SSL support.
+
+| `spring.mongodb.uri`
+| `mongodb://localhost/test`
+| Mongo database URI.
+
+| `spring.mongodb.username`
+|
+| Login user of the mongo server.
+
+| `spring.mvc.apiversion.default`
+|
+| Default version that should be used for each request.
+
+| `spring.mvc.apiversion.detect-supported`
+|
+| Whether supported versions should be detected from controllers.
+
+| `spring.mvc.apiversion.required`
+|
+| Whether the API version is required with each request.
+
+| `spring.mvc.apiversion.supported`
+|
+| Supported versions.
+
+| `spring.mvc.apiversion.use.header`
+|
+| Use the HTTP header with the given name to obtain the version.
+
+| `spring.mvc.apiversion.use.media-type-parameter`
+|
+| Use the media type parameter with the given name to obtain the version.
+
+| `spring.mvc.apiversion.use.path-segment`
+|
+| Use the path segment at the given index to obtain the version.
+
+| `spring.mvc.apiversion.use.query-parameter`
+|
+| Use the query parameter with the given name to obtain the version.
+
+| `spring.persistence.exceptiontranslation.enabled`
+| `true`
+| Whether to enable the PersistenceExceptionTranslationPostProcessor.
+
+| `spring.quartz.jdbc.continue-on-error`
+| `true`
+| Whether initialization should continue when an error occurs when applying a schema script.
+
+| `spring.rabbitmq.listener.direct.retry.max-retries`
+| `3`
+| Maximum number of retry attempts to deliver a message.
+
+| `spring.rabbitmq.listener.simple.retry.max-retries`
+| `3`
+| Maximum number of retry attempts to deliver a message.
+
+| `spring.rabbitmq.template.retry.max-retries`
+| `3`
+| Maximum number of retry attempts to deliver a message.
+
+| `spring.rsocket.preferred-mapper`
+| `jackson`
+| Preferred JSON and CBOR mapper to use.
+
+| `spring.servlet.encoding.charset`
+| `UTF-8`
+| Charset of HTTP requests and responses.
+
+| `spring.servlet.encoding.enabled`
+| `true`
+| Whether to enable Servlet HTTP encoding support.
+
+| `spring.servlet.encoding.force`
+|
+| Whether to force the encoding to the configured charset on HTTP requests and responses.
+
+| `spring.servlet.encoding.force-request`
+|
+| Whether to force the encoding to the configured charset on HTTP requests.
+
+| `spring.servlet.encoding.force-response`
+|
+| Whether to force the encoding to the configured charset on HTTP responses.
+
+| `spring.session.data.redis.cleanup-cron`
+| `0 * * * * *`
+| Cron expression for expired session cleanup job.
+
+| `spring.session.data.redis.configure-action`
+| `notify-keyspace-events`
+| The configure action to apply when no user-defined ConfigureRedisAction or ConfigureReactiveRedisAction bean is present.
+
+| `spring.session.data.redis.flush-mode`
+| `on-save`
+| Sessions flush mode.
+
+| `spring.session.data.redis.namespace`
+| `spring:session`
+| Namespace for keys used to store sessions.
+
+| `spring.session.data.redis.repository-type`
+| `default`
+| Type of Redis session repository to configure.
+
+| `spring.session.data.redis.save-mode`
+| `on-set-attribute`
+| Sessions save mode.
+
+| `spring.session.jdbc.continue-on-error`
+| `true`
+| Whether initialization should continue when an error occurs when applying a schema script.
+
+| `spring.task.execution.simple.cancel-remaining-tasks-on-close`
+| `false`
+| Whether to cancel remaining tasks on close.
+
+| `spring.test.metrics.export`
+| `false`
+| Whether metrics export should be auto-configured in tests.
+
+| `spring.test.mockmvc.htmlunit.url`
+| `http://localhost`
+| URL to use when HtmlUnit expands relative paths.
+
+| `spring.test.mockmvc.htmlunit.webclient.enabled`
+| `true`
+| Whether HTMLUnit's WebClient should be auto-configured when it's on the classpath.
+
+| `spring.test.mockmvc.htmlunit.webdriver.enabled`
+| `true`
+| Whether Selenium's WebDriver should be auto-configured when it's on the classpath.
+
+| `spring.test.restclient.mockrestserviceserver.enabled`
+| `true`
+| Whether a MockRestServiceServer should be auto-configured.
+
+| `spring.test.tracing.export`
+| `false`
+| Whether tracing export should be auto-configured in tests.
+
+| `spring.web.error.include-binding-errors`
+| `never`
+| When to include "errors" attribute.
+
+| `spring.web.error.include-exception`
+| `false`
+| Include the "exception" attribute.
+
+| `spring.web.error.include-message`
+| `never`
+| When to include "message" attribute.
+
+| `spring.web.error.include-path`
+| `always`
+| When to include "path" attribute.
+
+| `spring.web.error.include-stacktrace`
+| `never`
+| When to include the "trace" attribute.
+
+| `spring.web.error.path`
+| `/error`
+| Path of the error controller.
+
+| `spring.web.error.whitelabel.enabled`
+| `true`
+| Whether to enable the default error page displayed in browsers in case of a server error.
+
+| `spring.webflux.apiversion.default`
+|
+| Default version that should be used for each request.
+
+| `spring.webflux.apiversion.detect-supported`
+|
+| Whether supported versions should be detected from controllers.
+
+| `spring.webflux.apiversion.required`
+|
+| Whether the API version is required with each request.
+
+| `spring.webflux.apiversion.supported`
+|
+| Supported versions.
+
+| `spring.webflux.apiversion.use.header`
+|
+| Use the HTTP header with the given name to obtain the version.
+
+| `spring.webflux.apiversion.use.media-type-parameter`
+|
+| Use the media type parameter with the given name to obtain the version.
+
+| `spring.webflux.apiversion.use.path-segment`
+|
+| Use the path segment at the given index to obtain the version.
+
+| `spring.webflux.apiversion.use.query-parameter`
+|
+| Use the query parameter with the given name to obtain the version.
+|======================
+
+
+
+== Removed in 4.0.0
+
+|======================
+| Key | Replacement | Reason
+
+| `management.endpoint.auditevents.enabled`
+| `management.endpoint.auditevents.access`
+|
+
+| `management.endpoint.beans.enabled`
+| `management.endpoint.beans.access`
+|
+
+| `management.endpoint.caches.enabled`
+| `management.endpoint.caches.access`
+|
+
+| `management.endpoint.conditions.enabled`
+| `management.endpoint.conditions.access`
+|
+
+| `management.endpoint.configprops.enabled`
+| `management.endpoint.configprops.access`
+|
+
+| `management.endpoint.env.enabled`
+| `management.endpoint.env.access`
+|
+
+| `management.endpoint.flyway.enabled`
+| `management.endpoint.flyway.access`
+|
+
+| `management.endpoint.health.enabled`
+| `management.endpoint.health.access`
+|
+
+| `management.endpoint.heapdump.enabled`
+| `management.endpoint.heapdump.access`
+|
+
+| `management.endpoint.httpexchanges.enabled`
+| `management.endpoint.httpexchanges.access`
+|
+
+| `management.endpoint.info.enabled`
+| `management.endpoint.info.access`
+|
+
+| `management.endpoint.integrationgraph.enabled`
+| `management.endpoint.integrationgraph.access`
+|
+
+| `management.endpoint.liquibase.enabled`
+| `management.endpoint.liquibase.access`
+|
+
+| `management.endpoint.logfile.enabled`
+| `management.endpoint.logfile.access`
+|
+
+| `management.endpoint.loggers.enabled`
+| `management.endpoint.loggers.access`
+|
+
+| `management.endpoint.mappings.enabled`
+| `management.endpoint.mappings.access`
+|
+
+| `management.endpoint.metrics.enabled`
+| `management.endpoint.metrics.access`
+|
+
+| `management.endpoint.prometheus.enabled`
+| `management.endpoint.prometheus.access`
+|
+
+| `management.endpoint.quartz.enabled`
+| `management.endpoint.quartz.access`
+|
+
+| `management.endpoint.sbom.enabled`
+| `management.endpoint.sbom.access`
+|
+
+| `management.endpoint.scheduledtasks.enabled`
+| `management.endpoint.scheduledtasks.access`
+|
+
+| `management.endpoint.sessions.enabled`
+| `management.endpoint.sessions.access`
+|
+
+| `management.endpoint.shutdown.enabled`
+| `management.endpoint.shutdown.access`
+|
+
+| `management.endpoint.startup.enabled`
+| `management.endpoint.startup.access`
+|
+
+| `management.endpoint.threaddump.enabled`
+| `management.endpoint.threaddump.access`
+|
+
+| `management.endpoints.jackson.isolated-object-mapper`
+|
+|
+
+| `management.health.mongo.enabled`
+| `management.health.mongodb.enabled`
+|
+
+| `management.health.probes.enabled`
+| `management.endpoint.health.probes.enabled`
+|
+
+| `management.metrics.mongo.command.enabled`
+| `management.metrics.mongodb.command.enabled`
+|
+
+| `management.metrics.mongo.connectionpool.enabled`
+| `management.metrics.mongodb.connectionpool.enabled`
+|
+
+| `management.observations.long-task-timer.enabled`
+|
+|
+
+| `management.otlp.logging.compression`
+| `management.opentelemetry.logging.export.otlp.compression`
+|
+
+| `management.otlp.logging.connect-timeout`
+| `management.opentelemetry.logging.export.otlp.connect-timeout`
+|
+
+| `management.otlp.logging.endpoint`
+| `management.opentelemetry.logging.export.otlp.endpoint`
+|
+
+| `management.otlp.logging.export.enabled`
+| `management.logging.export.otlp.enabled`
+|
+
+| `management.otlp.logging.headers`
+| `management.opentelemetry.logging.export.otlp.headers`
+|
+
+| `management.otlp.logging.timeout`
+| `management.opentelemetry.logging.export.otlp.timeout`
+|
+
+| `management.otlp.logging.transport`
+| `management.opentelemetry.logging.export.otlp.transport`
+|
+
+| `management.otlp.tracing.compression`
+| `management.opentelemetry.tracing.export.otlp.compression`
+|
+
+| `management.otlp.tracing.connect-timeout`
+| `management.opentelemetry.tracing.export.otlp.connect-timeout`
+|
+
+| `management.otlp.tracing.endpoint`
+| `management.opentelemetry.tracing.export.otlp.endpoint`
+|
+
+| `management.otlp.tracing.export.enabled`
+| `management.tracing.export.otlp.enabled`
+|
+
+| `management.otlp.tracing.headers`
+| `management.opentelemetry.tracing.export.otlp.headers`
+|
+
+| `management.otlp.tracing.timeout`
+| `management.opentelemetry.tracing.export.otlp.timeout`
+|
+
+| `management.otlp.tracing.transport`
+| `management.opentelemetry.tracing.export.otlp.transport`
+|
+
+| `management.server.undertow.accesslog.prefix`
+|
+|
+
+| `management.signalfx.metrics.export.access-token`
+|
+| Deprecated in Micrometer 1.15.0
+
+| `management.signalfx.metrics.export.batch-size`
+|
+| Deprecated in Micrometer 1.15.0
+
+| `management.signalfx.metrics.export.connect-timeout`
+|
+| Deprecated in Micrometer 1.15.0
+
+| `management.signalfx.metrics.export.enabled`
+|
+| Deprecated in Micrometer 1.15.0
+
+| `management.signalfx.metrics.export.published-histogram-type`
+|
+| Deprecated in Micrometer 1.15.0
+
+| `management.signalfx.metrics.export.read-timeout`
+|
+| Deprecated in Micrometer 1.15.0
+
+| `management.signalfx.metrics.export.source`
+|
+| Deprecated in Micrometer 1.15.0
+
+| `management.signalfx.metrics.export.step`
+|
+| Deprecated in Micrometer 1.15.0
+
+| `management.signalfx.metrics.export.uri`
+|
+| Deprecated in Micrometer 1.15.0
+
+| `management.tracing.brave.span-joining-supported`
+| `management.brave.tracing.span-joining-supported`
+|
+
+| `management.tracing.enabled`
+| `management.tracing.export.enabled`
+|
+
+| `management.tracing.opentelemetry.export.include-unsampled`
+| `management.opentelemetry.tracing.export.include-unsampled`
+|
+
+| `management.tracing.opentelemetry.export.max-batch-size`
+| `management.opentelemetry.tracing.export.max-batch-size`
+|
+
+| `management.tracing.opentelemetry.export.max-queue-size`
+| `management.opentelemetry.tracing.export.max-queue-size`
+|
+
+| `management.tracing.opentelemetry.export.schedule-delay`
+| `management.opentelemetry.tracing.export.schedule-delay`
+|
+
+| `management.tracing.opentelemetry.export.timeout`
+| `management.opentelemetry.tracing.export.timeout`
+|
+
+| `management.wavefront.api-token`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.api-token-type`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.application.cluster-name`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.application.custom-tags`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.application.name`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.application.service-name`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.application.shard-name`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.metrics.export.batch-size`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.metrics.export.connect-timeout`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.metrics.export.enabled`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.metrics.export.global-prefix`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.metrics.export.read-timeout`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.metrics.export.report-day-distribution`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.metrics.export.report-hour-distribution`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.metrics.export.report-minute-distribution`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.metrics.export.step`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.sender.batch-size`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.sender.flush-interval`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.sender.max-queue-size`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.sender.message-size`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.source`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.trace-derived-custom-tag-keys`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.tracing.export.enabled`
+|
+| Wavefront is end-of-life.
+
+| `management.wavefront.uri`
+|
+| Wavefront is end-of-life.
+
+| `management.zipkin.tracing.connect-timeout`
+| `management.tracing.export.zipkin.connect-timeout`
+|
+
+| `management.zipkin.tracing.encoding`
+| `management.tracing.export.zipkin.encoding`
+|
+
+| `management.zipkin.tracing.endpoint`
+| `management.tracing.export.zipkin.endpoint`
+|
+
+| `management.zipkin.tracing.export.enabled`
+| `management.tracing.export.zipkin.enabled`
+|
+
+| `management.zipkin.tracing.read-timeout`
+| `management.tracing.export.zipkin.read-timeout`
+|
+
+| `server.error.include-binding-errors`
+| `spring.web.error.include-binding-errors`
+|
+
+| `server.error.include-exception`
+| `spring.web.error.include-exception`
+|
+
+| `server.error.include-message`
+| `spring.web.error.include-message`
+|
+
+| `server.error.include-path`
+| `spring.web.error.include-path`
+|
+
+| `server.error.include-stacktrace`
+| `spring.web.error.include-stacktrace`
+|
+
+| `server.error.path`
+| `spring.web.error.path`
+|
+
+| `server.error.whitelabel.enabled`
+| `spring.web.error.whitelabel.enabled`
+|
+
+| `server.servlet.encoding.charset`
+| `spring.servlet.encoding.charset`
+|
+
+| `server.servlet.encoding.enabled`
+| `spring.servlet.encoding.enabled`
+|
+
+| `server.servlet.encoding.force`
+| `spring.servlet.encoding.force`
+|
+
+| `server.servlet.encoding.force-request`
+| `spring.servlet.encoding.force-request`
+|
+
+| `server.servlet.encoding.force-response`
+| `spring.servlet.encoding.force-response`
+|
+
+| `server.undertow.accesslog.dir`
+|
+|
+
+| `server.undertow.accesslog.enabled`
+|
+|
+
+| `server.undertow.accesslog.pattern`
+|
+|
+
+| `server.undertow.accesslog.prefix`
+|
+|
+
+| `server.undertow.accesslog.rotate`
+|
+|
+
+| `server.undertow.accesslog.suffix`
+|
+|
+
+| `server.undertow.allow-encoded-slash`
+| `server.undertow.decode-slash`
+|
+
+| `server.undertow.always-set-keep-alive`
+|
+|
+
+| `server.undertow.buffer-size`
+|
+|
+
+| `server.undertow.decode-slash`
+|
+|
+
+| `server.undertow.decode-url`
+|
+|
+
+| `server.undertow.direct-buffers`
+|
+|
+
+| `server.undertow.eager-filter-init`
+|
+|
+
+| `server.undertow.max-cookies`
+|
+|
+
+| `server.undertow.max-headers`
+|
+|
+
+| `server.undertow.max-http-post-size`
+|
+|
+
+| `server.undertow.max-parameters`
+|
+|
+
+| `server.undertow.no-request-timeout`
+|
+|
+
+| `server.undertow.options.server`
+|
+|
+
+| `server.undertow.options.socket`
+|
+|
+
+| `server.undertow.preserve-path-on-forward`
+|
+|
+
+| `server.undertow.threads.io`
+|
+|
+
+| `server.undertow.threads.worker`
+|
+|
+
+| `server.undertow.url-charset`
+|
+|
+
+| `spring.codec.log-request-details`
+| `spring.http.codecs.log-request-details`
+|
+
+| `spring.codec.max-in-memory-size`
+| `spring.http.codecs.max-in-memory-size`
+|
+
+| `spring.dao.exceptiontranslation.enabled`
+| `spring.persistence.exceptiontranslation.enabled`
+|
+
+| `spring.data.mongodb.additional-hosts`
+| `spring.mongodb.additional-hosts`
+|
+
+| `spring.data.mongodb.authentication-database`
+| `spring.mongodb.authentication-database`
+|
+
+| `spring.data.mongodb.database`
+| `spring.mongodb.database`
+|
+
+| `spring.data.mongodb.host`
+| `spring.mongodb.host`
+|
+
+| `spring.data.mongodb.password`
+| `spring.mongodb.password`
+|
+
+| `spring.data.mongodb.port`
+| `spring.mongodb.port`
+|
+
+| `spring.data.mongodb.protocol`
+| `spring.mongodb.protocol`
+|
+
+| `spring.data.mongodb.replica-set-name`
+| `spring.mongodb.replica-set-name`
+|
+
+| `spring.data.mongodb.ssl.bundle`
+| `spring.mongodb.ssl.bundle`
+|
+
+| `spring.data.mongodb.ssl.enabled`
+| `spring.mongodb.ssl.enabled`
+|
+
+| `spring.data.mongodb.uri`
+| `spring.mongodb.uri`
+|
+
+| `spring.data.mongodb.username`
+| `spring.mongodb.username`
+|
+
+| `spring.data.mongodb.uuid-representation`
+| `spring.mongodb.representation.uuid`
+|
+
+| `spring.flyway.clean-on-validation-error`
+|
+| Deprecated in Flyway 10.18 and removed in Flyway 11.0
+
+| `spring.flyway.oracle-kerberos-cache-file`
+| `spring.flyway.oracle.kerberos-cache-file`
+|
+
+| `spring.flyway.oracle-sqlplus`
+| `spring.flyway.oracle.sqlplus`
+|
+
+| `spring.flyway.oracle-sqlplus-warn`
+| `spring.flyway.oracle.sqlplus-warn`
+|
+
+| `spring.flyway.oracle-wallet-location`
+| `spring.flyway.oracle.wallet-location`
+|
+
+| `spring.flyway.sql-server-kerberos-login-file`
+| `spring.flyway.sqlserver.kerberos-login-file`
+|
+
+| `spring.freemarker.enabled`
+|
+| No longer required.
+
+| `spring.graphql.path`
+| `spring.graphql.http.path`
+|
+
+| `spring.graphql.sse.timeout`
+| `spring.graphql.http.sse.timeout`
+|
+
+| `spring.groovy.template.enabled`
+|
+| No longer required.
+
+| `spring.jackson.generator`
+|
+| Partially replaced by 'spring.jackson.json.read'.
+
+| `spring.jackson.parser`
+|
+| Partially replaced by 'spring.jackson.json.write'.
+
+| `spring.jackson.read`
+| `spring.jackson.json.read`
+|
+
+| `spring.jackson.write`
+| `spring.jackson.json.write`
+|
+
+| `spring.kafka.retry.topic.backoff.random`
+| `spring.kafka.retry.topic.backoff.jitter`
+|
+
+| `spring.mustache.enabled`
+|
+| No longer required.
+
+| `spring.neo4j.pool.metrics-enabled`
+|
+| Use 'management.metrics.enable' to restrict certain metrics.
+
+| `spring.rabbitmq.listener.direct.retry.max-attempts`
+|
+|
+
+| `spring.rabbitmq.listener.simple.retry.max-attempts`
+|
+|
+
+| `spring.rabbitmq.template.retry.max-attempts`
+|
+|
+
+| `spring.session.hazelcast.flush-mode`
+|
+|
+
+| `spring.session.hazelcast.map-name`
+|
+|
+
+| `spring.session.hazelcast.save-mode`
+|
+|
+
+| `spring.session.mongodb.collection-name`
+|
+|
+
+| `spring.session.redis.cleanup-cron`
+| `spring.session.data.redis.cleanup-cron`
+|
+
+| `spring.session.redis.configure-action`
+| `spring.session.data.redis.configure-action`
+|
+
+| `spring.session.redis.flush-mode`
+| `spring.session.data.redis.flush-mode`
+|
+
+| `spring.session.redis.namespace`
+| `spring.session.data.redis.namespace`
+|
+
+| `spring.session.redis.repository-type`
+| `spring.session.data.redis.repository-type`
+|
+
+| `spring.session.redis.save-mode`
+| `spring.session.data.redis.save-mode`
+|
+
+| `spring.test.mockmvc.webclient.enabled`
+| `spring.test.mockmvc.htmlunit.webclient.enabled`
+|
+
+| `spring.test.mockmvc.webdriver.enabled`
+| `spring.test.mockmvc.htmlunit.webdriver.enabled`
+|
+
+| `spring.test.observability.auto-configure`
+|
+| Superseded by 'spring.test.metrics.export' and 'spring.test.tracing.export'.
+
+| `spring.test.webclient.mockrestserviceserver.enabled`
+| `spring.test.restclient.mockrestserviceserver.enabled`
+|
+
+| `spring.test.webclient.register-rest-template`
+|
+|
+
+| `spring.thymeleaf.enabled`
+|
+| No longer required.
+|======================
