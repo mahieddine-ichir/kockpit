@@ -50,78 +50,79 @@
 
 ## Phase 2 — Checklist d'exécution (ordre : libs → starters → applications, kockpit-ai en dernier)
 
-### Commit 1 — `build: parent Boot 4.1.0, Java 21, version 2.0.0-SNAPSHOT` — commit: ______
-- [ ] Créer la branche `migration/sb4-spring-ai2`
-- [ ] pom racine : parent `spring-boot-starter-parent:4.1.0`, `java.version=21`, version `2.0.0-SNAPSHOT` (tous les modules suivent)
-- [ ] `spring-boot-properties-migrator` en scope runtime sur les applications (TEMPORAIRE — retrait tracké en fin de plan)
-- [ ] Dé-pinner les versions bloquantes : B1 (rules-starter), B2 spring-aop (rules-registry), B10 (httpclient5/httpcore5)
-- [ ] Supprimer `maven.compiler.source/target=21` redondants (`kockpit-rules-engine-parent/pom.xml:15-16`) + bloc dependencyManagement 3.4.3 commenté
-- [ ] Supprimer le pin `maven-compiler-plugin:3.8.1` (`kockpit-ai-mcp-server/pom.xml`)
-- [ ] Aligner lombok 1.18.34→`${lombok.version}` et junit-jupiter 5.8.1→managé (rules-maven-plugin)
-- [ ] Vérifier : `mvn -q clean compile` (échecs attendus = cassures listées, traitées aux commits suivants)
+### Commit 1 — `build: parent Boot 4.1.0, Java 21, version 2.0.0-SNAPSHOT` — commit: fb3e8175 (docs : 16d2a935)
+- [x] Créer la branche `migration/sb4-spring-ai2`
+- [x] pom racine : parent `spring-boot-starter-parent:4.1.0`, `java.version=21`, version `2.0.0-SNAPSHOT` (tous les modules suivent)
+- [x] `spring-boot-properties-migrator` en scope runtime sur les applications (TEMPORAIRE — retrait tracké en fin de plan)
+- [x] Dé-pinner les versions bloquantes : B1 (rules-starter), B2 spring-aop (rules-registry), B10 (httpclient5/httpcore5)
+- [x] Supprimer `maven.compiler.source/target=21` redondants (`kockpit-rules-engine-parent/pom.xml:15-16`) + bloc dependencyManagement 3.4.3 commenté
+- [x] Supprimer le pin `maven-compiler-plugin:3.8.1` (`kockpit-ai-mcp-server/pom.xml`)
+- [x] Aligner lombok 1.18.34→`${lombok.version}` et junit-jupiter 5.8.1→managé (rules-maven-plugin)
+- [x] Vérifier : `mvn clean install -Dmaven.test.skip=true` sous JDK 21 — compile jusqu'à features-audit-module-web (cassure Framework 7 `ContentCachingRequestWrapper(request, int)` découverte, traitée au commit 2). Deps testcontainers mortes supprimées (kinesis-s3, artefacts renommés en TC 2.0.5). NB : JDK local 25 → Temurin 21.0.11 installé (`~/Library/Java/JavaVirtualMachines/temurin-21.0.11`), builds avec `JAVA_HOME` pointé dessus.
 
-### Commit 2 — `build: starters fins Boot 4.x (webmvc, kafka, jackson...)` — commit: ______
-- [ ] B3 : `spring-boot-starter-web` → `spring-boot-starter-webmvc` (9 poms, liste en B3)
-- [ ] B2 : `spring-boot-starter-json` (rules-registry) → deps Jackson 2 explicites (managées par jackson-2-bom)
-- [ ] B4 : deps `spring-boot-restclient` + `spring-boot-webclient` (optional) sur features-audit-module-httpexchange + imports
-- [ ] B5 : dep `spring-boot-kafka` + import `KafkaProperties` relocalisé + `buildConsumerProperties(SslBundles)` (audit-notification-kafka, audit-stream-starter-kafka)
-- [ ] features-audit-module-web : dep explicite `spring-boot-web-server` si `FilterRegistrationBean` n'arrive plus transitivement
-- [ ] B6 : springdoc → 3.0.3 (backend-application, + plugin maven springdoc)
-- [ ] Starters -test correspondants là où nécessaire (webmvc-test...) — `spring-boot-starter-test` seul ne suffit plus
-- [ ] Vérifier : compilation des modules concernés
+### Commit 2 — `build: starters fins Boot 4.x (webmvc, kafka, jackson...)` — commit: c5b54e48
+- [x] B3 : `spring-boot-starter-web` → `spring-boot-starter-webmvc` (9 poms — NB : les alias dépréciés existent encore sur Central en 4.1.0, mais politique = noms 4.x uniquement)
+- [x] B2 : `spring-boot-starter-json` (rules-registry) → deps Jackson 2 explicites + `jakarta.annotation-api` (perdue avec le starter)
+- [x] B4 : deps `spring-boot-restclient` + `spring-boot-webclient` (optional) sur features-audit-module-httpexchange + imports
+- [x] B5 : dep `spring-boot-kafka` + import `org.springframework.boot.kafka.autoconfigure.KafkaProperties` (audit-notification-kafka, audit-stream-starter-kafka). NB : `buildConsumerProperties()` est SANS argument en 4.1 (vérifié javap) — pas de variante SslBundles.
+- [x] features-audit-module-web : `FilterRegistrationBean` reste dans `org.springframework.boot.web.servlet` (jar core spring-boot) — aucun changement nécessaire
+- [x] B6 : springdoc → 3.0.3 (backend-application ; le plugin maven springdoc est commenté — rien à faire)
+- [x] Cassures Framework 7 découvertes au build : `ContentCachingRequestWrapper(request, Integer.MAX_VALUE)` (AuditFilter) ; `HttpHeaders.entrySet()` → `headerSet()` (httpexchange ×2)
+- [x] Jackson 2 explicite là où starter-web le fournissait : search-opensearch, dashboard, sample-all, ai-mcp-server
+- [x] Vérifier : `mvn clean install -Dmaven.test.skip=true` vert sur tout le réacteur
 
-### Commit 3 — `feat(kockpit-rules): compat Spring Framework 7` — commit: ______
-- [ ] Valider `spring-icomponent:1.0.8` sous Spring 7 (compiler + lancer `ApiTest` du sample) — **si KO : STOP, arbitrage** (pas d'alternative drop-in)
-- [ ] rules-app-sample : B3 (starter-webmvc) + B8 (`AutoConfigureMockMvc` nouveau package + `spring-boot-starter-webmvc-test`)
-- [ ] rules-maven-plugin : retirer deps test inutilisées `spring-context`/`kockpit-rules-starter` si confirmé ; vérifier la génération mustache (annotations Spring stables)
-- [ ] `mvn -pl kockpit-rules -am verify`
+### Commit 3 — `feat(kockpit-rules): compat Spring Framework 7` — commit: 2e87bc60
+- [x] **`spring-icomponent:1.0.8` VALIDÉ sous Spring 7** : `mvn -f kockpit-rules/pom.xml clean verify` vert — 13 tests dont ApiTest 2/2 (bout-en-bout `@Flow` + MockMvc). Pas de STOP.
+- [x] rules-app-sample : B8 (`org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc` + starter-test → `spring-boot-starter-webmvc-test`)
+- [x] rules-maven-plugin : deps test inutilisées `spring-context`/`kockpit-rules-starter` supprimées (plugin découplé de Boot) ; génération mustache OK (tests du plugin verts)
+- [x] `mvn -f kockpit-rules/pom.xml clean verify` (attention : `-pl kockpit-rules -am` ne construit PAS les enfants de l'agrégateur)
 
-### Commit 4 — `feat: jackson 3 applications / coexistence jackson 2 clients` — commit: ______
-- [ ] B7 : `tools.jackson` dans dynaconfig-service-application + heartbeat-service-backend (injection ObjectMapper)
-- [ ] B9 : sample-all FeatureFlagService
-- [ ] kockpit-ai AuditReportHelper + DTOs : dep explicite jackson-databind 2 + jsr310 (ou tools.jackson — trancher au moment du code)
-- [ ] Vérifier chaque module à `new ObjectMapper()` local : dep `jackson-databind` 2 EXPLICITE déclarée (storageaccount en manque déjà)
-- [ ] Mappers OpenSearch (JacksonJsonpMapper Jackson 2, opensearch-objectMapper, audit-stream) : conservés en Jackson 2 isolé — documenter dans MIGRATION_NOTES.md
-- [ ] opensearch-java → 3.9.0 ; opensearch-rest-high-level-client → 3.7.0 (D2)
-- [ ] Aucun import `com.fasterxml.jackson.databind` ne subsiste dans du code servi par le mapper WEB des applications
+### Commit 4 — `feat: jackson 3 applications / coexistence jackson 2 clients` — commit: 7838da41
+- [x] B7 : `tools.jackson` dans dynaconfig-service-application + heartbeat-service-backend (injection ObjectMapper) + deps `tools.jackson.core:jackson-databind`
+- [x] B9 : sample-all FeatureFlagService → dep jackson-databind 2 explicite (mapper local conservé en Jackson 2)
+- [x] kockpit-ai AuditReportHelper + DTOs : deps explicites jackson-databind 2 + jsr310 (Jackson 2 conservé — flux OpenSearch)
+- [x] storageaccount : dep jackson-databind 2 explicite ajoutée (était transitive azure-core)
+- [x] Mappers OpenSearch conservés en Jackson 2 isolé — documenté dans MIGRATION_NOTES.md
+- [x] opensearch-java 3.0.0 → 3.9.0 ; opensearch-rest-high-level-client 3.3.2 → 3.7.0 (D2)
+- [x] Réacteur vert (`install -Dmaven.test.skip=true`)
 
-### Commit 5 — `feat: starters maison conformes Boot 4` — commit: ______
-- [ ] Annoter `@AutoConfiguration` les auto-configs en `@Configuration` simple : `AuditAnnotationConfig`, `OperationIdSetterInterceptorConfig`, 3 configs obfuscation, `HttpExchangeAutoConfiguration`, `WebAuditAutoConfiguration`, `FilterTraceIdConfiguration`, `KafkaAuditServiceAutoConfiguration`
-- [ ] Vérifier tous les `AutoConfiguration.imports` (mécanisme inchangé en Boot 4, aucun spring.factories dans le repo ✅)
-- [ ] README des modules starters : mention « kockpit 2.x = Spring Boot 4 uniquement, Java 21 minimum »
-- [ ] Deps manquantes détectées : jackson-databind (storageaccount), micrometer StringUtils → `org.springframework.util.StringUtils` (s3, legacy, manifest-s3)
+### Commit 5 — `feat: starters maison conformes Boot 4` — commit: e89d4a0f
+- [x] `@AutoConfiguration` sur les 9 auto-configs en `@Configuration` simple (ou sans annotation) ; appel inter-bean `kafkaTemplate→producerFactory` remplacé par injection (proxyBeanMethods=false)
+- [x] `AutoConfiguration.imports` : mécanisme inchangé, aucun spring.factories dans le repo ✅
+- [x] README racine + kockpit-rules : mention « kockpit 2.x = Spring Boot 4 uniquement, Java 21 minimum »
+- [x] Deps manquantes : jackson-databind (storageaccount, commit 4), spring-boot-autoconfigure (audit-annotation), micrometer StringUtils → `org.springframework.util.StringUtils::hasLength` (s3, legacy, manifest-s3, starter-kinesis)
 
-### Commit 6 — `test: migration annotations test Boot 4` — commit: ______
-- [ ] B8 features-audit-module-web : `XB3TraceIdFilterITTest` nouvel import + `spring-boot-starter-webmvc-test` ; `spring-boot-starter-web` scope test → webmvc
-- [ ] Aucun @MockBean/@SpyBean dans le repo ✅ (vérifié à l'audit) — re-vérifier par grep avant de cocher
-- [ ] `RuleEngineAuditTest` JUnit 4 → Jupiter (audit-rules-impl) — junit:junit reste managé mais Boot 4 = JUnit 6
-- [ ] SerdesTest ×2 `@Disabled` : réécrire (`@Autowired ObjectMapper` com.fasterxml → cassé en Boot 4) ou réactiver en tools.jackson — PAS de @Disabled pour « faire passer »
-- [ ] D3 (si validé) : smoke tests de contexte par application/profil
+### Commit 6 — `test: migration annotations test Boot 4` — commit: 7607f5ab
+- [x] B8 features-audit-module-web : `XB3TraceIdFilterITTest` nouvel import + dep `spring-boot-webmvc-test`
+- [x] Aucun @MockBean/@SpyBean dans le repo ✅
+- [x] `RuleEngineAuditTest` JUnit 4 → Jupiter + dep junit-jupiter (audit-rules-impl)
+- [x] SerdesTest ×2 : réécrits en tests unitaires du mapper Jackson 2 RÉEL (config KafkaStreamAutoConfiguration) et RÉACTIVÉS
+- [x] D3 : smoke tests `@SpringBootTest contextLoads()` × 5 applications (backend en variante filesystem via deps test ; audit-stream avec `kockpit.audit.trace.enabled=true`)
+- [x] **`mvn clean verify` racine : VERT — 45 tests, 0 échec, 0 erreur**
 
-### Commit 7 — `chore: config applicative Boot 4 (propriétés, probes)` — commit: ______
-- [ ] Démarrage de CHAQUE application × CHAQUE profil (default, filesystem, azure, aws, kafka, kinesis, eventhub) → zéro warning properties-migrator ; renommages appliqués dans tous les application*.yml
-- [ ] `spring.kafka.retry.topic.backoff.random` → `.jitter` si présent
-- [ ] `management.endpoint.health.probes.enabled=true` : supprimer (défaut en Boot 4) — backend-application, audit-stream-application
-- [ ] Probes actives par défaut : impact compose/terraform documenté (terraform utilise `/actuator/health` — compatible ; port management 8090/8091 à re-valider) → MIGRATION_NOTES.md
-- [ ] `spring.main.allow-bean-definition-overriding=true` (backend-application) : tester sans, sinon consigner
+### Commit 7 — `chore: config applicative Boot 4 (probes)` — commit: 71debc5c
+- [ ] Démarrage réel de CHAQUE application × CHAQUE profil → zéro warning properties-migrator (→ Phase 3)
+- [x] `spring.kafka.retry.topic.backoff.random` : non utilisée ✅ ; clés `spring.kafka.*` et `server.servlet.context-path` inchangées (vérifié changelogs 4.0/4.1)
+- [x] `management.endpoint.health.probes.enabled=true` supprimé (défaut Boot 4) — backend, audit-stream (+ yml de test)
+- [x] Probes par défaut : terraform `/actuator/health` compatible ; ports management 8090/8091 conservés → MIGRATION_NOTES.md
+- [ ] `spring.main.allow-bean-definition-overriding=true` (backend-application) : tester sans en Phase 3, sinon consigner
 
-### Commit 8 — `ci: JDK 21, maven.test.skip, image corretto 21` — commit: ______
-- [ ] Dockerfile mcp-server : `amazoncorretto:22-al2023-headless` → `amazoncorretto:21-al2023-headless` (les 4 autres déjà en 21 ✅)
-- [ ] 17 occurrences `-DskipTests` (15 GH Actions + azure-pipelines + 1 fichier mort) → `-Dmaven.test.skip=true` là où l'intention est « pas de tests » (builds d'image, deploy central)
-- [ ] CI déjà JDK 21 partout ✅ — rien à changer côté setup-java
-- [ ] D4 (si validé) : corriger le chemin Dockerfile du stage Docker azure-pipelines.yml
-- [ ] Fichier mort `kockpit-audit/.github/worflows/maven-publish.yml` : consigner dans MIGRATION_NOTES.md (hors périmètre, suppression à proposer)
+### Commit 8 — `ci: maven.test.skip, image corretto 21` — commit: 854f93cd
+- [x] Dockerfile mcp-server : corretto 22 → 21 (les 4 autres déjà en 21 ✅)
+- [x] 16 occurrences actives `-DskipTests`(+`-DskipITs`) → `-Dmaven.test.skip=true` (GH Actions + azure-pipelines) ; fichier mort kockpit-audit/.github/worflows non touché (consigné)
+- [x] CI déjà JDK 21 partout ✅
+- [x] D4 : chemin Dockerfile du stage Docker azure-pipelines.yml corrigé
 
-### Commit 9 — `feat(kockpit-ai): Spring AI 2.0.0-RC2` (EN DERNIER) — commit: ______
-- [ ] BOM `spring-ai-bom` 1.1.3 → 2.0.0-RC2 (D1) ; supprimer la propriété morte `spring-ai.version=1.0.1` (module aws)
-- [ ] Starter `spring-ai-starter-mcp-server-webmvc` : coordonnées INCHANGÉES en 2.0 (vérifié) — aucun changement de code attendu (`@Tool`/`@ToolParam`/`ToolCallbacks` inchangés, 7 propriétés `spring.ai.mcp.server.*` identiques)
-- [ ] Doublon lombok dans kockpit-ai-mcp-server-aws/pom.xml : nettoyer
-- [ ] Comportement 2.0 : validation des arguments d'outils activée par défaut côté serveur → tester avec un client MCP réel, consigner dans MIGRATION_NOTES.md
+### Commit 9 — `feat(kockpit-ai): Spring AI 2.0.0-RC2` (EN DERNIER) — commit: ebf68d5c
+- [x] BOM `spring-ai-bom` 1.1.3 → 2.0.0-RC2 (D1) ; propriété morte 1.0.1 supprimée ; doublon lombok nettoyé
+- [x] Starter `spring-ai-starter-mcp-server-webmvc` : coordonnées et API inchangées — aucun changement de code
+- [x] `mvn -f kockpit-ai verify` : VERT (9 tests dont smoke de contexte)
+- [ ] Validation des arguments d'outils MCP (défaut 2.0) : tester avec un client MCP réel en Phase 3
 - [ ] AVANT toute release Central : bump RC2 → GA (tracké, AUCUNE publication avant)
 
 ### Fin de phase 2
-- [ ] CLAUDE.md mis à jour (Boot 4.1, Spring AI 2, Java 21, conventions starters)
-- [ ] README + release notes : mention de rupture « kockpit 2.x : Spring Boot 4 uniquement, Java 21 minimum » ; impact plugin Maven (JDK 21 requis chez les consommateurs)
+- [x] CLAUDE.md mis à jour (Boot 4.1, Spring AI 2, Java 21, conventions starters)
+- [x] README + release notes : mention de rupture « kockpit 2.x : Spring Boot 4 uniquement, Java 21 minimum » ; impact plugin Maven (JDK 21 requis chez les consommateurs)
 
 ## Phase 3 — Validation runtime
 - [ ] `mvn clean verify` racine (sans profil central) → vert ; triage `mvn -pl <module> -am verify` si échec

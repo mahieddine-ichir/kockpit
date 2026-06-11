@@ -80,11 +80,19 @@ docker-compose -f docker/docker-compose.yml up -d
 ## Architecture Overview
 
 ### Backend Architecture
-- **Spring Boot 3.x** with Java 17
+- **Spring Boot 4.1** (Spring Framework 7, Jakarta EE 11) with **Java 21** (build and runtime — JDK 21 required, not 25)
+- **Spring AI 2.x** for the MCP server (`kockpit-ai`) — bump RC → GA required before any Maven Central release
 - **Modular design** with separate service layers for storage, search, and dashboard
 - **Multiple storage backends**: Azure, filesystem, OpenSearch
 - **Authentication**: Basic authentication with extensible design
 - **Profile-based configuration**: Different profiles for different deployment scenarios
+
+### Spring Boot 4 conventions (kockpit 2.x)
+- **Fine-grained starters only**: `spring-boot-starter-webmvc` (never the deprecated `spring-boot-starter-web` alias), `spring-boot-starter-webmvc-test` for MockMvc tests (`spring-boot-starter-test` alone is not enough). Relocated modules in use: `spring-boot-kafka` (KafkaProperties), `spring-boot-restclient`, `spring-boot-webclient`.
+- **Jackson coexistence**: applications serialize web payloads with **Jackson 3** (`tools.jackson`, the Boot-autoconfigured ObjectMapper bean); **Jackson 2** (`com.fasterxml`) is kept ONLY for OpenSearch client mappers, always as locally-instantiated ObjectMappers with explicit `jackson-databind` deps (versions managed by Boot's `jackson-2-bom`). Never inject the Boot ObjectMapper bean as `com.fasterxml...ObjectMapper`.
+- **In-house auto-configurations**: registered via `META-INF/spring/...AutoConfiguration.imports`, annotated `@AutoConfiguration` (implies `proxyBeanMethods=false` — no inter-@Bean method calls).
+- **Versioning**: kockpit 2.x = Spring Boot 4 / Java 21 only (breaking change); Boot 3.x consumers stay on kockpit 1.x. The `kockpit-rules-maven-plugin` 2.x requires JDK 21 on consumer projects.
+- **CI**: use `-Dmaven.test.skip=true` (not `-DskipTests`) to skip tests in image/deploy builds — Boot 4's plugin only honors `maven.test.skip` for test AOT.
 
 ### Frontend Architecture
 - **React 18** with TypeScript and Vite build system
