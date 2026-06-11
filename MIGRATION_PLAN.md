@@ -124,15 +124,21 @@
 - [x] CLAUDE.md mis à jour (Boot 4.1, Spring AI 2, Java 21, conventions starters)
 - [x] README + release notes : mention de rupture « kockpit 2.x : Spring Boot 4 uniquement, Java 21 minimum » ; impact plugin Maven (JDK 21 requis chez les consommateurs)
 
-## Phase 3 — Validation runtime
-- [ ] `mvn clean verify` racine (sans profil central) → vert ; triage `mvn -pl <module> -am verify` si échec
-- [ ] `docker compose` environnement local (OpenSearch + Kafka)
-- [ ] backend (filesystem) : recherche d'audits aboutie contre OpenSearch
-- [ ] audit-stream (kafka) : message consommé et indexé
-- [ ] serveur MCP : `tools/list` répond
-- [ ] Zéro erreur contexte Spring, zéro warning properties-migrator, zéro @Disabled de complaisance, zéro warning de dépréciation introduit
-- [ ] **Retrait de `spring-boot-properties-migrator`** (ajouté au commit 1)
-- [ ] Résultats + changements de comportement (Jackson 3, probes, Spring AI 2) → MIGRATION_NOTES.md
+## Phase 3 — Validation runtime — TERMINÉE le 2026-06-11 ✅
+- [x] `mvn clean verify` racine (sans profil central) → VERT (45 tests, 0 échec)
+- [x] `docker compose -f docker/docker-compose-kafka-opensearch.yml up` (OpenSearch 3.2.0 + Kafka)
+- [x] backend (filesystem) : `GET /api/kockpit/local/audits/_search` → HTTP 200 avec résultats réels
+- [x] audit-stream (kafka) : message AuditReport envoyé sur `audits`, consommé et indexé dans OpenSearch
+- [x] serveur MCP : `tools/list` répond (+ `tools/call` exercé, isError:false)
+- [x] Zéro erreur contexte Spring, zéro warning properties-migrator (3 apps), zéro @Disabled (les 2 existants RÉACTIVÉS), zéro warning de dépréciation introduit
+- [x] **`spring-boot-properties-migrator` RETIRÉ** des 5 poms + verify final vert
+- [x] Résultats + changements de comportement → MIGRATION_NOTES.md (section « Validation runtime — Phase 3 »)
+
+### Items résiduels (commits 7/9)
+- [x] Commit 7 : démarrage réel backend/audit-stream/mcp → zéro warning migrator (profils azure/aws/kinesis/eventhub non exercés au runtime — compilation + analyse seulement, cf. MIGRATION_NOTES)
+- [x] Commit 7 : `allow-bean-definition-overriding` : démarre aussi avec `false` (filesystem) — conservée, consigné
+- [x] Commit 9 : tool MCP réel appelé (`search-audits-by-traceId`) — validation d'arguments 2.0 sans impact sur les clients conformes
+- [ ] Commit 9 : bump Spring AI RC2 → **GA avant toute release Maven Central** (SEUL item ouvert)
 
 ## Tableau de risque par groupe de modules
 

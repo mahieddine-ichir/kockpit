@@ -57,12 +57,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- TEMPORAIRE migration Boot 4 : à retirer en fin de Phase 3 (cf. MIGRATION_PLAN.md) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-properties-migrator</artifactId>
-            <scope>runtime</scope>
-        </dependency>
     </dependencies>
 
     <build>
