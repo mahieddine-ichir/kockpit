@@ -1,6 +1,6 @@
 package org.kockpit.rules.audit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kockpit.rules.DefaultDocumentationDetails;
 import org.kockpit.rules.RuleNode;
 import org.kockpit.rules.RuleNodeBuilder;
@@ -11,7 +11,7 @@ import org.kockpit.rules.executor.RuleNodeExecutor;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class RuleEngineAuditTest {
 
