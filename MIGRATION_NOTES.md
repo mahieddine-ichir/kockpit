@@ -7,6 +7,10 @@ Notes de migration : changements de comportement observés, coexistences documen
 - Boot 4 bascule le mapper auto-configuré sur Jackson 3 (`tools.jackson`, jackson-bom 3.1.4). Le BOM 4.1.0 continue de gérer Jackson 2 via `jackson-2-bom 2.21.4` ; `spring-boot-jackson2` existe en 4.1.0 (non déprécié en 4.1).
 - Stratégie retenue : **Jackson 3 pour la sérialisation web des applications ; Jackson 2 conservé UNIQUEMENT pour les clients OpenSearch** (`JacksonJsonpMapper` d'opensearch-java, mappers construits localement et passés au transport — jamais le bean Boot). Pas de conflit de classpath (packages `com.fasterxml.*` vs `tools.jackson.*`, seul `jackson-annotations` partagé, conçu pour les deux lignes).
 
+## Changements imposés par la migration
+
+- **kockpit-kinesis-s3-application** : deps `org.testcontainers:localstack` et `org.testcontainers:junit-jupiter` SUPPRIMÉES (et non juste signalées hors périmètre) — Boot 4.1 importe Testcontainers **2.0.5** dont les artefacts ont été renommés ; les anciens IDs n'ont plus de version managée et bloquaient la lecture du POM. Elles étaient mortes (aucun `src/test` dans le module).
+
 ## Changements de comportement (à compléter en Phase 2/3)
 
 - Probes liveness/readiness actives par défaut en Boot 4 : `/actuator/health/liveness|readiness` apparaissent ; `/actuator/health` inchangé (terraform compatible tel quel).
