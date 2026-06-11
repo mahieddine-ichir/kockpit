@@ -23,13 +23,13 @@
 
 **Risque transverse n°2 : `org.thepavel:spring-icomponent:1.0.8`** (socle du mécanisme `@Flow` de kockpit-rules) — lib tierce ancienne, compat Spring Framework 7 non garantie, couverte par un seul test (`ApiTest` du sample). À tester tôt dans la Phase 2.
 
-## Décisions en attente (à arbitrer AVANT Phase 2)
+## Décisions — VALIDÉES le 2026-06-11 (recommandations acceptées)
 
-- [ ] **D1 — Spring AI RC1 ou RC2 ?** La décision actée dit RC1, mais RC2 est sortie le 09/06 (corrections post-RC1, toujours pré-GA). **Recommandation : RC2** (même politique : bump vers GA avant toute release Central).
-- [ ] **D2 — Bump clients OpenSearch** : opensearch-java 3.0.0→3.9.0 et opensearch-rest-high-level-client 3.3.2→3.7.0 (dernière). Requis de fait par httpclient5 5.6 de Boot 4.1 (breaking change gzip). **Recommandation : oui** — c'est une dépendance « requise par la migration », pas du scope creep.
-- [ ] **D3 — Smoke tests de contexte** : ajouter 1 test `@SpringBootTest` de chargement de contexte par application/profil (backend, audit-stream kafka+kinesis, kinesis-s3, mcp-server, sample). Seul filet automatisé possible vu la couverture. **Recommandation : oui** (petit, ciblé migration).
-- [ ] **D4 — azure-pipelines.yml stage Docker** : référence un Dockerfile inexistant (`kockpit-audit/.../kockpit-audit-stream-application-kafka/Dockerfile`) — cassé AVANT migration. Corriger le chemin pendant l'étape docker-ci, ou seulement consigner ? **Recommandation : corriger** (c'est dans le périmètre CI de la Phase 2.8).
-- [ ] **D5 — springdoc 2.8.13 → 3.0.3** (obligatoire pour Boot 4, backend-application). Pas vraiment une décision — confirmation que le bump est acté.
+- [x] **D1** — Spring AI **2.0.0-RC2** (bump vers GA avant toute release Central).
+- [x] **D2** — Bump opensearch-java 3.0.0→3.9.0 et opensearch-rest-high-level-client 3.3.2→3.7.0.
+- [x] **D3** — Smoke tests `@SpringBootTest` de chargement de contexte par application/profil.
+- [x] **D4** — Correction du chemin Dockerfile du stage Docker azure-pipelines.yml.
+- [x] **D5** — springdoc 2.8.13 → 3.0.3.
 
 ## Bloquants build/runtime identifiés (corrigés en Phase 2)
 
