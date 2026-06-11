@@ -10,7 +10,7 @@
     <name>Kockpit Backend Service Dashboard</name>
 
     <properties>
-        <opensearch.version>3.3.2</opensearch.version>
+        <opensearch.version>3.7.0</opensearch.version>
     </properties>
 
     <dependencies>

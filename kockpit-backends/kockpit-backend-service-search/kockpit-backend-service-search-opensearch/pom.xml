@@ -8,7 +8,7 @@
     <artifactId>kockpit-backend-service-search-opensearch</artifactId>
     <name>Kockpit Backend Service Search Opensearch</name>
     <properties>
-        <opensearch.version>3.3.2</opensearch.version>
+        <opensearch.version>3.7.0</opensearch.version>
     </properties>
     <dependencies>
         <dependency>
