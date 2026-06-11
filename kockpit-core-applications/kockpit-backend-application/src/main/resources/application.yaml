@@ -17,10 +17,6 @@ spring:
       - ${BOOTSTRAP_SERVERS:localhost:9092}
 
 management:
-  endpoint:
-    health:
-      probes:
-        enabled: true
   server:
     port: 8090
 
