@@ -101,12 +101,6 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
          -->
-        <!-- TEMPORAIRE migration Boot 4 : à retirer en fin de Phase 3 (cf. MIGRATION_PLAN.md) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-properties-migrator</artifactId>
-            <scope>runtime</scope>
-        </dependency>
             <!-- Smoke test (migration Boot 4) : backends filesystem pour charger le contexte sans profil Maven -->
         <dependency>
             <groupId>org.kockpit</groupId>

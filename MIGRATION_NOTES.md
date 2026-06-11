@@ -11,10 +11,33 @@ Notes de migration : changements de comportement observés, coexistences documen
 
 - **kockpit-kinesis-s3-application** : deps `org.testcontainers:localstack` et `org.testcontainers:junit-jupiter` SUPPRIMÉES (et non juste signalées hors périmètre) — Boot 4.1 importe Testcontainers **2.0.5** dont les artefacts ont été renommés ; les anciens IDs n'ont plus de version managée et bloquaient la lecture du POM. Elles étaient mortes (aucun `src/test` dans le module).
 
-## Changements de comportement (à compléter en Phase 2/3)
+## Changements de comportement
 
-- Probes liveness/readiness actives par défaut en Boot 4 : `/actuator/health/liveness|readiness` apparaissent ; `/actuator/health` inchangé (terraform compatible tel quel).
+- Probes liveness/readiness actives par défaut en Boot 4 : `/actuator/health/liveness|readiness` apparaissent ; `/actuator/health` inchangé (terraform compatible tel quel). La propriété `management.endpoint.health.probes.enabled=true` (redondante) a été retirée des configs.
 - Spring AI 2.0 : validation des arguments d'outils MCP activée par défaut côté serveur (un client envoyant des arguments non conformes reçoit `isError=true`).
+- `ContentCachingRequestWrapper` (AuditFilter) : le constructeur sans limite a disparu en Framework 7 → `Integer.MAX_VALUE` utilisé (iso-comportement 6.x, cache non borné).
+- `HttpHeaders` n'implémente plus `Map` en Framework 7 : `entrySet()` → `headerSet()` (même forme d'Entry, iso-comportement).
+- `@AutoConfiguration` (proxyBeanMethods=false) sur les ex-`@Configuration` enregistrées : l'appel inter-bean `kafkaTemplate→producerFactory` (notification-kafka) a été remplacé par une injection — même instance qu'avant via le conteneur.
+- SerdesTest ×2 : réécrits pour tester le mapper Jackson 2 RÉEL du chemin de consommation (ils étaient `@Disabled` et injectaient le bean Boot, devenu Jackson 3).
+
+## Validation runtime — Phase 3 (2026-06-11)
+
+Environnement : docker compose kafka+opensearch (OpenSearch 3.2.0, apache/kafka), JDK 21 (Temurin 21.0.11).
+
+| Vérification | Résultat |
+|---|---|
+| `mvn clean verify` racine (sans profil central) | ✅ vert — 45 tests, 0 échec |
+| backend-application (profil **filesystem**) | ✅ démarré en 1,5 s ; `GET /api/kockpit/local/audits/_search` → HTTP 200 avec résultats réels d'OpenSearch (sérialisation web Jackson 3 OK) |
+| audit-stream-application (profil **kafka**) | ✅ démarré en 1,4 s ; message AuditReport envoyé sur le topic `audits` → consommé (spring-kafka 4.1) et indexé dans OpenSearch (opensearch-java 3.9.0 / httpclient5 5.6) ; index + template + alias auto-créés |
+| mcp-server (Spring AI 2.0.0-RC2) | ✅ démarré ; `tools/list` JSON-RPC OK (4 tools) ; `tools/call search-audits-by-traceId` exécuté de bout en bout (`isError:false`, requête OpenSearch via RHLC 3.7.0) |
+| Warnings properties-migrator | ✅ zéro sur les 3 applications → **spring-boot-properties-migrator retiré** des 5 poms en fin de phase |
+| Erreurs de contexte Spring | ✅ zéro |
+| `spring.main.allow-bean-definition-overriding` (backend) | Démarre AUSSI avec `false` en profil filesystem — propriété conservée (profils azure/aws non testés au runtime), suppression candidate hors périmètre |
+
+Notes :
+- Le `|-ERROR in ch.qos.logback.classic.PatternLayout - Empty or null pattern` au démarrage du mcp-server vient du `logging.pattern.console:` (vide) préexistant dans application.yaml — pas une régression.
+- Profils non exercés au runtime : azure (Event Hub), aws (Kinesis/SigV4) — couverts par la compilation + analyse de compat (SASL inchangé, AwsSdk2Transport maintenu) ; à valider sur un environnement cible.
+- Build local : JDK 21 requis (JDK 25 désactive l'annotation processing implicite → Lombok KO, et viole la décision « pas de JDK 25 »). Temurin 21.0.11 installé dans `~/Library/Java/JavaVirtualMachines/temurin-21.0.11`.
 
 ## Hors périmètre (améliorations repérées pendant l'audit — NE PAS traiter dans cette migration)
 
