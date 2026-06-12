@@ -10,8 +10,7 @@
     <artifactId>kockpit-ai-mcp-server</artifactId>
     <name>Kockpit MCP Server</name>
     <properties>
-        <!-- RC2 : bumper vers la GA AVANT toute release Maven Central (cf. MIGRATION_PLAN.md) -->
-        <spring-ai.version>2.0.0-RC2</spring-ai.version>
+        <spring-ai.version>2.0.0</spring-ai.version>
     </properties>
 
     <dependencies>
