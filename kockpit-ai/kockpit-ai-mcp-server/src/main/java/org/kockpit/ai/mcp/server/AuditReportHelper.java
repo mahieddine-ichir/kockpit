@@ -1,5 +1,6 @@
 package org.kockpit.ai.mcp.server;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
@@ -18,8 +19,11 @@ import java.util.zip.GZIPInputStream;
 
 public abstract class AuditReportHelper {
 
+  // Les documents indexes portent start/end en epoch-millis entiers : sans ce flag,
+  // Jackson les relit comme des secondes (dates absurdes en annee +57431)
   private final static ObjectMapper objectMapper = new ObjectMapper()
-          .registerModule(new JavaTimeModule());
+          .registerModule(new JavaTimeModule())
+          .configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
 
 
   @SneakyThrows

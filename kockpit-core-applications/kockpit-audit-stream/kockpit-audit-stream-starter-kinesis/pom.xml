@@ -64,6 +64,7 @@
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
         </dependency>
+        <!-- Jackson 2 explicite (mappers locaux, jamais le bean Boot) ; versions gerees par jackson-2-bom du parent Boot 4 -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
