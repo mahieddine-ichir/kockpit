@@ -43,10 +43,10 @@ public class KafkaStreamAutoConfiguration {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, byte[]> kafkaListenerContainerFactory(KafkaProperties kafkaProperties) {
+    public ConcurrentKafkaListenerContainerFactory<String, byte[]> kafkaListenerContainerFactory(ConsumerFactory<String, byte[]> consumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, byte[]> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory(kafkaProperties));
+        factory.setConsumerFactory(consumerFactory);
         return factory;
     }
 }

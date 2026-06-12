@@ -42,6 +42,16 @@ class AuditReportHelperTest {
     }
 
     @Test
+    void load_audit_epochMillis_readAsMillis() {
+        String hitAsSource = "{\"domain\":\"rcu\",\"start\":1750197974047,\"end\":1750197978958}";
+
+        AuditReportDocument auditReportDocument = AuditReportHelper.convertFromString(hitAsSource);
+
+        Assertions.assertEquals(Instant.ofEpochMilli(1750197974047L), auditReportDocument.getStart());
+        Assertions.assertEquals(Instant.ofEpochMilli(1750197978958L), auditReportDocument.getEnd());
+    }
+
+    @Test
     void decompress_originalJson() throws IOException {
         String hitAsSource = new String(this.getClass().getResourceAsStream("/audit_1.json").readAllBytes());
         AuditReportDocument auditReportDocument = AuditReportHelper.convertFromString(hitAsSource);

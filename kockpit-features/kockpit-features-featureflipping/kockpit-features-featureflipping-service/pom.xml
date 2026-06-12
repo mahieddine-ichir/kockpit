@@ -26,6 +26,7 @@
             <version>2.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Jackson 2 explicite (mappers locaux, jamais le bean Boot) ; versions gerees par jackson-2-bom du parent Boot 4 -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>

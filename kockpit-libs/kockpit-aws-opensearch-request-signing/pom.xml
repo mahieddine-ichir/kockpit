@@ -48,6 +48,7 @@
             <artifactId>opensearch-java</artifactId>
             <version>3.9.0</version>
         </dependency>
+        <!-- Jackson 2 explicite (mappers locaux, jamais le bean Boot) ; versions gerees par jackson-2-bom du parent Boot 4 -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
