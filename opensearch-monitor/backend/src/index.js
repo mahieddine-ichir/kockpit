@@ -45,7 +45,9 @@ router.get('/api/allocation', async (req, res) => {
     const rows = await upstream.json();
     res.json(rows);
   } catch (err) {
-    res.status(502).json({ error: 'Failed to reach OpenSearch', detail: err.message });
+    // fetch() wraps the real cause (DNS, connection refused, timeout, TLS...)
+    // in err.cause and only exposes the generic "fetch failed" as err.message.
+    res.status(502).json({ error: 'Failed to reach OpenSearch', detail: err.cause?.message ?? err.message });
   }
 });
 
