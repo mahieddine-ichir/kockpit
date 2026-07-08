@@ -1,0 +1,12 @@
+services:
+  opensearch-monitor:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - OPENSEARCH_URL=${OPENSEARCH_URL:-http://host.docker.internal:9200}
+      - OPENSEARCH_USER=${OPENSEARCH_USER:-}
+      - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
