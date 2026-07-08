@@ -64,7 +64,17 @@ if (BASE_PATH) {
   // Relative asset/API paths in the frontend only resolve correctly if the
   // page itself was loaded with a trailing slash (e.g. "/opensearch-monitor/",
   // not "/opensearch-monitor"), so redirect the bare prefix to add one.
-  app.get(BASE_PATH, (req, res) => res.redirect(308, `${BASE_PATH}/`));
+  // Plain string comparison, not app.get(BASE_PATH, ...): Express's route
+  // matcher treats "/foo" and "/foo/" as the same route by default (non-strict
+  // routing), which would match the already-slashed URL too and redirect it
+  // to itself in an infinite loop.
+  app.use((req, res, next) => {
+    if (req.path === BASE_PATH) {
+      res.redirect(308, `${BASE_PATH}/`);
+      return;
+    }
+    next();
+  });
   app.use(BASE_PATH, router);
 }
 
