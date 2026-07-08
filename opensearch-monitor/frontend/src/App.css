@@ -141,6 +141,81 @@
   font-size: 13px;
 }
 
+.health-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-label {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-dot.status-green {
+  background: var(--status-ok);
+}
+
+.status-dot.status-yellow {
+  background: var(--status-warning);
+}
+
+.status-dot.status-red {
+  background: var(--status-critical);
+}
+
+.status-label.status-green {
+  color: var(--status-ok);
+}
+
+.status-label.status-yellow {
+  color: var(--status-warning);
+}
+
+.status-label.status-red {
+  color: var(--status-critical);
+}
+
+.cluster-name {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 16px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.metric-value {
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
