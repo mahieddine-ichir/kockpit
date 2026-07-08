@@ -24,6 +24,8 @@ body {
   --gridline: #e1e0d9;
   --baseline: #c3c2b7;
   --border-hairline: rgba(11, 11, 11, 0.1);
+  --status-ok: #1baf7a;
+  --status-warning: #eda100;
   --status-critical: #d03b3b;
 
   --series-1: #2a78d6;
@@ -47,6 +49,8 @@ body {
     --gridline: #2c2c2a;
     --baseline: #383835;
     --border-hairline: rgba(255, 255, 255, 0.1);
+    --status-ok: #199e70;
+    --status-warning: #c98500;
     --status-critical: #e66767;
 
     --series-1: #3987e5;

@@ -23,11 +23,15 @@ const BASE_PATH = normalizeBasePath(process.env.BASE_PATH);
 const app = express();
 const router = express.Router();
 
-router.get('/api/allocation', async (req, res) => {
+// Shared by every read-only OpenSearch proxy route below: builds the
+// upstream URL/auth, forwards the response or a normalized error.
+async function proxyOpenSearch(res, upstreamPath, searchParams = {}) {
   try {
-    const url = new URL('/_cat/allocation', OPENSEARCH_URL);
+    const url = new URL(upstreamPath, OPENSEARCH_URL);
     url.searchParams.set('format', 'json');
-    url.searchParams.set('s', 'disk.percent:desc');
+    for (const [key, value] of Object.entries(searchParams)) {
+      url.searchParams.set(key, value);
+    }
 
     const headers = { Accept: 'application/json' };
     if (OPENSEARCH_USER) {
@@ -42,14 +46,23 @@ router.get('/api/allocation', async (req, res) => {
       return;
     }
 
-    const rows = await upstream.json();
-    res.json(rows);
+    res.json(await upstream.json());
   } catch (err) {
     // fetch() wraps the real cause (DNS, connection refused, timeout, TLS...)
     // in err.cause and only exposes the generic "fetch failed" as err.message.
     res.status(502).json({ error: 'Failed to reach OpenSearch', detail: err.cause?.message ?? err.message });
   }
-});
+}
+
+router.get('/api/allocation', (req, res) =>
+  proxyOpenSearch(res, '/_cat/allocation', { s: 'disk.percent:desc' }),
+);
+
+router.get('/api/cluster-health', (req, res) => proxyOpenSearch(res, '/_cluster/health'));
+
+router.get('/api/shards', (req, res) =>
+  proxyOpenSearch(res, '/_cat/shards', { h: 'index,shard,prirep,state,node,unassigned.reason' }),
+);
 
 router.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 

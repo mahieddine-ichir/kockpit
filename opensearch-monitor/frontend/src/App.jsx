@@ -26,8 +26,21 @@ function formatPct(value) {
   return `${Number(value).toFixed(1)}%`;
 }
 
+// Relative (no leading slash) so requests resolve under whatever path prefix
+// the page itself was loaded from — see vite.config.js `base`.
+async function fetchJson(path) {
+  const res = await fetch(path);
+  const body = await res.json();
+  if (!res.ok) {
+    throw new Error(body.error || `Request failed: ${res.status}`);
+  }
+  return body;
+}
+
 export default function App() {
   const [rows, setRows] = useState([]);
+  const [clusterHealth, setClusterHealth] = useState(null);
+  const [shards, setShards] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updatedAt, setUpdatedAt] = useState(null);
@@ -35,22 +48,32 @@ export default function App() {
   useThemeTick();
 
   const load = useCallback(async () => {
-    try {
-      // Relative (no leading slash) so it resolves under whatever path prefix
-      // the page itself was loaded from — see vite.config.js `base`.
-      const res = await fetch('api/allocation');
-      const body = await res.json();
-      if (!res.ok) {
-        throw new Error(body.error || `Request failed: ${res.status}`);
-      }
-      setRows(Array.isArray(body) ? body : []);
-      setError(null);
-      setUpdatedAt(new Date());
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    const [allocation, health, shardList] = await Promise.allSettled([
+      fetchJson('api/allocation'),
+      fetchJson('api/cluster-health'),
+      fetchJson('api/shards'),
+    ]);
+
+    const errors = [];
+    if (allocation.status === 'fulfilled') {
+      setRows(Array.isArray(allocation.value) ? allocation.value : []);
+    } else {
+      errors.push(allocation.reason.message);
     }
+    if (health.status === 'fulfilled') {
+      setClusterHealth(health.value);
+    } else {
+      errors.push(health.reason.message);
+    }
+    if (shardList.status === 'fulfilled') {
+      setShards(Array.isArray(shardList.value) ? shardList.value : []);
+    } else {
+      errors.push(shardList.reason.message);
+    }
+
+    setError(errors.length > 0 ? errors.join('; ') : null);
+    setUpdatedAt(new Date());
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -62,6 +85,24 @@ export default function App() {
     const id = setInterval(load, REFRESH_INTERVAL_MS);
     return () => clearInterval(id);
   }, [autoRefresh, load]);
+
+  const unassignedShards = useMemo(
+    () => shards.filter((s) => s.state === 'UNASSIGNED'),
+    [shards],
+  );
+
+  const healthMetrics = useMemo(() => {
+    if (!clusterHealth) return [];
+    return [
+      { label: 'Nodes', value: clusterHealth.number_of_nodes },
+      { label: 'Data nodes', value: clusterHealth.number_of_data_nodes },
+      { label: 'Active shards', value: clusterHealth.active_shards },
+      { label: 'Unassigned', value: clusterHealth.unassigned_shards },
+      { label: 'Relocating', value: clusterHealth.relocating_shards },
+      { label: 'Initializing', value: clusterHealth.initializing_shards },
+      { label: 'Pending tasks', value: clusterHealth.number_of_pending_tasks },
+    ];
+  }, [clusterHealth]);
 
   const { chartData, legendItems, chartOptions } = useMemo(() => {
     const seriesColors = [
@@ -123,8 +164,8 @@ export default function App() {
     <div className="page">
       <header className="page-header">
         <div>
-          <h1>OpenSearch Disk Allocation</h1>
-          <p>GET _cat/allocation?v&amp;s=disk.percent:desc</p>
+          <h1>OpenSearch Monitor</h1>
+          <p>Cluster health, shard allocation, and disk usage</p>
         </div>
         <div className="controls">
           {updatedAt && <span className="updated-at">Updated {updatedAt.toLocaleTimeString()}</span>}
@@ -143,6 +184,63 @@ export default function App() {
       </header>
 
       {error && <div className="banner-error">{error}</div>}
+
+      <section className="card">
+        <h2>Cluster health</h2>
+        {!clusterHealth && !loading ? (
+          <p className="empty-state">No cluster health data returned.</p>
+        ) : (
+          clusterHealth && (
+            <>
+              <div className="health-summary">
+                <span className={`status-dot status-${clusterHealth.status}`} />
+                <span className={`status-label status-${clusterHealth.status}`}>{clusterHealth.status}</span>
+                <span className="cluster-name">{clusterHealth.cluster_name}</span>
+              </div>
+              <div className="metric-grid">
+                {healthMetrics.map((m) => (
+                  <div className="metric" key={m.label}>
+                    <span className="metric-label">{m.label}</span>
+                    <span className="metric-value">{m.value ?? '—'}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )
+        )}
+      </section>
+
+      <section className="card">
+        <h2>Unassigned shards</h2>
+        {unassignedShards.length === 0 ? (
+          <p className="empty-state">
+            {loading ? 'Loading…' : 'No unassigned shards.'}
+          </p>
+        ) : (
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>Shard</th>
+                  <th>Type</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                {unassignedShards.map((s, idx) => (
+                  <tr key={`${s.index}-${s.shard}-${s.prirep}-${idx}`}>
+                    <td>{s.index}</td>
+                    <td>{s.shard}</td>
+                    <td>{s.prirep === 'p' ? 'primary' : 'replica'}</td>
+                    <td>{s['unassigned.reason'] ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
       <section className="card">
         <h2>Disk usage by node</h2>
