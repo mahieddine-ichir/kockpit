@@ -71,6 +71,7 @@ docker run -p 3000:3000 -e OPENSEARCH_URL=http://your-cluster:9200 opensearch-mo
 | `OPENSEARCH_URL` | yes | Base URL of the OpenSearch cluster, e.g. `http://opensearch:9200` |
 | `OPENSEARCH_USER` | no | Basic auth username, if the cluster requires it |
 | `OPENSEARCH_PASSWORD` | no | Basic auth password (only sent if `OPENSEARCH_USER` is set) |
+| `BASE_PATH` | no | Path prefix to also serve under, e.g. `/opensearch-monitor` (see below) |
 
 ## Prebuilt image (GitHub Container Registry)
 
@@ -110,6 +111,31 @@ build your own and push to ECR:
    access to the OpenSearch domain/cluster on port 9200 (or 443 for AWS managed
    OpenSearch with a load balancer in front).
 3. **Plain EC2:** install Docker, then `docker run -d --restart unless-stopped -p 3000:3000 -e OPENSEARCH_URL=... <image>`. Put it behind whatever reverse proxy/ALB you already use.
+
+### Serving under a subpath on a shared ALB
+
+If this service sits behind a shared ALB alongside other apps, routed by a
+path-pattern rule (e.g. `https://console.example.com/opensearch-monitor/`
+forwarding to this target group) rather than owning the domain, set
+`BASE_PATH=/opensearch-monitor` as a task environment variable. The frontend
+build uses relative asset/API paths, so the same image works both standalone
+(at the domain root) and mounted under a prefix — no separate build needed.
+
+Two ALB-specific gotchas this depends on:
+
+- **Path condition must include a wildcard.** ALB path-pattern conditions are
+  exact/glob matches, not prefix matches. A condition of exactly
+  `/opensearch-monitor` matches only that literal path — not
+  `/opensearch-monitor/` or `/opensearch-monitor/assets/x.js`. Add both
+  `/opensearch-monitor` and `/opensearch-monitor/*` as values on the rule (or
+  a single `/opensearch-monitor*`), both forwarding to this target group.
+- **ALB doesn't strip the matched prefix.** The container receives the full
+  original path (e.g. `/opensearch-monitor/api/allocation`), which is exactly
+  what `BASE_PATH` is for — the app mounts its routes at both `/` (so
+  target-group health checks against `/api/health` keep working unprefixed)
+  and at `BASE_PATH`. A request to the bare prefix without a trailing slash
+  gets redirected to add one, since the frontend's relative paths only
+  resolve correctly once that trailing slash is present.
 
 ## Notes / limitations
 

@@ -36,7 +36,9 @@ export default function App() {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch('/api/allocation');
+      // Relative (no leading slash) so it resolves under whatever path prefix
+      // the page itself was loaded from — see vite.config.js `base`.
+      const res = await fetch('api/allocation');
       const body = await res.json();
       if (!res.ok) {
         throw new Error(body.error || `Request failed: ${res.status}`);
