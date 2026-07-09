@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { Pie, Doughnut } from 'react-chartjs-2';
 import './App.css';
 
 ChartJS.register(ArcElement, Tooltip);
 
 const REFRESH_INTERVAL_MS = 30_000;
 const MAX_SLICES = 7;
+const TOP_INDICES_COUNT = 10;
+// Roughly matches OpenSearch's default disk watermarks (85% low, 90% high).
+const DISK_WARNING_PCT = 80;
+const DISK_CRITICAL_PCT = 90;
 
 function readCssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -26,6 +30,15 @@ function formatPct(value) {
   return `${Number(value).toFixed(1)}%`;
 }
 
+function formatBytes(value) {
+  const bytes = Number(value);
+  if (!Number.isFinite(bytes)) return '—';
+  if (bytes === 0) return '0 B';
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+  const i = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
+  return `${(bytes / 1024 ** i).toFixed(1)} ${units[i]}`;
+}
+
 // Relative (no leading slash) so requests resolve under whatever path prefix
 // the page itself was loaded from — see vite.config.js `base`.
 async function fetchJson(path) {
@@ -41,6 +54,7 @@ export default function App() {
   const [rows, setRows] = useState([]);
   const [clusterHealth, setClusterHealth] = useState(null);
   const [shards, setShards] = useState([]);
+  const [indices, setIndices] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updatedAt, setUpdatedAt] = useState(null);
@@ -48,10 +62,11 @@ export default function App() {
   useThemeTick();
 
   const load = useCallback(async () => {
-    const [allocation, health, shardList] = await Promise.allSettled([
+    const [allocation, health, shardList, indexList] = await Promise.allSettled([
       fetchJson('api/allocation'),
       fetchJson('api/cluster-health'),
       fetchJson('api/shards'),
+      fetchJson('api/indices'),
     ]);
 
     const errors = [];
@@ -69,6 +84,11 @@ export default function App() {
       setShards(Array.isArray(shardList.value) ? shardList.value : []);
     } else {
       errors.push(shardList.reason.message);
+    }
+    if (indexList.status === 'fulfilled') {
+      setIndices(Array.isArray(indexList.value) ? indexList.value : []);
+    } else {
+      errors.push(indexList.reason.message);
     }
 
     setError(errors.length > 0 ? errors.join('; ') : null);
@@ -103,6 +123,57 @@ export default function App() {
       { label: 'Pending tasks', value: clusterHealth.number_of_pending_tasks },
     ];
   }, [clusterHealth]);
+
+  const nodeGauges = useMemo(() => {
+    const usedColor = readCssVar('--status-ok');
+    const warningColor = readCssVar('--status-warning');
+    const criticalColor = readCssVar('--status-critical');
+    const freeColor = readCssVar('--gridline');
+
+    return rows
+      .filter((r) => r['disk.percent'] != null && r['disk.percent'] !== '' && r.node)
+      .map((r) => {
+        const percent = Number(r['disk.percent']);
+        const color = percent >= DISK_CRITICAL_PCT ? criticalColor : percent >= DISK_WARNING_PCT ? warningColor : usedColor;
+        return {
+          node: r.node,
+          percent,
+          used: r['disk.used'],
+          avail: r['disk.avail'],
+          total: r['disk.total'],
+          data: {
+            labels: ['Used', 'Free'],
+            datasets: [
+              {
+                data: [percent, Math.max(0, 100 - percent)],
+                backgroundColor: [color, freeColor],
+                borderWidth: 0,
+              },
+            ],
+          },
+        };
+      })
+      .sort((a, b) => b.percent - a.percent);
+  }, [rows]);
+
+  const gaugeOptions = useMemo(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '72%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.label}: ${formatPct(ctx.parsed)}`,
+          },
+        },
+      },
+    }),
+    [],
+  );
+
+  const topIndices = useMemo(() => indices.slice(0, TOP_INDICES_COUNT), [indices]);
 
   const { chartData, legendItems, chartOptions } = useMemo(() => {
     const seriesColors = [
@@ -260,6 +331,65 @@ export default function App() {
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+      </section>
+
+      <section className="card">
+        <h2>Disk usage per node</h2>
+        {nodeGauges.length === 0 && !loading ? (
+          <p className="empty-state">No allocation data returned.</p>
+        ) : (
+          <div className="gauge-grid">
+            {nodeGauges.map((g) => (
+              <div className="gauge-card" key={g.node}>
+                <div className="gauge-canvas-wrap">
+                  <Doughnut data={g.data} options={gaugeOptions} />
+                  <span className="gauge-center">{formatPct(g.percent)}</span>
+                </div>
+                <div className="gauge-node-name">{g.node}</div>
+                <div className="gauge-detail">
+                  {g.used ?? '—'} used / {g.avail ?? '—'} free
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="card">
+        <h2>Top {TOP_INDICES_COUNT} indices by size</h2>
+        {topIndices.length === 0 && !loading ? (
+          <p className="empty-state">No index data returned.</p>
+        ) : (
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>Health</th>
+                  <th>Status</th>
+                  <th>Docs</th>
+                  <th>Size (total)</th>
+                  <th>Size (primary)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topIndices.map((idx) => (
+                  <tr key={idx.index}>
+                    <td>{idx.index}</td>
+                    <td className="node-cell">
+                      <span className={`status-dot status-${idx.health}`} />
+                      {idx.health ?? '—'}
+                    </td>
+                    <td>{idx.status ?? '—'}</td>
+                    <td>{idx['docs.count'] ?? '—'}</td>
+                    <td>{formatBytes(idx['store.size'])}</td>
+                    <td>{formatBytes(idx['pri.store.size'])}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </section>

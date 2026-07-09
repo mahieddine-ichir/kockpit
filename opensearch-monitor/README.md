@@ -1,11 +1,16 @@
 # opensearch-monitor
 
 A minimal OpenSearch monitoring app: an Express backend proxies read-only OpenSearch
-`_cat` APIs, a React/Vite frontend renders the results. Both are packaged into a
-single Docker image.
+`_cat`/`_cluster` APIs, a React/Vite frontend renders the results. Both are packaged
+into a single Docker image.
 
-First use case: `GET _cat/allocation?v&s=disk.percent:desc` rendered as a pie chart
-(disk % per node, top 7 individually + an "Other" slice), plus the full raw table.
+Views:
+- **Cluster health** — status (green/yellow/red), node/shard/pending-task counts (`GET _cluster/health`)
+- **Unassigned shards** — index, shard, primary/replica, reason (`GET _cat/shards`)
+- **Disk usage by node** — pie chart of relative disk % across nodes, top 7 + "Other" (`GET _cat/allocation?s=disk.percent:desc`)
+- **Disk usage per node** — a used/free gauge per node, color-coded at 80%/90% thresholds
+- **Top 10 indices by size** — index, health, docs, total/primary size (`GET _cat/indices?s=store.size:desc`)
+- Raw allocation table (full, unfiltered)
 
 ## Project layout
 
