@@ -64,6 +64,16 @@ router.get('/api/shards', (req, res) =>
   proxyOpenSearch(res, '/_cat/shards', { h: 'index,shard,prirep,state,node,unassigned.reason' }),
 );
 
+router.get('/api/indices', (req, res) =>
+  proxyOpenSearch(res, '/_cat/indices', {
+    h: 'index,health,status,docs.count,store.size,pri.store.size',
+    s: 'store.size:desc',
+    // Raw byte counts instead of human-readable strings ("5gb") so the
+    // frontend can format and sort them without parsing units itself.
+    bytes: 'b',
+  }),
+);
+
 router.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 const publicDir = path.join(__dirname, '..', 'public');
