@@ -24,6 +24,10 @@ const Pagination = ({
         }
     };
 
+    const handleLast = () => {
+        onPageChange(totalPages, itemsPerPage);
+    };
+
     const handlePage = (page) => {
         if (page !== currentPage) {
             onPageChange(page, itemsPerPage);
@@ -85,7 +89,7 @@ const Pagination = ({
                 onClick={handleFirst}
                 disabled={currentPage === 1}
                 className="p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-                aria-label="Previous page"
+                aria-label="First page"
             >
                 <svg className="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -126,6 +130,17 @@ const Pagination = ({
                 aria-label="Next page"
             >
                 <svg className="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </button>
+            <button
+                onClick={handleLast}
+                disabled={currentPage === totalPages || totalItems === 0}
+                className="p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+                aria-label="Last page"
+            >
+                <svg className="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 5l7 7-7 7" />
+                </svg>
             </button>
         </div>
     );
