@@ -5,10 +5,17 @@ const Pagination = ({
                         totalPages,
                         onPageChange,
                         itemsPerPage,
-                        totalItems
+                        totalItems,
+                        // OpenSearch max_result_window: from + size must be <= 10000
+                        maxItems = 10000
                     }) => {
 
     const selections = [...new Set([10, 25, 50, 100, itemsPerPage])].sort((a, b) => a - b);
+
+    const maxReachablePage = Math.max(1, Math.floor(maxItems / itemsPerPage));
+    const effectiveTotalPages = Math.min(totalPages, maxReachablePage);
+    const isCapped = totalPages > maxReachablePage;
+
     const handleFirst = () => {
         onPageChange(1, itemsPerPage);
     }
@@ -19,13 +26,13 @@ const Pagination = ({
     };
 
     const handleNext = () => {
-        if (currentPage < totalPages) {
+        if (currentPage < effectiveTotalPages) {
             onPageChange(currentPage + 1, itemsPerPage);
         }
     };
 
     const handleLast = () => {
-        onPageChange(totalPages, itemsPerPage);
+        onPageChange(effectiveTotalPages, itemsPerPage);
     };
 
     const handlePage = (page) => {
@@ -36,29 +43,32 @@ const Pagination = ({
 
     const getPageNumbers = () => {
         // Fenêtre glissante : 1 … 4 5 [6] 7 8 … 20
-        if (totalPages <= 7) {
-            return Array.from({length: totalPages}, (_, i) => i + 1);
+        if (effectiveTotalPages <= 7) {
+            return Array.from({length: effectiveTotalPages}, (_, i) => i + 1);
         }
         const pages = [1];
         const start = Math.max(2, currentPage - 1);
-        const end = Math.min(totalPages - 1, currentPage + 1);
+        const end = Math.min(effectiveTotalPages - 1, currentPage + 1);
         if (start > 2) {
             pages.push('ellipsis-left');
         }
         for (let i = start; i <= end; i++) {
             pages.push(i);
         }
-        if (end < totalPages - 1) {
+        if (end < effectiveTotalPages - 1) {
             pages.push('ellipsis-right');
         }
-        pages.push(totalPages);
+        pages.push(effectiveTotalPages);
         return pages;
     };
 
     const handleItemsPerPageInput = (e) => {
         const value = e.target.value;
         if (value === '' || (/^\d+$/.test(value) && Number(value) > 0)) {
-            onPageChange(currentPage, Number(value));
+            const newSize = Number(value);
+            // Re-clamp the current page so from + size never exceeds maxItems
+            const newMaxPage = Math.max(1, Math.floor(maxItems / newSize));
+            onPageChange(Math.min(currentPage, newMaxPage), newSize);
         }
     };
 
@@ -85,6 +95,14 @@ const Pagination = ({
             <span className="text-sm text-gray-700 min-w-max">{startItem} - {endItem} of {' '}
                 <span className="font-semibold text-blue-700">{totalItems}</span>
             </span>
+            {isCapped && (
+                <span
+                    className="text-xs text-gray-500 min-w-max"
+                    title={`Seuls les ${maxItems.toLocaleString('fr-FR')} premiers résultats sont accessibles. Affinez la recherche pour voir les suivants.`}
+                >
+                    (limité aux {maxItems.toLocaleString('fr-FR')} premiers)
+                </span>
+            )}
             <button
                 onClick={handleFirst}
                 disabled={currentPage === 1}
@@ -125,7 +143,7 @@ const Pagination = ({
             ))}
             <button
                 onClick={handleNext}
-                disabled={currentPage === totalPages || totalItems === 0}
+                disabled={currentPage >= effectiveTotalPages || totalItems === 0}
                 className="p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
                 aria-label="Next page"
             >
@@ -133,7 +151,7 @@ const Pagination = ({
             </button>
             <button
                 onClick={handleLast}
-                disabled={currentPage === totalPages || totalItems === 0}
+                disabled={currentPage >= effectiveTotalPages || totalItems === 0}
                 className="p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
                 aria-label="Last page"
             >
