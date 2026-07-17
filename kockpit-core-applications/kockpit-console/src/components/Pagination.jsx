@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 const Pagination = ({
                         currentPage,
@@ -11,6 +11,9 @@ const Pagination = ({
                     }) => {
 
     const selections = [...new Set([10, 25, 50, 100, itemsPerPage])].sort((a, b) => a - b);
+
+    const [editingPage, setEditingPage] = useState(false);
+    const [pageInput, setPageInput] = useState('');
 
     const maxReachablePage = Math.max(1, Math.floor(maxItems / itemsPerPage));
     const effectiveTotalPages = Math.min(totalPages, maxReachablePage);
@@ -60,6 +63,27 @@ const Pagination = ({
         }
         pages.push(effectiveTotalPages);
         return pages;
+    };
+
+    const startPageEdit = () => {
+        setPageInput(String(currentPage));
+        setEditingPage(true);
+    };
+
+    const commitPageEdit = () => {
+        setEditingPage(false);
+        const page = parseInt(pageInput, 10);
+        if (!isNaN(page)) {
+            handlePage(Math.min(Math.max(1, page), effectiveTotalPages));
+        }
+    };
+
+    const handlePageInputKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            commitPageEdit();
+        } else if (e.key === 'Escape') {
+            setEditingPage(false);
+        }
     };
 
     const handleItemsPerPageInput = (e) => {
@@ -124,21 +148,51 @@ const Pagination = ({
             </button>
             {getPageNumbers().map(page => (
                 typeof page === 'number' ? (
+                    page === currentPage && editingPage ? (
+                        <input
+                            key={page}
+                            type="text"
+                            inputMode="numeric"
+                            value={pageInput}
+                            autoFocus
+                            onFocus={(e) => e.target.select()}
+                            onChange={(e) => {
+                                if (e.target.value === '' || /^\d+$/.test(e.target.value)) {
+                                    setPageInput(e.target.value);
+                                }
+                            }}
+                            onKeyDown={handlePageInputKeyDown}
+                            onBlur={commitPageEdit}
+                            aria-label="Aller à la page"
+                            className="w-14 px-1 py-1 rounded border border-blue-500 text-sm text-center focus:ring-2 focus:ring-blue-200 focus:outline-none"
+                        />
+                    ) : (
+                        <button
+                            key={page}
+                            onClick={() => handlePage(page)}
+                            onDoubleClick={page === currentPage ? startPageEdit : undefined}
+                            title={page === currentPage ? 'Double-cliquez pour saisir un numéro de page' : undefined}
+                            aria-label={`Page ${page}`}
+                            aria-current={page === currentPage ? 'page' : undefined}
+                            className={`min-w-[2rem] px-2 py-1 rounded text-sm ${
+                                page === currentPage
+                                    ? 'bg-blue-600 text-white font-semibold cursor-text'
+                                    : 'text-gray-700 hover:bg-gray-100'
+                            }`}
+                        >
+                            {page}
+                        </button>
+                    )
+                ) : (
                     <button
                         key={page}
-                        onClick={() => handlePage(page)}
-                        aria-label={`Page ${page}`}
-                        aria-current={page === currentPage ? 'page' : undefined}
-                        className={`min-w-[2rem] px-2 py-1 rounded text-sm ${
-                            page === currentPage
-                                ? 'bg-blue-600 text-white font-semibold cursor-default'
-                                : 'text-gray-700 hover:bg-gray-100'
-                        }`}
+                        onClick={startPageEdit}
+                        title="Aller à une page précise"
+                        aria-label="Aller à une page précise"
+                        className="px-1 text-sm text-gray-500 rounded hover:bg-gray-100 hover:text-gray-700"
                     >
-                        {page}
+                        …
                     </button>
-                ) : (
-                    <span key={page} className="px-1 text-sm text-gray-500 select-none">…</span>
                 )
             ))}
             <button
