@@ -1,6 +1,6 @@
 package org.kockpit.features.heartbeat.services.backend;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.kockpit.communication.Message;
 import org.kockpit.features.heartbeat.services.HeartBeatDto;

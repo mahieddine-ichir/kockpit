@@ -1,12 +1,13 @@
 package org.kockpit.audit.openapi;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+
 import lombok.RequiredArgsConstructor;
 import org.kockpit.audit.api.AuditorKeyValueService;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+@AutoConfiguration
 @RequiredArgsConstructor
 class OperationIdSetterInterceptorConfig implements WebMvcConfigurer {
 

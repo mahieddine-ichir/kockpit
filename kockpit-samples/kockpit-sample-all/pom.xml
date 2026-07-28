@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-samples</artifactId><version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-samples</artifactId><version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-sample-all</artifactId>
@@ -11,29 +11,39 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-core-communication-polling</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-featureflipping-service</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-dynaconfig-service</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-heartbeat-service-application</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
-    </dependencies>
+            <!-- Jackson 2 explicite (mappers locaux / client OpenSearch) ; versions gerees par jackson-2-bom du parent Boot 4 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+</dependencies>
 
     <profiles>
         <!-- storage-based features communication layer -->
@@ -43,12 +53,12 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-storageaccount</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>2.0.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-features-audit-starters-kafka</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>2.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -58,12 +68,12 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-filesystem</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>2.0.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-features-audit-starters-kafka</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>2.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -73,17 +83,17 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-s3</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>2.0.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-features-audit-starters-kinesis</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>2.0.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-legacy</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>2.0.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
         </profile>

@@ -1,5 +1,7 @@
 package org.kockpit.audit.httpexchange;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+
 import org.kockpit.audit.api.AuditorEventService;
 import org.kockpit.audit.api.AuditorService;
 import org.kockpit.audit.httpexchange.obfuscator.AuditObfuscator;
@@ -9,9 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.web.client.RestClientCustomizer;
-import org.springframework.boot.web.client.RestTemplateCustomizer;
-import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
+import org.springframework.boot.restclient.RestClientCustomizer;
+import org.springframework.boot.restclient.RestTemplateCustomizer;
+import org.springframework.boot.webclient.WebClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -21,7 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(RestTemplate.class)
 public class HttpExchangeAutoConfiguration {
 

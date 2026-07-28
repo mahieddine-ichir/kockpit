@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-features-audit</artifactId><version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-features-audit</artifactId><version>2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>kockpit-features-audit-module-httpexchange</artifactId>
     <name>Kockpit Features Audit Module Httpexchange</name>
@@ -12,7 +12,7 @@
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-audit-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -33,6 +33,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
+        <!-- Boot 4 : RestClientCustomizer/RestTemplateCustomizer relocalisés dans spring-boot-restclient -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-restclient</artifactId>
+        </dependency>
+        <!-- Boot 4 : WebClientCustomizer relocalisé dans spring-boot-webclient (optional, comme spring-webflux) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-webclient</artifactId>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -44,6 +55,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

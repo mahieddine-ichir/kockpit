@@ -1,14 +1,15 @@
 package org.kockpit.audit.obfuscation.impl;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+
 import org.kockpit.audit.obfuscation.impl.masker.maskers.DefaultMasker;
 import org.kockpit.audit.obfuscation.impl.masker.maskers.EmailMasker;
 import org.kockpit.audit.obfuscation.impl.masker.maskers.KeepFirstNbCharsMasker;
 import org.kockpit.audit.obfuscation.impl.masker.maskers.KeepLastNbCharsMasker;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 class BuiltinMaskersConfig {
 
   @Bean

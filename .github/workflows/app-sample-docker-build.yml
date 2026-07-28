@@ -55,7 +55,7 @@ jobs:
 
       # build for File System profile
       - name: Build Application with Maven (filesystem)
-        run: mvn clean package -Pfilesystem -pl kockpit-samples/kockpit-sample-all -am -DskipTests
+        run: mvn clean package -Pfilesystem -pl kockpit-samples/kockpit-sample-all -am -Dmaven.test.skip=true
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
@@ -86,7 +86,7 @@ jobs:
 
       # build for Azure profile
       - name: Build Application with Maven (azure)
-        run: mvn clean package -Pazure -pl kockpit-samples/kockpit-sample-all -am -DskipTests
+        run: mvn clean package -Pazure -pl kockpit-samples/kockpit-sample-all -am -Dmaven.test.skip=true
 
       - name: Extract Metadata for Docker
         id: meta-azure
@@ -110,7 +110,7 @@ jobs:
 
       # build for AWS profile
       - name: Build Application with Maven (AWS)
-        run: mvn clean package -Paws -pl kockpit-samples/kockpit-sample-all -am -DskipTests
+        run: mvn clean package -Paws -pl kockpit-samples/kockpit-sample-all -am -Dmaven.test.skip=true
 
       - name: Extract Metadata for Docker
         id: meta-aws

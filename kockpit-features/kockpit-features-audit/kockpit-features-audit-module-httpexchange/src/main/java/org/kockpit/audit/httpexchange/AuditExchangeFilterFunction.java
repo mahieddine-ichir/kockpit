@@ -123,7 +123,7 @@ public class AuditExchangeFilterFunction implements ExchangeFilterFunction {
 
   private HttpHeaders filterHeaders(HttpHeaders headers) {
     HttpHeaders filtered = new HttpHeaders();
-    headers.entrySet().stream()
+    headers.headerSet().stream()
         .filter(
             entry ->
                 !filterAuthorizationHeader || !AUTHORIZATION.equalsIgnoreCase(entry.getKey()))
