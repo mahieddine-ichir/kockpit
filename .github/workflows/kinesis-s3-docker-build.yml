@@ -62,7 +62,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build Application with Maven
-        run: mvn clean package -pl kockpit-core-applications/kockpit-kinesis-s3-application -am -DskipTests
+        run: mvn clean package -pl kockpit-core-applications/kockpit-kinesis-s3-application -am -Dmaven.test.skip=true
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3

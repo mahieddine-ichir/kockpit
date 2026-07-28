@@ -1,4 +1,4 @@
-FROM amazoncorretto:22-al2023-headless
+FROM amazoncorretto:21-al2023-headless
 
 COPY target/kockpit-ai-mcp-server-*.jar /app/api.jar
 

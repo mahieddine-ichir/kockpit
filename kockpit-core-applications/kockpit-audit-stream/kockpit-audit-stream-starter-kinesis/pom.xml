@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-audit-stream</artifactId><version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-audit-stream</artifactId><version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-audit-stream-starter-kinesis</artifactId>
@@ -64,6 +64,7 @@
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
         </dependency>
+        <!-- Jackson 2 explicite (mappers locaux, jamais le bean Boot) ; versions gerees par jackson-2-bom du parent Boot 4 -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>

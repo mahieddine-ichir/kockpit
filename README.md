@@ -1,6 +1,11 @@
 # Kockpit
 Kockpit, an Engineering Platform.
 
+> **Breaking change — kockpit 2.x** : à partir de la version 2.0.0, kockpit cible **Spring Boot 4 uniquement**
+> (Spring Framework 7, Jakarta EE 11, Spring AI 2.x) et requiert **Java 21 minimum** (build et runtime,
+> y compris pour les projets consommant `kockpit-rules-maven-plugin`).
+> Les consommateurs Spring Boot 3.x doivent rester sur la lignée kockpit 1.x.
+
 # Kockpit modules / composition
 
 ## Core
