@@ -170,10 +170,12 @@ public class OpensearchRepository implements SearchService {
      * '*', a wildcard query is used so the '*' position drives the semantics natively:
      * {@code abc*} -> startsWith, {@code *abc} -> endsWith, {@code *abc*} -> contains,
      * {@code ab*cd} -> arbitrary pattern. Otherwise a regular (analyzed) match query is used.
+     * The wildcard is made case-insensitive so it also matches non-analyzed (keyword) fields
+     * whose stored value keeps its original casing (e.g. {@code compteClients}).
      */
     private QueryBuilder buildValueQuery(String field, Object value) {
         if (isWildcard(value)) {
-            return wildcardQuery(field, ((String) value).toLowerCase());
+            return wildcardQuery(field, (String) value).caseInsensitive(true);
         }
         return matchQuery(field, value);
     }
