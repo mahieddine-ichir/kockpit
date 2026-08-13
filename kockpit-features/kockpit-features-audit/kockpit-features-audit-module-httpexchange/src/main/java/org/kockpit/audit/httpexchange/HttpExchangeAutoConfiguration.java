@@ -24,7 +24,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
 @AutoConfiguration
-@ConditionalOnClass(RestTemplate.class)
+@ConditionalOnClass({RestTemplate.class, RestTemplateCustomizer.class})
 public class HttpExchangeAutoConfiguration {
 
   @Value("${kockpit.audit.http.authorization.header.filter:true}")
@@ -89,7 +89,7 @@ public class HttpExchangeAutoConfiguration {
   }
 
   @Configuration
-  @ConditionalOnClass(WebClient.class)
+  @ConditionalOnClass({WebClient.class, WebClientCustomizer.class})
   @ConditionalOnBean(AuditorEventService.class)
   class WebClientAuditConfiguration {
 
@@ -110,7 +110,7 @@ public class HttpExchangeAutoConfiguration {
   }
 
   @Configuration
-  @ConditionalOnClass(RestClient.class)
+  @ConditionalOnClass({RestClient.class, RestClientCustomizer.class})
   @ConditionalOnBean(AuditorEventService.class)
   class RestClientAuditConfiguration {
 
