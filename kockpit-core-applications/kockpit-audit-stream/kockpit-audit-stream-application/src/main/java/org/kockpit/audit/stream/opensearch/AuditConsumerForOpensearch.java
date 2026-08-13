@@ -21,9 +21,11 @@ import org.opensearch.client.opensearch._types.Refresh;
 import org.opensearch.client.opensearch.core.BulkRequest;
 import org.opensearch.client.opensearch.core.BulkResponse;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
+import org.opensearch.client.opensearch.core.bulk.BulkResponseItem;
 import org.opensearch.client.opensearch.core.bulk.IndexOperation;
 import org.opensearch.client.util.ObjectBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.ArrayList;
@@ -123,6 +125,11 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
                                             .toList())
                             );
                             lastResponse = bulkRequest(bulkRequest);
+                            // A single unparseable field makes OpenSearch reject the whole document.
+                            // Rather than losing the audit, re-index the failed ones in a degraded form.
+                            if (lastResponse.errors()) {
+                                retryFailedItemsDegraded(lastResponse, batch, aliasWrite);
+                            }
                         }
                         log.debug("indexing {} for {} took {} ms", auditIndexRequestsGrouped.size(), indexMetadata, System.currentTimeMillis() - now);
                         if (auditStarter && lastResponse != null) {
@@ -235,6 +242,60 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
                         .index(writeAlias)
                         .id(documentId)
                         .document(jsonNode)
+                ))
+        );
+    }
+
+    /**
+     * When a bulk response contains per-item failures, OpenSearch has rejected each failing
+     * document entirely (a single unparseable field is enough). To avoid losing the audit, we
+     * re-index every failed document in a degraded but always-indexable form (see
+     * {@link #toDegradedBulkOperation}). Bulk items are positional to the request operations,
+     * so they line up with the batch that produced them.
+     */
+    private void retryFailedItemsDegraded(BulkResponse response, List<AuditReport> batch, String writeAlias) {
+        List<BulkResponseItem> items = response.items();
+        List<BulkOperation> retryOperations = new ArrayList<>();
+        for (int i = 0; i < items.size() && i < batch.size(); i++) {
+            BulkResponseItem item = items.get(i);
+            if (item.error() != null) {
+                retryOperations.add(toDegradedBulkOperation(batch.get(i), writeAlias, item.error().reason()));
+            }
+        }
+        if (retryOperations.isEmpty()) {
+            return;
+        }
+        log.warn("Re-indexing {} audit document(s) in degraded form after an indexing failure", retryOperations.size());
+        BulkResponse retryResponse = bulkRequest(BulkRequest.of(b -> b.operations(retryOperations)));
+        if (retryResponse.errors()) {
+            long stillFailing = retryResponse.items().stream().filter(item -> item.error() != null).count();
+            log.error("{} audit document(s) still failed after degraded re-indexing and were dropped", stillFailing);
+        }
+    }
+
+    /**
+     * Builds a degraded index operation for a document OpenSearch refused: all top-level (mapped)
+     * fields are kept, while the free-form {@code audits} sub-tree — the only part that can carry
+     * unmapped/conflicting values — is serialized into a single {@code auditsRaw} string field.
+     * The failure reason is stored under {@code indexingError} (no leading underscore, which
+     * OpenSearch rejects for dynamically mapped fields). The audit is thus preserved and
+     * inspectable, at the cost of structured search over its events.
+     */
+    @SneakyThrows
+    private BulkOperation toDegradedBulkOperation(AuditReport auditReport, String writeAlias, String reason) {
+        String documentId = isNull(auditReport.getId()) ? auditReport.getRequestId() : auditReport.getId();
+        ObjectNode node = (ObjectNode) objectMapper.valueToTree(auditReport);
+        JsonNode audits = node.remove("audits");
+        if (audits != null) {
+            node.put("auditsRaw", audits.toString());
+        }
+        node.put("indexingError", reason);
+
+        return BulkOperation.of(op -> op
+                .index(IndexOperation.of(idx -> idx
+                        .index(writeAlias)
+                        .id(documentId)
+                        .document(node)
                 ))
         );
     }
