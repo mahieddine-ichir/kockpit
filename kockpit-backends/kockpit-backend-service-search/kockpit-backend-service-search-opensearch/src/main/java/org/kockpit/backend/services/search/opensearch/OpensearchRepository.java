@@ -15,6 +15,7 @@ import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.core.rest.RestStatus;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.NestedQueryBuilder;
+import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
@@ -131,11 +132,7 @@ public class OpensearchRepository implements SearchService {
                             String key = p.substring("indexedKeyValues".length() + 1);
                             boolQueryBuilder.should(buildQueryForIndexedKeyValues(key, values));
                         } else {
-                            if (values.size() == 1) {
-                                boolQueryBuilder.should(matchQuery(p, values.get(0)));
-                            } else {
-                                boolQueryBuilder.should(termsQuery(p, values));
-                            }
+                            boolQueryBuilder.should(buildValuesQuery(p, values));
                         }
                     });
             rootBoolQueryBuilder.must(boolQueryBuilder);
@@ -159,27 +156,51 @@ public class OpensearchRepository implements SearchService {
                 }
             } else {
                 log.trace("basic search on path {}", path);
-                if (values.size() == 1) {
-                    rootBoolQueryBuilder.must(matchQuery(path, values.get(0)));
-                } else {
-                    rootBoolQueryBuilder.must(termsQuery(path, values));
-                }
+                rootBoolQueryBuilder.must(buildValuesQuery(path, values));
             }
         }
+    }
+
+    private static boolean isWildcard(Object value) {
+        return value instanceof String s && s.contains("*");
+    }
+
+    /**
+     * Builds the query for a single value on a given field. When the value contains one or more
+     * '*', a wildcard query is used so the '*' position drives the semantics natively:
+     * {@code abc*} -> startsWith, {@code *abc} -> endsWith, {@code *abc*} -> contains,
+     * {@code ab*cd} -> arbitrary pattern. Otherwise a regular (analyzed) match query is used.
+     */
+    private QueryBuilder buildValueQuery(String field, Object value) {
+        if (isWildcard(value)) {
+            return wildcardQuery(field, ((String) value).toLowerCase());
+        }
+        return matchQuery(field, value);
+    }
+
+    /**
+     * Builds the query for one or more values on a given field. If any value contains a '*',
+     * each value is turned into its own (wildcard or match) query combined with a should/OR,
+     * otherwise a single terms query is used for the multi-value case.
+     */
+    private QueryBuilder buildValuesQuery(String field, List<?> values) {
+        if (values.size() == 1) {
+            return buildValueQuery(field, values.get(0));
+        }
+        if (values.stream().anyMatch(OpensearchRepository::isWildcard)) {
+            BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+            values.forEach(value -> boolQueryBuilder.should(buildValueQuery(field, value)));
+            return boolQueryBuilder;
+        }
+        return termsQuery(field, values);
     }
 
     private NestedQueryBuilder buildQueryForIndexedKeyValues(String name, List<?> values) {
         log.trace("Searching {} in [{}]", name, values);
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-        if (values.size() == 1) {
-            boolQueryBuilder
-                    .must(matchQuery("indexedKeyValues.key", name))
-                    .must(matchQuery("indexedKeyValues.value", values.get(0)));
-        } else {
-            boolQueryBuilder
-                    .must(matchQuery("indexedKeyValues.key", name))
-                    .must(termsQuery("indexedKeyValues.value", values));
-        }
+        boolQueryBuilder
+                .must(matchQuery("indexedKeyValues.key", name))
+                .must(buildValuesQuery("indexedKeyValues.value", values));
         return nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
     }
 
