@@ -62,6 +62,22 @@
         <module>kockpit-core/kockpit-core-communication-legacy</module>
     </modules>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<!-- JDK 23+ no longer runs annotation processors discovered on the
+					     classpath by default. Force full processing so classpath-based
+					     processors (Lombok, MapStruct, ...) keep working regardless of the
+					     JDK used to run the build. -->
+					<proc>full</proc>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<profiles>
 		<profile>
 			<id>central</id>
