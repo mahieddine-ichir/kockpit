@@ -18,7 +18,9 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.kockpit.audit.httpexchange.HttpExchangeAudit.logHttpExchange;
@@ -121,13 +123,13 @@ public class AuditExchangeFilterFunction implements ExchangeFilterFunction {
     return body;
   }
 
-  private HttpHeaders filterHeaders(HttpHeaders headers) {
-    HttpHeaders filtered = new HttpHeaders();
+  private Map<String, List<String>> filterHeaders(HttpHeaders headers) {
+    Map<String, List<String>> filtered = new HashMap<>();
     headers.headerSet().stream()
         .filter(
             entry ->
                 !filterAuthorizationHeader || !AUTHORIZATION.equalsIgnoreCase(entry.getKey()))
-        .forEach(entry -> filtered.addAll(entry.getKey(), entry.getValue()));
+        .forEach(entry -> filtered.put(entry.getKey(), entry.getValue()));
     return filtered;
   }
 }
