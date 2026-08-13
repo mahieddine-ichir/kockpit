@@ -149,13 +149,13 @@ public class AuditClientHttpRequestInterceptor implements ClientHttpRequestInter
     return body;
   }
 
-  private HttpHeaders getHttpHeaders(HttpHeaders httpHeaders) {
-    HttpHeaders headersWithoutAuthorization = new HttpHeaders();
+  private Map<String, List<String>> getHttpHeaders(HttpHeaders httpHeaders) {
+    Map<String, List<String>> headersWithoutAuthorization = new HashMap<>();
     httpHeaders.headerSet().stream()
         .filter(
             header ->
                 !filterAuthorizationHeader || !AUTHORIZATION.equalsIgnoreCase(header.getKey()))
-        .forEach(header -> headersWithoutAuthorization.addAll(header.getKey(), header.getValue()));
+        .forEach(header -> headersWithoutAuthorization.put(header.getKey(), header.getValue()));
     return headersWithoutAuthorization;
   }
 }
