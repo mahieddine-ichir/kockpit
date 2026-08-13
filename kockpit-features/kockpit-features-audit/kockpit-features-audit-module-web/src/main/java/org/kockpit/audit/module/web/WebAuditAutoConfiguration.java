@@ -11,16 +11,22 @@ import org.kockpit.audit.module.web.request.ParametersRequestAuditor;
 import org.kockpit.audit.module.web.response.DefaultResponseAuditor;
 import org.kockpit.audit.module.web.response.HeadersResponseAuditor;
 import org.kockpit.audit.module.web.skipped.ActuatorSkipAuditor;
+import jakarta.servlet.Filter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 
 @ConditionalOnProperty(
         value = "kockpit.audit.enabled",
-        havingValue = "true"
+        havingValue = "true",
+        matchIfMissing = true
 )
+@ConditionalOnClass(Filter.class)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @AutoConfiguration
 public class WebAuditAutoConfiguration {
 
