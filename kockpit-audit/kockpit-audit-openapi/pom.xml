@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-audit</artifactId><version>1.2.0-SNAPSHOT</version>
+        <artifactId>kockpit-audit</artifactId><version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-audit-openapi</artifactId>
@@ -18,7 +18,7 @@
       <dependency>
           <groupId>org.kockpit</groupId>
           <artifactId>kockpit-audit-api</artifactId>
-          <version>1.2.0-SNAPSHOT</version>
+          <version>1.1.0-SNAPSHOT</version>
       </dependency>
     <dependency>
       <groupId>jakarta.servlet</groupId>
