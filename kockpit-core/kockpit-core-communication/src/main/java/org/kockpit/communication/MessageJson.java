@@ -13,9 +13,9 @@ import tools.jackson.databind.json.JsonMapper;
  * {@code spring.jackson.*} de l'application hote, sous peine de rompre la communication entre
  * deux services Kockpit configures differemment.
  *
- * <p>Les publishers et consumers filesystem, S3 et storage account partagent ce mapper : ils
- * ecrivent et relisent les memes fichiers ou objets. Toute evolution du format se fait ici,
- * en un seul endroit.
+ * <p>Partage par les publishers et consumers filesystem, S3 et storage account, ainsi que par
+ * l'archiveur Kinesis vers S3 ({@code KinesisToS3Writer}), qui ecrit dans le meme prefixe que
+ * celui relu par {@code S3Consumer}. Toute evolution du format se fait ici, en un seul endroit.
  */
 public final class MessageJson {
 

@@ -14,9 +14,9 @@ import tools.jackson.databind.json.JsonMapper;
  * regler ici, mais c'est bien ce defaut qui rend la lecture correcte. Un mapper qui
  * l'interpreterait en millisecondes produirait des dates en 1970.
  *
- * <p>Les starters Kafka et Kinesis partagent ce mapper. Leurs tests {@code SerdesTest}
- * l'utilisent aussi, de sorte qu'ils verifient la configuration reellement en production et
- * non une copie de celle-ci.
+ * <p>Les starters Kafka et Kinesis partagent ce mapper. Le {@code SerdesTest} du starter
+ * Kafka l'utilise directement, de sorte qu'il verifie la configuration reellement en
+ * production et non une copie de celle-ci ; le starter Kinesis n'a pas de test propre.
  */
 public final class AuditStreamJson {
 

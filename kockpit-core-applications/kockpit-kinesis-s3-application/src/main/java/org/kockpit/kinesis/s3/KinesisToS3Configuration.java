@@ -1,6 +1,7 @@
 package org.kockpit.kinesis.s3;
 
 import lombok.extern.slf4j.Slf4j;
+import org.kockpit.communication.MessageJson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,10 +9,7 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
 import software.amazon.awssdk.services.s3.S3Client;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -77,12 +75,9 @@ public class KinesisToS3Configuration {
             S3Client s3Client,
             @Value("${kockpit.kinesis-to-s3.s3.bucket}") String bucketName
     ) {
-        ObjectMapper objectMapper = JsonMapper.builder()
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                // Jackson 3 trie les proprietes alphabetiquement par defaut ; on conserve l'ordre
-                // de declaration (defaut Jackson 2) pour ne pas changer le JSON produit.
-                .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
-                .build();
+        // Ce writer serialise des Message dans le meme prefixe S3 que celui relu par
+        // S3Consumer : il doit suivre le meme contrat de format.
+        ObjectMapper objectMapper = MessageJson.mapper();
         return new KinesisToS3Writer(s3Client, bucketName, objectMapper, new KinesisRecordMapper());
     }
 
