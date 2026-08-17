@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
 import software.amazon.awssdk.http.SdkHttpClient;
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.regions.Region;
+import tools.jackson.core.StreamWriteFeature;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.ObjectMapper;
@@ -57,8 +58,10 @@ class AwsSigningRestConfiguration {
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .enable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .disable(DateTimeFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
-                // fixme .enable(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN) comme dans
-                // OpensearchAuditConsumerConfiguration, qui indexe les memes documents
+                // Aligne sur OpensearchAuditConsumerConfiguration, qui indexe les memes
+                // documents : sans ce reglage les deux chemins ecrivent les BigDecimal
+                // differemment (notation decimale ici, scientifique la-bas).
+                .enable(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN)
                 // Jackson 3 trie les proprietes alphabetiquement par defaut ; on conserve l'ordre
                 // de declaration (defaut Jackson 2) pour ne pas changer le _source indexe.
                 .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
