@@ -246,6 +246,70 @@ npm run build
 aws s3 sync dist/ s3://your-bucket-name/ --delete
 ```
 
+### Maven Central Release
+
+Kockpit modules are published to Maven Central via the [Central Publishing Portal](https://central.sonatype.com).
+
+**Workflow Files:**
+- `.github/workflows/kockpit-maven-central-deploy.yml` — releases (tag push or manual dispatch)
+- `.github/workflows/kockpit-maven-central-deploy-snapshots.yml` — snapshots (push to `dev` or manual dispatch)
+
+#### Automatic Deployment
+
+- **Releases:** push a git tag (e.g. `1.1.0`) to trigger a release deploy of all modules.
+- **Snapshots:** push to `dev` to trigger a `-SNAPSHOT` deploy of all modules. A push whose changed files fall entirely under the workflow's `paths-ignore` (e.g. `.github/workflows/**`, `**.md`) will not trigger it.
+
+#### Manual Deployment
+
+1. Go to GitHub → Actions → "Deploy libs on maven central" (or "Deploy snapshots on maven central")
+2. Click "Run workflow"
+3. Select `deploy_modules`: `all`, `core`, `audit`, `features`, or `rules`
+
+#### Required GitHub Secrets
+
+Set these in GitHub → Settings → Secrets and variables → Actions:
+
+| Secret Name | Description |
+|-------------|-------------|
+| `MAVEN_CENTRAL_USERNAME` | Central Portal user token username (Account → Generate User Token at central.sonatype.com) |
+| `MAVEN_CENTRAL_TOKEN` | Central Portal user token password |
+| `GPG_PRIVATE_KEY` | ASCII-armored GPG private key used to sign artifacts (`gpg --export-secret-keys --armor <KEY_ID>`) |
+| `GPG_PASSPHRASE` | Passphrase for the GPG signing key |
+
+Both workflows use the same four secret names for every job (all / per-module).
+
+#### One-Time Setup
+
+1. **Central Portal account & namespace:** create an account at [central.sonatype.com](https://central.sonatype.com) and verify ownership of the `org.kockpit` namespace (DNS TXT record or GitHub repo ownership proof).
+2. **GPG key:** generate a key pair and publish the public key to a keyserver (Central verifies signatures against it):
+```bash
+gpg --gen-key
+gpg --keyserver keyserver.ubuntu.com --send-keys <KEY_ID>
+```
+3. **Central Portal user token:** Account → Generate User Token → store as `MAVEN_CENTRAL_USERNAME` / `MAVEN_CENTRAL_TOKEN`.
+
+The root `pom.xml` `central` Maven profile (`central-publishing-maven-plugin`, source/javadoc jars, `maven-gpg-plugin`) handles the rest — including automatically routing `-SNAPSHOT` versions to the Central snapshots repository (plugin version ≥ 0.7.0).
+
+#### Cutting a Release
+
+```bash
+# 1. Bump version across all modules
+mvn versions:set -DnewVersion=1.1.0 -DprocessAllModules
+git add -A && git commit -m "Release 1.1.0"
+
+# 2. Tag and push — triggers the release workflow
+git tag 1.1.0
+git push origin dev
+git push origin 1.1.0
+
+# 3. Bump back to the next snapshot
+mvn versions:set -DnewVersion=1.2.0-SNAPSHOT -DprocessAllModules
+git add -A && git commit -m "Next development version 1.2.0-SNAPSHOT"
+git push origin dev
+```
+
+After the workflow deploys, verify/finalize the release in the [Central Portal](https://central.sonatype.com) UI.
+
 ---
 
 ## Configuration Properties
