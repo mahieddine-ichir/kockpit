@@ -5,10 +5,9 @@ import org.kockpit.communication.Message;
 import org.kockpit.communication.legacy.dynaconfig.DynaConfigLegacyMessage;
 import org.kockpit.communication.legacy.dynaconfig.InstanceInitPropertiesUpdateRequestDto;
 import org.kockpit.communication.legacy.dynaconfig.PropertyUpdateMessageRequestDto;
+import org.kockpit.communication.legacy.LegacyJson;
 import org.springframework.util.CollectionUtils;
-import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
 import java.util.List;
@@ -20,10 +19,7 @@ public class HealthLegacyMapper {
     private final ObjectMapper objectMapper;
 
     HealthLegacyMapper() {
-        this(JsonMapper.builder()
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                        DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
-                .build());
+        this(LegacyJson.mapper());
     }
 
     HealthLegacyMapper(ObjectMapper objectMapper) {

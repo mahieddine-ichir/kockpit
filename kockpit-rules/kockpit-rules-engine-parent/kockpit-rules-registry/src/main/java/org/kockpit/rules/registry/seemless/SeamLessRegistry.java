@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.rules.registry.*;
+import org.kockpit.rules.registry.RegistryJson;
 import org.kockpit.rules.registry.dao.RegistryDao;
 import org.kockpit.rules.registry.model.FlowEntry;
 import org.kockpit.rules.registry.model.Registry;
@@ -31,8 +32,6 @@ import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.MapperFeature;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
@@ -378,13 +377,7 @@ public class SeamLessRegistry extends RuleNodeRegistry {
     }
 
     // Compute hash
-    // Jackson 3 trie les proprietes alphabetiquement par defaut : on conserve l'ordre de
-    // declaration (defaut Jackson 2), sinon le hash d'identite du registre change a
-    // rules inchangees.
-    String value = JsonMapper.builder()
-        .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
-        .build()
-        .writeValueAsString(registry);
+    String value = RegistryJson.mapper().writeValueAsString(registry);
     long hash = value.hashCode();
 
     // Return final registry with its id

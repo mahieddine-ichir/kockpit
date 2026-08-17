@@ -3,6 +3,7 @@ package org.kockpit.audit.stream.kinesis;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumerEvent;
+import org.kockpit.audit.stream.api.AuditStreamJson;
 import org.kockpit.audit.stream.api.model.AuditReport;
 import org.kockpit.audit.stream.kinesis.coordination.DynamoDbShardCoordinator;
 import org.kockpit.audit.stream.kinesis.coordination.LeaseHeartbeatService;
@@ -10,9 +11,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 import software.amazon.awssdk.services.kinesis.model.*;
-import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -44,9 +43,7 @@ public class KinesisStreamProcessor {
 
     private final long shardAcquisitionIntervalMs;
 
-    private final ObjectMapper objectMapper = JsonMapper.builder()
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .build();
+    private final ObjectMapper objectMapper = AuditStreamJson.mapper();
 
     private final Map<String, String> shardIterators = new ConcurrentHashMap<>();
 

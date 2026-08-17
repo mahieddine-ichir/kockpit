@@ -2,10 +2,9 @@ package org.kockpit.communication.legacy.dynaconfig;
 
 import org.kockpit.communication.KeyValue;
 import org.kockpit.communication.Message;
+import org.kockpit.communication.legacy.LegacyJson;
 import org.springframework.util.CollectionUtils;
-import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,10 +16,7 @@ public class DynaConfigLegacyMapper {
     private final ObjectMapper objectMapper;
 
     DynaConfigLegacyMapper() {
-        this(JsonMapper.builder()
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                        DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
-                .build());
+        this(LegacyJson.mapper());
     }
 
     DynaConfigLegacyMapper(ObjectMapper objectMapper) {
