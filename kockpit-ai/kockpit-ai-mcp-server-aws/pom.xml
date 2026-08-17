@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>kockpit-ai-mcp-server-aws</artifactId>
+    <name>Kockpit MCP Server AWS</name>
     <properties>
         <aws.version>2.41.10</aws.version>
     </properties>
