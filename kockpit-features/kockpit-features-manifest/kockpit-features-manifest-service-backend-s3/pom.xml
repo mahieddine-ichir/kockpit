@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-features-manifest</artifactId><version>1.1.0-SNAPSHOT</version>
+        <artifactId>kockpit-features-manifest</artifactId><version>1.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-features-manifest-service-backend-s3</artifactId>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-manifest-service</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.1.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
