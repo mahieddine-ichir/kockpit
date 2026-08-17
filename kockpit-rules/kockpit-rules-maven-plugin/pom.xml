@@ -43,11 +43,10 @@
             <artifactId>compiler</artifactId>
             <version>0.9.10</version>
         </dependency>
-        <!-- Jackson 2 (lecture des definitions de regles) ; pin preexistant, plugin execute dans Maven, hors runtime Boot -->
+        <!-- Jackson 2 (lecture des definitions de regles) ; plugin execute dans Maven, hors runtime Boot ; version geree par jackson-2-bom du parent Boot 4 -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.18.2</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

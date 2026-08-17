@@ -1,7 +1,5 @@
 package org.kockpit.rules.registry;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kockpit.rules.DetailHandler;
 import org.kockpit.rules.RuleNode;
 import org.kockpit.rules.registry.dao.RegistryDao;
@@ -13,6 +11,9 @@ import org.kockpit.rules.registry.model.specification.RuleSpecification;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.*;
 
@@ -90,7 +91,7 @@ public class RuleNodeRegistry<T> {
     // Generate registry
     try {
       currentRegistry = computeCurrentRegistry();
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new IllegalStateException(e);
     }
 
@@ -122,7 +123,7 @@ public class RuleNodeRegistry<T> {
         .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
-  protected RegistryImpl computeCurrentRegistry() throws JsonProcessingException {
+  protected RegistryImpl computeCurrentRegistry() throws JacksonException {
     // Compute rule specifications
     List<? extends RuleSpecification> currentRuleSpecifications =
         getRules().stream()
@@ -144,7 +145,13 @@ public class RuleNodeRegistry<T> {
     }
 
     // Compute hash
-    String value = new ObjectMapper().writeValueAsString(registry);
+    // Jackson 3 trie les proprietes alphabetiquement par defaut : on conserve l'ordre de
+    // declaration (defaut Jackson 2), sinon le hash d'identite du registre change a
+    // rules inchangees.
+    String value = JsonMapper.builder()
+        .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+        .build()
+        .writeValueAsString(registry);
     long hash = value.hashCode();
 
     // Return final registry with its id

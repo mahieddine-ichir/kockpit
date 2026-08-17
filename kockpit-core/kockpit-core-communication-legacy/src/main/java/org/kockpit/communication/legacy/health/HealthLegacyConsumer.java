@@ -1,11 +1,11 @@
 package org.kockpit.communication.legacy.health;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.Consumer;
 import org.kockpit.communication.Message;
 import software.amazon.awssdk.services.s3.S3Client;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 import java.util.Collections;

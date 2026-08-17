@@ -1,10 +1,10 @@
 package org.kockpit.communication.legacy.featureflipping;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.kockpit.communication.KeyValue;
 import org.kockpit.communication.Message;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 

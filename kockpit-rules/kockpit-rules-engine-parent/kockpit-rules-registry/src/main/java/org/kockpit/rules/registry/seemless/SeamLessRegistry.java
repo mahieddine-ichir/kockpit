@@ -1,7 +1,5 @@
 package org.kockpit.rules.registry.seemless;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kockpit.rules.DetailHandler;
 import org.kockpit.rules.DocumentationDetails;
 import org.kockpit.rules.RuleNode;
@@ -32,6 +30,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.core.type.AnnotatedTypeMetadata;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
@@ -206,7 +207,7 @@ public class SeamLessRegistry extends RuleNodeRegistry {
     // Generate registry
     try {
       currentRegistry = computeCurrentRegistry();
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new IllegalStateException(e);
     }
 
@@ -359,7 +360,7 @@ public class SeamLessRegistry extends RuleNodeRegistry {
   }
 
   @Override
-  protected RegistryImpl computeCurrentRegistry() throws JsonProcessingException {
+  protected RegistryImpl computeCurrentRegistry() throws JacksonException {
     // Compute rule specifications
     List<? extends RuleSpecification> currentRuleSpecifications =
         getRules().stream().map(tRule -> new RuleSpecificationImpl(tRule, detailHandler)).toList();
@@ -377,7 +378,13 @@ public class SeamLessRegistry extends RuleNodeRegistry {
     }
 
     // Compute hash
-    String value = new ObjectMapper().writeValueAsString(registry);
+    // Jackson 3 trie les proprietes alphabetiquement par defaut : on conserve l'ordre de
+    // declaration (defaut Jackson 2), sinon le hash d'identite du registre change a
+    // rules inchangees.
+    String value = JsonMapper.builder()
+        .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+        .build()
+        .writeValueAsString(registry);
     long hash = value.hashCode();
 
     // Return final registry with its id

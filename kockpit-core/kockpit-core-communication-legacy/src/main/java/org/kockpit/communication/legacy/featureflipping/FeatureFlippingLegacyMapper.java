@@ -1,7 +1,5 @@
 package org.kockpit.communication.legacy.featureflipping;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kockpit.communication.Message;
 import org.springframework.util.CollectionUtils;
 
