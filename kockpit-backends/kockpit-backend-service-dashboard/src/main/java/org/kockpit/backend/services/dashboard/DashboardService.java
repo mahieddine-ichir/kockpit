@@ -35,6 +35,12 @@ public class DashboardService {
 
     private final RestClient restClient;
 
+    /**
+     * Mapper auto-configure par Boot : cette lecture n'a aucun contrat de format a preserver
+     * (agregations OpenSearch lues en Map), contrairement aux mappers dedies du projet.
+     */
+    private final ObjectMapper objectMapper;
+
     @Value("${kockpit.backend.opensearch.index}")
     private String index;
 
@@ -134,7 +140,7 @@ public class DashboardService {
         InputStream content = response.getEntity().getContent();
         StreamUtils.copy(content, os);
         content.close();
-        return (Map) new ObjectMapper().readValue(new String(os.toByteArray()), Map.class)
+        return (Map) objectMapper.readValue(new String(os.toByteArray()), Map.class)
                 .get("aggregations");
     }
 
