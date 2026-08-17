@@ -1,8 +1,5 @@
 package org.kockpit.audit.stream.kafka;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -14,6 +11,8 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +26,10 @@ public class KafkaStreamAutoConfiguration {
             ApplicationEventPublisher applicationEventPublisher
     ) {
         return new KafkaStreamListener(
-                new ObjectMapper().registerModule(new JavaTimeModule())
-                        .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
-                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                JsonMapper.builder()
+                        .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
+                                DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                        .build()
                 , applicationEventPublisher
         );
     }

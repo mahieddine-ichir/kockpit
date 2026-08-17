@@ -1,6 +1,5 @@
 package org.kockpit.communication.legacy.dynaconfig;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.kockpit.communication.Message;
@@ -8,6 +7,7 @@ import org.kockpit.communication.Publisher;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Optional;

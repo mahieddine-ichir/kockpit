@@ -1,12 +1,12 @@
 package org.kockpit.sample.api.featureflipping;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.kockpit.communication.Message;
 import org.kockpit.core.sdk.OnMessageListener;
 import org.kockpit.features.featureflipping.service.FeatureFlippingDto;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,12 +1,13 @@
 package org.kockpit.communication.legacy.dynaconfig;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kockpit.communication.KeyValue;
 import org.kockpit.communication.Message;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,8 +45,9 @@ class DynaConfigLegacyMapperTest {
                 }
                 """;
 
-        ObjectMapper objectMapper = new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        ObjectMapper objectMapper = JsonMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
         DynaConfigLegacyMessage legacy = objectMapper.readValue(json, DynaConfigLegacyMessage.class);
 
         Message message = dynaConfigLegacyMapper.toMessage(legacy);

@@ -1,11 +1,11 @@
 package org.kockpit.communication.filesystem;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.Message;
 import org.kockpit.communication.Publisher;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.FileOutputStream;

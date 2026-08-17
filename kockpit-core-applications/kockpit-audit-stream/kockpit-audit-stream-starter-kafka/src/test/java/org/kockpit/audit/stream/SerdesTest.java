@@ -1,25 +1,28 @@
 package org.kockpit.audit.stream;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kockpit.audit.stream.api.model.AuditReport;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
+import java.time.Instant;
 
 /**
- * Valide le contrat de deserialisation audit.json -> AuditReport avec le mapper Jackson 2
+ * Valide le contrat de deserialisation audit.json -> AuditReport avec le mapper
  * configure comme dans KafkaStreamAutoConfiguration (le chemin reel de consommation),
- * et non le bean ObjectMapper auto-configure par Boot (Jackson 3 depuis Boot 4).
+ * et non le bean ObjectMapper auto-configure par Boot. Les Instant du flux sont
+ * des timestamps numeriques (secondes.nanos) : READ_DATE_TIMESTAMPS_AS_NANOSECONDS
+ * est actif par defaut en Jackson 3.
  */
 public class SerdesTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+            .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
+                    DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .build();
 
     @Test
     void on_audit_json() throws IOException {
@@ -29,6 +32,18 @@ public class SerdesTest {
         Assertions.assertThat(auditReport.getIndexedKeyValues()).hasSize(6);
         Assertions.assertThat(auditReport.getAudits()).hasSize(1);
         Assertions.assertThat(auditReport.getAudits().iterator().next().getType()).isEqualTo("builtin.web");
+    }
+
+    /**
+     * Le flux transporte les Instant en secondes.nanosecondes ("start":1750197974.047081776).
+     * Verrouille cette lecture : un mapper qui interpreterait le nombre en millisecondes
+     * produirait des dates en 1970.
+     */
+    @Test
+    void reads_instants_as_seconds_with_nanos() throws IOException {
+        AuditReport auditReport = objectMapper.readValue(this.getClass().getResourceAsStream("/audit.json"), AuditReport.class);
+        Assertions.assertThat(auditReport.getStart()).isEqualTo(Instant.ofEpochSecond(1750197974L, 47081776));
+        Assertions.assertThat(auditReport.getEnd()).isEqualTo(Instant.ofEpochSecond(1750197978L, 958444601));
     }
 
 }

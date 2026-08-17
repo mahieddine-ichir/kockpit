@@ -1,7 +1,5 @@
 package org.kockpit.communication.legacy;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.legacy.dynaconfig.DynaConfigLegacyConsumer;
@@ -18,6 +16,10 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URI;
 import java.util.Optional;
@@ -82,9 +84,13 @@ public class LegacyAutoConfiguration {
     }
 
     private ObjectMapper legacyObjectMapper() {
-        return new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+        return JsonMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                        DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+                // Jackson 3 trie les proprietes alphabetiquement par defaut ; on conserve l'ordre
+                // de declaration (defaut Jackson 2) pour ne pas changer le JSON produit.
+                .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+                .build();
     }
 
     AwsCredentialsProvider awsCredentialsProvider() {

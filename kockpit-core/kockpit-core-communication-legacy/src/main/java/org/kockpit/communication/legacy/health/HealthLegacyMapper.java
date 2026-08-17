@@ -1,13 +1,14 @@
 package org.kockpit.communication.legacy.health;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kockpit.communication.KeyValue;
 import org.kockpit.communication.Message;
 import org.kockpit.communication.legacy.dynaconfig.DynaConfigLegacyMessage;
 import org.kockpit.communication.legacy.dynaconfig.InstanceInitPropertiesUpdateRequestDto;
 import org.kockpit.communication.legacy.dynaconfig.PropertyUpdateMessageRequestDto;
 import org.springframework.util.CollectionUtils;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,9 +20,10 @@ public class HealthLegacyMapper {
     private final ObjectMapper objectMapper;
 
     HealthLegacyMapper() {
-        this(new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false));
+        this(JsonMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                        DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+                .build());
     }
 
     HealthLegacyMapper(ObjectMapper objectMapper) {
