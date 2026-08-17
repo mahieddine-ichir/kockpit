@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-features-audit</artifactId><version>1.0.0-SNAPSHOT</version>
+        <artifactId>kockpit-features-audit</artifactId><version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-features-audit-module-web</artifactId>
@@ -17,7 +17,7 @@
     <dependency>
       <groupId>org.kockpit</groupId>
       <artifactId>kockpit-audit-api-impl</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
     </dependency>
       <dependency>
           <groupId>io.opentelemetry</groupId>
@@ -38,19 +38,15 @@
           <artifactId>junit-jupiter</artifactId>
           <scope>test</scope>
       </dependency>
+      <!-- Boot 4 : AutoConfigureMockMvc relocalise dans le starter webmvc-test -->
       <dependency>
           <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-test</artifactId>
+          <artifactId>spring-boot-starter-webmvc-test</artifactId>
           <scope>test</scope>
       </dependency>
       <dependency>
           <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-test-autoconfigure</artifactId>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-web</artifactId>
+          <artifactId>spring-boot-starter-webmvc</artifactId>
           <scope>test</scope>
       </dependency>
       <dependency>

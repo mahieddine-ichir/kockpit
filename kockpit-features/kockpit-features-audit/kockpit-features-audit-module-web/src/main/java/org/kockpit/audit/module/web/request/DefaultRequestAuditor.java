@@ -9,11 +9,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,8 +59,8 @@ public class DefaultRequestAuditor implements RequestAuditor {
         .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
-  HttpHeaders getHeaders(HttpServletRequest httpServletRequest) {
-    HttpHeaders httpHeaders = new HttpHeaders();
+  Map<String, List<String>> getHeaders(HttpServletRequest httpServletRequest) {
+    Map<String, List<String>> httpHeaders = new HashMap<>();
     Collections.list(httpServletRequest.getHeaderNames()).stream()
         .filter(hd -> !filterAuthorizationHeader || !AUTHORIZATION.equalsIgnoreCase(hd))
         .forEach(hd -> {
@@ -72,7 +72,7 @@ public class DefaultRequestAuditor implements RequestAuditor {
             log.warn("Error getting header value for audit. headerName: {}, e: {}", hd, e.getMessage());
           }
           try {
-            httpHeaders.add(hd, headerValue);
+            httpHeaders.put(hd, headerValue == null ? List.of() : List.of(headerValue));
           } catch (Exception e) {
             log.warn("Error adding header to audit for headerName: {}, value: {}", hd, headerValue);
           }

@@ -2,7 +2,7 @@ package org.kockpit.communication.s3;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micrometer.common.util.StringUtils;
+import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.communication.Consumer;
 import org.kockpit.communication.Publisher;
@@ -63,7 +63,7 @@ public class S3CommunicationAutoConfiguration {
     ) {
         return optionalEndpoint
                 .map(String::trim)
-                .filter(StringUtils::isNotEmpty)
+                .filter(StringUtils::hasLength)
                 .map(endpoint -> {
                     log.info("➡️ s3 endpoint: {}", endpoint);
                     return S3Client.builder()

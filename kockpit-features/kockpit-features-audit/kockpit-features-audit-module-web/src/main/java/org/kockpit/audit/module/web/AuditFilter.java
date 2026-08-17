@@ -69,8 +69,9 @@ public class AuditFilter extends OncePerRequestFilter {
 
     auditorService.startAudit();
     // Create a cache request / response wrappers to access request and response
+    // Framework 7 : le constructeur sans limite a disparu ; Integer.MAX_VALUE = comportement 6.x (cache non borné)
     ContentCachingRequestWrapper requestWrapper =
-        new ContentCachingRequestWrapper(httpServletRequest);
+        new ContentCachingRequestWrapper(httpServletRequest, Integer.MAX_VALUE);
     ContentCachingResponseWrapper responseWrapper =
         new ContentCachingResponseWrapper(httpServletResponse);
     try {
