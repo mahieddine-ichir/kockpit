@@ -1,11 +1,5 @@
 package org.kockpit.audit.stream.opensearch;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.HttpHost;
@@ -15,7 +9,7 @@ import org.kockpit.audit.api.AuditorService;
 import org.kockpit.audit.stream.api.AuditConsumer;
 import org.kockpit.sdk.SdkApplicationProperties;
 import org.opensearch.client.json.JsonpMapper;
-import org.opensearch.client.json.jackson.JacksonJsonpMapper;
+import org.opensearch.client.json.jackson3.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5Transport;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
@@ -25,6 +19,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import tools.jackson.core.StreamWriteFeature;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.stream.Stream;
 
@@ -34,14 +35,21 @@ import java.util.stream.Stream;
 public class OpensearchAuditConsumerConfiguration {
 
     ObjectMapper opensearchObjectMapper() {
-        return new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-                .registerModule(new JavaTimeModule())
-                .registerModule(new Jdk8Module())
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
-                .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
-                .configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+        // java.time et Optional sont integres a jackson-databind 3 : plus de module a enregistrer.
+        // Les deux reglages de dates sont explicites parce que Jackson 3 inverse leurs defauts :
+        // les documents indexes portent start/end en epoch-millis entiers.
+        return JsonMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .enable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .disable(DateTimeFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                // JsonGenerator.Feature a ete scinde en Jackson 3 : cette option est desormais
+                // une StreamWriteFeature.
+                .enable(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN)
+                // Jackson 3 trie les proprietes alphabetiquement par defaut ; on conserve l'ordre
+                // de declaration (defaut Jackson 2) pour ne pas changer le _source indexe.
+                .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+                .build();
     }
 
     JsonpMapper opensearchJsonpMapper() {

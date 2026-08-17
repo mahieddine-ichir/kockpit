@@ -1,13 +1,13 @@
 package org.kockpit.ai.mcp.server;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.kockpit.ai.mcp.server.dto.AuditReport;
 import org.kockpit.ai.mcp.server.dto.AuditReportDocument;
 import org.mapstruct.factory.Mappers;
 import org.opensearch.search.SearchHit;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -21,9 +21,9 @@ public abstract class AuditReportHelper {
 
   // Les documents indexes portent start/end en epoch-millis entiers : sans ce flag,
   // Jackson les relit comme des secondes (dates absurdes en annee +57431)
-  private final static ObjectMapper objectMapper = new ObjectMapper()
-          .registerModule(new JavaTimeModule())
-          .configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+  private final static ObjectMapper objectMapper = JsonMapper.builder()
+          .disable(DateTimeFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)
+          .build();
 
 
   @SneakyThrows

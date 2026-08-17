@@ -1,8 +1,5 @@
 package org.kockpit.backend.services.search.opensearch;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.HttpHost;
@@ -16,6 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.CollectionUtils;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,11 +39,13 @@ public class OpensearchAutoConfiguration {
         return new OpensearchRepository(restHighLevelClient, index);
     }
 
+    // Bean non primaire : le mapper auto-configure par Boot reste celui injecte par type
+    // (JacksonAutoConfiguration l'expose en @Primary). java.time est integre a databind 3.
     @Bean("opensearch-objectMapper")
     public ObjectMapper opensearchObjectMapper() {
-        return new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .registerModule(new JavaTimeModule());
+        return JsonMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
     }
 
     @Bean
