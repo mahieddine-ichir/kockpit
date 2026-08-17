@@ -75,31 +75,31 @@ jobs:
         if: github.event.inputs.deploy_modules == 'core'
         run: mvn deploy -Pcentral -f kockpit-core/pom.xml -Dmaven.test.skip=true
         env:
-          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Deploy kockpit-audit to Maven Central
         if: github.event.inputs.deploy_modules == 'audit'
         run: mvn deploy -Pcentral -f kockpit-audit/pom.xml -Dmaven.test.skip=true
         env:
-          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Deploy kockpit-features to Maven Central
         if: github.event.inputs.deploy_modules == 'features'
         run: mvn deploy -Pcentral -f kockpit-features/pom.xml -Dmaven.test.skip=true
         env:
-          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Deploy kockpit-rules to Maven Central
         if: github.event.inputs.deploy_modules == 'rules'
         run: mvn deploy -Pcentral -f kockpit-rules/pom.xml -Dmaven.test.skip=true
         env:
-          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
