@@ -59,8 +59,9 @@ class AwsSigningRestConfiguration {
                 .enable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .disable(DateTimeFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
                 // Aligne sur OpensearchAuditConsumerConfiguration, qui indexe les memes
-                // documents : sans ce reglage les deux chemins ecrivent les BigDecimal
-                // differemment (notation decimale ici, scientifique la-bas).
+                // documents. Sans ce reglage, BigDecimal.toString() peut produire une
+                // notation scientifique ; l'autre chemin, qui l'active, ecrivait deja en
+                // notation decimale.
                 .enable(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN)
                 // Jackson 3 trie les proprietes alphabetiquement par defaut ; on conserve l'ordre
                 // de declaration (defaut Jackson 2) pour ne pas changer le _source indexe.
