@@ -1,6 +1,6 @@
 package org.kockpit.audit.httpexchange;
 
-import org.springframework.boot.web.client.RestTemplateCustomizer;
+import org.springframework.boot.restclient.RestTemplateCustomizer;
 import org.springframework.web.client.RestTemplate;
 
 public class AuditRestTemplateCustomizer implements RestTemplateCustomizer {

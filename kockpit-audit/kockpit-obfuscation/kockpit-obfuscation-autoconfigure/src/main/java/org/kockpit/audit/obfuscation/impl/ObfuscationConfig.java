@@ -1,5 +1,7 @@
 package org.kockpit.audit.obfuscation.impl;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+
 import org.kockpit.audit.obfuscation.Obfuscate;
 import org.kockpit.audit.obfuscation.ObfuscationService;
 import org.kockpit.audit.obfuscation.impl.masker.MaskerServiceImpl;
@@ -8,9 +10,8 @@ import org.kockpit.audit.obfuscation.masker.MaskerService;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 class ObfuscationConfig {
 
   @ConditionalOnMissingBean

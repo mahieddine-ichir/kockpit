@@ -61,11 +61,11 @@ jobs:
 
       # build for File System profile
       - name: Build Application with Maven (filesystem)
-        run: mvn clean package -Pfilesystem -pl kockpit-core-applications/kockpit-backend-application -am -DskipTests
+        run: mvn clean package -Pfilesystem -pl kockpit-core-applications/kockpit-backend-application -am -Dmaven.test.skip=true
 
       # OpenAPI generation disabled in pom.xml - uncomment if needed
       # - name: Generate OpenAPI Specification
-      #   run: mvn verify -Pfilesystem -pl kockpit-core-applications/kockpit-backend-application -DskipTests
+      #   run: mvn verify -Pfilesystem -pl kockpit-core-applications/kockpit-backend-application -Dmaven.test.skip=true
       #   continue-on-error: true
 
       # - name: Upload OpenAPI Specification
@@ -106,7 +106,7 @@ jobs:
 
       # build for Azure profile
       - name: Build Application with Maven (azure)
-        run: mvn clean package -Pazure -pl kockpit-core-applications/kockpit-backend-application -am -DskipTests
+        run: mvn clean package -Pazure -pl kockpit-core-applications/kockpit-backend-application -am -Dmaven.test.skip=true
 
       - name: Extract Metadata for Docker
         id: meta-azure
@@ -130,7 +130,7 @@ jobs:
 
       # build for AWS Profile
       - name: Build Application with Maven (aws)
-        run: mvn clean package -Paws -pl kockpit-core-applications/kockpit-backend-application -am -DskipTests
+        run: mvn clean package -Paws -pl kockpit-core-applications/kockpit-backend-application -am -Dmaven.test.skip=true
 
       - name: Extract Metadata for Docker
         id: meta-aws

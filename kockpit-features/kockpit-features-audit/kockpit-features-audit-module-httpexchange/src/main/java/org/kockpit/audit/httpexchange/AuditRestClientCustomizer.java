@@ -1,6 +1,6 @@
 package org.kockpit.audit.httpexchange;
 
-import org.springframework.boot.web.client.RestClientCustomizer;
+import org.springframework.boot.restclient.RestClientCustomizer;
 import org.springframework.web.client.RestClient;
 
 public class AuditRestClientCustomizer implements RestClientCustomizer {

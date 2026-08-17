@@ -179,7 +179,7 @@ const SelectFilter = ({ placeholder, value, onChange, options }) => {
     );
 }
 
-const SearchTermFactory = ({searchTerm, setTerm, clearTerm}) => {
+const SearchTermFactory = ({searchTerm, value, setTerm, clearTerm}) => {
     if (searchTerm.type === 'options') {
         const placeholder = searchTerm.name === 'httpStatus' ? 'All Statuses' : (searchTerm.name === 'httpMethod' ? 'All Methods' : `All ${searchTerm.name}`);
         const handleChange = (val) => {
@@ -192,7 +192,7 @@ const SearchTermFactory = ({searchTerm, setTerm, clearTerm}) => {
         return (
             <SelectFilter
                 placeholder={placeholder}
-                value={undefined}
+                value={Array.isArray(value) ? '' : value}
                 onChange={handleChange}
                 options={searchTerm.options || []}
             />
@@ -201,6 +201,7 @@ const SearchTermFactory = ({searchTerm, setTerm, clearTerm}) => {
     return (
         <SearchTerm
             term={searchTerm}
+            value={value}
             setTerm={(text) => setTerm(searchTerm, text)}
             clearTerm={() => clearTerm(searchTerm)}
         />
@@ -291,7 +292,7 @@ const DateRangeControl = ({ searchTerms, addTerm, clearTerm }) => {
         const fromStr = toLocalDT(from.getTime());
         setFromDT(fromStr);
         //setToDT(toStr);
-        addTerm({ name: 'start', path: 'start', type: 'date' }, from.getTime(), true);
+        addTerm({ name: 'start', path: 'start', type: 'date' }, from.getTime());
         //addTerm({ name: 'end', path: 'end', type: 'date' }, now.getTime());
     };
 
@@ -459,36 +460,27 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
     }
   }
 
-    let addTerm = (searchTerm, text, override = false) => {
+    // a given column can only carry one term: setting it again replaces the previous value
+    let addTerm = (searchTerm, text) => {
       let newEl = {
           name: searchTerm.name,
           path: searchTerm.path,
           value: text
       };
-      if (override) {
-          let index = searchTerms.findIndex(st => st.name === searchTerm.name);
+      console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)}`);
+      setSearchTerms(terms => {
+          let index = terms.findIndex(st => st.name === searchTerm.name);
           if (index > -1) {
-            console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)} at index ${index}`);
-            searchTerms[index] = newEl;
-            setSearchTerms([...searchTerms]);
-          } else {
-            console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)}`);
-              setSearchTerms([...searchTerms, newEl]);
+              let updated = [...terms];
+              updated[index] = newEl;
+              return updated;
           }
-      } else {
-            console.log(`add filter ${JSON.stringify(text)}, searchTerm ${JSON.stringify(searchTerm)}`);
-        setSearchTerms([...searchTerms, newEl]);
-      }
+          return [...terms, newEl];
+      });
     };
 
   let clearTerm = (searchTerm) => {
-      let index = searchTerms.indexOf(searchTerm);
-      if (index > -1) {
-          setSearchTerms([
-              ...searchTerms.slice(0, index),
-              ...searchTerms.slice(index+1)
-          ]);
-      }
+      setSearchTerms(terms => terms.filter(st => st.name !== searchTerm.name));
   }
 
     let clearAllFilters = () => {
@@ -652,6 +644,7 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
                                                     </label>
                                                     <SearchTermFactory
                                                         searchTerm={searchTerm}
+                                                        value={searchTerms.find(st => st.name === searchTerm.name)?.value}
                                                         setTerm={addTerm}
                                                         clearTerm={clearTerm}
                                                     />

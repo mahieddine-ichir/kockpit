@@ -1,6 +1,6 @@
 package org.kockpit.features.manifest.services.s3;
 
-import io.micrometer.common.util.StringUtils;
+import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -32,7 +32,7 @@ public class S3AutoConfiguration {
     ) {
         return optionalEndpoint
                 .map(String::trim)
-                .filter(StringUtils::isNotEmpty)
+                .filter(StringUtils::hasLength)
                 .map(endpoint -> {
                     log.info("➡️ s3 endpoint: {}", endpoint);
                     return S3Client.builder()

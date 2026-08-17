@@ -8,8 +8,11 @@ import org.kockpit.audit.module.web.WebAuditEvent;
 import org.kockpit.audit.module.web.WebAuditReportData;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.util.ContentCachingResponseWrapper;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -32,8 +35,8 @@ public class DefaultResponseAuditor implements ResponseAuditor {
             .build());
   }
 
-  private HttpHeaders getHeaders(HttpServletResponse response) {
-    HttpHeaders httpHeaders = new HttpHeaders();
+  private Map<String, List<String>> getHeaders(HttpServletResponse response) {
+    Map<String, List<String>> httpHeaders = new HashMap<>();
     response.getHeaderNames().stream()
         .filter(hd -> !filterAuthorizationHeader || !AUTHORIZATION.equalsIgnoreCase(hd))
         .forEach(hd -> {
@@ -45,7 +48,7 @@ public class DefaultResponseAuditor implements ResponseAuditor {
             log.warn("Error getting header value for audit. headerName: {}, e: {}", hd, e.getMessage());
           }
           try {
-            httpHeaders.add(hd, headerValue);
+            httpHeaders.put(hd, headerValue == null ? List.of() : List.of(headerValue));
           } catch (Exception e) {
             log.warn("Error adding header to audit for headerName: {}, value: {}", hd, headerValue);
           }

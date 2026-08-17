@@ -1,6 +1,6 @@
 package org.kockpit.audit.stream.kinesis;
 
-import io.micrometer.common.util.StringUtils;
+import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.kinesis.coordination.DynamoDbShardCoordinator;
 import org.kockpit.audit.stream.kinesis.coordination.LeaseHeartbeatService;
@@ -37,7 +37,7 @@ public class KinesisStreamConfiguration {
         Region region = Region.of(awsRegion);
         return kinesisEndpointOptional
                 .map(String::trim)
-                .filter(StringUtils::isNotEmpty)
+                .filter(StringUtils::hasLength)
                 .map(kinesisEndpoint -> {
                     log.info("➡️ Kinesis endpoint: {}", kinesisEndpoint);
                     ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
@@ -68,7 +68,7 @@ public class KinesisStreamConfiguration {
     ) {
         return dynamoDbEndpointOptional
                 .map(String::trim)
-                .filter(StringUtils::isNotEmpty)
+                .filter(StringUtils::hasLength)
                 .map(dynamoDbEndpoint -> {
                     log.info("➡️ DynamoDb endpoint: {}", dynamoDbEndpoint);
                     ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
@@ -99,7 +99,7 @@ public class KinesisStreamConfiguration {
     ) {
         return cloudWatchEndpointOptional
                 .map(String::trim)
-                .filter(StringUtils::isNotEmpty)
+                .filter(StringUtils::hasLength)
                 .map(cloudWatchEndpoint -> {
                     log.info("➡️ CloudWatch endpoint: {}", cloudWatchEndpoint);
                     ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()

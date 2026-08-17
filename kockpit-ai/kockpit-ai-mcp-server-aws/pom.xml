@@ -6,12 +6,11 @@
     <parent>
         <groupId>org.kockpit</groupId>
         <artifactId>kockpit-ai</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-ai-mcp-server-aws</artifactId>
     <properties>
-        <spring-ai.version>1.0.1</spring-ai.version>
         <aws.version>2.41.10</aws.version>
     </properties>
 
@@ -29,10 +28,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
