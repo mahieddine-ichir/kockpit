@@ -20,7 +20,8 @@ public class FeatureFlagService implements OnMessageListener {
     @Getter
     private final Map<String, Boolean> keys = new HashMap<>();
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    // Mapper auto-configure par Boot : simple convertValue en memoire, aucun contrat de format.
+    private final ObjectMapper objectMapper;
 
     @Override
     public void onMessage(Message message) {
