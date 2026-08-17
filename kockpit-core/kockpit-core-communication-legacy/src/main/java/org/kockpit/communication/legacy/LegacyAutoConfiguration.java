@@ -16,10 +16,6 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.MapperFeature;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URI;
 import java.util.Optional;
@@ -45,7 +41,7 @@ public class LegacyAutoConfiguration {
         return new DynaConfigLegacyPublisher(
                 s3Client,
                 bucketName,
-                legacyObjectMapper()
+                LegacyJson.mapper()
         );
     }
 
@@ -59,7 +55,7 @@ public class LegacyAutoConfiguration {
             S3Client s3Client,
             @Value("${kockpit.legacy.aws.s3.bucket}") String bucketName
     ) {
-        return new FeatureFlippingLegacyPublisher(s3Client, bucketName, legacyObjectMapper());
+        return new FeatureFlippingLegacyPublisher(s3Client, bucketName, LegacyJson.mapper());
     }
 
     //@Bean
@@ -67,7 +63,7 @@ public class LegacyAutoConfiguration {
             S3Client s3Client,
             @Value("${kockpit.legacy.aws.s3.bucket}") String bucketName
     ) {
-        return new DynaConfigLegacyConsumer(s3Client, bucketName, legacyObjectMapper());
+        return new DynaConfigLegacyConsumer(s3Client, bucketName, LegacyJson.mapper());
     }
 
     @Bean
@@ -80,18 +76,9 @@ public class LegacyAutoConfiguration {
             S3Client s3Client,
             @Value("${kockpit.legacy.aws.s3.bucket}") String bucketName
     ) {
-        return new HealthLegacyConsumer(s3Client, bucketName, legacyObjectMapper());
+        return new HealthLegacyConsumer(s3Client, bucketName, LegacyJson.mapper());
     }
 
-    private ObjectMapper legacyObjectMapper() {
-        return JsonMapper.builder()
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                        DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
-                // Jackson 3 trie les proprietes alphabetiquement par defaut ; on conserve l'ordre
-                // de declaration (defaut Jackson 2) pour ne pas changer le JSON produit.
-                .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
-                .build();
-    }
 
     AwsCredentialsProvider awsCredentialsProvider() {
         return DefaultCredentialsProvider.builder().build();

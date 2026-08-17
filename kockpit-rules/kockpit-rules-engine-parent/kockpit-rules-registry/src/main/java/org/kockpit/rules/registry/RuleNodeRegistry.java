@@ -12,8 +12,6 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.MapperFeature;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.util.*;
 
@@ -145,13 +143,7 @@ public class RuleNodeRegistry<T> {
     }
 
     // Compute hash
-    // Jackson 3 trie les proprietes alphabetiquement par defaut : on conserve l'ordre de
-    // declaration (defaut Jackson 2), sinon le hash d'identite du registre change a
-    // rules inchangees.
-    String value = JsonMapper.builder()
-        .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
-        .build()
-        .writeValueAsString(registry);
+    String value = RegistryJson.mapper().writeValueAsString(registry);
     long hash = value.hashCode();
 
     // Return final registry with its id

@@ -3,6 +3,7 @@ package org.kockpit.audit.stream.kafka;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.kockpit.audit.stream.api.AuditStreamJson;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.context.ApplicationEventPublisher;
@@ -11,8 +12,6 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +25,7 @@ public class KafkaStreamAutoConfiguration {
             ApplicationEventPublisher applicationEventPublisher
     ) {
         return new KafkaStreamListener(
-                JsonMapper.builder()
-                        .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
-                                DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                        .build()
+                AuditStreamJson.mapper()
                 , applicationEventPublisher
         );
     }
