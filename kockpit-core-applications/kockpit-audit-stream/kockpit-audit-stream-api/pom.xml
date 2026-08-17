@@ -24,6 +24,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
+        <!-- Jackson 3 : contrat de format partage par les modules qui dependent de celui-ci -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

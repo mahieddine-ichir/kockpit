@@ -2,27 +2,23 @@ package org.kockpit.audit.stream;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kockpit.audit.stream.api.AuditStreamJson;
 import org.kockpit.audit.stream.api.model.AuditReport;
-import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.time.Instant;
 
 /**
  * Valide le contrat de deserialisation audit.json -> AuditReport avec le mapper
- * configure comme dans KafkaStreamAutoConfiguration (le chemin reel de consommation),
+ * de production (AuditStreamJson, celui des starters Kafka et Kinesis),
  * et non le bean ObjectMapper auto-configure par Boot. Les Instant du flux sont
  * des timestamps numeriques (secondes.nanos) : READ_DATE_TIMESTAMPS_AS_NANOSECONDS
  * est actif par defaut en Jackson 3.
  */
 public class SerdesTest {
 
-    private final ObjectMapper objectMapper = JsonMapper.builder()
-            .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
-                    DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .build();
+    private final ObjectMapper objectMapper = AuditStreamJson.mapper();
 
     @Test
     void on_audit_json() throws IOException {
