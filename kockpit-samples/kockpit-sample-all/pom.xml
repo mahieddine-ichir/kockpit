@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-samples</artifactId><version>1.1.0</version>
+        <artifactId>kockpit-samples</artifactId><version>1.2.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>kockpit-sample-all</artifactId>
@@ -16,22 +16,22 @@
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-core-communication-polling</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-featureflipping-service</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-dynaconfig-service</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-heartbeat-service-application</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
             <!-- Jackson 2 explicite (mappers locaux / client OpenSearch) ; versions gerees par jackson-2-bom du parent Boot 4 -->
         <dependency>
@@ -53,12 +53,12 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-storageaccount</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-features-audit-starters-kafka</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -68,12 +68,12 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-filesystem</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-features-audit-starters-kafka</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -83,17 +83,17 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-s3</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-features-audit-starters-kinesis</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-core-communication-legacy</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
         </profile>
