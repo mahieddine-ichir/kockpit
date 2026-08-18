@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kockpit</groupId>
-        <artifactId>kockpit-audit-stream</artifactId><version>1.1.1-SNAPSHOT</version>
+        <artifactId>kockpit-audit-stream</artifactId><version>1.1.1</version>
     </parent>
     <artifactId>kockpit-audit-stream-application</artifactId>
     <name>Kockpit Audit Stream Application</name>
@@ -56,12 +56,12 @@
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-audit-api</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
             <artifactId>kockpit-features-audit-module-web</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.1</version>
         </dependency>
         <!-- Jackson 3 (mappers locaux construits via JsonMapper.builder + binding json.jackson3 d'opensearch-java) ; versions gerees par jackson-bom du parent Boot 4 -->
         <dependency>
@@ -114,12 +114,12 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-stream-starter-kafka</artifactId>
-                    <version>1.1.1-SNAPSHOT</version>
+                    <version>1.1.1</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-features-audit-starters-kafka</artifactId>
-                    <version>1.1.1-SNAPSHOT</version>
+                    <version>1.1.1</version>
                 </dependency>
             </dependencies>
             <build>
@@ -132,17 +132,17 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-stream-starter-kinesis</artifactId>
-                    <version>1.1.1-SNAPSHOT</version>
+                    <version>1.1.1</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-features-audit-starters-kinesis</artifactId>
-                    <version>1.1.1-SNAPSHOT</version>
+                    <version>1.1.1</version>
                 </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-aws-opensearch-request-signing</artifactId>
-                    <version>1.1.1-SNAPSHOT</version>
+                    <version>1.1.1</version>
                 </dependency>
             </dependencies>
             <build>
