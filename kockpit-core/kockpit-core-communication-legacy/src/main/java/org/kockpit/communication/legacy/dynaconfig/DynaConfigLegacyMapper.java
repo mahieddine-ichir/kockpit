@@ -36,7 +36,7 @@ public class DynaConfigLegacyMapper {
                 .domain(legacy.getDomain())
                 .env(legacy.getEnv())
                 .appId(legacy.getApplicationId())
-                .creationDate(Instant.now().getEpochSecond())
+                .creationDate(Instant.now().toEpochMilli())
                 .keyValues(toKeyValues(request))
                 .build();
     }

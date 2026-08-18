@@ -21,8 +21,7 @@ public class Message {
      * <p>A utiliser systematiquement plutot qu'un comparateur par soustraction : creationDate
      * est un long en millisecondes epoch, donc {@code (int)(a - b)} ou
      * {@code Math.toIntExact(a - b)} depasse la capacite d'un int des que deux messages sont
-     * separes de plus de 24 jours — et immediatement si l'un des deux porte une date en
-     * secondes (voir la remarque sur l'unite de creationDate ci-dessous).
+     * separes de plus de 24 jours.
      */
     public static final Comparator<Message> BY_CREATION_DATE =
             Comparator.comparingLong(Message::getCreationDate);
@@ -40,9 +39,10 @@ public class Message {
     private String appId;
 
     /**
-     * Millisecondes epoch. Attention : deux producteurs ecrivent encore des secondes
-     * ({@code DynaConfigLegacyMapper}, {@code HealthLegacyMapper}), ce qui rend toute
-     * comparaison entre leurs messages et les autres incoherente. A unifier.
+     * Millisecondes epoch, pour tous les producteurs sans exception. L'unite fait partie du
+     * contrat : {@code HeartBeatManager} compare cette valeur a un TTL exprime en
+     * millisecondes, et {@link #BY_CREATION_DATE} n'ordonne correctement que des valeurs de
+     * meme unite. Une date en secondes serait interpretee comme datant de 1970.
      */
     private long creationDate;
 
