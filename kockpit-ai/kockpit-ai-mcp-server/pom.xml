@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kockpit</groupId>
         <artifactId>kockpit-ai</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>1.1.1</version>
     </parent>
 
     <artifactId>kockpit-ai-mcp-server</artifactId>
@@ -104,7 +104,7 @@
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-ai-mcp-server-aws</artifactId>
-                    <version>1.1.1-SNAPSHOT</version>
+                    <version>1.1.1</version>
                 </dependency>
             </dependencies>
             <build>
