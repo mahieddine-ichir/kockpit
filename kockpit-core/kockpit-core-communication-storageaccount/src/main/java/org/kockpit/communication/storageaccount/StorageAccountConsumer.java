@@ -36,7 +36,7 @@ public class StorageAccountConsumer implements Consumer {
                 .map(blobItem -> blobContainerClient.getBlobClient(blobItem.getName()))
                 .map(this::read)
                 .filter(Objects::nonNull)
-                .sorted((o1, o2) -> Math.toIntExact(o1.getCreationDate() - o2.getCreationDate()))
+                .sorted(Message.BY_CREATION_DATE)
                 .toList();
     }
 

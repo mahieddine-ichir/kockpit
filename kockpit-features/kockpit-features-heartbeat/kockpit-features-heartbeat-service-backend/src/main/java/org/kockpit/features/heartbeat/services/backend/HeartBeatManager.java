@@ -31,7 +31,7 @@ public class HeartBeatManager implements OnMessageListener {
     public List<Message> get(String domain, String env) {
         return instancesCache.values().stream()
                 .filter(message -> message.getDomain().equals(domain) &&  message.getEnv().equals(env))
-                .sorted((o1, o2) -> Math.toIntExact(o1.getCreationDate() - o2.getCreationDate()))
+                .sorted(Message.BY_CREATION_DATE)
                 .toList();
     }
 
