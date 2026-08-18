@@ -9,6 +9,7 @@ import org.kockpit.communication.legacy.LegacyJson;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 class DynaConfigLegacyMapperTest {
 
@@ -55,6 +56,10 @@ class DynaConfigLegacyMapperTest {
         assertThat(message.getDomain()).isEqualTo("wcplatform");
         assertThat(message.getEnv()).isEqualTo("dev");
         assertThat(message.getAppId()).isEqualTo("wcpsamples");
+        // Verrou d'unite : creationDate est en millisecondes epoch. Une date en secondes
+        // s'ecarterait de ~1,79e12 de l'horloge courante et serait vue comme datant de 1970.
+        assertThat(message.getCreationDate())
+                .isCloseTo(System.currentTimeMillis(), within(60_000L));
         assertThat(message.getKeyValues()).containsExactly(
                 new KeyValue("dyna.property.backend.call.timeout", "1"),
                 new KeyValue("application.client.axa.basepath", null),
