@@ -10,19 +10,13 @@ variable "subnet_id" { type = string }
 variable "sg_id" { type = string }
 variable "dns_name" { type = string }
 variable "monitoring_ws_id" { type = string }
-
-locals {
-  os_disk_size_per_env = {
-    dev = 30
-    pro = 512
-  }
-  os_disk_size = lookup(local.os_disk_size_per_env, var.environment)
-
-  disk_size_per_env = {
-    dev = 256
-    pro = 512
-  }
-  disk_size = lookup(local.disk_size_per_env, var.environment)
+variable "os_disk_size" {
+  type    = number
+  default = 32
+}
+variable "disk_size" {
+  type    = number
+  default = 256
 }
 
 resource "azurerm_network_interface" "ni" {
@@ -55,7 +49,7 @@ resource "azurerm_linux_virtual_machine" "opensearch-node" {
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
-    disk_size_gb         = local.os_disk_size
+    disk_size_gb         = var.os_disk_size
   }
   source_image_reference {
     publisher = "Canonical"
@@ -131,7 +125,7 @@ resource "azurerm_managed_disk" "data_disk_256" {
   resource_group_name  = var.rg_name
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
-  disk_size_gb         = local.disk_size
+  disk_size_gb         = var.disk_size
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "attachment256" {
