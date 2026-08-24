@@ -14,7 +14,11 @@ resource "azurerm_network_interface" "opensearch-dashboard" {
   location            = var.location
   resource_group_name = var.rg_name
   ip_configuration {
-    name                          = "kockpit-opensearch-dashboard-ip-config-${var.environment}"
+    # Misspelled intentionally: this is the primary ip_configuration on an
+    # already-deployed NIC (dev), and Azure does not support renaming or
+    # deleting a NIC's primary IP configuration in place (IpConfigDeleteNotSupported).
+    # Renaming this requires destroying and recreating the NIC.
+    name                          = "kockpit-openseaerch-dashboard-ip-config-${var.environment}"
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
   }
