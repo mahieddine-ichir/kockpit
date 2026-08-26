@@ -7,7 +7,7 @@ elsewhere.
 
 It creates / manages:
 - ECS task definition (Fargate or EC2) and ECS service
-- AWS Cloud Map service discovery entry
+- Optionally, an AWS Cloud Map service discovery entry
 - Optionally, an ALB target group and listener rule(s) (plain forward, or Cognito-authenticated) —
   disable for internal-only services with no ALB exposure
 - The task's security group, IAM roles (task + task execution), and KMS key
@@ -74,6 +74,10 @@ rendered and which task-role IAM policy is attached. When switching to `"EC2"`, 
 `task_requires_compatibilities = ["EC2"]` and `service_launch_type = "EC2"` (the module does not flip
 these automatically).
 
+**Service discovery** — by default (`enable_service_discovery = true`) the module registers the service
+with Cloud Map, which requires `aws_service_discovery_private_dns_namespace`. Set
+`enable_service_discovery = false` to skip this entirely for services with no internal-DNS consumers.
+
 **ALB exposure** — by default (`enable_load_balancer = true`) the module creates a target group, a
 health-check security group rule, and registers the service with the target group; the service also
 requires `aws_lb_listener_arn`, `lb_security_group_id`, and `path_routing_patterns` in this mode. Set
@@ -115,14 +119,15 @@ Required (no default — must be supplied by the caller):
 | `aws_ecs_cluster_name` | Target ECS cluster name. |
 | `vpc` | VPC object (as returned by the VPC module) the task and target group are created in. |
 | `subnets` | Subnets the task's ENI is placed in. |
-| `aws_service_discovery_private_dns_namespace` | Cloud Map private DNS namespace for service discovery. |
 | `task_image_url` | Container image URL for the app container. |
-| `kms_secret_arn` | KMS key ARN used to decrypt `secrets` values. |
 
 `aws_lb_listener_arn`, `lb_security_group_id`, and `path_routing_patterns` default to empty but are
 effectively required too whenever `enable_load_balancer = true` (the default); the module doesn't
 validate this, so omitting them just produces an ALB target group/listener rule with no valid
-attachment. Leave them unset only when `enable_load_balancer = false`.
+attachment. Leave them unset only when `enable_load_balancer = false`. Likewise,
+`aws_service_discovery_private_dns_namespace` defaults to `null` but is required whenever
+`enable_service_discovery = true` (the default). `kms_secret_arn` defaults to `""` but is required
+whenever `secrets` is non-empty.
 
 Commonly overridden (all have defaults):
 
@@ -132,6 +137,10 @@ Commonly overridden (all have defaults):
 | `aws_lb_listener_arn` | `""` | ALB listener the path-based routing rule attaches to. |
 | `lb_security_group_id` | `""` | ALB's security group (the task's security group allows ingress from it). |
 | `path_routing_patterns` | `[]` | ALB listener rule path patterns routed to this app. |
+| `listener_rule_priority` | `null` | Priority for the ALB listener rule(s); `null` lets AWS auto-assign the lowest available priority. |
+| `enable_service_discovery` | `true` | Register the service with Cloud Map. Set `false` if nothing discovers it via internal DNS. |
+| `aws_service_discovery_private_dns_namespace` | `null` | Cloud Map private DNS namespace; required when `enable_service_discovery = true`. |
+| `kms_secret_arn` | `""` | KMS key ARN used to decrypt `secrets` values; required when `secrets` is non-empty. |
 | `env` | `""` | Environment name (e.g. `dev`, `pro`); used in most resource names. |
 | `region` | `"eu-west-1"` | AWS region. |
 | `tags` | `{}` | Tags applied to all taggable resources. |
@@ -159,10 +168,12 @@ security-group variables not listed above.
 |------|-------------|
 | `aws_lb_target_group` | The ALB target group resource (`null` when `enable_load_balancer = false`). |
 | `ecs_task_role` | Name of the ECS task IAM role. |
+| `ecs_task_role_arn` | ARN of the ECS task IAM role. |
 | `aws_iam_role_execution_name` | Name of the ECS task execution IAM role. |
 | `aws_iam_role_execution_arn` | ARN of the ECS task execution IAM role. |
 | `ecs_security_group` | ID of the task's security group. |
 | `ecs_kms_key_id` | ID of the KMS key created for this application. |
 | `ecs_service_name` | Name of the ECS service. |
 | `ecs_service_arn` | ARN/ID of the ECS service. |
+| `ecs_task_definition_arn` | ARN of the active (Fargate or EC2) task definition. |
 | `log_group_name` | Name of the app's CloudWatch log group. |

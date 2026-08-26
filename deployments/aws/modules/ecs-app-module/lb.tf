@@ -1,6 +1,7 @@
 resource "aws_lb_listener_rule" "app_path_based_routing" {
   count        = var.enable_load_balancer && var.create_listener_rule ? 1 : 0
   listener_arn = var.aws_lb_listener_arn
+  priority     = var.listener_rule_priority
 
   action {
     type             = "forward"
@@ -29,6 +30,7 @@ resource "aws_lb_listener_rule" "app_path_based_routing" {
 resource "aws_lb_listener_rule" "app_path_based_routing_cognito_auth" {
   count        = var.enable_load_balancer && var.create_cognito_auth_listener_rule ? 1 : 0
   listener_arn = var.aws_lb_listener_arn
+  priority     = var.listener_rule_priority
 
   action {
     type = "authenticate-cognito"
