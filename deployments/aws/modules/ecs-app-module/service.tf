@@ -1,5 +1,6 @@
 resource "aws_service_discovery_service" "discovery" {
-  name = "${var.application}-${var.env}"
+  count = var.enable_service_discovery ? 1 : 0
+  name  = "${var.application}-${var.env}"
 
   dns_config {
     namespace_id = var.aws_service_discovery_private_dns_namespace.id
@@ -47,8 +48,11 @@ resource "aws_ecs_service" "ecs_service" {
 
   propagate_tags = "SERVICE"
 
-  service_registries {
-    registry_arn = aws_service_discovery_service.discovery.arn
+  dynamic "service_registries" {
+    for_each = var.enable_service_discovery ? [1] : []
+    content {
+      registry_arn = aws_service_discovery_service.discovery[0].arn
+    }
   }
 
   tags = var.tags

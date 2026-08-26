@@ -6,6 +6,10 @@ output "ecs_task_role" {
   value = aws_iam_role.ecs_task.name
 }
 
+output "ecs_task_role_arn" {
+  value = aws_iam_role.ecs_task.arn
+}
+
 output "aws_iam_role_execution_name" {
   value = aws_iam_role.ecs_task_execution.name
 }
@@ -31,4 +35,8 @@ output "log_group_name" {
 
 output "ecs_service_arn" {
   value = aws_ecs_service.ecs_service.id
+}
+
+output "ecs_task_definition_arn" {
+  value = var.launch_type == "FARGATE" ? aws_ecs_task_definition.taskdef_fargate[0].arn : aws_ecs_task_definition.taskdef_ec2[0].arn
 }

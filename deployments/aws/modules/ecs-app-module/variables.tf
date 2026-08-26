@@ -82,6 +82,11 @@ variable "path_routing_patterns" {
 variable "http_method_conditions" {
   default = []
 }
+variable "listener_rule_priority" {
+  description = "Priority for the ALB listener rule(s) this module creates. Leave unset (null) to let AWS auto-assign the lowest available priority."
+  type        = number
+  default     = null
+}
 variable "lb_security_group_id" {
   description = "ALB's security group; the task's security group allows ingress from it. Required when enable_load_balancer is true."
   type        = string
@@ -139,7 +144,15 @@ variable "environment_variables" {
 }
 
 # SERVICE
-variable "aws_service_discovery_private_dns_namespace" {}
+variable "enable_service_discovery" {
+  description = "Whether to register this service with AWS Cloud Map service discovery. Requires aws_service_discovery_private_dns_namespace when true. Set to false for services with no internal-DNS consumers (e.g. only reachable via the ALB, or via enable_load_balancer = false + in_security_groups)."
+  type        = bool
+  default     = true
+}
+variable "aws_service_discovery_private_dns_namespace" {
+  description = "Cloud Map private DNS namespace for service discovery. Required when enable_service_discovery is true."
+  default     = null
+}
 
 variable "service_dns_config_ttl" {
   default = 10
@@ -197,7 +210,9 @@ variable "deployment_maximum_healthy_percent" {
 }
 
 variable "kms_secret_arn" {
-  type = string
+  description = "KMS key ARN used to decrypt secrets values. Required when secrets is non-empty; unused otherwise."
+  type        = string
+  default     = ""
 }
 #S3
 variable "s3_buckets_arns" {

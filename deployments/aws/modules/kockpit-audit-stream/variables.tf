@@ -88,6 +88,10 @@ variable "health_check_port" {
   default     = "8090"
 }
 
+locals {
+  health_check_port_number = var.health_check_port == "traffic-port" ? var.container_port : tonumber(var.health_check_port)
+}
+
 variable "cpu_architecture" {
   description = "CPU architecture for the ECS task (ARM64 or X86_64)"
   type        = string
@@ -210,65 +214,23 @@ variable "additional_environment_variables" {
 
 # Computed Environment Variables (internal)
 locals {
-  environment_variables = concat(
-    [
-      {
-        name  = "AWS_REGION"
-        value = var.aws_region
-      },
-      {
-        name  = "KOCKPIT_AUDIT_STREAM_AWS_REGION"
-        value = var.aws_region
-      },
-      {
-        name  = "SERVER_PORT"
-        value = tostring(var.container_port)
-      },
-      {
-        name  = "MANAGEMENT_SERVER_PORT"
-        value = tostring(local.health_check_port_number)
-      },
-      {
-        name  = "SPRING_PROFILES_ACTIVE"
-        value = "aws"
-      },
-      {
-        name  = "KOCKPIT_ENV"
-        value = var.kockpit_env
-      },
-      {
-        name  = "ENV"
-        value = var.kockpit_env
-      },
-      {
-        name  = "OPENSEARCH_ENDPOINTS"
-        value = var.opensearch_endpoints
-      },
-      {
-        name  = "KINESIS_STREAM_NAME"
-        value = var.kinesis_stream_name
-      },
-      {
-        name  = "KINESIS_APP_NAME"
-        value = var.kinesis_app_name
-      },
-      {
-        name  = "CONSUMER_POLL_MAX-RECORDS"
-        value = tostring(var.consumer_poll_max_records)
-      },
-      {
-        name  = "CONSUMER_INITIAL-POSITION-IN-STREAM"
-        value = var.consumer_initial_position_in_stream
-      },
-      {
-        name  = "ELASTICSEARCH_INDEXATION_PARTITION_SIZE"
-        value = tostring(var.elasticsearch_indexation_partition_size)
-      },
-      {
-        name  = "KOCKPIT_AUDIT_TRACE_ENABLED"
-        value = tostring(var.audit_trace_enabled)
-      }
-    ],
-    var.additional_environment_variables
+  environment_variables = merge(
+    {
+      AWS_REGION                              = var.aws_region
+      KOCKPIT_AUDIT_STREAM_AWS_REGION         = var.aws_region
+      SERVER_PORT                             = tostring(var.container_port)
+      MANAGEMENT_SERVER_PORT                  = tostring(local.health_check_port_number)
+      SPRING_PROFILES_ACTIVE                  = "aws"
+      KOCKPIT_ENV                             = var.kockpit_env
+      ENV                                     = var.kockpit_env
+      OPENSEARCH_ENDPOINTS                    = var.opensearch_endpoints
+      KINESIS_STREAM_NAME                     = var.kinesis_stream_name
+      KINESIS_APP_NAME                        = var.kinesis_app_name
+      "CONSUMER_POLL_MAX-RECORDS"             = tostring(var.consumer_poll_max_records)
+      "CONSUMER_INITIAL-POSITION-IN-STREAM"   = var.consumer_initial_position_in_stream
+      ELASTICSEARCH_INDEXATION_PARTITION_SIZE = tostring(var.elasticsearch_indexation_partition_size)
+      KOCKPIT_AUDIT_TRACE_ENABLED             = tostring(var.audit_trace_enabled)
+    },
+    { for e in var.additional_environment_variables : e.name => e.value }
   )
 }

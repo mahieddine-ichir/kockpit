@@ -1,49 +1,49 @@
 # ECS Service Outputs
 output "ecs_service_name" {
   description = "Name of the ECS service"
-  value       = aws_ecs_service.main.name
+  value       = module.ecs_app.ecs_service_name
 }
 
 output "ecs_service_arn" {
   description = "ARN of the ECS service"
-  value       = aws_ecs_service.main.id
+  value       = module.ecs_app.ecs_service_arn
 }
 
 output "task_definition_arn" {
   description = "ARN of the ECS task definition"
-  value       = aws_ecs_task_definition.main.arn
+  value       = module.ecs_app.ecs_task_definition_arn
 }
 
 # Target Group Outputs
 output "target_group_arn" {
   description = "ARN of the target group"
-  value       = aws_lb_target_group.main.arn
+  value       = module.ecs_app.aws_lb_target_group.arn
 }
 
 # Security Group Outputs
 output "security_group_id" {
   description = "ID of the ECS service security group"
-  value       = aws_security_group.ecs_service.id
+  value       = module.ecs_app.ecs_security_group
 }
 
 # IAM Role Outputs
 output "task_execution_role_arn" {
   description = "ARN of the ECS task execution role"
-  value       = aws_iam_role.ecs_task_execution_role.arn
+  value       = module.ecs_app.aws_iam_role_execution_arn
 }
 
 output "task_role_arn" {
   description = "ARN of the ECS task role"
-  value       = aws_iam_role.ecs_task_role.arn
+  value       = module.ecs_app.ecs_task_role_arn
 }
 
 output "task_role_name" {
   description = "Name of the ECS task role (for attaching additional policies)"
-  value       = aws_iam_role.ecs_task_role.name
+  value       = module.ecs_app.ecs_task_role
 }
 
 # CloudWatch Log Group Output
 output "log_group_name" {
   description = "Name of the CloudWatch log group"
-  value       = aws_cloudwatch_log_group.main.name
+  value       = module.ecs_app.log_group_name
 }

@@ -4,17 +4,20 @@ Terraform module for deploying the Kockpit Audit Stream application on AWS ECS F
 
 The service consumes audit events from a Kinesis stream and indexes them into OpenSearch. It is exposed via an existing ALB listener using path-based routing.
 
+This module is a thin wrapper around [`ecs-app-module`](../ecs-app-module), which provides the ECS
+task/service, ALB target group/listener rule, security group, IAM roles, and CloudWatch log group.
+This module adds the audit-stream-specific IAM policies (Kinesis, DynamoDB, OpenSearch) on top and
+maps its own (audit-stream-flavored) variable names onto `ecs-app-module`'s inputs.
+
 ## Resources created
 
-- ECS task definition and service (Fargate)
-- IAM task execution role and task role with policies for:
+- Everything `ecs-app-module` creates: ECS task definition and service (Fargate), ALB target group and
+  listener rule, security group, task + task execution IAM roles, CloudWatch log group. Service
+  discovery is disabled (`enable_service_discovery = false`) since nothing consumes it today.
+- Additional IAM policies on the task role for:
   - Kinesis consumer (`GetRecords`, `GetShardIterator`, `DescribeStream`, `ListShards`, ...)
   - DynamoDB for KCL lease/checkpoint management
   - OpenSearch indexing
-- Security group with ingress from the load balancer
-- ALB listener rule on an existing listener
-- ALB target group
-- CloudWatch log group
 
 ## Example usage
 
@@ -32,8 +35,10 @@ module "kockpit-auditstream" {
   source = "../../modules/kockpit-audit-stream"
   count  = local.kockpit_audit_stream_count
 
-  # Naming
-  service_name = "kockpit-auditstream-${local.environment}"
+  # Naming — service_name is the base name only; kockpit_env supplies the
+  # "-${env}" suffix (via ecs-app-module's application/env split), so don't
+  # bake the environment into service_name here.
+  service_name = "kockpit-auditstream"
 
   # AWS
   aws_region = var.aws_region
