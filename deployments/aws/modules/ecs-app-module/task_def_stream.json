@@ -1,0 +1,40 @@
+[
+  {
+    "image": "${image_url}",
+    "name": "${name}",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group_name}",
+        "awslogs-region": "${log_group_region}",
+        "awslogs-stream-prefix": "${application}"
+      }
+    },
+    "ulimits": [
+      {
+        "softLimit": ${ulimit_soft},
+        "hardLimit": ${ulimit_hard},
+        "name": "nofile"
+      }
+    ],
+    "mountPoints": [
+      {
+        "sourceVolume": "scratch",
+        "containerPath": "/var/scratch",
+        "readOnly": false
+      }
+    ],
+    "essential": true,
+    "portMappings": [
+      {
+        "hostPort": ${service_port},
+        "containerPort": ${service_port},
+        "protocol": "tcp"
+      }
+    ],
+    "volumesFrom": [],
+    "cpu": 0,
+    "secrets": ${secrets},
+    "environment": ${environment_variables}
+  }
+]
