@@ -1,22 +1,93 @@
+locals {
+  ssm_agent_sidecar_command = <<-EOT
+    set -e; dnf upgrade -y; dnf install jq procps awscli -y; term_handler() { echo "Deleting SSM activation $ACTIVATION_ID"; if ! aws ssm delete-activation --activation-id $ACTIVATION_ID --region $ECS_TASK_REGION; then echo "SSM activation $ACTIVATION_ID failed to be deleted" 1>&2; fi; MANAGED_INSTANCE_ID=$(jq -e -r .ManagedInstanceID /var/lib/amazon/ssm/registration); echo "Deregistering SSM Managed Instance $MANAGED_INSTANCE_ID"; if ! aws ssm deregister-managed-instance --instance-id $MANAGED_INSTANCE_ID --region $ECS_TASK_REGION; then echo "SSM Managed Instance $MANAGED_INSTANCE_ID failed to be deregistered" 1>&2; fi; kill -SIGTERM $SSM_AGENT_PID; }; trap term_handler SIGTERM SIGINT; if [[ -z $MANAGED_INSTANCE_ROLE_NAME ]]; then echo "Environment variable MANAGED_INSTANCE_ROLE_NAME not set,exiting" 1>&2; exit 1; fi; if ! ps ax | grep amazon-ssm-agent | grep -v grep > /dev/null; then if [[ -n $ECS_CONTAINER_METADATA_URI_V4 ]] ; then echo "Found ECS Container Metadata,running activation with metadata"; TASK_METADATA=$(curl "$ECS_CONTAINER_METADATA_URI_V4/task"); ECS_TASK_AVAILABILITY_ZONE=$(echo $TASK_METADATA | jq -e -r '.AvailabilityZone'); ECS_TASK_ARN=$(echo $TASK_METADATA | jq -e -r '.TaskARN'); ECS_TASK_REGION=$(echo $ECS_TASK_AVAILABILITY_ZONE | sed 's/.$//'); ECS_TASK_AVAILABILITY_ZONE_REGEX='^(af|ap|ca|cn|eu|me|sa|us|us-gov)-(central|north|(north(east|west))|south|south(east|west)|east|west)-[0-9]{1}[a-z]{1}$'; if ! [[ $ECS_TASK_AVAILABILITY_ZONE =~ $ECS_TASK_AVAILABILITY_ZONE_REGEX ]]; then echo "Error extracting Availability Zone from ECS Container Metadata,exiting" 1>&2; exit 1; fi; ECS_TASK_ARN_REGEX='^arn:(aws|aws-cn|aws-us-gov):ecs:[a-z0-9-]+:[0-9]{12}:task/[a-zA-Z0-9_-]+/[a-zA-Z0-9]+$'; if ! [[ $ECS_TASK_ARN =~ $ECS_TASK_ARN_REGEX ]]; then echo "Error extracting Task ARN from ECS Container Metadata,exiting" 1>&2; exit 1; fi; CREATE_ACTIVATION_OUTPUT=$(aws ssm create-activation --iam-role $MANAGED_INSTANCE_ROLE_NAME --tags Key=ECS_TASK_AVAILABILITY_ZONE,Value=$ECS_TASK_AVAILABILITY_ZONE Key=ECS_TASK_ARN,Value=$ECS_TASK_ARN Key=FAULT_INJECTION_SIDECAR,Value=true --region $ECS_TASK_REGION); ACTIVATION_CODE=$(echo $CREATE_ACTIVATION_OUTPUT | jq -e -r .ActivationCode); ACTIVATION_ID=$(echo $CREATE_ACTIVATION_OUTPUT | jq -e -r .ActivationId); if ! amazon-ssm-agent -register -code $ACTIVATION_CODE -id $ACTIVATION_ID -region $ECS_TASK_REGION; then echo "Failed to register with AWS Systems Manager (SSM),exiting" 1>&2; exit 1; fi; amazon-ssm-agent & SSM_AGENT_PID=$!; wait $SSM_AGENT_PID; else echo "ECS Container Metadata not found,exiting" 1>&2; exit 1; fi; else echo "SSM agent is already running,exiting" 1>&2; exit 1; fi
+  EOT
+
+  # Sidecar that self-registers the task as an SSM managed instance on start and
+  # deregisters it on stop, giving Session Manager shell access to Fargate tasks.
+  ssm_agent_sidecar_container = var.sidecar_amazon_ssm_agent_enable ? [
+    {
+      name         = "amazon-ssm-agent"
+      image        = "public.ecr.aws/amazon-ssm-agent/amazon-ssm-agent:latest"
+      essential    = false
+      mountPoints  = []
+      volumesFrom  = []
+      portMappings = []
+      cpu          = 0
+      user         = "0"
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = try(aws_cloudwatch_log_group.ssm_agent_cloudwatch[0].name, "")
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = "ssm-${var.application}-${var.env}"
+        }
+      }
+      entryPoint = ["/bin/bash", "-c"]
+      command    = [trimspace(local.ssm_agent_sidecar_command)]
+      environment = [
+        {
+          name  = "MANAGED_INSTANCE_ROLE_NAME"
+          value = try(aws_iam_role.ssm_server_role[0].name, "")
+        }
+      ]
+    }
+  ] : []
+}
+
 resource "aws_ecs_task_definition" "taskdef_ec2" {
   //EC2ONLY
   count  = var.launch_type == "FARGATE" ? 0 : 1
   family = "${var.application}-${var.env}"
-  container_definitions = templatefile("${path.module}/task_def_stream.json", {
-    name             = "${var.application}-${var.env}"
-    application      = var.application
-    image_url        = var.task_image_url
-    log_group_region = var.region
-    log_group_name   = aws_cloudwatch_log_group.api.name
-    service_port     = var.service_port
-    service_dns      = "${var.application}-${var.env}.${var.aws_service_discovery_private_dns_namespace.name}"
-    ulimit_soft      = var.ulimit_soft
-    ulimit_hard      = var.ulimit_hard
-    account_id       = var.account_id
-
-    secrets               = jsonencode(local.secrets)
-    environment_variables = jsonencode(local.environment_variables)
-  })
+  container_definitions = jsonencode([
+    {
+      image = var.task_image_url
+      name  = "${var.application}-${var.env}"
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.api.name
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = var.application
+        }
+      }
+      ulimits = [
+        {
+          softLimit = var.ulimit_soft
+          hardLimit = var.ulimit_hard
+          name      = "nofile"
+        }
+      ]
+      mountPoints = [
+        {
+          sourceVolume  = "scratch"
+          containerPath = "/var/scratch"
+          readOnly      = false
+        }
+      ]
+      essential = true
+      portMappings = concat(
+        [
+          {
+            hostPort      = var.service_port
+            containerPort = var.service_port
+            protocol      = "tcp"
+          }
+        ],
+        local.healthcheck_port_number != var.service_port ? [
+          {
+            hostPort      = local.healthcheck_port_number
+            containerPort = local.healthcheck_port_number
+            protocol      = "tcp"
+          }
+        ] : []
+      )
+      volumesFrom = []
+      cpu         = 0
+      secrets     = local.secrets
+      environment = local.environment_variables
+    }
+  ])
   requires_compatibilities = var.task_requires_compatibilities
   cpu                      = var.task_cpu
   memory                   = var.task_memory
@@ -41,25 +112,45 @@ resource "aws_ecs_task_definition" "taskdef_fargate" {
   //FARGATEONLY
   count  = var.launch_type == "FARGATE" ? 1 : 0
   family = "${var.application}-${var.env}"
-  container_definitions = templatefile("${path.module}/task_def.json", {
-    name                  = "${var.application}-${var.env}"
-    application           = var.application
-    image_url             = var.task_image_url
-    log_group_region      = var.region
-    log_group_name        = aws_cloudwatch_log_group.api.name
-    service_port          = var.service_port
-    service_dns           = "${var.application}-${var.env}.${var.aws_service_discovery_private_dns_namespace.name}"
-    secrets               = jsonencode(local.secrets)
-    environment_variables = jsonencode(local.environment_variables)
-    log_mode              = var.log_mode
-    log_buffer_size       = var.log_buffer_size
-
-    #Amazon SSM agent conf
-    sidecar_amazon_ssm_agent_enable = var.sidecar_amazon_ssm_agent_enable
-    ssm_log_group_name              = try(aws_cloudwatch_log_group.ssm_agent_cloudwatch[0].name, "")
-    ssm_role_name                   = try(aws_iam_role.ssm_server_role[0].name, "")
-    ssm_log_stream_prefix           = "ssm-${var.application}-${var.env}"
-  })
+  container_definitions = jsonencode(concat([
+    {
+      image = var.task_image_url
+      name  = "${var.application}-${var.env}"
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          mode                    = var.log_mode
+          "max-buffer-size"       = var.log_buffer_size
+          "awslogs-group"         = aws_cloudwatch_log_group.api.name
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = var.application
+        }
+      }
+      essential = true
+      portMappings = concat(
+        [
+          {
+            hostPort      = var.service_port
+            containerPort = var.service_port
+            protocol      = "tcp"
+          }
+        ],
+        local.healthcheck_port_number != var.service_port ? [
+          {
+            hostPort      = local.healthcheck_port_number
+            containerPort = local.healthcheck_port_number
+            protocol      = "tcp"
+          }
+        ] : []
+      )
+      mountPoints = []
+      volumesFrom = []
+      cpu         = 0
+      secrets     = local.secrets
+      environment = local.environment_variables
+    }
+    ], local.ssm_agent_sidecar_container)
+  )
   requires_compatibilities = var.task_requires_compatibilities
   cpu                      = var.task_cpu
   memory                   = var.task_memory

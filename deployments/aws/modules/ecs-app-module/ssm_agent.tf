@@ -39,6 +39,7 @@ resource "aws_iam_role_policy" "ssm_clean_up_policy" {
           "ssm:DeleteActivation",
           "ssm:DeregisterManagedInstance"
         ],
+        # SSM hybrid-activation/managed-instance IDs aren't ARN resources; AWS requires "*" here.
         "Resource" : "*"
       }
     ],

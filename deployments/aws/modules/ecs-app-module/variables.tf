@@ -64,12 +64,28 @@ variable "subnets" {
 }
 
 # LB
-variable "aws_lb_listener_arn" {}
-variable "path_routing_patterns" {}
+variable "enable_load_balancer" {
+  description = "Whether to attach this service to an ALB: creates the target group, listener rule(s), and load-balancer health-check security group rule, and registers the service with the target group. Set to false for internal-only services with no ALB exposure (e.g. reachable only via service discovery)."
+  type        = bool
+  default     = true
+}
+variable "aws_lb_listener_arn" {
+  description = "ALB listener the path-based routing rule attaches to. Required when enable_load_balancer is true."
+  type        = string
+  default     = ""
+}
+variable "path_routing_patterns" {
+  description = "ALB listener rule path patterns routed to this app. Required when enable_load_balancer is true."
+  type        = list(string)
+  default     = []
+}
 variable "http_method_conditions" {
   default = []
 }
 variable "lb_security_group_id" {
+  description = "ALB's security group; the task's security group allows ingress from it. Required when enable_load_balancer is true."
+  type        = string
+  default     = ""
 }
 
 # Security
@@ -85,6 +101,11 @@ variable "task_requires_compatibilities" {
   default = ["FARGATE"]
 }
 variable "task_image_url" {}
+variable "ecr_repository_arns" {
+  description = "ECR repository ARNs the task execution role may pull task_image_url from. Defaults to \"*\" since the image commonly lives in a separate/central account not derivable from account_id; narrow to the specific repository ARN(s) for least privilege once known."
+  type        = list(string)
+  default     = ["*"]
+}
 variable "task_cpu" {
   default = 1024
 }
@@ -141,6 +162,11 @@ variable "service_protocol" {
 variable "service_deregistration_delay" {
   default = 30
 }
+variable "service_healthcheck_port" {
+  description = "Target group health check port: \"traffic-port\" (default, same as service_port) or a specific container port number as a string (e.g. a separate Spring Boot Actuator management port). When set to a numeric value different from service_port, that port is also opened on the task's security group and exposed via a second container port mapping."
+  type        = string
+  default     = "traffic-port"
+}
 variable "service_healthcheck_path" {
   default = "/actuator/health"
 }
@@ -193,11 +219,6 @@ variable "sidecar_amazon_ssm_agent_enable" {
 }
 
 variable "enable_execute_command" {
-  type    = bool
-  default = false
-}
-
-variable "enable_code_deploy" {
   type    = bool
   default = false
 }
@@ -269,31 +290,3 @@ variable "periodic_downscale_max_capacity" {
   default = 1
 }
 
-variable "deployment_bucket_name" {
-  type    = string
-  default = ""
-}
-
-variable "aws_lb_test_listener_arn" {
-  description = "ALB test listener arn"
-  type        = string
-  default     = ""
-}
-
-variable "deployment_config_name" {
-  default     = "CodeDeployDefault.ECSCanary10Percent15Minutes"
-  description = "the deployment configuration specifies how traffic is shifted to the updated Amazon ECS task set. You can shift traffic using a canary, linear, or all-at-once deployment configuration. CodeDeployDefault.ECSLinear10PercentEvery1Minutes/CodeDeployDefault.ECSCanary10Percent5Minutes/CodeDeployDefault.ECSLinear10PercentEvery3Minutes..."
-  type        = string
-}
-
-variable "wait_time_in_minutes" {
-  default     = 60
-  description = "The number of minutes to wait before the status of a blue/green deployment changed to Stopped if rerouting is not started manually"
-  type        = number
-}
-
-variable "termination_wait_time_in_minutes" {
-  default     = 30
-  description = "The number of minutes to wait after a successful blue/green deployment before terminating instances from the original environment."
-  type        = number
-}
