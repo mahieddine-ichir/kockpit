@@ -1,14 +1,15 @@
 // task execution role policy document
 data "aws_iam_policy_document" "ecs_task_execution_role" {
   statement {
-    sid       = "AllowECSToAuthenticateToECRInCentralAccount"
-    effect    = "Allow"
+    sid    = "AllowECSToAuthenticateToECRInCentralAccount"
+    effect = "Allow"
+    # ecr:GetAuthorizationToken does not support resource-level permissions; AWS requires "*" here.
     actions   = ["ecr:GetAuthorizationToken"]
     resources = ["*"]
   }
 
   statement {
-    sid    = "AllowECSToPullSportslineappImage"
+    sid    = "AllowECSToPullAppImage"
     effect = "Allow"
 
     actions = [
@@ -17,8 +18,7 @@ data "aws_iam_policy_document" "ecs_task_execution_role" {
       "ecr:BatchGetImage"
     ]
 
-    //    resources = ["arn:aws:ecr:${var.region}:${var.account_id}:repository/${var.application}", ]
-    resources = ["*"]
+    resources = var.ecr_repository_arns
   }
 
   statement {
@@ -30,27 +30,15 @@ data "aws_iam_policy_document" "ecs_task_execution_role" {
       "logs:PutLogEvents"
     ]
 
-    resources = ["*"]
-    //    resources = [aws_cloudwatch_log_group.api.arn]
+    resources = compact([
+      "${aws_cloudwatch_log_group.api.arn}:*",
+      var.sidecar_amazon_ssm_agent_enable ? "${aws_cloudwatch_log_group.ssm_agent_cloudwatch[0].arn}:*" : "",
+    ])
   }
 }
 
 
-data "aws_iam_policy_document" "app_ecs_task_execution_assume_role" {
-  statement {
-    sid    = "AllowECSTasksToAssumeRole"
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}
-
-data "aws_iam_policy_document" "app_ecs_task_assume_role" {
+data "aws_iam_policy_document" "app_ecs_tasks_assume_role" {
   statement {
     sid    = "AllowECSTasksToAssumeRole"
     effect = "Allow"
@@ -67,7 +55,7 @@ data "aws_iam_policy_document" "app_ecs_task_assume_role" {
 // task execution role
 resource "aws_iam_role" "ecs_task_execution" {
   name               = "ecs_task_execution-${var.application}-${var.env}"
-  assume_role_policy = data.aws_iam_policy_document.app_ecs_task_execution_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.app_ecs_tasks_assume_role.json
   tags               = var.tags
 }
 
@@ -90,6 +78,7 @@ resource "aws_iam_role_policy" "ssm_ecs_task_exec_cpu_stress" {
         "Action" : [
           "ssm:CreateActivation"
         ],
+        # ssm:CreateActivation creates a not-yet-existing resource, so it can't be ARN-scoped; AWS requires "*".
         "Resource" : "*"
       }
     ],
@@ -119,8 +108,9 @@ data "aws_iam_policy_document" "ecs_task_role_fargate" {
   }
 
   statement {
-    sid       = "AllowAccessToServiceDiscovery"
-    effect    = "Allow"
+    sid    = "AllowAccessToServiceDiscovery"
+    effect = "Allow"
+    # ListServices/ListInstances don't support resource-level permissions; AWS requires "*" here.
     actions   = ["servicediscovery:ListServices", "servicediscovery:ListInstances"]
     resources = ["*"]
   }
@@ -145,7 +135,7 @@ data "aws_iam_policy_document" "ecs_task_role_fargate" {
       "logs:DescribeLogStreams"
     ]
     resources = [
-      "arn:aws:logs:*:*:*"
+      "arn:aws:logs:${var.region}:${var.account_id}:log-group:${var.application}*:*"
     ]
   }
 
@@ -172,8 +162,9 @@ data "aws_iam_policy_document" "ecs_task_role_ec2" {
   }
 
   statement {
-    sid       = "AllowAccessToServiceDiscovery"
-    effect    = "Allow"
+    sid    = "AllowAccessToServiceDiscovery"
+    effect = "Allow"
+    # ListServices/ListInstances don't support resource-level permissions; AWS requires "*" here.
     actions   = ["servicediscovery:ListServices", "servicediscovery:ListInstances"]
     resources = ["*"]
   }
@@ -182,7 +173,7 @@ data "aws_iam_policy_document" "ecs_task_role_ec2" {
 // task role
 resource "aws_iam_role" "ecs_task" {
   name               = "ecs_task-${var.application}-${var.env}"
-  assume_role_policy = data.aws_iam_policy_document.app_ecs_task_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.app_ecs_tasks_assume_role.json
   tags               = var.tags
 }
 
@@ -207,6 +198,7 @@ resource "aws_iam_role_policy" "ssm_ecs_task_cpu_stress" {
           "ssm:CreateActivation",
           "ssm:DescribeActivations"
         ],
+        # These act on not-yet-existing or non-ARN activation resources; AWS requires "*" here.
         "Resource" : "*"
       },
       {

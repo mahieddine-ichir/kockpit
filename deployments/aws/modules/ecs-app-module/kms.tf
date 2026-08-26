@@ -44,7 +44,7 @@ EOF
 }
 
 # KMS alias
-resource "aws_kms_alias" "wcp_kms_key" {
+resource "aws_kms_alias" "app_kms_key" {
   name          = "alias/${var.application}/${var.env}"
   target_key_id = aws_kms_key.app_kms_key.key_id
 }
