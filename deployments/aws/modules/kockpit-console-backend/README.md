@@ -1,21 +1,27 @@
 # Kockpit Console Backend Module
 
-This Terraform module creates an ECS Fargate service for the Kockpit Console Backend with:
-- IAM roles for task execution and S3 access
-- Security group for the ECS service
-- ECS task definition with CloudWatch logging
-- Target group for load balancer integration
-- ECS service configuration
+This Terraform module creates an ECS Fargate service for the Kockpit Console Backend.
+
+It is a thin wrapper around [`ecs-app-module`](../ecs-app-module), which provides the ECS
+task/service, ALB target group, security group, IAM roles (task + task execution), and CloudWatch log
+group. This module adds on top: the S3 buckets and their IAM policy, the dedicated HTTP listener, the
+CloudFront-to-ALB security group rule, and the Kockpit/OpenSearch-flavored environment variables.
+
+**Auth**: this module does not authenticate traffic at the ALB — the listener it creates is a plain
+HTTP forward, unauthenticated. Access control is enforced upstream, at the CloudFront distribution +
+Lambda@Edge in the `kockpit-console` module that fronts this backend. Don't add ALB-level auth here
+without also reconciling it with that layer.
 
 ## Features
 
 - **Kockpit Spring Boot Application**: Pre-configured for Kockpit console backend with OpenSearch integration
 - **Multi-Architecture Support**: Supports both ARM64 and X86_64 CPU architectures
 - **S3 Integration**: Configures IAM permissions for Kockpit data and manifests buckets
-- **Load Balancer Integration**: Complete ALB listener rule setup with security group rules
+- **Load Balancer Integration**: Creates a dedicated ALB HTTP listener forwarding all traffic to this
+  service's target group (not a path-based rule on a shared listener)
 - **Health Check Configuration**: Supports separate health check ports (e.g., Spring Boot management port)
 - **Environment-Aware**: Configurable environments (dev, staging, production)
-- **Security**: Bidirectional security group rules for ALB ↔ ECS communication
+- **Security**: Security group ingress from the ALB, scoped to the container/health-check ports
 - **Logging**: CloudWatch log group with configurable retention
 - **OpenSearch Integration**: Built-in configuration for search endpoints
 - **Kinesis Integration**: Optional audit streaming to Kinesis
@@ -27,11 +33,11 @@ module "kockpit_backend" {
   source = "git::https://github.com/mahieddine-ichir/kockpit.git//deployments/aws/modules/kockpit-console-backend?ref=main"
 
   # Required infrastructure
-  vpc_id                     = "vpc-xxxxxxxxx"
-  private_subnet_ids         = ["subnet-xxxxxxxxx", "subnet-yyyyyyyyy"]
-  ecs_cluster_name           = "my-ecs-cluster"
-  load_balancer_listener_arn = "arn:aws:elasticloadbalancing:region:account:listener/app/my-alb/xxxxxxxxx/yyyyyyyyy"
-  lb_security_group_id       = "sg-xxxxxxxxx"
+  vpc_id                = "vpc-xxxxxxxxx"
+  private_subnet_ids    = ["subnet-xxxxxxxxx", "subnet-yyyyyyyyy"]
+  ecs_cluster_name      = "my-ecs-cluster"
+  load_balancer_arn     = "arn:aws:elasticloadbalancing:region:account:loadbalancer/app/my-alb/xxxxxxxxx"
+  lb_security_group_id  = "sg-xxxxxxxxx"
 
   # Kockpit configuration
   kockpit_env                   = "production"
@@ -50,10 +56,6 @@ module "kockpit_backend" {
   health_check_path   = "/actuator/health"
   health_check_port   = "8090"
 
-  # Load balancer integration
-  listener_rule_priority = 1
-  path_pattern          = "/backend/*"
-
   tags = {
     Environment = "production"
     Project     = "kockpit"
@@ -65,7 +67,7 @@ module "kockpit_backend" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 1.0 |
+| terraform | >= 1.4 |
 | aws | ~> 5.0 |
 
 ## Providers
@@ -81,7 +83,7 @@ module "kockpit_backend" {
 | vpc_id | ID of the existing VPC | `string` | n/a | yes |
 | private_subnet_ids | IDs of the private subnets where ECS tasks will run | `list(string)` | n/a | yes |
 | ecs_cluster_name | Name of the existing ECS cluster | `string` | n/a | yes |
-| load_balancer_listener_arn | ARN of the existing load balancer listener | `string` | n/a | yes |
+| load_balancer_arn | ARN of the load balancer this module creates its HTTP listener on | `string` | n/a | yes |
 | lb_security_group_id | Security group ID of the load balancer | `string` | n/a | yes |
 | opensearch_endpoints | OpenSearch cluster endpoints | `string` | n/a | yes |
 | kockpit_data_s3_bucket | S3 bucket for Kockpit data storage | `string` | n/a | yes |
@@ -97,8 +99,6 @@ module "kockpit_backend" {
 | desired_count | Desired number of ECS service instances | `number` | `2` | no |
 | health_check_path | Health check path for the target group | `string` | `"/actuator/health"` | no |
 | health_check_port | Health check port for the target group | `string` | `"traffic-port"` | no |
-| listener_rule_priority | Priority for the load balancer listener rule | `number` | `100` | no |
-| path_pattern | Path pattern for the listener rule | `string` | `"/*"` | no |
 | log_retention_days | CloudWatch log retention period in days | `number` | `7` | no |
 | kinesis_stream_name | Kinesis stream name for audit notifications | `string` | `""` | no |
 | additional_environment_variables | Additional environment variables to pass to the container | `list(object({name=string,value=string}))` | `[]` | no |
@@ -117,7 +117,6 @@ module "kockpit_backend" {
 | task_execution_role_arn | ARN of the ECS task execution role |
 | task_role_arn | ARN of the ECS task role |
 | log_group_name | Name of the CloudWatch log group |
-| service_url | URL where the service will be accessible through the load balancer |
 
 ## S3 Permissions
 
@@ -132,19 +131,23 @@ The module uses a fixed container image: `ghcr.io/mahieddine-ichir/kockpit/kockp
 
 ## Security Groups
 
-The module creates comprehensive security group rules:
-- **ECS Security Group**: Allows inbound traffic on container port and optional health check port
-- **ALB → ECS**: Ingress rules on ECS security group from ALB security group
-- **LB → ECS**: Egress rules on ALB security group to ECS security group
+The ECS task's security group (created by `ecs-app-module`) allows inbound traffic from
+`lb_security_group_id` on `container_port`, plus `health_check_port` when it differs from
+`container_port`. This module additionally opens `lb_security_group_id` to CloudFront's managed
+prefix list on port 80, so the ALB can be reached from the CloudFront distribution in front of it.
+
+Note: unlike the bidirectional rules this module used to create directly, `ecs-app-module` does not
+add egress rules onto the load balancer's own security group — it relies on that security group
+already permitting outbound traffic (the common default for an ALB security group). If
+`lb_security_group_id` has restrictive egress, add an explicit egress rule to it separately.
 
 ## Load Balancer Integration
 
-The module automatically creates an ALB listener rule with the specified priority and path pattern. The listener rule forwards matching traffic to the ECS service target group.
-
-**Key Configuration:**
-- `listener_rule_priority`: Set to a low number (1-10) for higher precedence
-- `path_pattern`: URL pattern to match (e.g., "/backend/*")
-- Automatic security group rules for ALB ↔ ECS communication
+The module creates its own dedicated HTTP listener (port 80) on `load_balancer_arn`, whose default
+action forwards all traffic to this service's target group — it is not a path-based rule on a shared
+listener. If you need path-based routing to multiple backends on the same ALB, put this module behind
+its own listener (as it does today) or behind a separate, purpose-built listener rule outside this
+module.
 
 ## Architecture
 

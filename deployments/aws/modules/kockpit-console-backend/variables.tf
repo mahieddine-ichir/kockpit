@@ -47,18 +47,6 @@ variable "lb_security_group_id" {
   type        = string
 }
 
-variable "listener_rule_priority" {
-  description = "Priority for the load balancer listener rule"
-  type        = number
-  default     = 100
-}
-
-variable "path_pattern" {
-  description = "Path pattern for the listener rule (e.g., '/api/*')"
-  type        = string
-  default     = "/api/*"
-}
-
 # Container Configuration
 variable "image_tag" {
   description = "Docker image tag for the kockpit backend application"
@@ -170,62 +158,22 @@ variable "additional_environment_variables" {
 
 # Computed Environment Variables (internal)
 locals {
-  # Base environment variables derived from inputs
-  base_environment_variables = [
+  environment_variables = merge(
     {
-      name  = "KOCKPIT_AWS_REGION"
-      value = var.aws_region
+      KOCKPIT_AWS_REGION                          = var.aws_region
+      KOCKPIT_SDK_AWS_REGION                      = var.aws_region
+      "aws.region"                                = var.aws_region
+      KOCKPIT_ENV                                 = var.kockpit_env
+      SPRING_PROFILES_ACTIVE                      = "aws"
+      OPENSEARCH_ENDPOINTS                        = var.opensearch_endpoints
+      "kockpit.audit.stream.opensearch.endpoints" = var.opensearch_endpoints
+      "kockpit.aws.s3.bucket"                     = var.kockpit_data_s3_bucket
+      "kockpit.manifests.aws.s3.bucket"           = var.kockpit_manifests_s3_bucket
+      "kockpit.manifests.aws.region"              = var.aws_region
     },
-    {
-      name  = "KOCKPIT_SDK_AWS_REGION"
-      value = var.aws_region
-    },
-    {
-      name  = "aws.region"
-      value = var.aws_region
-    },
-    {
-      name  = "KOCKPIT_ENV"
-      value = var.kockpit_env
-    },
-    {
-      name  = "SPRING_PROFILES_ACTIVE"
-      value = "aws"
-    },
-    {
-      name  = "OPENSEARCH_ENDPOINTS"
-      value = var.opensearch_endpoints
-    },
-    {
-      name  = "kockpit.audit.stream.opensearch.endpoints"
-      value = var.opensearch_endpoints
-    },
-    {
-      name  = "kockpit.aws.s3.bucket"
-      value = var.kockpit_data_s3_bucket
-    },
-    {
-      name  = "kockpit.manifests.aws.s3.bucket"
-      value = var.kockpit_manifests_s3_bucket
-    },
-    {
-      name  = "kockpit.manifests.aws.region"
-      value = var.aws_region
-    }
-  ]
-
-  # Conditionally add Kinesis stream name if provided
-  kinesis_env_vars = var.kinesis_stream_name != "" ? [
-    {
-      name  = "kockpit.audit.notification.kinesis.stream_name"
-      value = var.kinesis_stream_name
-    }
-  ] : []
-
-  # Combine all environment variables
-  environment_variables = concat(
-    local.base_environment_variables,
-    local.kinesis_env_vars,
-    var.additional_environment_variables
+    var.kinesis_stream_name != "" ? {
+      "kockpit.audit.notification.kinesis.stream_name" = var.kinesis_stream_name
+    } : {},
+    { for e in var.additional_environment_variables : e.name => e.value }
   )
 }

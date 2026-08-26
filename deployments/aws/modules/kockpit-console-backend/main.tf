@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.4"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -11,13 +11,6 @@ terraform {
 # Data sources for existing infrastructure
 data "aws_vpc" "main" {
   id = var.vpc_id
-}
-
-# Use the provided subnet IDs directly
-locals {
-  private_subnet_ids = var.private_subnet_ids
-  # Determine health check port: if "traffic-port", use container_port; otherwise parse the port number
-  health_check_port_number = var.health_check_port == "traffic-port" ? var.container_port : tonumber(var.health_check_port)
 }
 
 data "aws_ecs_cluster" "main" {
@@ -36,55 +29,58 @@ resource "aws_s3_bucket" "kockpit_manifests" {
   tags   = var.tags
 }
 
-# IAM role for ECS task execution
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "${var.service_name}-task-execution-role"
+module "ecs_app" {
+  source = "git::https://github.com/mahieddine-ichir/kockpit.git//deployments/aws/modules/ecs-app-module?ref=dev"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
+  application = var.service_name
+  env         = var.kockpit_env
+  stack       = "kockpit-console-backend"
+  region      = var.aws_region
+  account_id  = data.aws_caller_identity.current.account_id
+  tags        = var.tags
 
-  tags = var.tags
-}
+  aws_ecs_cluster_id   = data.aws_ecs_cluster.main.id
+  aws_ecs_cluster_name = var.ecs_cluster_name
+  vpc                  = data.aws_vpc.main
+  subnets              = var.private_subnet_ids
 
-resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
+  # No Cloud Map consumers today; the service is only reached via the ALB.
+  enable_service_discovery = false
 
-# IAM role for ECS task (application runtime)
-resource "aws_iam_role" "ecs_task_role" {
-  name = "${var.service_name}-task-role"
+  # This module owns its own dedicated ALB listener (below) rather than a
+  # path-based rule on an existing shared listener, so let ecs-app-module
+  # manage only the target group and security-group wiring, not a listener
+  # rule of its own.
+  enable_load_balancer = true
+  create_listener_rule = false
+  lb_security_group_id = var.lb_security_group_id
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
+  # Task
+  task_image_url = local.container_image
+  task_cpu       = var.cpu
+  task_memory    = var.memory
 
-  tags = var.tags
+  cpu_architecture = var.cpu_architecture
+  desired_count    = var.desired_count
+
+  service_port             = var.container_port
+  service_healthcheck_port = var.health_check_port
+  service_healthcheck_path = var.health_check_path
+
+  service_healthcheck_interval            = 30
+  service_healthcheck_timeout             = 10
+  service_healthcheck_healthy_threshold   = 3
+  service_healthcheck_unhealthy_threshold = 5
+
+  environment_variables = local.environment_variables
+
+  log_retention_in_days = var.log_retention_days
 }
 
 # IAM policy for S3 access
 resource "aws_iam_role_policy" "s3_access_policy" {
   name = "${var.service_name}-s3-access"
-  role = aws_iam_role.ecs_task_role.id
+  role = module.ecs_app.ecs_task_role
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -119,89 +115,6 @@ resource "aws_iam_role_policy" "s3_access_policy" {
   })
 }
 
-# Security group for ECS service
-resource "aws_security_group" "ecs_service" {
-  name        = "${var.service_name}-sg"
-  description = "Security group for ${var.service_name} ECS service"
-  vpc_id      = data.aws_vpc.main.id
-
-  ingress {
-    from_port   = var.container_port
-    to_port     = var.container_port
-    protocol    = "tcp"
-    cidr_blocks = [data.aws_vpc.main.cidr_block]
-  }
-
-  # Additional ingress rule for health check port if different from container port
-  dynamic "ingress" {
-    for_each = local.health_check_port_number != var.container_port ? [1] : []
-    content {
-      from_port   = local.health_check_port_number
-      to_port     = local.health_check_port_number
-      protocol    = "tcp"
-      cidr_blocks = [data.aws_vpc.main.cidr_block]
-    }
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = merge(var.tags, {
-    Name = "${var.service_name}-sg"
-  })
-}
-
-resource "aws_security_group_rule" "health_check_lb_http-ingress" {
-  type                     = "ingress"
-  from_port                = var.container_port
-  to_port                  = var.container_port
-  protocol                 = "tcp"
-  source_security_group_id = var.lb_security_group_id
-  security_group_id        = aws_security_group.ecs_service.id
-  description              = "Allow access for target group health check ${var.container_port}"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# Egress rules for load balancer security group to reach ECS service
-resource "aws_security_group_rule" "lb_to_ecs_container_port" {
-  type                     = "egress"
-  from_port                = var.container_port
-  to_port                  = var.container_port
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.ecs_service.id
-  security_group_id        = var.lb_security_group_id
-  description              = "Allow load balancer to reach ECS service on container port ${var.container_port}"
-}
-
-resource "aws_security_group_rule" "lb_to_ecs_health_check_port" {
-  count                    = local.health_check_port_number != var.container_port ? 1 : 0
-  type                     = "ingress"
-  from_port                = local.health_check_port_number
-  to_port                  = local.health_check_port_number
-  protocol                 = "tcp"
-  source_security_group_id = var.lb_security_group_id
-  security_group_id        = aws_security_group.ecs_service.id
-  description              = "Allow LB health check on port ${local.health_check_port_number}"
-}
-
-resource "aws_security_group_rule" "lb_to_ecs_health_check_port_egress" {
-  count                    = local.health_check_port_number != var.container_port ? 1 : 0
-  type                     = "egress"
-  from_port                = local.health_check_port_number
-  to_port                  = local.health_check_port_number
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.ecs_service.id
-  security_group_id        = var.lb_security_group_id
-  description              = "Allow LB to reach ECS health check port ${local.health_check_port_number}"
-}
-
 data "aws_ec2_managed_prefix_list" "cloudfront" {
   name = "com.amazonaws.global.cloudfront.origin-facing"
 }
@@ -216,92 +129,9 @@ resource "aws_security_group_rule" "lb_http_from_cloudfront" {
   description       = "Allow CloudFront to reach ALB on port 80"
 }
 
-# ECS Task Definition
-resource "aws_ecs_task_definition" "main" {
-  family                   = var.service_name
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.cpu
-  memory                   = var.memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_task_role.arn
-
-  runtime_platform {
-    cpu_architecture        = var.cpu_architecture
-    operating_system_family = "LINUX"
-  }
-
-  container_definitions = jsonencode([
-    {
-      name  = var.service_name
-      image = local.container_image
-
-      portMappings = concat(
-        [
-          {
-            containerPort = var.container_port
-            protocol      = "tcp"
-          }
-        ],
-        local.health_check_port_number != var.container_port ? [
-          {
-            containerPort = local.health_check_port_number
-            protocol      = "tcp"
-          }
-        ] : []
-      )
-
-      environment = local.environment_variables
-
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = aws_cloudwatch_log_group.main.name
-          awslogs-region        = var.aws_region
-          awslogs-stream-prefix = "ecs"
-        }
-      }
-
-      essential = true
-    }
-  ])
-
-  tags = var.tags
-}
-
-# CloudWatch Log Group
-resource "aws_cloudwatch_log_group" "main" {
-  name              = "/ecs/${var.service_name}"
-  retention_in_days = var.log_retention_days
-
-  tags = var.tags
-}
-
-# Target Group
-resource "aws_lb_target_group" "main" {
-  name        = "${var.service_name}-tg"
-  port        = var.container_port
-  protocol    = "HTTP"
-  vpc_id      = data.aws_vpc.main.id
-  target_type = "ip"
-
-  health_check {
-    enabled             = true
-    healthy_threshold   = 3
-    unhealthy_threshold = 5
-    timeout             = 10
-    interval            = 30
-    path                = var.health_check_path
-    matcher             = "200"
-    port                = var.health_check_port
-    protocol            = "HTTP"
-  }
-
-  tags = merge(var.tags, {
-    Name = "${var.service_name}-tg"
-  })
-}
-
+# Dedicated HTTP listener for this backend service. Unauthenticated at the
+# ALB by design: access control is enforced upstream, at the CloudFront
+# distribution + Lambda@Edge in the kockpit-console module, not here.
 resource "aws_lb_listener" "http" {
   load_balancer_arn = var.load_balancer_arn
   port              = 80
@@ -309,33 +139,8 @@ resource "aws_lb_listener" "http" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.main.arn
+    target_group_arn = module.ecs_app.aws_lb_target_group.arn
   }
-
-  tags = var.tags
-}
-
-# ECS Service
-resource "aws_ecs_service" "main" {
-  name            = var.service_name
-  cluster         = data.aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.main.arn
-  desired_count   = var.desired_count
-  launch_type     = "FARGATE"
-
-  network_configuration {
-    subnets          = local.private_subnet_ids
-    security_groups  = [aws_security_group.ecs_service.id]
-    assign_public_ip = false
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.main.arn
-    container_name   = var.service_name
-    container_port   = var.container_port
-  }
-
-  depends_on = [aws_lb_listener.http]
 
   tags = var.tags
 }
