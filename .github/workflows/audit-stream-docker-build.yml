@@ -121,3 +121,28 @@ jobs:
           push: true
           tags: ${{ steps.meta-aws.outputs.tags }}
           labels: ${{ steps.meta-aws.outputs.labels }}
+
+      # Build for Aws with Enhanced Fan-Out (KCL 3.5.1) Kinesis consumption instead of polling
+      - name: Build Aws-Efo Stream Application with Maven
+        run: mvn clean package -Paws-efo -pl kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application -am -Dmaven.test.skip=true
+
+      - name: Extract Metadata for Docker (Aws-Efo)
+        id: meta-aws-efo
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-aws-efo
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value={{date 'YYYYMMDD-HHmmss'}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and Push Docker Image (Aws-Efo)
+        uses: docker/build-push-action@v5
+        with:
+          context: kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application
+          file: kockpit-core-applications/kockpit-audit-stream/kockpit-audit-stream-application/Dockerfile
+          push: true
+          tags: ${{ steps.meta-aws-efo.outputs.tags }}
+          labels: ${{ steps.meta-aws-efo.outputs.labels }}
