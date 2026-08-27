@@ -13,6 +13,7 @@
     <!-- starters -->
     <module>kockpit-audit-stream-starter-kafka</module>
     <module>kockpit-audit-stream-starter-kinesis</module>
+    <module>kockpit-audit-stream-starter-kinesis-efo</module>
     <!-- Application -->
     <module>kockpit-audit-stream-application</module>
   </modules>
