@@ -3,15 +3,12 @@ package org.kockpit.audit.stream.kinesis;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumerEvent;
-import org.kockpit.audit.stream.api.AuditStreamJson;
-import org.kockpit.audit.stream.api.model.AuditReport;
 import org.kockpit.audit.stream.kinesis.coordination.DynamoDbShardCoordinator;
 import org.kockpit.audit.stream.kinesis.coordination.LeaseHeartbeatService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 import software.amazon.awssdk.services.kinesis.model.*;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -42,8 +39,6 @@ public class KinesisStreamProcessor {
     private final LeaseHeartbeatService heartbeatService;
 
     private final long shardAcquisitionIntervalMs;
-
-    private final ObjectMapper objectMapper = AuditStreamJson.mapper();
 
     private final Map<String, String> shardIterators = new ConcurrentHashMap<>();
 
@@ -161,17 +156,11 @@ public class KinesisStreamProcessor {
                 .build();
 
         kinesisAsyncClient.getRecords(recordsRequest).thenAccept(records -> {
-            // Process records
-            records.records().forEach(record -> {
-                try {
-                    String event = kclRecordProcessor.read(record.data().asByteArray());
-                    AuditReport auditReport = objectMapper.readValue(event, AuditReport.class);
-                    applicationEventPublisher.publishEvent(new AuditConsumerEvent(auditReport));
-                    log.trace("Processed record from shard {}: {}", shardId, record.sequenceNumber());
-                } catch (Exception e) {
-                    log.error("❌ Error processing record {} from shard {}: {}", record.sequenceNumber(), shardId, e.getMessage(), e);
-                }
-            });
+            List<byte[]> list = records.records().stream().map(record -> kclRecordProcessor.read(record.data().asByteArray()))
+                    .map(String::getBytes)
+                    .toList();
+
+            applicationEventPublisher.publishEvent(new AuditConsumerEvent(this, list));
 
             // Update iterator for next read - this is crucial!
             String nextIterator = records.nextShardIterator();

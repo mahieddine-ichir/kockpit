@@ -11,10 +11,13 @@
   <modules>
     <module>kockpit-audit-stream-api</module>
     <!-- starters -->
+    <module>kockpit-audit-stream-starter-opensearch</module>
     <module>kockpit-audit-stream-starter-kafka</module>
     <module>kockpit-audit-stream-starter-kinesis</module>
     <module>kockpit-audit-stream-starter-kinesis-efo</module>
+    <module>kockpit-audit-stream-starter-s3</module>
     <!-- Application -->
     <module>kockpit-audit-stream-application</module>
+    <module>kockpit-audit-stream-starter-opensearch-s3</module>
   </modules>
 </project>

@@ -7,10 +7,16 @@ import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch.generic.Body;
 import org.opensearch.client.opensearch.generic.Requests;
 import org.opensearch.client.opensearch.generic.Response;
-import org.opensearch.client.opensearch.indices.*;
+import org.opensearch.client.opensearch.indices.CreateIndexRequest;
+import org.opensearch.client.opensearch.indices.ExistsRequest;
+import org.opensearch.client.opensearch.indices.UpdateAliasesRequest;
 import org.opensearch.client.opensearch.indices.update_aliases.Action;
 import org.opensearch.client.opensearch.indices.update_aliases.AddAction;
 import org.opensearch.client.opensearch.indices.update_aliases.RemoveAction;
+
+import java.io.InputStream;
+
+import static java.util.Objects.requireNonNull;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -19,6 +25,10 @@ public class OpensearchV3IndexManager {
     private final OpenSearchClient client;
 
     private final boolean strictMode;
+
+    private final String indexTemplateResource;
+
+    private final String policyResource;
 
     @SneakyThrows
     public void ensureIndexExists(String indexName, String aliasWrite, String aliasRead, String indexPrefix, Integer ttl) {
@@ -47,21 +57,19 @@ public class OpensearchV3IndexManager {
     @SneakyThrows
     void createISMPolicy(Integer ttl, String policyId, String indexPrefix) {
         // Check if policy already exists
-        try {
-            Response response = client.generic().execute(Requests.builder()
-                    .method("GET")
-                    .endpoint("_plugins/_ism/policies/" + policyId)
-                    .build());
+        try (Response response = client.generic()
+                    .execute(Requests.builder()
+                            .method("GET")
+                            .endpoint("_plugins/_ism/policies/" + policyId)
+                            .build()
+                    )) {
+
             if (isOk(response.getStatus())) {
                 log.trace("✅ Policy {} already exists, skipping policy creation, status {}", policyId, response.getStatus());
             }
         } catch (Exception e) {
-            String policyJson = new String(this.getClass().getResourceAsStream("/opensearch/audit_ism_policy.json").readAllBytes())
-                    .replace("${delete_min_index_age}", ttl+"d")
-                    .replace("${index_pattern}", indexPrefix + "*");
-
             // Policy doesn't exist, create it
-            doCreatePolicy(policyId, ttl, policyJson);
+            doCreatePolicy(policyId, indexPrefix, ttl);
         }
     }
 
@@ -73,16 +81,16 @@ public class OpensearchV3IndexManager {
         return status == 429;
     }
 
-    private void doCreatePolicy(String policyId, Integer ttl, String policyJson) {
-        try {
-            log.info("➡️ Creating ISM policy with ID: {} and TTL: {}d", policyId, ttl);
-            log.trace("ISM Policy JSON being sent:\n{}", policyJson);
-
-            Response response = client.generic().execute(Requests.builder()
-                    .method("PUT")
-                    .endpoint("_plugins/_ism/policies/" + policyId)
-                    .json(policyJson)
-                    .build());
+    private void doCreatePolicy(String policyId, String indexPrefix, Integer ttl) {
+        log.info("➡️ Creating ISM policy with ID: {} and TTL: {}d", policyId, ttl);
+        String policyJson = loadPolicy(indexPrefix, ttl);
+        try (Response response = client.generic()
+                .execute(Requests.builder()
+                        .method("PUT")
+                        .endpoint("_plugins/_ism/policies/" + policyId)
+                        .json(policyJson)
+                        .build())
+        ) {
             if (isOk(response.getStatus())) {
                 log.info("✅ Created policy {}, ttl {}", policyId, ttl);
             } else if (isCircuitBreaker(response.getStatus())) {
@@ -104,6 +112,18 @@ public class OpensearchV3IndexManager {
     }
 
     @SneakyThrows
+    private String loadPolicy(String indexPrefix, Integer ttl) {
+        try (InputStream is = this.getClass().getResourceAsStream(policyResource)) {
+            String policyJson = new String(requireNonNull(is).readAllBytes())
+                    .replace("${delete_min_index_age}", ttl+"d")
+                    .replace("${index_pattern}", indexPrefix + "*");
+            log.trace("ISM Policy JSON:\n{}", policyJson);
+
+            return policyJson;
+        }
+    }
+
+    @SneakyThrows
     private boolean templateExists(String name) {
         try (Response response = client.generic().execute(Requests.builder()
                 .method("HEAD")
@@ -115,14 +135,14 @@ public class OpensearchV3IndexManager {
 
     @SneakyThrows
     void createIndexTemplate(String indexPrefix, String policyId, String aliasWrite) {
-        try {
-            if (templateExists(indexPrefix) || templateExists(indexPrefix + "_template")) {
-                log.trace("✅ Template {} already exists, skipping creation", indexPrefix);
-                return;
-            }
+        if (templateExists(indexPrefix) || templateExists(indexPrefix + "_template")) {
+            log.trace("✅ Template {} already exists, skipping creation", indexPrefix);
+            return;
+        }
+        try (InputStream is = this.getClass().getResourceAsStream(indexTemplateResource)) {
 
             log.info("➡️ Creating Template {} for policy {}", indexPrefix, policyId);
-            String templateJson = new String(this.getClass().getResourceAsStream("/opensearch/audit_index_template.json").readAllBytes())
+            String templateJson = new String(requireNonNull(is).readAllBytes())
                     .replace("${index_pattern}", indexPrefix + "*")
                     .replace("${policy_id}", policyId)
                     .replace("${write_alias}", aliasWrite);

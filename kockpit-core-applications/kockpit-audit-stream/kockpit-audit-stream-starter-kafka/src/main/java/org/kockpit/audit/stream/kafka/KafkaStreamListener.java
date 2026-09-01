@@ -3,64 +3,23 @@ package org.kockpit.audit.stream.kafka;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumerEvent;
-import org.kockpit.audit.stream.api.model.AuditReport;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.annotation.KafkaListener;
-import tools.jackson.databind.ObjectMapper;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.zip.GZIPInputStream;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
 public class KafkaStreamListener {
 
-    private final ObjectMapper objectMapper;
-
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @KafkaListener(topics = "${kockpit.audit.stream.kafka.topics}")
-    void processAudit(byte[] message) {
-            String event = null;
-            try {
-                event = read(message);
-                AuditReport audit = objectMapper.readValue(event, AuditReport.class);
-                applicationEventPublisher.publishEvent(new AuditConsumerEvent(audit));
-            } catch (Exception e) {
-                log.error("Error processing audit message. Event: {}. Error: {}", event, e.getMessage(), e);
-            }
-    }
-
-    String read(byte[] message) throws IOException {
-        // Check if the data is GZIP compressed by checking the magic number
-        // GZIP files start with 0x1f 0x8b
-        if (message.length >= 2 && message[0] == (byte) 0x1f && message[1] == (byte) 0x8b) {
-            log.trace("Detected GZIP compressed data, decompressing...");
-            return decompress(message);
-        } else {
-            log.trace("Data is not compressed, converting directly to string");
-            return new String(message, StandardCharsets.UTF_8);
-        }
-    }
-
-    private String decompress(byte[] compressedData) throws IOException {
-        try (ByteArrayInputStream byteStream = new ByteArrayInputStream(compressedData);
-             GZIPInputStream gzipStream = new GZIPInputStream(byteStream);
-             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = gzipStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, len);
-            }
-
-            byte[] decompressed = outputStream.toByteArray();
-            log.trace("Decompressed {} bytes to {} bytes", compressedData.length, decompressed.length);
-
-            return new String(decompressed, StandardCharsets.UTF_8);
+    void processAudit(List<byte[]> messages) {
+        try {
+            applicationEventPublisher.publishEvent(new AuditConsumerEvent(this, messages));
+        } catch (Exception e) {
+            log.error("Error processing audit messages", e);
         }
     }
 }

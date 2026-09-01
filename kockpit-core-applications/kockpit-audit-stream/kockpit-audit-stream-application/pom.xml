@@ -55,6 +55,11 @@
         </dependency>
         <dependency>
             <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-audit-stream-starter-opensearch</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kockpit</groupId>
             <artifactId>kockpit-audit-api</artifactId>
             <version>1.2.0-SNAPSHOT</version>
         </dependency>
@@ -131,6 +136,11 @@
             <dependencies>
                 <dependency>
                     <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-audit-stream-starter-opensearch-s3</artifactId>
+                    <version>1.2.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-stream-starter-kinesis</artifactId>
                     <version>1.2.0-SNAPSHOT</version>
                 </dependency>
@@ -156,6 +166,11 @@
                  unrelated to which consumer mechanism is used, so both profiles need them. -->
             <id>aws-efo</id>
             <dependencies>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-audit-stream-starter-opensearch-s3</artifactId>
+                    <version>1.2.0-SNAPSHOT</version>
+                </dependency>
                 <dependency>
                     <groupId>org.kockpit</groupId>
                     <artifactId>kockpit-audit-stream-starter-kinesis-efo</artifactId>

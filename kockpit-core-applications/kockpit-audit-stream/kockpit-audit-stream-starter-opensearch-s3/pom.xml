@@ -10,11 +10,18 @@
     </parent>
 
     <artifactId>kockpit-audit-stream-starter-opensearch-s3</artifactId>
+    <name>Kockpit Audit Stream Starter Opensearch S3</name>
 
-    <properties>
-        <maven.compiler.source>26</maven.compiler.source>
-        <maven.compiler.target>26</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-audit-stream-starter-opensearch</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kockpit</groupId>
+            <artifactId>kockpit-audit-stream-starter-s3</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
