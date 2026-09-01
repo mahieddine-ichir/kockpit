@@ -15,22 +15,30 @@ management:
   server:
     port: 8091
 
+
 kockpit:
   domain: kockpit
   env: local
   appId: ${spring.application.name}
+  aws.region: eu-west-1
 
   audit:
     stream:
+      s3:
+        bucket_name: audits-${kockpit.env}
+        allowed_ttl_days: 1,7,14,30,60,90,120
+      consumer: opensearch-s3
       opensearch:
-        endpoints: ${OPENSEARCH_ENDPOINTS}
+        endpoints: ${OPENSEARCH_ENDPOINTS:localhost:9200}
         index_suffix: ${INDEX_SUFFIX:audit-data}
         ttl_default_in_days: 5
       kafka:
         topics: audits
       kinesis:
+        efo:
+          consumer_name: ${spring.application.name}
         stream_name: ${KINESIS_STREAM_NAME}
-        application_name: ${KINESIS_APP_NAME}
+        application_name: ${kockpit.appId}
         timeout:
           connection: 5000
           socket: 30000
@@ -41,6 +49,6 @@ kockpit:
       kafka:
         topic: ${NOTIFICATION_TOPIC:audits}
       kinesis:
-        stream_name: ${KINESIS_STREAM_NAME}
+        stream_name: ${KINESIS_STREAM_NAME:auditstream}
 
 aws.region: eu-west-1

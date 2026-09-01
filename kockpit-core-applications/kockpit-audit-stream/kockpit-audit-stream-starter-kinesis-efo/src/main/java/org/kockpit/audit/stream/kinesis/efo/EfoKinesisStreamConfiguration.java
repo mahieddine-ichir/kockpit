@@ -92,11 +92,34 @@ public class EfoKinesisStreamConfiguration {
     }
 
     @Bean("efoCloudWatchClient")
-    CloudWatchAsyncClient efoCloudWatchClient(@Value("${aws.region}") String awsRegion) {
-        return CloudWatchAsyncClient.builder()
-                .region(Region.of(awsRegion))
-                .credentialsProvider(credentialsProvider())
-                .build();
+    CloudWatchAsyncClient efoCloudWatchClient(
+            @Value("${kockpit.audit.stream.cloudwatch.endpoint:}") Optional<String> cloudWatchEndpointOptional,
+            @Value("${aws.region}") String awsRegion,
+            @Value("${kockpit.audit.stream.cloudwatch.timeout.connection:5000}") int connectionTimeoutMs,
+            @Value("${kockpit.audit.stream.cloudwatch.timeout.socket:30000}") int socketTimeoutMs
+    ) {
+        return cloudWatchEndpointOptional
+                .map(String::trim)
+                .filter(StringUtils::hasLength)
+                .map(cloudWatchEndpoint -> {
+                    log.info("➡️ CloudWatch endpoint: {}", cloudWatchEndpoint);
+                    ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
+                            .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
+                            .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
+                            .build();
+
+                    return CloudWatchAsyncClient.builder()
+                            .endpointOverride(URI.create(cloudWatchEndpoint))
+                            .region(Region.of(awsRegion))
+                            .overrideConfiguration(overrideConfig)
+                            .build();
+                }).orElseGet(() -> {
+                    log.info("➡️ Initialize CloudWatch client using AWS Credentials");
+                    return CloudWatchAsyncClient.builder()
+                            .region(Region.of(awsRegion))
+                            .credentialsProvider(credentialsProvider())
+                            .build();
+                });
     }
 
     AwsCredentialsProvider credentialsProvider() {
@@ -113,7 +136,7 @@ public class EfoKinesisStreamConfiguration {
             @Value("${kockpit.audit.stream.kinesis.stream_name}") String streamName,
             @Value("${kockpit.audit.stream.kinesis.application_name}") String applicationName,
             @Value("${kockpit.audit.stream.kinesis.worker_id:#{T(java.util.UUID).randomUUID().toString()}}") String workerId,
-            @Value("${kockpit.audit.stream.kinesis.efo.consumer_name:${kockpit.audit.stream.kinesis.application_name}-efo}") String consumerName,
+            @Value("${kockpit.audit.stream.kinesis.efo.consumer_name}") String consumerName,
             ApplicationEventPublisher applicationEventPublisher
     ) {
         ConfigsBuilder configsBuilder = new ConfigsBuilder(

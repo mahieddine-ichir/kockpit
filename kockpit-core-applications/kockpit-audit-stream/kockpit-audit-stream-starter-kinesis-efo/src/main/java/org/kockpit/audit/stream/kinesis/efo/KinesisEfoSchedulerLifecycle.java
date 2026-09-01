@@ -31,6 +31,11 @@ class KinesisEfoSchedulerLifecycle implements SmartLifecycle {
         log.info("✅ Starting Kinesis EFO scheduler");
         schedulerThread = new Thread(scheduler, "kinesis-efo-scheduler");
         schedulerThread.setDaemon(true);
+        // Scheduler.run() can throw (e.g. lease table setup failing during initialize()) and,
+        // uncaught, that death is otherwise silent: the thread just dies to stderr with no
+        // logback formatting, and the app keeps reporting healthy while ingestion has stopped.
+        schedulerThread.setUncaughtExceptionHandler((thread, exception) ->
+                log.error("❌ Kinesis EFO scheduler died unexpectedly, audit stream ingestion has stopped: {}", exception.getMessage(), exception));
         schedulerThread.start();
     }
 

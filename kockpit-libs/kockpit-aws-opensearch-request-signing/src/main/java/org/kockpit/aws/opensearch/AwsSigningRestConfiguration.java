@@ -8,6 +8,7 @@ import org.opensearch.client.transport.aws.AwsSdk2Transport;
 import org.opensearch.client.transport.aws.AwsSdk2TransportOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import software.amazon.awssdk.http.SdkHttpClient;
@@ -25,8 +26,13 @@ import tools.jackson.databind.json.JsonMapper;
 @Slf4j
 class AwsSigningRestConfiguration {
 
+  // AwsSdk2Transport always issues HTTPS requests, which breaks against an unsecured local
+  // OpenSearch (e.g. Docker with DISABLE_SECURITY_PLUGIN=true) with an SSLException rather than a
+  // clean connection failure. Default stays enabled so real AWS-signed deployments are unaffected;
+  // set to false to fall back to OpensearchAuditConsumerConfiguration's plain HTTP client.
   @Bean
   @Primary
+  @ConditionalOnProperty(name = "kockpit.aws.opensearch.signing.enabled", havingValue = "true", matchIfMissing = true)
   OpenSearchClient openSearchClient(
           @Value("${kockpit.aws.region}") String region,
           @Value("${kockpit.audit.stream.opensearch.endpoints:}") String endpoint,
@@ -51,13 +57,13 @@ class AwsSigningRestConfiguration {
 
     ObjectMapper opensearchObjectMapper() {
         // java.time et Optional sont integres a jackson-databind 3 : plus de module a enregistrer.
-        // Les deux reglages de dates sont explicites parce que Jackson 3 inverse leurs defauts :
-        // les documents indexes portent start/end en epoch-millis entiers.
+        // Le reglage de date est explicite (bien qu'il corresponde au defaut Jackson 3) pour que
+        // ce format reste stable si ce defaut change un jour : start/end sont ecrits en ISO-8601
+        // avec la precision nanoseconde native d'Instant, aligne sur OpensearchAuditConsumerConfiguration.
         return JsonMapper.builder()
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-                .enable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .disable(DateTimeFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
                 // Aligne sur OpensearchAuditConsumerConfiguration, qui indexe les memes
                 // documents. Sans ce reglage, BigDecimal.toString() peut produire une
                 // notation scientifique ; l'autre chemin, qui l'active, ecrivait deja en
