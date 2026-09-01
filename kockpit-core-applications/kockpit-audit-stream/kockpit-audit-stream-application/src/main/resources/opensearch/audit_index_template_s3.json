@@ -1,0 +1,108 @@
+{
+  "index_patterns": [
+    "${index_pattern}"
+  ],
+  "template": {
+    "settings": {
+      "number_of_shards": 3,
+      "number_of_replicas": 0,
+      "index.plugins.index_state_management.policy_id": "${policy_id}",
+      "index.plugins.index_state_management.rollover_alias": "${write_alias}"
+    },
+    "mappings": {
+      "properties": {
+        "id": {
+          "type": "keyword"
+        },
+        "@timestamp": {
+          "type": "date",
+          "format": "epoch_millis"
+        },
+        "ttl": {
+          "type": "integer"
+        },
+        "appId": {
+          "type": "keyword"
+        },
+        "artifact": {
+          "type": "keyword"
+        },
+        "domain": {
+          "type": "keyword"
+        },
+        "start": {
+          "type": "date"
+        },
+        "end": {
+          "type": "date"
+        },
+        "env": {
+          "type": "keyword"
+        },
+        "hostname": {
+          "type": "keyword"
+        },
+        "requestId": {
+          "type": "keyword"
+        },
+        "version": {
+          "type": "keyword"
+        },
+        "indexedExtensions": {
+          "properties": {
+            "indexedKeyValues": {
+              "type": "nested",
+              "properties": {
+                "key": {
+                  "type": "keyword"
+                },
+                "value": {
+                  "type": "keyword",
+                  "doc_values": false,
+                  "ignore_above": 30000
+                },
+                "valueDate": {
+                  "type": "date"
+                },
+                "valueFloat": {
+                  "type": "float",
+                  "doc_values": false
+                },
+                "valueInteger": {
+                  "type": "integer",
+                  "doc_values": false
+                }
+              }
+            }
+          }
+        },
+        "audits": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "keyword"
+            },
+            "events": {
+              "type": "object",
+              "dynamic": false
+            }
+          }
+        },
+        "s3Uri": {
+          "type": "keyword",
+          "index": false
+        },
+        "s3Key": {
+          "type": "keyword",
+          "index": false
+        },
+        "s3Offset": {
+          "type": "long"
+        },
+        "s3Size": {
+          "type": "long"
+        }
+      }
+    }
+  }
+}

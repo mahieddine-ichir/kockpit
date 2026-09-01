@@ -4,21 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumerEvent;
 import org.kockpit.audit.stream.api.AuditStreamJson;
-import org.kockpit.audit.stream.api.model.AuditReport;
 import org.springframework.context.ApplicationEventPublisher;
 import software.amazon.kinesis.exceptions.InvalidStateException;
 import software.amazon.kinesis.exceptions.ShutdownException;
-import software.amazon.kinesis.lifecycle.events.InitializationInput;
-import software.amazon.kinesis.lifecycle.events.LeaseLostInput;
-import software.amazon.kinesis.lifecycle.events.ProcessRecordsInput;
-import software.amazon.kinesis.lifecycle.events.ShardEndedInput;
-import software.amazon.kinesis.lifecycle.events.ShutdownRequestedInput;
+import software.amazon.kinesis.lifecycle.events.*;
 import software.amazon.kinesis.processor.RecordProcessorCheckpointer;
 import software.amazon.kinesis.processor.ShardRecordProcessor;
 import software.amazon.kinesis.retrieval.KinesisClientRecord;
 import tools.jackson.databind.ObjectMapper;
 
 import java.nio.ByteBuffer;
+import java.util.List;
+
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * One instance is created per owned shard (see {@link AuditRecordProcessorFactory}). KCL delivers
@@ -30,9 +28,7 @@ import java.nio.ByteBuffer;
 @RequiredArgsConstructor
 class AuditRecordProcessor implements ShardRecordProcessor {
 
-    private final EfoRecordProcessor recordDecoder;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final ObjectMapper objectMapper = AuditStreamJson.mapper();
 
     private String shardId;
 
@@ -44,19 +40,20 @@ class AuditRecordProcessor implements ShardRecordProcessor {
 
     @Override
     public void processRecords(ProcessRecordsInput processRecordsInput) {
-        for (KinesisClientRecord record : processRecordsInput.records()) {
-            try {
-                String json = recordDecoder.read(toByteArray(record.data()));
-                AuditReport auditReport = objectMapper.readValue(json, AuditReport.class);
-                applicationEventPublisher.publishEvent(new AuditConsumerEvent(auditReport));
-                log.trace("Processed record from shard {}: {}", shardId, record.sequenceNumber());
-            } catch (Exception e) {
-                log.error("❌ Error processing record {} from shard {}: {}", record.sequenceNumber(), shardId, e.getMessage(), e);
-            }
+        List<KinesisClientRecord> records = processRecordsInput.records();
+        if (isEmpty(records)) {
+            return;
         }
 
-        if (!processRecordsInput.records().isEmpty()) {
-            checkpoint(processRecordsInput.checkpointer());
+        try {
+            List<byte[]> list = records.stream().map(KinesisClientRecord::data)
+                    .map(AuditRecordProcessor::toByteArray).toList();
+
+            applicationEventPublisher.publishEvent(new AuditConsumerEvent(this, list));
+            processRecordsInput.checkpointer().checkpoint();
+
+        } catch (InvalidStateException | ShutdownException e) {
+            log.error("❌ Exception while checkpointing at shard end for {}: {}", shardId, e.getMessage(), e);
         }
     }
 
@@ -89,6 +86,9 @@ class AuditRecordProcessor implements ShardRecordProcessor {
         }
     }
 
+    // ByteBuffer.array() throws ReadOnlyBufferException on the read-only buffers KCL's EFO
+    // retrieval path hands back (HeapByteBufferR); get(byte[]) is a read op and works regardless
+    // of whether the buffer is read-only, heap-backed, or direct.
     private static byte[] toByteArray(ByteBuffer buffer) {
         byte[] bytes = new byte[buffer.remaining()];
         buffer.get(bytes);

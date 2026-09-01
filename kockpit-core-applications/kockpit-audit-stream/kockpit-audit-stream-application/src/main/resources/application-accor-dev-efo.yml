@@ -1,0 +1,47 @@
+# Local EFO smoke test against the real accor-dev AWS account.
+#
+# Kinesis/DynamoDB/CloudWatch endpoints are intentionally left unset here so the EFO clients
+# (EfoKinesisStreamConfiguration) fall through to DefaultCredentialsProvider - export
+# AWS_PROFILE=accor-dev (or otherwise populate the default credentials chain) before running.
+#
+# application_name/efo.consumer_name are deliberately distinct from the real deployed app
+# ("kockpit-auditstream-dev") so this run gets its own lease table and its own registered EFO
+# stream consumer, instead of joining/stealing the lease from whatever's actually running in dev.
+#
+# consumer=opensearch keeps the output side on the local Docker OpenSearch (application.yml's
+# default OPENSEARCH_ENDPOINTS=localhost:9200) - this profile only exercises real-AWS Kinesis EFO
+# ingestion, not S3/OpenSearch.
+#
+# aws.opensearch.signing.enabled=false disables AwsSigningRestConfiguration's SigV4-signed,
+# HTTPS-only OpenSearchClient (kockpit-aws-opensearch-request-signing) - it always issues HTTPS
+# requests and breaks with an SSLException against the unsecured local Docker OpenSearch, so this
+# falls back to OpensearchAuditConsumerConfiguration's plain HTTP client instead.
+
+kockpit:
+  env: dev
+  aws:
+    opensearch:
+      signing:
+        enabled: false
+  audit:
+    stream:
+      s3:
+        bucket_name: kockpit-auditstream-dev-efo-local
+      opensearch:
+        template_file: /opensearch/audit_index_template_s3.json
+        index_suffix: auditdata
+        wrap_indexed_key_values: true
+
+      consumer: opensearch-s3
+      kinesis:
+        stream_name: auditstream-dev
+        application_name: kockpit-auditstream-dev-efo-local
+        efo:
+          consumer_name: kockpit-auditstream-dev-efo-local
+
+
+
+logging:
+  level:
+    software.amazon: warn
+    org.kockpit: trace

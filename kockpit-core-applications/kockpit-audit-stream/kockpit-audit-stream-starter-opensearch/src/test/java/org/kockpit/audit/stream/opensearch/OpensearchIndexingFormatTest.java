@@ -16,10 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Verrouille le format des documents indexes dans OpenSearch.
  *
- * <p>Ce format tient a trois reglages du mapper d'indexation, dont deux dependent de defauts
- * que Jackson 3 a inverses par rapport a Jackson 2. Rien ne les couvrait : une migration ou
- * un nettoyage qui les retirerait changerait le {@code _source} des documents sans faire
- * echouer aucun test.
+ * <p>Ce format tient a trois reglages du mapper d'indexation. Rien ne les couvrait : une
+ * migration ou un nettoyage qui les retirerait changerait le {@code _source} des documents sans
+ * faire echouer aucun test.
  *
  * <p>Le meme contrat est porte par un second mapper, celui d'
  * {@code aws-opensearch-request-signing}, utilise sous profil {@code aws}. Les deux modules
@@ -32,15 +31,16 @@ class OpensearchIndexingFormatTest {
             new OpensearchAuditConsumerConfiguration().opensearchObjectMapper();
 
     @Test
-    @DisplayName("Les Instant sont indexes en epoch-millis entiers, pas en nanosecondes ni en ISO")
-    void writes_instants_as_epoch_millis() {
+    @DisplayName("Les Instant sont indexes en ISO-8601 avec precision nanoseconde, pas en epoch-millis")
+    void writes_instants_as_iso8601() {
         AuditReport report = new AuditReport();
         report.setStart(Instant.ofEpochSecond(1750197974L, 47081776));
 
         assertThat(objectMapper.writeValueAsString(report))
-                .contains("\"start\":1750197974047")
-                .doesNotContain("1750197974.047081776")
-                .doesNotContain("2025-06-17T");
+                .contains("\"start\":\"2025-06-17T")
+                .contains("047081776")
+                .doesNotContain("1750197974047")
+                .doesNotContain("1750197974.047081776");
     }
 
     @Test
