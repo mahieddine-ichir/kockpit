@@ -13,26 +13,24 @@ import org.kockpit.audit.module.web.WebAuditReportData;
 import org.kockpit.audit.module.web.request.HttpAuditedRequest;
 import org.kockpit.audit.module.web.response.HttpAuditedResponse;
 import org.kockpit.audit.stream.api.AuditConsumer;
+import org.kockpit.audit.stream.api.AuditStreamJson;
 import org.kockpit.audit.stream.api.model.AuditReport;
 import org.kockpit.sdk.SdkApplicationProperties;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch._types.Refresh;
 import org.opensearch.client.opensearch.core.BulkRequest;
 import org.opensearch.client.opensearch.core.BulkResponse;
 import org.opensearch.client.opensearch.core.bulk.BulkOperation;
 import org.opensearch.client.opensearch.core.bulk.IndexOperation;
-import org.opensearch.client.util.ObjectBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static org.kockpit.audit.stream.opensearch.OpensearchHelper.*;
@@ -42,7 +40,7 @@ import static org.kockpit.audit.stream.opensearch.OpensearchHelper.*;
 public class AuditConsumerForOpensearch implements AuditConsumer {
 
     // local cache for batch indexing
-    private final List<AuditReport> auditReports = new ArrayList<>();
+    private final List<byte[]> auditReports = new ArrayList<>();
 
     private final OpenSearchClient openSearchClient;
 
@@ -71,8 +69,15 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
     }
 
     @Override
-    public void accept(AuditReport auditReport) {
-        auditReports.add(auditReport);
+    public void accept(List<byte[]> byteBuffers) {
+        byteBuffers.stream().map(bytes -> {
+            try {
+                return AuditStreamJson.read(bytes);
+            } catch (Exception e) {
+                log.error("Error reading audit data!", e);
+                return null;
+            }
+        }).filter(Objects::nonNull).forEach(auditReports::add);
     }
 
     @Scheduled(
@@ -83,14 +88,15 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
             return;
         }
         // defensive copy
-        AuditReport[] copy = Arrays.copyOf(auditReports.toArray(), auditReports.size(), AuditReport[].class);
+        List<byte[]> copy = List.copyOf(auditReports.stream().map(byte[]::clone).toList());
         auditReports.clear();
 
         this.indexAudits(copy);
     }
 
-    private void indexAudits(AuditReport[] auditReports) {
-        Arrays.stream(auditReports)
+    private void indexAudits(List<byte[]> auditReports) {
+        auditReports.stream()
+                .map(AuditStreamJson::readAuditReport)
                 .peek(auditReport -> {
                     if (isNull(auditReport.getTtl())) {
                         auditReport.setTtl(ttlDefaultInDays);
