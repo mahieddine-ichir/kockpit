@@ -1,10 +1,17 @@
 package org.kockpit.audit.stream.api;
 
-import org.kockpit.audit.stream.api.model.AuditReport;
+import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
+import java.util.List;
+
 public class AuditConsumerEvent extends ApplicationEvent {
-    public AuditConsumerEvent(AuditReport auditReport) {
-        super(auditReport);
+
+    @Getter
+    private final List<byte[]> data;
+
+    public AuditConsumerEvent(Object source, List<byte[]> data) {
+        super(source);
+        this.data = data;
     }
 }

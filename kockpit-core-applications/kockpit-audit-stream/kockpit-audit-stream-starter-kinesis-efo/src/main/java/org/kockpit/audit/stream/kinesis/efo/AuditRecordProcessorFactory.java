@@ -12,6 +12,6 @@ class AuditRecordProcessorFactory implements ShardRecordProcessorFactory {
 
     @Override
     public ShardRecordProcessor shardRecordProcessor() {
-        return new AuditRecordProcessor(new EfoRecordProcessor(), applicationEventPublisher);
+        return new AuditRecordProcessor(applicationEventPublisher);
     }
 }

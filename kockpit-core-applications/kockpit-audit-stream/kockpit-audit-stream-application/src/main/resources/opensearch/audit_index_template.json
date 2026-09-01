@@ -4,7 +4,7 @@
   ],
   "template": {
     "settings": {
-      "number_of_shards": 5,
+      "number_of_shards": 3,
       "number_of_replicas": 0,
       "index.plugins.index_state_management.policy_id": "${policy_id}",
       "index.plugins.index_state_management.rollover_alias": "${write_alias}"
@@ -55,7 +55,8 @@
               "type": "keyword"
             },
             "value": {
-              "type": "keyword"
+              "type": "keyword",
+              "ignore_above" : 30000
             },
             "valueInteger": {
               "type": "integer"

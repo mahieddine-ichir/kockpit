@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumer;
 import org.kockpit.audit.stream.api.AuditConsumerEvent;
-import org.kockpit.audit.stream.api.model.AuditReport;
 import org.kockpit.audit.stream.console.ConsoleLogger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,13 +32,13 @@ public class KockpitStreamApplication implements ApplicationListener<AuditConsum
             log.error("No AuditConsumer registered!");
             throw new RuntimeException("No AuditConsumer registered!");
         } else {
-            consumerList.forEach(consumer -> log.info("➡️ Starting consumer {}", consumer.getClass().getSimpleName()));
+            consumerList.forEach(consumer -> log.info("✅ Starting consumer {}", consumer.getClass().getSimpleName()));
         }
     }
 
     @Override
     public void onApplicationEvent(AuditConsumerEvent event) {
-        consumerList.forEach(consumer -> consumer.accept((AuditReport) event.getSource()));
+        consumerList.forEach(consumer -> consumer.accept(event.getData()));
     }
 
     @Override

@@ -1,8 +1,15 @@
 package org.kockpit.audit.stream.api;
 
+import org.kockpit.audit.stream.api.model.AuditReport;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Contrat de lecture du flux audit, cote consommateur.
@@ -40,5 +47,48 @@ public final class AuditStreamJson {
      */
     public static ObjectMapper mapper() {
         return MAPPER;
+    }
+
+    public static AuditReport readAuditReport(byte[] data) {
+        return mapper().readValue(data, AuditReport.class);
+    }
+
+    public static byte[] read(byte[] data) throws IOException {
+        if (isRecordCompressed(data)) {
+            return new GZIPInputStream(new ByteArrayInputStream(data)).readAllBytes();
+        } else {
+            return data;
+        }
+    }
+
+    /**
+     * todo check if this method is necessary compared to the one above
+     * @param compressedData
+     * @return
+     * @throws IOException
+     */
+    public static String decompress(byte[] compressedData) throws IOException {
+        try (ByteArrayInputStream byteStream = new ByteArrayInputStream(compressedData);
+             GZIPInputStream gzipStream = new GZIPInputStream(byteStream);
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = gzipStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, len);
+            }
+
+            byte[] decompressed = outputStream.toByteArray();
+            return new String(decompressed, StandardCharsets.UTF_8);
+        }
+    }
+
+    /**
+     * todo check difference with
+     * if (message.length >= 2 && message[0] == (byte) 0x1f && message[1] == (byte) 0x8b)
+     */
+    public static boolean isRecordCompressed(byte[] data) throws IOException {
+        return (data.length >= 2 && data[0] == (byte) (GZIPInputStream.GZIP_MAGIC))
+                && (data[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8));
     }
 }

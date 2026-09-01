@@ -3,7 +3,6 @@ package org.kockpit.audit.stream.kafka;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.kockpit.audit.stream.api.AuditStreamJson;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,13 +20,8 @@ import java.util.Map;
 public class KafkaStreamAutoConfiguration {
 
     @Bean
-    KafkaStreamListener kafkaStreamListener(
-            ApplicationEventPublisher applicationEventPublisher
-    ) {
-        return new KafkaStreamListener(
-                AuditStreamJson.mapper()
-                , applicationEventPublisher
-        );
+    KafkaStreamListener kafkaStreamListener(ApplicationEventPublisher applicationEventPublisher) {
+        return new KafkaStreamListener(applicationEventPublisher);
     }
 
     @Bean
@@ -40,9 +34,9 @@ public class KafkaStreamAutoConfiguration {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, byte[]> kafkaListenerContainerFactory(ConsumerFactory<String, byte[]> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, byte[]> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, byte[]> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
+        factory.setBatchListener(true);
         return factory;
     }
 }

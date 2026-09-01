@@ -21,5 +21,11 @@ public class AuditReport {
     private Instant end;
     private Integer ttl;
     private List<IndexedKeyValue> indexedKeyValues;
+
     private List<Audit> audits;
+
+    private String s3Uri;
+    private String s3Key;
+    private Long s3Offset;
+    private Long s3Size;
 }
