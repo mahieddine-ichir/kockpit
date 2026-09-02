@@ -38,7 +38,7 @@ kockpit:
         efo:
           consumer_name: ${spring.application.name}
         stream_name: ${KINESIS_STREAM_NAME}
-        application_name: ${kockpit.appId}
+        application_name: ${KINESIS_APP_NAME:${kockpit.appId}}
         timeout:
           connection: 5000
           socket: 30000
