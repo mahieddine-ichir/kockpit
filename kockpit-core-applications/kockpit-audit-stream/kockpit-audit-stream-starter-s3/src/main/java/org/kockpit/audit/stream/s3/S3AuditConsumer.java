@@ -159,5 +159,22 @@ public class S3AuditConsumer {
             }
             write(batch, entry.getKey());
         }
+        pruneEmptyBatches();
+    }
+
+    // Without this, auditReports grows without bound for the lifetime of the process - one entry
+    // per distinct (domain, env, appId, ttl) combination ever seen. On a shared, multi-tenant
+    // stream with ephemeral per-MR review environments constantly rotating through, that's
+    // effectively unbounded growth (the direct cause of an eventual "Java heap space" OOM,
+    // regardless of how much heap is available - it only changes how long it takes).
+    //
+    // computeIfPresent keeps this safe against accept() concurrently creating the SAME key
+    // (ConcurrentHashMap serializes compute-family/putIfAbsent calls per key); accept()'s
+    // get()-then-add() on an already-retrieved batch reference isn't covered by that, so a record
+    // arriving in the exact instant a now-empty batch is being pruned could still be lost - rare,
+    // and far preferable to the guaranteed eventual OOM this replaces.
+    private void pruneEmptyBatches() {
+        auditReports.keySet().forEach(key ->
+                auditReports.computeIfPresent(key, (k, batch) -> batch.isEmpty() ? null : batch));
     }
 }
