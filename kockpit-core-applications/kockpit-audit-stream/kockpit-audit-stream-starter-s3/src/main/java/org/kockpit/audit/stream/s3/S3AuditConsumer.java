@@ -89,7 +89,7 @@ public class S3AuditConsumer {
             eventPublisher.publishEvent(new S3WriteEvent(this, s3Key, batch, bucketName));
             log.trace("Wrote {} audit reports to s3://{}/{}", batch.size(), bucketName, s3Key);
         } catch (Exception e) {
-            log.error("❌ Failed to write {} audit reports to s3://{}/{}: {}", batch.size(), bucketName, s3Client, e.getMessage(), e);
+            log.error("❌ Failed to write {} audit reports to s3://{}/{}: {}", batch.size(), bucketName, prefix, e.getMessage(), e);
         }
     }
 
