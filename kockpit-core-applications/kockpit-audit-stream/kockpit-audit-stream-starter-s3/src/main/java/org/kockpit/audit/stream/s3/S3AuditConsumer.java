@@ -64,15 +64,27 @@ public class S3AuditConsumer {
         events.stream().map(bytes -> new S3Record(bytes, S3Key.read(bytes)))
                 .collect(Collectors.groupingBy(S3Record::getS3Key))
                 .forEach((k, v) -> {
-                    auditReports.putIfAbsent(k, new S3Batch());
-                    S3Batch s3Batch = auditReports.get(k);
                     for (S3Record record : v) {
+                        // Reading-the-current-batch and adding to it must happen as one atomic
+                        // step against the map, not get()-then-add() - otherwise a concurrent
+                        // swapForFreshBatch() (flushKey) or pruneEmptyBatches() compute() on this
+                        // same key could run in between, and this add() would either land in an
+                        // orphaned batch nobody will ever poll again (silent data loss) or NPE on
+                        // a batch pruneEmptyBatches just removed. compute() serializes against
+                        // both, since ConcurrentHashMap never interleaves compute-family calls
+                        // for the same key.
+                        int[] sizeAfterAdd = new int[1];
+                        auditReports.compute(k, (kk, batch) -> {
+                            S3Batch b = batch != null ? batch : new S3Batch();
+                            sizeAfterAdd[0] = b.add(record);
+                            return b;
+                        });
                         // Flushing the moment a key's queue crosses a batchSize boundary (not
                         // just on the fixed schedule) bounds how large it can grow between ticks
                         // for a hot key outpacing the scheduler - the unbounded-growth OOM this
                         // consumer hit before was exactly that, not stale keys (which
                         // pruneEmptyBatches already handles).
-                        if (s3Batch.add(record) % batchSize == 0) {
+                        if (sizeAfterAdd[0] % batchSize == 0) {
                             flushKey(k);
                         }
                     }
