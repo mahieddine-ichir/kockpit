@@ -1,5 +1,6 @@
 package org.kockpit.audit.stream.s3;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.kockpit.audit.stream.api.AuditStreamJson;
 import tools.jackson.databind.DeserializationFeature;
@@ -25,10 +26,19 @@ public class S3Key {
     // captured in the same decompress+parse pass as domain/env/appId, instead of a second one.
     private Integer ttl;
 
+    // Also piggybacked: some producers (see S3OffloadingRecordCompressor upstream) already write
+    // the full report - audits included - to their own S3 object before ever publishing to
+    // Kinesis, and set this to that object's key. When present, this consumer must not archive
+    // the (root-only, audits-stripped) wire record into its own batch and overwrite it - that
+    // would replace the only pointer to the full record with one pointing at a strictly worse
+    // copy. Named to not collide with this class's own identity as "the grouping key".
+    @JsonProperty("s3Key")
+    private String existingS3Key;
+
     // Wire records may be gzip-compressed (see AuditStreamJson); the S3 archive keeps the
     // original bytes as-is for byte-compatibility, but the key still needs to be parsed from
     // decompressed JSON.
-    static S3Key read(byte[] data) {
+    public static S3Key read(byte[] data) {
         try {
             return MAPPER.readValue(AuditStreamJson.read(data), S3Key.class);
         } catch (IOException e) {

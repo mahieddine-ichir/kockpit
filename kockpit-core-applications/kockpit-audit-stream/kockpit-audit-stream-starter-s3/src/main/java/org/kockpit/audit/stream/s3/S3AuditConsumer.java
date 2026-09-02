@@ -62,6 +62,12 @@ public class S3AuditConsumer {
 
     public void accept(List<byte[]> events) {
         events.stream().map(bytes -> new S3Record(bytes, S3Key.read(bytes)))
+                // Some producers already offload the full report to their own S3 object before
+                // publishing to Kinesis (see S3Key.existingS3Key) - archiving it again here would
+                // both waste a write and, worse, give a caller (e.g. OpensearchS3AuditConsumer)
+                // a reason to overwrite that record's only pointer to its full self with one
+                // pointing at this consumer's strictly-worse (root-only) archived copy.
+                .filter(record -> record.getS3Key().getExistingS3Key() == null)
                 .collect(Collectors.groupingBy(S3Record::getS3Key))
                 .forEach((k, v) -> {
                     for (S3Record record : v) {
