@@ -37,9 +37,21 @@ variable "ecs_cluster_name" {
   type        = string
 }
 
-variable "load_balancer_arn" {
-  description = "ARN of the load balancer to create the HTTP listener on"
+variable "aws_lb_listener_arn" {
+  description = "ARN of the existing ALB listener the path-based routing rule attaches to"
   type        = string
+}
+
+variable "path_routing_patterns" {
+  description = "ALB listener rule path patterns routed to this app"
+  type        = list(string)
+  default     = []
+}
+
+variable "listener_rule_priority" {
+  description = "Priority for the ALB listener rule this module creates. Leave unset (null) to let AWS auto-assign the lowest available priority."
+  type        = number
+  default     = null
 }
 
 variable "lb_security_group_id" {
