@@ -67,7 +67,14 @@ public class S3AuditConsumer {
                     auditReports.putIfAbsent(k, new S3Batch());
                     S3Batch s3Batch = auditReports.get(k);
                     for (S3Record record : v) {
-                        s3Batch.add(record);
+                        // Flushing the moment a key's queue crosses a batchSize boundary (not
+                        // just on the fixed schedule) bounds how large it can grow between ticks
+                        // for a hot key outpacing the scheduler - the unbounded-growth OOM this
+                        // consumer hit before was exactly that, not stale keys (which
+                        // pruneEmptyBatches already handles).
+                        if (s3Batch.add(record) % batchSize == 0) {
+                            flushKey(k);
+                        }
                     }
                 });
     }
@@ -149,26 +156,34 @@ public class S3AuditConsumer {
             timeUnit = TimeUnit.MILLISECONDS)
     void flush() {
         for (S3Key key : auditReports.keySet()) {
-            S3Batch oldBatch = swapForFreshBatch(key);
-            if (oldBatch == null) {
-                continue;
-            }
-            // Cap this cycle's write at batchSize, same as before - anything beyond that stays
-            // queued for the next cycle rather than growing one S3 object without bound.
-            List<S3Record> batch = new ArrayList<>();
-            S3Record record;
-            for (int i = 0; i < batchSize && (record = oldBatch.poll()) != null; i++) {
-                batch.add(record);
-            }
-            // Requeue any leftover beyond batchSize onto whatever's currently there for this key -
-            // may already hold records accept() added after the swap below.
-            S3Record leftover;
-            while ((leftover = oldBatch.poll()) != null) {
-                auditReports.computeIfAbsent(key, k -> new S3Batch()).add(leftover);
-            }
-            write(batch, key);
+            flushKey(key);
         }
         pruneEmptyBatches();
+    }
+
+    // Swaps out whatever's queued for this key and writes up to batchSize of it, requeuing any
+    // leftover. Called both for every key on the fixed schedule, and inline from accept() the
+    // instant a key's queue crosses a batchSize boundary, so a hot key can't outgrow batchSize
+    // between ticks.
+    private void flushKey(S3Key key) {
+        S3Batch oldBatch = swapForFreshBatch(key);
+        if (oldBatch == null) {
+            return;
+        }
+        // Cap this write at batchSize, same as before - anything beyond that stays queued
+        // (requeued below) rather than growing one S3 object without bound.
+        List<S3Record> batch = new ArrayList<>();
+        S3Record record;
+        for (int i = 0; i < batchSize && (record = oldBatch.poll()) != null; i++) {
+            batch.add(record);
+        }
+        // Requeue any leftover beyond batchSize onto whatever's currently there for this key -
+        // may already hold records accept() added after the swap below.
+        S3Record leftover;
+        while ((leftover = oldBatch.poll()) != null) {
+            auditReports.computeIfAbsent(key, k -> new S3Batch()).add(leftover);
+        }
+        write(batch, key);
     }
 
     // Atomically replaces this key's batch with a fresh empty one and returns the batch being
