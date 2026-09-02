@@ -87,11 +87,10 @@ public class OpensearchIndexer {
             // The index template maps @timestamp as date/epoch_millis specifically (unlike
             // start/end, which accept the default date format) - AuditReport has no @timestamp
             // field of its own, so it's never populated by valueToTree() and must be added here,
-            // as a Long, not the Instant's default ISO-8601 serialization.
-            Instant timestamp = auditReport.getStart() != null ? auditReport.getStart() : auditReport.getEnd();
-            if (timestamp != null) {
-                objectNode.put("@timestamp", timestamp.toEpochMilli());
-            }
+            // as a Long, not the Instant's default ISO-8601 serialization. Set to indexing time
+            // (not start/end, the report's own event time) so it reflects when this consumer
+            // actually wrote the document.
+            objectNode.put("@timestamp", Instant.now().toEpochMilli());
             if (wrapIndexedKeyValues) {
                 wrapIndexedKeyValues(objectNode);
             }
