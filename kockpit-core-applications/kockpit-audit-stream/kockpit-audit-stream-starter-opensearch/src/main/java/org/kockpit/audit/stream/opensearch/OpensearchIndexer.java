@@ -13,6 +13,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 
+import java.time.Instant;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -82,8 +83,18 @@ public class OpensearchIndexer {
     private BulkOperation toBulkOperation(AuditReport auditReport, String writeAlias) {
         String documentId = isNull(auditReport.getId()) ? auditReport.getRequestId() : auditReport.getId();
         JsonNode jsonNode = objectMapper.valueToTree(auditReport);
-        if (wrapIndexedKeyValues && jsonNode instanceof ObjectNode objectNode) {
-            wrapIndexedKeyValues(objectNode);
+        if (jsonNode instanceof ObjectNode objectNode) {
+            // The index template maps @timestamp as date/epoch_millis specifically (unlike
+            // start/end, which accept the default date format) - AuditReport has no @timestamp
+            // field of its own, so it's never populated by valueToTree() and must be added here,
+            // as a Long, not the Instant's default ISO-8601 serialization.
+            Instant timestamp = auditReport.getStart() != null ? auditReport.getStart() : auditReport.getEnd();
+            if (timestamp != null) {
+                objectNode.put("@timestamp", timestamp.toEpochMilli());
+            }
+            if (wrapIndexedKeyValues) {
+                wrapIndexedKeyValues(objectNode);
+            }
         }
 
         return BulkOperation.of(op -> op
