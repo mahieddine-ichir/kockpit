@@ -47,11 +47,13 @@ module "ecs_app" {
   # No Cloud Map consumers today; the service is only reached via the ALB.
   enable_service_discovery = false
 
-  enable_load_balancer   = true
-  aws_lb_listener_arn    = var.aws_lb_listener_arn
-  path_routing_patterns  = var.path_routing_patterns
-  listener_rule_priority = var.listener_rule_priority
-  lb_security_group_id   = var.lb_security_group_id
+  # This module owns its own dedicated ALB listener (below) rather than a
+  # path-based rule on an existing shared listener, so let ecs-app-module
+  # manage only the target group and security-group wiring, not a listener
+  # rule of its own.
+  enable_load_balancer = true
+  create_listener_rule = false
+  lb_security_group_id = var.lb_security_group_id
 
   # Task
   task_image_url = local.container_image
@@ -111,4 +113,34 @@ resource "aws_iam_role_policy" "s3_access_policy" {
       ] : []
     )
   })
+}
+
+data "aws_ec2_managed_prefix_list" "cloudfront" {
+  name = "com.amazonaws.global.cloudfront.origin-facing"
+}
+
+resource "aws_security_group_rule" "lb_http_from_cloudfront" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  prefix_list_ids   = [data.aws_ec2_managed_prefix_list.cloudfront.id]
+  security_group_id = var.lb_security_group_id
+  description       = "Allow CloudFront to reach ALB on port 80"
+}
+
+# Dedicated HTTP listener for this backend service. Unauthenticated at the
+# ALB by design: access control is enforced upstream, at the CloudFront
+# distribution + Lambda@Edge in the kockpit-console module, not here.
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = var.load_balancer_arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = module.ecs_app.aws_lb_target_group.arn
+  }
+
+  tags = var.tags
 }

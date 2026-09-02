@@ -3,24 +3,22 @@
 This Terraform module creates an ECS Fargate service for the Kockpit Console Backend.
 
 It is a thin wrapper around [`ecs-app-module`](../ecs-app-module), which provides the ECS
-task/service, ALB target group + listener rule, security group, IAM roles (task + task execution), and
-CloudWatch log group. This module adds on top: the S3 buckets and their IAM policy, and the
-Kockpit/OpenSearch-flavored environment variables.
+task/service, ALB target group, security group, IAM roles (task + task execution), and CloudWatch log
+group. This module adds on top: the S3 buckets and their IAM policy, the dedicated HTTP listener, the
+CloudFront-to-ALB security group rule, and the Kockpit/OpenSearch-flavored environment variables.
 
-**Auth**: this module attaches to an existing ALB listener via a path-based routing rule and does not
-add any authentication of its own at the ALB — traffic matching `path_routing_patterns` on
-`aws_lb_listener_arn` is forwarded unauthenticated to this service's target group. If this backend must
-not be reachable directly at that listener, add auth (e.g. a Cognito-auth listener rule, as
-`ecs-app-module`'s `create_cognito_auth_listener_rule` supports) or keep upstream access control (e.g.
-CloudFront + Lambda@Edge in front of the listener) in sync with this rule.
+**Auth**: this module does not authenticate traffic at the ALB — the listener it creates is a plain
+HTTP forward, unauthenticated. Access control is enforced upstream, at the CloudFront distribution +
+Lambda@Edge in the `kockpit-console` module that fronts this backend. Don't add ALB-level auth here
+without also reconciling it with that layer.
 
 ## Features
 
 - **Kockpit Spring Boot Application**: Pre-configured for Kockpit console backend with OpenSearch integration
 - **Multi-Architecture Support**: Supports both ARM64 and X86_64 CPU architectures
 - **S3 Integration**: Configures IAM permissions for Kockpit data and manifests buckets
-- **Load Balancer Integration**: Path-based ALB listener rule on an existing (shared) listener, forwarding
-  matching traffic to this service's target group
+- **Load Balancer Integration**: Creates a dedicated ALB HTTP listener forwarding all traffic to this
+  service's target group (not a path-based rule on a shared listener)
 - **Health Check Configuration**: Supports separate health check ports (e.g., Spring Boot management port)
 - **Environment-Aware**: Configurable environments (dev, staging, production)
 - **Security**: Security group ingress from the ALB, scoped to the container/health-check ports
@@ -38,8 +36,7 @@ module "kockpit_backend" {
   vpc_id                = "vpc-xxxxxxxxx"
   private_subnet_ids    = ["subnet-xxxxxxxxx", "subnet-yyyyyyyyy"]
   ecs_cluster_name      = "my-ecs-cluster"
-  aws_lb_listener_arn   = "arn:aws:elasticloadbalancing:region:account:listener/app/my-alb/xxxxxxxxx/yyyyyyyyy"
-  path_routing_patterns = ["/api/*"]
+  load_balancer_arn     = "arn:aws:elasticloadbalancing:region:account:loadbalancer/app/my-alb/xxxxxxxxx"
   lb_security_group_id  = "sg-xxxxxxxxx"
 
   # Kockpit configuration
@@ -86,10 +83,8 @@ module "kockpit_backend" {
 | vpc_id | ID of the existing VPC | `string` | n/a | yes |
 | private_subnet_ids | IDs of the private subnets where ECS tasks will run | `list(string)` | n/a | yes |
 | ecs_cluster_name | Name of the existing ECS cluster | `string` | n/a | yes |
-| aws_lb_listener_arn | ARN of the existing ALB listener the path-based routing rule attaches to | `string` | n/a | yes |
+| load_balancer_arn | ARN of the load balancer this module creates its HTTP listener on | `string` | n/a | yes |
 | lb_security_group_id | Security group ID of the load balancer | `string` | n/a | yes |
-| path_routing_patterns | ALB listener rule path patterns routed to this app | `list(string)` | `[]` | no |
-| listener_rule_priority | Priority for the ALB listener rule this module creates | `number` | `null` | no |
 | opensearch_endpoints | OpenSearch cluster endpoints | `string` | n/a | yes |
 | kockpit_data_s3_bucket | S3 bucket for Kockpit data storage | `string` | n/a | yes |
 | kockpit_manifests_s3_bucket | S3 bucket for Kockpit manifests storage | `string` | n/a | yes |
@@ -138,19 +133,21 @@ The module uses a fixed container image: `ghcr.io/mahieddine-ichir/kockpit/kockp
 
 The ECS task's security group (created by `ecs-app-module`) allows inbound traffic from
 `lb_security_group_id` on `container_port`, plus `health_check_port` when it differs from
-`container_port`.
+`container_port`. This module additionally opens `lb_security_group_id` to CloudFront's managed
+prefix list on port 80, so the ALB can be reached from the CloudFront distribution in front of it.
 
-Note: `ecs-app-module` does not add egress rules onto the load balancer's own security group — it
-relies on that security group already permitting outbound traffic (the common default for an ALB
-security group). If `lb_security_group_id` has restrictive egress, add an explicit egress rule to it
-separately.
+Note: unlike the bidirectional rules this module used to create directly, `ecs-app-module` does not
+add egress rules onto the load balancer's own security group — it relies on that security group
+already permitting outbound traffic (the common default for an ALB security group). If
+`lb_security_group_id` has restrictive egress, add an explicit egress rule to it separately.
 
 ## Load Balancer Integration
 
-The module attaches to an existing ALB listener (`aws_lb_listener_arn`) via a path-based routing rule
-for `path_routing_patterns`, forwarding matching traffic to this service's target group — it does not
-create its own listener. Multiple backends can share the same listener this way, each with its own
-`path_routing_patterns` and `listener_rule_priority`.
+The module creates its own dedicated HTTP listener (port 80) on `load_balancer_arn`, whose default
+action forwards all traffic to this service's target group — it is not a path-based rule on a shared
+listener. If you need path-based routing to multiple backends on the same ALB, put this module behind
+its own listener (as it does today) or behind a separate, purpose-built listener rule outside this
+module.
 
 ## Architecture
 
