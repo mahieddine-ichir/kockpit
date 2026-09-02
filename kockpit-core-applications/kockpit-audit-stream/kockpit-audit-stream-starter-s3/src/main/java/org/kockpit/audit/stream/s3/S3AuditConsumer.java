@@ -148,18 +148,42 @@ public class S3AuditConsumer {
             fixedDelayString = "${kockpit.audit.stream.s3.scheduler_ms:5000}",
             timeUnit = TimeUnit.MILLISECONDS)
     void flush() {
-        for (Map.Entry<S3Key, S3Batch> entry : auditReports.entrySet()) {
-            if (entry.getValue().isEmpty()) {
+        for (S3Key key : auditReports.keySet()) {
+            S3Batch oldBatch = swapForFreshBatch(key);
+            if (oldBatch == null) {
                 continue;
             }
+            // Cap this cycle's write at batchSize, same as before - anything beyond that stays
+            // queued for the next cycle rather than growing one S3 object without bound.
             List<S3Record> batch = new ArrayList<>();
-            S3Record report;
-            for (int i = 0; i < batchSize && (report = entry.getValue().poll()) != null; i++) {
-                batch.add(report);
+            S3Record record;
+            for (int i = 0; i < batchSize && (record = oldBatch.poll()) != null; i++) {
+                batch.add(record);
             }
-            write(batch, entry.getKey());
+            // Requeue any leftover beyond batchSize onto whatever's currently there for this key -
+            // may already hold records accept() added after the swap below.
+            S3Record leftover;
+            while ((leftover = oldBatch.poll()) != null) {
+                auditReports.computeIfAbsent(key, k -> new S3Batch()).add(leftover);
+            }
+            write(batch, key);
         }
         pruneEmptyBatches();
+    }
+
+    // Atomically replaces this key's batch with a fresh empty one and returns the batch being
+    // replaced, exclusively ours from this point on - any accept() call that already holds a
+    // reference to it (mid-add) still completes safely (ConcurrentLinkedQueue is thread-safe for
+    // that), and any accept() call after this swap gets the new instance instead. Closes the
+    // accept()/flush() race that a drain-in-place poll() loop has: no window where a record can
+    // land in a batch this cycle has already decided is empty and is about to prune.
+    private S3Batch swapForFreshBatch(S3Key key) {
+        S3Batch[] previous = new S3Batch[1];
+        auditReports.compute(key, (k, current) -> {
+            previous[0] = current;
+            return new S3Batch();
+        });
+        return (previous[0] == null || previous[0].isEmpty()) ? null : previous[0];
     }
 
     // Without this, auditReports grows without bound for the lifetime of the process - one entry
@@ -167,12 +191,6 @@ public class S3AuditConsumer {
     // stream with ephemeral per-MR review environments constantly rotating through, that's
     // effectively unbounded growth (the direct cause of an eventual "Java heap space" OOM,
     // regardless of how much heap is available - it only changes how long it takes).
-    //
-    // computeIfPresent keeps this safe against accept() concurrently creating the SAME key
-    // (ConcurrentHashMap serializes compute-family/putIfAbsent calls per key); accept()'s
-    // get()-then-add() on an already-retrieved batch reference isn't covered by that, so a record
-    // arriving in the exact instant a now-empty batch is being pruned could still be lost - rare,
-    // and far preferable to the guaranteed eventual OOM this replaces.
     private void pruneEmptyBatches() {
         auditReports.keySet().forEach(key ->
                 auditReports.computeIfPresent(key, (k, batch) -> batch.isEmpty() ? null : batch));
