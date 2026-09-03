@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
@@ -54,6 +55,19 @@ public class S3AuditConsumer {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    // Backpressure limit: how many bytes of not-yet-written records this consumer will hold in
+    // auditReports before accept() starts rejecting new ones outright (see accept()/bufferedBytes
+    // below) instead of piling more on top - the actual OOM risk when S3 or OpenSearch falls
+    // behind the ingest rate, since neither the 5s scheduled flush() nor an individual key
+    // crossing batchSize bounds how many *distinct* keys can be buffered at once.
+    private final long maxBufferedBytes;
+
+    // Approximates the heap held by auditReports (record bytes only, not the batch/map
+    // bookkeeping) without walking the whole map on every accept() call. Incremented as records
+    // are added in accept(), decremented once a written batch is discarded in flushKey() - never
+    // for the leftover records flushKey() requeues, since those stay resident.
+    private final AtomicLong bufferedBytes = new AtomicLong();
+
     @PostConstruct
     public void start() {
         log.info("✅ S3 Audit consumer started, writing batches to bucket {}", bucketName);
@@ -61,6 +75,17 @@ public class S3AuditConsumer {
     }
 
     public void accept(List<byte[]> events) {
+        // All-or-nothing: reject the whole incoming batch rather than only part of it. A partial
+        // accept would leave the caller with nothing sane to do about checkpointing - it can only
+        // checkpoint past a batch it fully accepted, or not checkpoint (redeliver) one it fully
+        // rejected, never "checkpoint everything except the records I silently dropped".
+        long currentBytes = bufferedBytes.get();
+        if (currentBytes >= maxBufferedBytes) {
+            log.warn("⚠️ S3 audit consumer buffer full ({} bytes buffered, limit {}) - rejecting {} record(s), " +
+                            "not checkpointing this batch", currentBytes, maxBufferedBytes, events.size());
+            throw new S3ConsumerBackpressureException(currentBytes, maxBufferedBytes);
+        }
+
         events.stream().map(bytes -> new S3Record(bytes, S3Key.read(bytes)))
                 // Some producers already offload the full report to their own S3 object before
                 // publishing to Kinesis (see S3Key.existingS3Key) - archiving it again here would
@@ -85,6 +110,7 @@ public class S3AuditConsumer {
                             sizeAfterAdd[0] = b.add(record);
                             return b;
                         });
+                        bufferedBytes.addAndGet(record.getData().length);
                         // Flushing the moment a key's queue crosses a batchSize boundary (not
                         // just on the fixed schedule) bounds how large it can grow between ticks
                         // for a hot key outpacing the scheduler - the unbounded-growth OOM this
@@ -202,6 +228,10 @@ public class S3AuditConsumer {
             auditReports.computeIfAbsent(key, k -> new S3Batch()).add(leftover);
         }
         write(batch, key);
+        // Freed regardless of whether write() actually succeeded - it already catches and only
+        // logs its own failures (see write()), so these bytes are gone from auditReports (and,
+        // on failure, from anywhere at all) either way.
+        bufferedBytes.addAndGet(-batch.stream().mapToLong(r -> r.getData().length).sum());
     }
 
     // Atomically replaces this key's batch with a fresh empty one and returns the batch being

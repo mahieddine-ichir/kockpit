@@ -77,9 +77,13 @@ public class S3AuditConsumerConfiguration {
             @Value("${kockpit.audit.stream.batch_size:50}") Integer batchSize,
             @Value("${kockpit.audit.stream.ttl_default_in_days:1}") Integer ttlDefaultInDays,
             @Value("${kockpit.audit.stream.s3.allowed_ttl_days:1,7,14,30,60,90,120}") List<Integer> allowedTtlDays,
-            ApplicationEventPublisher eventPublisher
+            ApplicationEventPublisher eventPublisher,
+            // Default (256 MiB) is a starting point, not a measured value - size it to the
+            // container's heap and how much headroom the rest of the app (OpenSearch bulk
+            // requests, Kinesis/KCL buffers, ...) needs alongside it.
+            @Value("${kockpit.audit.stream.s3.max_buffered_bytes:268435456}") long maxBufferedBytes
     ) {
-        return new S3AuditConsumer(auditS3Client, bucketName, batchSize, ttlDefaultInDays, allowedTtlDays, eventPublisher);
+        return new S3AuditConsumer(auditS3Client, bucketName, batchSize, ttlDefaultInDays, allowedTtlDays, eventPublisher, maxBufferedBytes);
     }
 
     // Gated on kockpit.audit.stream.consumer=s3 so that composing this starter with others (e.g.
