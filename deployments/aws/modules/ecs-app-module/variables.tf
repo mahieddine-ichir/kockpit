@@ -198,6 +198,11 @@ variable "service_healthcheck_unhealthy_threshold" {
 variable "service_healthcheck_timeout" {
   default = 8
 }
+variable "container_healthcheck_enabled" {
+  description = "Adds a Docker-style HEALTHCHECK to the container definition (ECS 'Health status' on the Tasks tab). Off by default since it's a behavior change: a failing check causes ECS to mark the task UNHEALTHY and can trigger replacement, on top of the existing ALB target group / service discovery health checks."
+  type        = bool
+  default     = false
+}
 variable "service_launch_type" {
   default = "FARGATE"
 }

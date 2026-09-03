@@ -82,6 +82,13 @@ resource "aws_ecs_task_definition" "taskdef_ec2" {
           }
         ] : []
       )
+      healthCheck = var.container_healthcheck_enabled ? {
+        command     = ["CMD-SHELL", "curl -f http://localhost:${local.healthcheck_port_number}${var.service_healthcheck_path} || exit 1"]
+        interval    = var.service_healthcheck_interval
+        timeout     = var.service_healthcheck_timeout
+        retries     = 3
+        startPeriod = 60
+      } : null
       volumesFrom = []
       cpu         = 0
       secrets     = local.secrets
@@ -143,6 +150,13 @@ resource "aws_ecs_task_definition" "taskdef_fargate" {
           }
         ] : []
       )
+      healthCheck = var.container_healthcheck_enabled ? {
+        command     = ["CMD-SHELL", "curl -f http://localhost:${local.healthcheck_port_number}${var.service_healthcheck_path} || exit 1"]
+        interval    = var.service_healthcheck_interval
+        timeout     = var.service_healthcheck_timeout
+        retries     = 3
+        startPeriod = 60
+      } : null
       mountPoints = []
       volumesFrom = []
       cpu         = 0
