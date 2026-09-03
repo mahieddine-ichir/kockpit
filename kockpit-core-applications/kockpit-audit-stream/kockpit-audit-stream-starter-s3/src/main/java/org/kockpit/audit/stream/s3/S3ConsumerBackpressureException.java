@@ -1,17 +1,20 @@
 package org.kockpit.audit.stream.s3;
 
 /**
- * Thrown by {@link S3AuditConsumer#accept} when its in-memory buffer is already at or over its
- * configured byte limit, instead of accepting (and buffering) more records. Deliberately
- * unchecked and left to propagate: every {@code AuditConsumer} caller (EFO/non-EFO Kinesis
- * record processors) only checkpoints/advances its cursor after {@code accept} returns
- * successfully, so letting this escape is what makes the caller redeliver the rejected batch
- * later - once S3/OpenSearch have drained the buffer - instead of losing it.
+ * Thrown by {@link S3AuditConsumer#accept} only if the calling thread is interrupted while parked
+ * in {@code awaitBufferRoom()} waiting for its in-memory buffer to drain back under its configured
+ * byte limit - never for the wait itself, which blocks (not rejects) callers until there's room.
+ * Blocking, not rejecting-then-moving-on, is what actually backpressures a push-based Kinesis EFO
+ * subscription: not returning from {@code accept} is what holds up the caller's next
+ * {@code subscription.request(1)} and checkpoint, since the subscription keeps advancing to new
+ * records (and KCL's checkpoint ceiling keeps advancing with it) regardless of whether a thrown
+ * exception is caught somewhere - an exception on every call would just let it race ahead and
+ * silently skip whatever was rejected in between.
  */
 public class S3ConsumerBackpressureException extends RuntimeException {
 
-    public S3ConsumerBackpressureException(long bufferedBytes, long maxBufferedBytes) {
-        super("S3 audit consumer buffer at %d bytes (limit %d) - rejecting new records until S3/OpenSearch drain it"
-                .formatted(bufferedBytes, maxBufferedBytes));
+    public S3ConsumerBackpressureException(long bufferedBytes, long maxBufferedBytes, InterruptedException cause) {
+        super("Interrupted while waiting for S3 audit consumer buffer to drain (%d bytes buffered, limit %d)"
+                .formatted(bufferedBytes, maxBufferedBytes), cause);
     }
 }
