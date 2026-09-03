@@ -36,7 +36,7 @@ kockpit:
         topics: audits
       kinesis:
         efo:
-          consumer_name: ${spring.application.name}
+          consumer_name: ${KINESIS_CONSUMER_NAME:${spring.application.name}}
         stream_name: ${KINESIS_STREAM_NAME}
         application_name: ${KINESIS_APP_NAME:${kockpit.appId}}
         timeout:

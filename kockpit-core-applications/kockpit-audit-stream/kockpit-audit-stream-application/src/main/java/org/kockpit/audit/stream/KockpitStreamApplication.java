@@ -4,12 +4,10 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumer;
-import org.kockpit.audit.stream.api.AuditConsumerEvent;
 import org.kockpit.audit.stream.console.ConsoleLogger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.CollectionUtils;
 
@@ -18,7 +16,7 @@ import java.util.List;
 @SpringBootApplication
 @RequiredArgsConstructor
 @Slf4j
-public class KockpitStreamApplication implements ApplicationListener<AuditConsumerEvent> {
+public class KockpitStreamApplication {
 
     private final List<AuditConsumer> consumerList;
 
@@ -36,20 +34,7 @@ public class KockpitStreamApplication implements ApplicationListener<AuditConsum
         }
     }
 
-    @Override
-    public void onApplicationEvent(AuditConsumerEvent event) {
-        consumerList.forEach(consumer -> consumer.accept(event.getData()));
-    }
-
-    @Override
-    public boolean supportsAsyncExecution() {
-        return false;
-    }
-
-    @ConditionalOnProperty(
-            value = "kockpit.audit.stream.trace",
-            havingValue = "true"
-    )
+    @ConditionalOnProperty(value = "kockpit.audit.stream.trace", havingValue = "true")
     @Bean
     ConsoleLogger consoleLogger() {
         return new ConsoleLogger();

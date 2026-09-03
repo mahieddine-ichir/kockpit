@@ -2,16 +2,13 @@ package org.kockpit.audit.stream.kinesis.efo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.kockpit.audit.stream.api.AuditConsumerEvent;
-import org.kockpit.audit.stream.api.AuditStreamJson;
-import org.springframework.context.ApplicationEventPublisher;
+import org.kockpit.audit.stream.api.AuditConsumer;
 import software.amazon.kinesis.exceptions.InvalidStateException;
 import software.amazon.kinesis.exceptions.ShutdownException;
 import software.amazon.kinesis.lifecycle.events.*;
 import software.amazon.kinesis.processor.RecordProcessorCheckpointer;
 import software.amazon.kinesis.processor.ShardRecordProcessor;
 import software.amazon.kinesis.retrieval.KinesisClientRecord;
-import tools.jackson.databind.ObjectMapper;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -28,9 +25,17 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @RequiredArgsConstructor
 class AuditRecordProcessor implements ShardRecordProcessor {
 
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final List<AuditConsumer> auditConsumers;
+
+    // Checkpointing is a synchronous DynamoDB write on the record-processing thread (see
+    // ShardRecordProcessorCheckpointer) - doing it after every single processRecords() call is
+    // safe but caps throughput/cost at high volume. This lets it checkpoint every N batches
+    // instead; 1 (the default) preserves the original every-batch behavior.
+    private final int checkpointIntervalBatches;
 
     private String shardId;
+
+    private int batchesSinceCheckpoint = 0;
 
     @Override
     public void initialize(InitializationInput initializationInput) {
@@ -49,8 +54,13 @@ class AuditRecordProcessor implements ShardRecordProcessor {
             List<byte[]> list = records.stream().map(KinesisClientRecord::data)
                     .map(AuditRecordProcessor::toByteArray).toList();
 
-            applicationEventPublisher.publishEvent(new AuditConsumerEvent(this, list));
-            processRecordsInput.checkpointer().checkpoint();
+            auditConsumers.forEach(auditConsumer -> auditConsumer.accept(list));
+
+            batchesSinceCheckpoint++;
+            if (batchesSinceCheckpoint >= Math.max(1, checkpointIntervalBatches)) {
+                processRecordsInput.checkpointer().checkpoint();
+                batchesSinceCheckpoint = 0;
+            }
 
         } catch (InvalidStateException | ShutdownException e) {
             log.error("❌ Exception while checkpointing at shard end for {}: {}", shardId, e.getMessage(), e);
