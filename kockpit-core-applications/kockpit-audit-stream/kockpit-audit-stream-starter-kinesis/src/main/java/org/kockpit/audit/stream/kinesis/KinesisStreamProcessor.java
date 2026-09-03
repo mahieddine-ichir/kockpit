@@ -2,10 +2,9 @@ package org.kockpit.audit.stream.kinesis;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.kockpit.audit.stream.api.AuditConsumerEvent;
+import org.kockpit.audit.stream.api.AuditConsumer;
 import org.kockpit.audit.stream.kinesis.coordination.DynamoDbShardCoordinator;
 import org.kockpit.audit.stream.kinesis.coordination.LeaseHeartbeatService;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 import software.amazon.awssdk.services.kinesis.model.*;
@@ -30,7 +29,7 @@ public class KinesisStreamProcessor {
 
     private final KclRecordProcessor kclRecordProcessor;
 
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final List<AuditConsumer> auditConsumers;
 
     private final int recordLimit;
 
@@ -160,7 +159,7 @@ public class KinesisStreamProcessor {
                     .map(String::getBytes)
                     .toList();
 
-            applicationEventPublisher.publishEvent(new AuditConsumerEvent(this, list));
+            auditConsumers.forEach(auditConsumer -> auditConsumer.accept(list));
 
             // Update iterator for next read - this is crucial!
             String nextIterator = records.nextShardIterator();

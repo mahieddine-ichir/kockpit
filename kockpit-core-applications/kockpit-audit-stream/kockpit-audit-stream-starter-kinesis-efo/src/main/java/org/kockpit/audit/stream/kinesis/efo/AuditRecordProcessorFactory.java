@@ -2,7 +2,6 @@ package org.kockpit.audit.stream.kinesis.efo;
 
 import lombok.RequiredArgsConstructor;
 import org.kockpit.audit.stream.api.AuditConsumer;
-import org.springframework.context.ApplicationEventPublisher;
 import software.amazon.kinesis.processor.ShardRecordProcessor;
 import software.amazon.kinesis.processor.ShardRecordProcessorFactory;
 

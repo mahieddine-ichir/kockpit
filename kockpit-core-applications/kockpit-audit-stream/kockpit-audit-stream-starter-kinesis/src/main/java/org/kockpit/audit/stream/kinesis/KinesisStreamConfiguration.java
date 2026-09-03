@@ -2,12 +2,12 @@ package org.kockpit.audit.stream.kinesis;
 
 import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.stream.api.AuditConsumer;
 import org.kockpit.audit.stream.kinesis.coordination.DynamoDbShardCoordinator;
 import org.kockpit.audit.stream.kinesis.coordination.LeaseHeartbeatService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -20,6 +20,7 @@ import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 
 import java.net.URI;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 @AutoConfiguration
@@ -151,7 +152,7 @@ public class KinesisStreamConfiguration {
             @Value("${kockpit.audit.stream.kinesis.application_name}") String applicationName,
             @Value("${kockpit.audit.stream.kinesis.record_limit:100}") int recordLimit,
             @Value("${kockpit.audit.stream.kinesis.shard_acquisition_interval_ms:30000}") long shardAcquisitionIntervalMs,
-            ApplicationEventPublisher applicationEventPublisher,
+            List<AuditConsumer> auditConsumers,
             DynamoDbShardCoordinator shardCoordinator,
             LeaseHeartbeatService heartbeatService
     ) {
@@ -160,7 +161,7 @@ public class KinesisStreamConfiguration {
                 streamName,
                 applicationName,
                 new KclRecordProcessor(),
-                applicationEventPublisher,
+                auditConsumers,
                 recordLimit,
                 shardCoordinator,
                 heartbeatService,
