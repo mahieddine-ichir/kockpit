@@ -56,10 +56,10 @@ public class S3AuditConsumer {
     private final ApplicationEventPublisher eventPublisher;
 
     // Backpressure limit: how many bytes of not-yet-written records this consumer will hold in
-    // auditReports before accept() starts rejecting new ones outright (see accept()/bufferedBytes
-    // below) instead of piling more on top - the actual OOM risk when S3 or OpenSearch falls
-    // behind the ingest rate, since neither the 5s scheduled flush() nor an individual key
-    // crossing batchSize bounds how many *distinct* keys can be buffered at once.
+    // auditReports before accept() blocks (see accept()/awaitBufferRoom() below) instead of
+    // piling more on top - the actual OOM risk when S3 or OpenSearch falls behind the ingest
+    // rate, since neither the 5s scheduled flush() nor an individual key crossing batchSize
+    // bounds how many *distinct* keys can be buffered at once.
     private final long maxBufferedBytes;
 
     // Approximates the heap held by auditReports (record bytes only, not the batch/map
@@ -68,6 +68,15 @@ public class S3AuditConsumer {
     // for the leftover records flushKey() requeues, since those stay resident.
     private final AtomicLong bufferedBytes = new AtomicLong();
 
+    // Monitor for awaitBufferRoom()/flushKey() to wait/notify on - separate from bufferedBytes
+    // itself (a lock-free AtomicLong) since a monitor is what wait()/notifyAll() need.
+    private final Object bufferLock = new Object();
+
+    // How long an accept() blocked on a full buffer waits before re-checking and re-logging that
+    // it's still blocked - not a timeout to give up on, just how often to prove it hasn't
+    // deadlocked. A real drain (flushKey()'s notifyAll()) wakes it immediately regardless.
+    private static final long BUFFER_WAIT_POLL_MS = 2000;
+
     @PostConstruct
     public void start() {
         log.info("✅ S3 Audit consumer started, writing batches to bucket {}", bucketName);
@@ -75,16 +84,12 @@ public class S3AuditConsumer {
     }
 
     public void accept(List<byte[]> events) {
-        // All-or-nothing: reject the whole incoming batch rather than only part of it. A partial
-        // accept would leave the caller with nothing sane to do about checkpointing - it can only
-        // checkpoint past a batch it fully accepted, or not checkpoint (redeliver) one it fully
-        // rejected, never "checkpoint everything except the records I silently dropped".
-        long currentBytes = bufferedBytes.get();
-        if (currentBytes >= maxBufferedBytes) {
-            log.warn("⚠️ S3 audit consumer buffer full ({} bytes buffered, limit {}) - rejecting {} record(s), " +
-                            "not checkpointing this batch", currentBytes, maxBufferedBytes, events.size());
-            throw new S3ConsumerBackpressureException(currentBytes, maxBufferedBytes);
-        }
+        // Blocks the caller (an EFO/non-EFO Kinesis record processor, on its own processing
+        // thread) rather than accepting-then-rejecting: for a push-based subscription, an
+        // exception here doesn't stop the subscription from advancing to the next batch of
+        // records regardless - only NOT RETURNING does, since that's what holds up the
+        // subscription's next `request(1)`/checkpoint. See awaitBufferRoom().
+        awaitBufferRoom(events.size());
 
         events.stream().map(bytes -> new S3Record(bytes, S3Key.read(bytes)))
                 // Some producers already offload the full report to their own S3 object before
@@ -121,6 +126,35 @@ public class S3AuditConsumer {
                         }
                     }
                 });
+    }
+
+    // Checked once per accept() call, for the whole incoming batch, not per-record: Kinesis/Kafka
+    // callers can only checkpoint/ack past a batch they fully processed, never "processed all but
+    // the records I silently dropped" - so once we decide to accept, we always accept the whole
+    // thing, even if that pushes bufferedBytes somewhat over maxBufferedBytes (the gate re-engages
+    // on the next call either way).
+    private void awaitBufferRoom(int incomingRecordCount) {
+        synchronized (bufferLock) {
+            long currentBytes = bufferedBytes.get();
+            if (currentBytes < maxBufferedBytes) {
+                return;
+            }
+            log.warn("⚠️ S3 audit consumer buffer full ({} bytes buffered, limit {}) - blocking {} incoming " +
+                    "record(s) until S3/OpenSearch drain it", currentBytes, maxBufferedBytes, incomingRecordCount);
+            while (currentBytes >= maxBufferedBytes) {
+                try {
+                    bufferLock.wait(BUFFER_WAIT_POLL_MS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new S3ConsumerBackpressureException(currentBytes, maxBufferedBytes, e);
+                }
+                currentBytes = bufferedBytes.get();
+                if (currentBytes >= maxBufferedBytes) {
+                    log.warn("⚠️ Still blocked on a full S3 audit consumer buffer ({} bytes buffered, limit {})",
+                            currentBytes, maxBufferedBytes);
+                }
+            }
+        }
     }
 
     private void write(List<S3Record> batch, S3Key prefix) {
@@ -232,6 +266,11 @@ public class S3AuditConsumer {
         // logs its own failures (see write()), so these bytes are gone from auditReports (and,
         // on failure, from anywhere at all) either way.
         bufferedBytes.addAndGet(-batch.stream().mapToLong(r -> r.getData().length).sum());
+        // Wakes any accept() call(s) parked in awaitBufferRoom() so they re-check immediately
+        // rather than waiting out the rest of their poll interval.
+        synchronized (bufferLock) {
+            bufferLock.notifyAll();
+        }
     }
 
     // Atomically replaces this key's batch with a fresh empty one and returns the batch being

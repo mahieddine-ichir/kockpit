@@ -12,8 +12,10 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -22,9 +24,11 @@ import static org.mockito.Mockito.verifyNoInteractions;
 /**
  * accept() is the backpressure gate an OOM (S3 or OpenSearch falling behind ingestion, see
  * onS3Write's synchronous indexing call) needs: once buffered-but-not-yet-written bytes reach
- * maxBufferedBytes, it must reject new records outright, not add them to auditReports, and throw
- * - so that whichever record processor called it (EFO/non-EFO Kinesis) skips its checkpoint and
- * the rejected batch gets redelivered once S3/OpenSearch drain the buffer.
+ * maxBufferedBytes, it must block the caller - not accept-then-reject - until S3/OpenSearch drain
+ * the buffer. Blocking (not returning) is what actually holds up a push-based Kinesis EFO
+ * subscription's next checkpoint; an exception here would just get caught upstream and let the
+ * subscription (and KCL's checkpoint ceiling) advance regardless, silently skipping whatever was
+ * rejected in between.
  */
 class S3AuditConsumerTest {
 
@@ -59,26 +63,54 @@ class S3AuditConsumerTest {
     }
 
     @Test
-    @DisplayName("Une fois la limite d'octets atteinte, les nouveaux records sont rejetes (pas bufferises)")
-    void rejects_new_records_once_the_byte_limit_is_reached() {
+    @DisplayName("Une fois la limite d'octets atteinte, accept() bloque au lieu de rejeter")
+    void blocks_new_records_once_the_byte_limit_is_reached() throws InterruptedException {
         consumer.accept(List.of(record));
 
-        assertThatThrownBy(() -> consumer.accept(List.of(record)))
-                .isInstanceOf(S3ConsumerBackpressureException.class);
+        CountDownLatch started = new CountDownLatch(1);
+        CountDownLatch finished = new CountDownLatch(1);
+        Thread blockedAccept = new Thread(() -> {
+            started.countDown();
+            try {
+                consumer.accept(List.of(record));
+            } catch (S3ConsumerBackpressureException expected) {
+                // Interrupted below to unwind the thread - not the behavior under test here.
+            }
+            finished.countDown();
+        });
+        blockedAccept.start();
+
+        assertThat(started.await(2, TimeUnit.SECONDS)).as("accept() thread started").isTrue();
+        // Still blocked - nothing has drained the buffer yet.
+        assertThat(finished.await(300, TimeUnit.MILLISECONDS)).as("accept() returned too early").isFalse();
+
+        blockedAccept.interrupt();
+        blockedAccept.join(2000);
     }
 
     @Test
-    @DisplayName("Apres un flush qui vide le buffer, de nouveaux records sont a nouveau acceptes")
-    void accepts_again_once_a_flush_drains_the_buffer_below_the_limit() {
+    @DisplayName("Un flush qui vide le buffer debloque un accept() en attente")
+    void a_drain_unblocks_a_waiting_accept() throws InterruptedException {
         consumer.accept(List.of(record));
-        assertThatThrownBy(() -> consumer.accept(List.of(record)))
-                .isInstanceOf(S3ConsumerBackpressureException.class);
 
+        CountDownLatch started = new CountDownLatch(1);
+        CountDownLatch finished = new CountDownLatch(1);
+        Thread blockedAccept = new Thread(() -> {
+            started.countDown();
+            consumer.accept(List.of(record));
+            finished.countDown();
+        });
+        blockedAccept.start();
+
+        assertThat(started.await(2, TimeUnit.SECONDS)).as("accept() thread started").isTrue();
+        assertThat(finished.await(300, TimeUnit.MILLISECONDS)).as("accept() returned too early").isFalse();
+
+        // Drains the first (only buffered) record, freeing exactly enough room for the blocked
+        // second one to proceed.
         consumer.flush();
         verify(s3Client).putObject(any(PutObjectRequest.class), any(RequestBody.class));
 
-        // Rejected above, so never buffered - draining exactly the one accepted record must be
-        // enough to bring the buffer back under the limit and let this succeed.
-        consumer.accept(List.of(record));
+        assertThat(finished.await(2, TimeUnit.SECONDS)).as("blocked accept() unblocked after drain").isTrue();
+        blockedAccept.join(2000);
     }
 }
