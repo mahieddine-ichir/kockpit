@@ -64,6 +64,8 @@ public class OpensearchS3AuditConsumer implements AuditConsumer {
             auditReport.setS3Size(s3Record.getLength());
             auditReport.setS3Offset(s3Record.getOffset());
 
+            auditReport.setAudits(List.of());
+
             return auditReport;
         }).collect(Collectors.groupingBy(IndexMetadata::of))
                 .forEach((indexMetadata, auditReports) -> opensearchIndexer.index(auditReports, indexMetadata));
