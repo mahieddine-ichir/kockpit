@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
+import static org.kockpit.audit.stream.api.AuditStreamJson.mapper;
+
 @AutoConfiguration
 public class OpensearchS3AuditConsumerConfiguration {
 
@@ -28,6 +30,6 @@ public class OpensearchS3AuditConsumerConfiguration {
             S3AuditConsumer s3AuditConsumer,
             OpensearchIndexer opensearchIndexer
     ) {
-        return new OpensearchS3AuditConsumer(s3AuditConsumer, opensearchIndexer, AuditStreamJson.mapper());
+        return new OpensearchS3AuditConsumer(s3AuditConsumer, opensearchIndexer, mapper());
     }
 }
