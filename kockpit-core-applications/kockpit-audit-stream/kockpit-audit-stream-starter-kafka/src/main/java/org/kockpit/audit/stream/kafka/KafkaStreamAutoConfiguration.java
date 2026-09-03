@@ -3,9 +3,9 @@ package org.kockpit.audit.stream.kafka;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.kockpit.audit.stream.api.AuditConsumer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -13,6 +13,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @AutoConfiguration
@@ -20,8 +21,8 @@ import java.util.Map;
 public class KafkaStreamAutoConfiguration {
 
     @Bean
-    KafkaStreamListener kafkaStreamListener(ApplicationEventPublisher applicationEventPublisher) {
-        return new KafkaStreamListener(applicationEventPublisher);
+    KafkaStreamListener kafkaStreamListener(List<AuditConsumer> auditConsumers) {
+        return new KafkaStreamListener(auditConsumers);
     }
 
     @Bean
