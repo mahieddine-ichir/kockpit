@@ -71,3 +71,4 @@ kockpit-backends/kockpit-backend-application/src/main/resources/application-mic.
 
 ### OpenSearch runtime data ###
 /docker/opensearch/data/
+application-accor-dev-efo.yml

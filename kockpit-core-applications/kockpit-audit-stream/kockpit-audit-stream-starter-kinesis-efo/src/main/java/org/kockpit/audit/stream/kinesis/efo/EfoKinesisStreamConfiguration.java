@@ -1,12 +1,12 @@
 package org.kockpit.audit.stream.kinesis.efo;
 
-import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.stream.api.AuditConsumer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.StringUtils;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
@@ -21,6 +21,7 @@ import software.amazon.kinesis.retrieval.fanout.FanOutConfig;
 
 import java.net.URI;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 @AutoConfiguration
@@ -137,7 +138,8 @@ public class EfoKinesisStreamConfiguration {
             @Value("${kockpit.audit.stream.kinesis.application_name}") String applicationName,
             @Value("${kockpit.audit.stream.kinesis.worker_id:#{T(java.util.UUID).randomUUID().toString()}}") String workerId,
             @Value("${kockpit.audit.stream.kinesis.efo.consumer_name}") String consumerName,
-            ApplicationEventPublisher applicationEventPublisher
+            @Value("${kockpit.audit.stream.kinesis.efo.checkpoint_interval:1}") int checkpointIntervalBatches,
+            List<AuditConsumer> auditConsumers
     ) {
         ConfigsBuilder configsBuilder = new ConfigsBuilder(
                 streamName,
@@ -146,7 +148,7 @@ public class EfoKinesisStreamConfiguration {
                 dynamoDbAsyncClient,
                 cloudWatchAsyncClient,
                 workerId,
-                new AuditRecordProcessorFactory(applicationEventPublisher)
+                new AuditRecordProcessorFactory(auditConsumers, checkpointIntervalBatches)
         );
 
         // consumerName is kept distinct from applicationName (which names the lease table and
