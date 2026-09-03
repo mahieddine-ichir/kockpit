@@ -10,13 +10,16 @@ import org.springframework.util.StringUtils;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
+import software.amazon.awssdk.http.Protocol;
+import software.amazon.awssdk.http.nio.netty.Http2Configuration;
+import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 import software.amazon.kinesis.common.ConfigsBuilder;
-import software.amazon.kinesis.common.KinesisClientUtil;
 import software.amazon.kinesis.coordinator.Scheduler;
+import software.amazon.kinesis.lifecycle.LifecycleConfig;
 import software.amazon.kinesis.retrieval.fanout.FanOutConfig;
 
 import java.net.URI;
@@ -36,28 +39,44 @@ public class EfoKinesisStreamConfiguration {
             @Value("${kockpit.audit.stream.kinesis.timeout.socket:30000}") int socketTimeoutMs
     ) {
         Region region = Region.of(awsRegion);
-        // KinesisClientUtil applies the HTTP/2 maxConcurrency/window tuning KCL's Enhanced
-        // Fan-Out retrieval needs; without it, EFO subscriptions can see significantly higher
-        // latency once there are more than a handful of concurrent shard subscriptions.
+
+        // Mirrors KinesisClientUtil.adjustKinesisClientBuilder's HTTP/2 tuning (maxConcurrency,
+        // initial window size, health-check ping) - KCL's Enhanced Fan-Out retrieval needs it,
+        // without it EFO subscriptions see significantly higher latency once there are more than
+        // a handful of concurrent shard subscriptions. Built here instead of delegating to
+        // KinesisClientUtil because that helper doesn't expose a way to also set
+        // readTimeout/writeTimeout, which is what actually governs the
+        // "ShardConsumerSubscriber: onError() ... ReadTimeout" warning KCL logs when a shard's
+        // EFO subscription (a long-lived HTTP/2 stream) goes idle too long - a Netty socket-level
+        // read timeout, not the SDK's apiCallAttemptTimeout (a different, unrelated mechanism for
+        // this kind of streaming call). connectionTimeoutMs/socketTimeoutMs previously fed
+        // ClientOverrideConfiguration.apiCallAttemptTimeout/apiCallTimeout - the wrong knob for
+        // this - and only in the endpoint-override branch below, never for the real-AWS
+        // (production) path.
+        NettyNioAsyncHttpClient.Builder httpClientBuilder = NettyNioAsyncHttpClient.builder()
+                .maxConcurrency(Integer.MAX_VALUE)
+                .http2Configuration(Http2Configuration.builder()
+                        .initialWindowSize(512 * 1024)
+                        .healthCheckPingPeriod(Duration.ofMillis(60_000))
+                        .build())
+                .protocol(Protocol.HTTP2)
+                .connectionTimeout(Duration.ofMillis(connectionTimeoutMs))
+                .readTimeout(Duration.ofMillis(socketTimeoutMs))
+                .writeTimeout(Duration.ofMillis(socketTimeoutMs));
+
+        var builder = KinesisAsyncClient.builder()
+                .region(region)
+                .httpClientBuilder(httpClientBuilder);
+
         return kinesisEndpointOptional
                 .map(String::trim)
                 .filter(StringUtils::hasLength)
                 .map(kinesisEndpoint -> {
                     log.info("➡️ Kinesis (EFO) endpoint: {}", kinesisEndpoint);
-                    ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
-                            .apiCallTimeout(Duration.ofMillis(socketTimeoutMs))
-                            .apiCallAttemptTimeout(Duration.ofMillis(connectionTimeoutMs))
-                            .build();
-
-                    return KinesisClientUtil.createKinesisAsyncClient(KinesisAsyncClient.builder()
-                            .endpointOverride(URI.create(kinesisEndpoint))
-                            .region(region)
-                            .overrideConfiguration(overrideConfig));
+                    return builder.endpointOverride(URI.create(kinesisEndpoint)).build();
                 }).orElseGet(() -> {
                     log.info("➡️ Initialize Kinesis (EFO) client using AWS Credentials");
-                    return KinesisClientUtil.createKinesisAsyncClient(KinesisAsyncClient.builder()
-                            .region(region)
-                            .credentialsProvider(credentialsProvider()));
+                    return builder.credentialsProvider(credentialsProvider()).build();
                 });
     }
 
@@ -139,6 +158,7 @@ public class EfoKinesisStreamConfiguration {
             @Value("${kockpit.audit.stream.kinesis.worker_id:#{T(java.util.UUID).randomUUID().toString()}}") String workerId,
             @Value("${kockpit.audit.stream.kinesis.efo.consumer_name}") String consumerName,
             @Value("${kockpit.audit.stream.kinesis.efo.checkpoint_interval:1}") int checkpointIntervalBatches,
+            @Value("${kockpit.audit.stream.kinesis.efo.read_timeouts_to_ignore:3}") int readTimeoutsToIgnoreBeforeWarning,
             List<AuditConsumer> auditConsumers
     ) {
         ConfigsBuilder configsBuilder = new ConfigsBuilder(
@@ -157,11 +177,20 @@ public class EfoKinesisStreamConfiguration {
         FanOutConfig fanOutConfig = new FanOutConfig(kinesisAsyncClient)
                 .consumerName(consumerName);
 
+        // KCL's default (0) logs a WARN on the very first Netty ReadTimeout on a shard's EFO
+        // subscription, even though onError() already cancels and transparently recreates the
+        // subscription on its own - an idle/renewed HTTP2 stream is expected, recoverable
+        // behavior, not an operational problem. Tolerating a few before warning cuts that noise
+        // without hiding a shard that's timing out persistently (each occurrence still resets the
+        // count to 0 on the next successful read - see ShardConsumerSubscriber.onNext).
+        LifecycleConfig lifecycleConfig = configsBuilder.lifecycleConfig()
+                .readTimeoutsToIgnoreBeforeWarning(readTimeoutsToIgnoreBeforeWarning);
+
         return new Scheduler(
                 configsBuilder.checkpointConfig(),
                 configsBuilder.coordinatorConfig(),
                 configsBuilder.leaseManagementConfig(),
-                configsBuilder.lifecycleConfig(),
+                lifecycleConfig,
                 configsBuilder.metricsConfig(),
                 configsBuilder.processorConfig(),
                 configsBuilder.retrievalConfig().retrievalSpecificConfig(fanOutConfig)
