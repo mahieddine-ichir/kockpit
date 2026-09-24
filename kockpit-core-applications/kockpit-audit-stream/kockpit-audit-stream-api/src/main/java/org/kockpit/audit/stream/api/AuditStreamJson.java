@@ -54,10 +54,14 @@ public final class AuditStreamJson {
     }
 
     public static byte[] read(byte[] data) throws IOException {
-        if (isRecordCompressed(data)) {
-            return new GZIPInputStream(new ByteArrayInputStream(data)).readAllBytes();
-        } else {
+        if (!isRecordCompressed(data)) {
             return data;
+        }
+        // Unclosed GZIPInputStream/Inflater holds native (off-heap) zlib state until GC-triggered
+        // finalization - this runs on every compressed record at full ingest throughput, so
+        // leaving it unclosed is a slow, steady native-memory leak, not a one-off.
+        try (GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(data))) {
+            return gzipInputStream.readAllBytes();
         }
     }
 
