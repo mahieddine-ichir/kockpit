@@ -78,12 +78,14 @@ public class DashboardService {
                 .map(map -> {
                     String name = readMap(map, "key").toString();
                     Integer count = (Integer) readMap(map, "doc_count");
+                    // avg_value.value is null (not 0) when no document matched the nested filter
+                    // for this bucket - Map.of() rejects null values, a plain HashMap doesn't.
                     Double avgValue = (Double) readMap(map, "avg_duration.filter_duration.avg_value.value");
-                    return Map.<String, Object>of(
-                            "name", name,
-                            "count", count,
-                            "avgDuration", avgValue
-                    );
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("name", name);
+                    ret.put("count", count);
+                    ret.put("avgDuration", avgValue);
+                    return ret;
                 }).toList();
     }
 
