@@ -29,6 +29,10 @@ public class S3Batch {
         return records.isEmpty();
     }
 
+    public int size() {
+        return size.get();
+    }
+
     public S3Record poll() {
         S3Record record = records.poll();
         if (record != null) {

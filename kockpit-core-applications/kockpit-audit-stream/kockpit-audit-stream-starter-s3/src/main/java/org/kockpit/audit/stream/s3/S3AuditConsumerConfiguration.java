@@ -1,5 +1,6 @@
 package org.kockpit.audit.stream.s3;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.audit.stream.api.AuditConsumer;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.StringUtils;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.core.checksums.RequestChecksumCalculation;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -39,6 +41,10 @@ public class S3AuditConsumerConfiguration {
                             .endpointOverride(URI.create(s3Endpoint))
                             .region(region)
                             .forcePathStyle(true)
+                            // LocalStack's crc32 validation rejects the checksum header the SDK
+                            // attaches by default (WHEN_SUPPORTED) on PutObject - only relevant
+                            // for this local/LocalStack branch, real AWS handles it fine.
+                            .requestChecksumCalculation(RequestChecksumCalculation.WHEN_REQUIRED)
                             .build();
                 }).orElseGet(() -> {
                     log.info("➡️ Initialize S3 (audit archive) client using AWS Credentials");
@@ -78,12 +84,13 @@ public class S3AuditConsumerConfiguration {
             @Value("${kockpit.audit.stream.ttl_default_in_days:1}") Integer ttlDefaultInDays,
             @Value("${kockpit.audit.stream.s3.allowed_ttl_days:1,7,14,30,60,90,120}") List<Integer> allowedTtlDays,
             ApplicationEventPublisher eventPublisher,
+            MeterRegistry meterRegistry,
             // Default (256 MiB) is a starting point, not a measured value - size it to the
             // container's heap and how much headroom the rest of the app (OpenSearch bulk
             // requests, Kinesis/KCL buffers, ...) needs alongside it.
             @Value("${kockpit.audit.stream.s3.max_buffered_bytes:268435456}") long maxBufferedBytes
     ) {
-        return new S3AuditConsumer(auditS3Client, bucketName, batchSize, ttlDefaultInDays, allowedTtlDays, eventPublisher, maxBufferedBytes);
+        return new S3AuditConsumer(auditS3Client, bucketName, batchSize, ttlDefaultInDays, allowedTtlDays, eventPublisher, meterRegistry, maxBufferedBytes);
     }
 
     // Gated on kockpit.audit.stream.consumer=s3 so that composing this starter with others (e.g.

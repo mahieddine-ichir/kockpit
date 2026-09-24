@@ -1,5 +1,6 @@
 package org.kockpit.audit.stream.s3;
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ class S3AuditConsumerTest {
 
         // batchSize kept far above 1 so nothing here auto-flushes on a batch-size boundary -
         // these tests only exercise the byte-limit gate, not the batch-size one.
-        consumer = new S3AuditConsumer(s3Client, "bucket", 1000, 1, List.of(1, 7), eventPublisher, record.length);
+        consumer = new S3AuditConsumer(s3Client, "bucket", 1000, 1, List.of(1, 7), eventPublisher, new SimpleMeterRegistry(), record.length);
     }
 
     @Test

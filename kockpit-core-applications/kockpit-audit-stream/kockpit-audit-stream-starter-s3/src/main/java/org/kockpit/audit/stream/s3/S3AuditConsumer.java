@@ -1,5 +1,7 @@
 package org.kockpit.audit.stream.s3;
 
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +57,8 @@ public class S3AuditConsumer {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    private final MeterRegistry meterRegistry;
+
     // Backpressure limit: how many bytes of not-yet-written records this consumer will hold in
     // auditReports before accept() blocks (see accept()/awaitBufferRoom() below) instead of
     // piling more on top - the actual OOM risk when S3 or OpenSearch falls behind the ingest
@@ -81,6 +85,26 @@ public class S3AuditConsumer {
     public void start() {
         log.info("✅ S3 Audit consumer started, writing batches to bucket {}", bucketName);
         Runtime.getRuntime().addShutdownHook(new Thread(this::flush));
+        registerMetrics();
+    }
+
+    // This buffer previously had no external visibility at all - the only way to learn it was
+    // growing unboundedly was an OOM kill, hours after the fact. These gauges let an alert fire
+    // on buffered.bytes approaching maxBufferedBytes long before that, instead of after.
+    private void registerMetrics() {
+        Gauge.builder("kockpit.audit.stream.s3.buffer.bytes", bufferedBytes, AtomicLong::get)
+                .description("Bytes currently buffered in memory awaiting S3 archival")
+                .register(meterRegistry);
+        Gauge.builder("kockpit.audit.stream.s3.buffer.bytes.max", () -> maxBufferedBytes)
+                .description("Configured backpressure limit for buffer.bytes; accept() blocks once reached")
+                .register(meterRegistry);
+        Gauge.builder("kockpit.audit.stream.s3.buffer.records", auditReports,
+                        map -> map.values().stream().mapToInt(S3Batch::size).sum())
+                .description("Audit records currently buffered in memory awaiting S3 archival")
+                .register(meterRegistry);
+        Gauge.builder("kockpit.audit.stream.s3.buffer.keys", auditReports, Map::size)
+                .description("Distinct domain/env/appId/ttl keys currently buffered")
+                .register(meterRegistry);
     }
 
     public void accept(List<byte[]> events) {

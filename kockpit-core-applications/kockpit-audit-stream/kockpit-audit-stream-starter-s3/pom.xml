@@ -44,6 +44,12 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
         </dependency>
+        <!-- Version managed by the Spring Boot parent BOM; MeterRegistry is auto-configured by
+             spring-boot-starter-actuator, already a dependency of kockpit-audit-stream-application -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
