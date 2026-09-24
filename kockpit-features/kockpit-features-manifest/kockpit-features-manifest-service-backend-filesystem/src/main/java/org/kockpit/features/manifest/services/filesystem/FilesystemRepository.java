@@ -5,8 +5,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.features.manifest.services.ManifestBackendRepository;
 import org.kockpit.features.manifest.services.ManifestJson;
+import org.kockpit.features.manifest.services.ManifestReader;
 import org.kockpit.features.manifest.services.dto.ManifestDto;
-import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -87,8 +87,7 @@ public class FilesystemRepository implements ManifestBackendRepository {
 
     private ManifestDto read(Path path) {
         try {
-            TypeReference<ManifestDto> typeRef = new TypeReference<>() {};
-            ManifestDto manifestDto = objectMapper.readValue(new FileInputStream(path.toFile()), typeRef);
+            ManifestDto manifestDto = ManifestReader.read(new FileInputStream(path.toFile()));
             manifestDto.setName(path.toFile().getName());
             return manifestDto;
         } catch (Exception e) {

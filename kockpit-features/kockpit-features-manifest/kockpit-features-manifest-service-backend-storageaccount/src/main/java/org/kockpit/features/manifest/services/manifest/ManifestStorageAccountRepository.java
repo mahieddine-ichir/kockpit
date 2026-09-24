@@ -7,8 +7,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.features.manifest.services.ManifestBackendRepository;
 import org.kockpit.features.manifest.services.ManifestJson;
+import org.kockpit.features.manifest.services.ManifestReader;
 import org.kockpit.features.manifest.services.dto.ManifestDto;
-import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayInputStream;
@@ -88,8 +88,7 @@ public class ManifestStorageAccountRepository implements ManifestBackendReposito
 
     ManifestDto read(byte[] content) {
         try {
-            TypeReference<ManifestDto> typeRef = new TypeReference<>() {};
-            return objectMapper.readValue(content, typeRef);
+            return ManifestReader.read(content);
         } catch (Exception e) {
             log.error("Error reading manifest from Storage Account", e);
             return new ManifestDto();

@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.features.manifest.services.ManifestBackendRepository;
 import org.kockpit.features.manifest.services.ManifestJson;
+import org.kockpit.features.manifest.services.ManifestReader;
 import org.kockpit.features.manifest.services.dto.ManifestDto;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -13,7 +14,6 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
@@ -89,8 +89,7 @@ public class S3Repository implements ManifestBackendRepository {
 
     ManifestDto read(byte[] content) {
         try {
-            TypeReference<ManifestDto> typeRef = new TypeReference<>() {};
-            return objectMapper.readValue(content, typeRef);
+            return ManifestReader.read(content);
         } catch (Exception e) {
             log.error("Error reading config from S3", e);
             return new ManifestDto();
