@@ -24,6 +24,8 @@ import org.opensearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,6 +42,10 @@ public class OpensearchRepository implements SearchService {
     private final RestHighLevelClient client;
 
     private final String index;
+
+    private final AuditArchiveReader auditArchiveReader;
+
+    private final boolean wrapIndexedKeyValues;
 
     @SneakyThrows
     @Override
@@ -61,7 +67,9 @@ public class OpensearchRepository implements SearchService {
                 .indices(getAuditAliasName(domain, index, env));
 
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-        return searchResponse.getHits().getHits()[0].getSourceAsMap();
+        Map<String, Object> source = normalize(searchResponse.getHits().getHits()[0].getSourceAsMap());
+        hydrateArchivedAudits(source);
+        return source;
     }
 
     @SneakyThrows
@@ -169,41 +177,47 @@ public class OpensearchRepository implements SearchService {
      * Builds the query for a single value on a given field. When the value contains one or more
      * '*', a wildcard query is used so the '*' position drives the semantics natively:
      * {@code abc*} -> startsWith, {@code *abc} -> endsWith, {@code *abc*} -> contains,
-     * {@code ab*cd} -> arbitrary pattern. Otherwise a regular (analyzed) match query is used.
-     * The wildcard is made case-insensitive so it also matches non-analyzed (keyword) fields
-     * whose stored value keeps its original casing (e.g. {@code compteClients}).
+     * {@code ab*cd} -> arbitrary pattern. Otherwise an exact term query is used - every field
+     * queried through here (indexedKeyValues.value included) is mapped as keyword, so match
+     * would just be a case-sensitive exact match anyway; term lets it be case-insensitive
+     * instead (terms/match have no such option, only term/prefix/wildcard/regexp do).
      */
     private QueryBuilder buildValueQuery(String field, Object value) {
         if (isWildcard(value)) {
             return wildcardQuery(field, (String) value).caseInsensitive(true);
         }
-        return matchQuery(field, value);
+        return termQuery(field, value).caseInsensitive(true);
     }
 
     /**
-     * Builds the query for one or more values on a given field. If any value contains a '*',
-     * each value is turned into its own (wildcard or match) query combined with a should/OR,
-     * otherwise a single terms query is used for the multi-value case.
+     * Builds the query for one or more values on a given field, OR-ing an individual
+     * (wildcard or exact) query per value - termsQuery would be more efficient for the
+     * multi-value, no-wildcard case, but has no case-insensitive equivalent.
      */
     private QueryBuilder buildValuesQuery(String field, List<?> values) {
         if (values.size() == 1) {
             return buildValueQuery(field, values.get(0));
         }
-        if (values.stream().anyMatch(OpensearchRepository::isWildcard)) {
-            BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-            values.forEach(value -> boolQueryBuilder.should(buildValueQuery(field, value)));
-            return boolQueryBuilder;
-        }
-        return termsQuery(field, values);
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+        values.forEach(value -> boolQueryBuilder.should(buildValueQuery(field, value)));
+        return boolQueryBuilder;
     }
 
+    // Same duality as OpensearchIndexer's wrapIndexedKeyValues / normalize()'s promoteIndexedKeyValues:
+    // indexedKeyValues is mapped nested either at the document root (default) or under
+    // indexedExtensions[] (legacy, audit_index_template_s3.json). A nested query's path has to
+    // name a path the index mapping actually declares - querying "indexedKeyValues" against an
+    // index that only maps "indexedExtensions.indexedKeyValues" fails the whole request
+    // (query_shard_exception, not just zero hits), so this has to match whichever shape this
+    // read-side is configured for, same as the writer that produced the index.
     private NestedQueryBuilder buildQueryForIndexedKeyValues(String name, List<?> values) {
         log.trace("Searching {} in [{}]", name, values);
+        String nestedPath = wrapIndexedKeyValues ? "indexedExtensions.indexedKeyValues" : "indexedKeyValues";
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         boolQueryBuilder
-                .must(matchQuery("indexedKeyValues.key", name))
-                .must(buildValuesQuery("indexedKeyValues.value", values));
-        return nestedQuery("indexedKeyValues", boolQueryBuilder, ScoreMode.None);
+                .must(matchQuery(nestedPath + ".key", name))
+                .must(buildValuesQuery(nestedPath + ".value", values));
+        return nestedQuery(nestedPath, boolQueryBuilder, ScoreMode.None);
     }
 
     private Page runQuery(BoolQueryBuilder rootBoolQueryBuilder, String domain, String env, Integer start, Integer size) throws Exception {
@@ -255,6 +269,76 @@ public class OpensearchRepository implements SearchService {
     }
 
     private Object map(SearchHit searchHit) {
-        return searchHit.getSourceAsMap();
+        return normalize(searchHit.getSourceAsMap());
+    }
+
+    // Two document shapes for indexedKeyValues coexist in the index (see OpensearchIndexer's
+    // wrapIndexedKeyValues): root-level (current) and nested under indexedExtensions[] (legacy /
+    // older indexed documents). Consumers (the console front-end included) only ever look at the
+    // root-level field, so promote it here once rather than in every reader.
+    private static final List<String> INSTANT_FIELDS = List.of("start", "end");
+
+    private Map<String, Object> normalize(Map<String, Object> source) {
+        if (source == null) {
+            return source;
+        }
+        promoteIndexedKeyValues(source);
+        normalizeInstantFields(source);
+        return source;
+    }
+
+    private void promoteIndexedKeyValues(Map<String, Object> source) {
+        if (source.get("indexedKeyValues") != null) {
+            return;
+        }
+        Object indexedExtensions = source.get("indexedExtensions");
+        if (!(indexedExtensions instanceof List<?> extensions)) {
+            return;
+        }
+        for (Object extension : extensions) {
+            if (extension instanceof Map<?, ?> extensionMap && extensionMap.get("indexedKeyValues") != null) {
+                source.put("indexedKeyValues", extensionMap.get("indexedKeyValues"));
+                return;
+            }
+        }
+    }
+
+    // start/end are stored as ISO-8601 strings; the console computes duration as end - start,
+    // which needs epoch millis, not strings - normalize here so every consumer gets a value it
+    // can do arithmetic on directly.
+    private void normalizeInstantFields(Map<String, Object> source) {
+        for (String field : INSTANT_FIELDS) {
+            if (source.get(field) instanceof String text) {
+                try {
+                    source.put(field, Instant.parse(text).toEpochMilli());
+                } catch (DateTimeParseException e) {
+                    log.trace("Could not parse {} field as an instant: {}", field, text);
+                }
+            }
+        }
+    }
+
+    // getAudit() only - listAudits()/searchAudits() explicitly exclude "audits" from the ES
+    // fetch (fetchSource("*", "audits")) to keep paginated responses light, so there is nothing
+    // to hydrate there and doing a GetObject per row would be far too slow anyway.
+    private void hydrateArchivedAudits(Map<String, Object> source) {
+        if (source == null || !isEmptyAudits(source.get("audits"))) {
+            return;
+        }
+        if (!(source.get("s3Uri") instanceof String s3Uri)) {
+            return;
+        }
+        Object audits = auditArchiveReader.readAudits(s3Uri, asLong(source.get("s3Offset")), asLong(source.get("s3Size")));
+        if (audits != null) {
+            source.put("audits", audits);
+        }
+    }
+
+    private static boolean isEmptyAudits(Object audits) {
+        return audits == null || (audits instanceof List<?> list && list.isEmpty());
+    }
+
+    private static Long asLong(Object value) {
+        return value instanceof Number number ? number.longValue() : null;
     }
 }
