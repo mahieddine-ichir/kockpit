@@ -55,13 +55,24 @@ class AuditRecordProcessor implements ShardRecordProcessor {
                     .map(AuditRecordProcessor::toByteArray).toList();
 
             auditConsumers.forEach(auditConsumer -> auditConsumer.accept(list));
+        } catch (Exception e) {
+            // A consumer throwing here (e.g. a transient OpenSearch index/policy creation race)
+            // must not be allowed to skip the checkpoint below: with no catch at all, this batch
+            // is never checkpointed and the shard's KCL/EFO subscription keeps buffering new
+            // records on top of the stuck one indefinitely - unbounded, off-heap, and invisible
+            // to application logs. Dropping this batch (the same trade-off S3AuditConsumer.write()
+            // already accepts on its own write failures) and still advancing the checkpoint keeps
+            // the shard healthy instead.
+            log.error("❌ Exception processing {} record(s) for shard {}, dropping this batch: {}",
+                    records.size(), shardId, e.getMessage(), e);
+        }
 
+        try {
             batchesSinceCheckpoint++;
             if (batchesSinceCheckpoint >= Math.max(1, checkpointIntervalBatches)) {
                 processRecordsInput.checkpointer().checkpoint();
                 batchesSinceCheckpoint = 0;
             }
-
         } catch (InvalidStateException | ShutdownException e) {
             log.error("❌ Exception while checkpointing at shard end for {}: {}", shardId, e.getMessage(), e);
         }
