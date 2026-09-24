@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch.generic.Body;
 import org.opensearch.client.opensearch.generic.Requests;
 import org.opensearch.client.opensearch.generic.Response;
@@ -38,19 +39,48 @@ public class OpensearchV3IndexManager {
         // create template
         createIndexTemplate(indexPrefix, policyId, aliasWrite);
         // create index
+        boolean justCreated = false;
         if (!client.indices().exists(ExistsRequest.of(e -> e.index(indexName))).value()) {
             log.info("Creating index {}", indexName);
+            justCreated = createIndexIdempotent(indexName);
+            if (justCreated) {
+                // Attach read alias (all logs-* indices)
+                attachReadAlias(indexName, aliasRead);
+            }
+        }
 
-            CreateIndexRequest request = CreateIndexRequest.of(c ->
-                    c.index(indexName)
-            );
-            client.indices().create(request);
-
-            // Attach write alias (only current index)
+        // Checked (and retried if wrong) on every call, not only when the index was just created:
+        // if attachWriteAlias() ever fails after the index already exists, the old code's
+        // if-not-exists guard meant it would NEVER be retried for that index, and the next bulk
+        // write would target an alias that doesn't exist anywhere - which OpenSearch silently
+        // "fixes" via dynamic index auto-creation, permanently poisoning the alias name with a
+        // real, unmanaged index (see attachWriteAlias()). Re-checking here means a transient
+        // failure gets retried on the next indexing cycle instead of becoming permanent.
+        if (justCreated || !isWriteAliasCorrect(indexName, aliasWrite)) {
             attachWriteAlias(indexName, aliasWrite, indexPrefix);
+        }
+    }
 
-            // Attach read alias (all logs-* indices)
-            attachReadAlias(indexName, aliasRead);
+    // At the daily rollover, several threads/shard-processors/tasks can all observe the index
+    // missing and race to create it - the loser gets resource_already_exists_exception. That's
+    // not a real failure (the index is there either way), so it must not drop the whole flush
+    // batch: this used to propagate uncaught out of ensureIndexExists(), through
+    // OpensearchIndexer.index() (called outside its own try/catch), and back up to whichever
+    // caller happened to be catching something unrelated (see S3AuditConsumer.write()'s
+    // misleading "Failed to write N audit reports to s3://..." for OpenSearch errors that have
+    // nothing to do with S3), or, for producer-pre-offloaded records via
+    // OpensearchS3AuditConsumer.indexAlreadyOffloaded(), fully uncaught.
+    @SneakyThrows
+    private boolean createIndexIdempotent(String indexName) {
+        try {
+            client.indices().create(CreateIndexRequest.of(c -> c.index(indexName)));
+            return true;
+        } catch (OpenSearchException e) {
+            if (!"resource_already_exists_exception".equals(e.error().type())) {
+                throw e;
+            }
+            log.info("Index {} already exists (created concurrently), continuing", indexName);
+            return false;
         }
     }
 
@@ -81,6 +111,18 @@ public class OpensearchV3IndexManager {
         return status == 429;
     }
 
+    @SneakyThrows
+    private boolean policyExists(String policyId) {
+        try (Response response = client.generic().execute(Requests.builder()
+                .method("GET")
+                .endpoint("_plugins/_ism/policies/" + policyId)
+                .build())) {
+            return isOk(response.getStatus());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private void doCreatePolicy(String policyId, String indexPrefix, Integer ttl) {
         log.info("➡️ Creating ISM policy with ID: {} and TTL: {}d", policyId, ttl);
         String policyJson = loadPolicy(indexPrefix, ttl);
@@ -95,6 +137,12 @@ public class OpensearchV3IndexManager {
                 log.info("✅ Created policy {}, ttl {}", policyId, ttl);
             } else if (isCircuitBreaker(response.getStatus())) {
                 log.warn("⚠️ OpenSearch circuit breaker triggered creating ISM policy {}, will retry next cycle", policyId);
+            } else if (policyExists(policyId)) {
+                // Same daily-rollover race as createIndexIdempotent(): another thread/shard-
+                // processor/task won the race to create this policy first, and the ISM plugin
+                // rejects the loser's PUT (commonly with a 400) - not a real failure once the
+                // policy is actually there.
+                log.info("✅ Policy {} already exists (created concurrently), status {}", policyId, response.getStatus());
             } else {
                 log.error("❌ Failed to create ISM policy {} with TTL {}: response {}: {}", policyId, ttl, response.getStatus(), response.getBody().map(Body::bodyAsString).orElse(null));
                 throw new RuntimeException("❌ Policy creation failed with status " + response.getStatus());
@@ -173,34 +221,71 @@ public class OpensearchV3IndexManager {
         }
     }
 
+    private static final int ALIAS_ATTACH_MAX_ATTEMPTS = 3;
+
     @SneakyThrows
     private void attachWriteAlias(String indexName, String aliasWrite, String indexPrefix) {
-        // First try to remove the alias from previous indices (ignore if it doesn't exist)
-        try {
-            UpdateAliasesRequest removeRequest = UpdateAliasesRequest.of(u -> u
-                    .actions(Action.of(a -> a
-                            .remove(RemoveAction.of(r -> r
-                                    .indices(indexPrefix + "-*")
-                                    .aliases(aliasWrite)
-                            ))
-                    ))
-            );
-            client.indices().updateAliases(removeRequest);
-        } catch (Exception e) {
-            log.debug("No previous alias to remove for {}: {}", aliasWrite, e.getMessage());
-        }
-
-        // Always add write alias to the current index as the write index
-        UpdateAliasesRequest addRequest = UpdateAliasesRequest.of(u -> u
-                .actions(Action.of(a -> a
-                        .add(AddAction.of(add -> add
-                                .indices(indexName)
-                                .aliases(aliasWrite)
-                                .isWriteIndex(true)
-                        ))
-                ))
+        // Remove-from-old and add-to-new are submitted as ONE atomic _aliases request (both
+        // actions apply or neither does), not two separate calls. With two separate calls, a
+        // failure on the add (after the remove already succeeded) left the alias attached
+        // nowhere - and the next bulk write to that alias name got silently "fixed" by
+        // OpenSearch's dynamic index auto-creation, permanently poisoning the alias with a real,
+        // unmanaged index (this is what happened to rcu-audit-data-pro-ttl30d-write in prod).
+        // Atomic means a failure here leaves the alias on the OLD index, which is safe: writes
+        // keep flowing correctly, just to yesterday's index, until the next successful retry.
+        UpdateAliasesRequest request = UpdateAliasesRequest.of(u -> u
+                .actions(
+                        Action.of(a -> a
+                                .remove(RemoveAction.of(r -> r
+                                        .indices(indexPrefix + "-*")
+                                        .aliases(aliasWrite)
+                                ))
+                        ),
+                        Action.of(a -> a
+                                .add(AddAction.of(add -> add
+                                        .indices(indexName)
+                                        .aliases(aliasWrite)
+                                        .isWriteIndex(true)
+                                ))
+                        )
+                )
         );
-        client.indices().updateAliases(addRequest);
+
+        Exception lastError = null;
+        for (int attempt = 1; attempt <= ALIAS_ATTACH_MAX_ATTEMPTS; attempt++) {
+            try {
+                client.indices().updateAliases(request);
+                return;
+            } catch (Exception e) {
+                lastError = e;
+                log.warn("⚠️ Attempt {}/{} to attach write alias {} -> {} failed: {}",
+                        attempt, ALIAS_ATTACH_MAX_ATTEMPTS, aliasWrite, indexName, e.getMessage());
+                if (attempt < ALIAS_ATTACH_MAX_ATTEMPTS) {
+                    Thread.sleep(1000L * attempt);
+                }
+            }
+        }
+        log.error("❌ Failed to attach write alias {} -> {} after {} attempts. Until this is fixed, " +
+                        "bulk writes targeting '{}' will fall through to OpenSearch's dynamic index " +
+                        "auto-creation and silently mint a permanent, unmanaged index with that exact name.",
+                aliasWrite, indexName, ALIAS_ATTACH_MAX_ATTEMPTS, aliasWrite, lastError);
+        throw new RuntimeException("Failed to attach write alias " + aliasWrite + " to " + indexName, lastError);
+    }
+
+    @SneakyThrows
+    private boolean isWriteAliasCorrect(String indexName, String aliasWrite) {
+        try (Response response = client.generic().execute(Requests.builder()
+                .method("GET")
+                .endpoint("/" + indexName + "/_alias/" + aliasWrite)
+                .build())) {
+            if (!isOk(response.getStatus())) {
+                return false;
+            }
+            String body = response.getBody().map(Body::bodyAsString).orElse("");
+            return body.contains("\"is_write_index\":true");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @SneakyThrows
