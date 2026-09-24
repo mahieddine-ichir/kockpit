@@ -64,6 +64,9 @@ function App() {
     function onConfigLoaded(configs, selectedIndex) {
         setConfigs(configs);
         const cfg = configs[selectedIndex];
+        if (!cfg) {
+            return;
+        }
         setConfig(cfg);
         setDomain(cfg.domain);
         setEnv(cfg.env);

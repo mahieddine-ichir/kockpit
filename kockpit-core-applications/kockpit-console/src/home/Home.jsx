@@ -323,7 +323,7 @@ const AppIdDashboard = ({domain, env}) => {
                                     <tr key={app.name} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{app.name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{app.count.toLocaleString()}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{app.avgDuration.toFixed(2)} ms</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{app.avgDuration != null ? `${app.avgDuration.toFixed(2)} ms` : 'N/A'}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             <span className="text-green-600 font-medium">{successRate}%</span>
                                         </td>

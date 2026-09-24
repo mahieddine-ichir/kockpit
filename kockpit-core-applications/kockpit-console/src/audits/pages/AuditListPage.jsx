@@ -375,14 +375,14 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
       thisConfig = config['services'].find(service => service.type === 'audit');
     if (thisConfig) {
         label = thisConfig.label ? thisConfig.label : thisConfig.name;
-        columns = thisConfig.config.columns
+        columns = (thisConfig.config?.columns || [])
             .map(column => {
               return {
                 key: column,
                 label: formatLabel(column)
               }
             });
-        searchColumns = thisConfig.config['search_columns'];
+        searchColumns = thisConfig.config?.['search_columns'] || [];
     }
   }
 

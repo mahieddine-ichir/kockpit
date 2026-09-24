@@ -18,6 +18,10 @@ function DomainEnv({onConfigLoaded, domainEnvChanged, selectedIndex = 0, onSelec
                 setConfigError('Failed to load config: invalid response from server');
                 return;
             }
+            if (config.length === 0) {
+                setConfigError('No manifests found on the backend');
+                return;
+            }
             setConfigError(null);
             onConfigLoaded(config, selectedIndex);
             let opts = [];
