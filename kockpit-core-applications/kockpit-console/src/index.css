@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Rules flow diagram: dashes travelling along the connectors */
+@keyframes flow-dash {
+  to { stroke-dashoffset: -16; }
+}
+.flow-dash {
+  animation: flow-dash 1s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-dash { animation: none; }
+}
