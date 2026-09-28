@@ -5,9 +5,11 @@ import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kockpit.audit.stream.api.AuditConsumer;
 import org.kockpit.audit.stream.api.AuditStreamJson;
 import org.kockpit.audit.stream.api.model.AuditReport;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.annotation.Scheduled;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class S3AuditConsumer {
+public class S3AuditConsumer implements SmartLifecycle {
 
     // producer (accept) / consumer (flush) can run on different threads (e.g. one per Kinesis
     // shard); a plain ArrayList would not be safe to share across them.
@@ -81,11 +83,37 @@ public class S3AuditConsumer {
     // deadlocked. A real drain (flushKey()'s notifyAll()) wakes it immediately regardless.
     private static final long BUFFER_WAIT_POLL_MS = 2000;
 
+    private volatile boolean running;
+
     @PostConstruct
-    public void start() {
+    public void init() {
         log.info("✅ S3 Audit consumer started, writing batches to bucket {}", bucketName);
-        Runtime.getRuntime().addShutdownHook(new Thread(this::flush));
         registerMetrics();
+    }
+
+    @Override
+    public void start() {
+        running = true;
+    }
+
+    // Drains on context close, after the stream readers have stopped (see
+    // AuditConsumer.SHUTDOWN_DRAIN_PHASE) and before s3Client is closed - a JVM shutdown hook
+    // raced Spring's own and lost, failing every final write with "Connection pool shut down".
+    @Override
+    public void stop() {
+        log.info("🛑 Draining S3 audit consumer before shutdown");
+        drain();
+        running = false;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return running;
+    }
+
+    @Override
+    public int getPhase() {
+        return AuditConsumer.SHUTDOWN_DRAIN_PHASE;
     }
 
     // This buffer previously had no external visibility at all - the only way to learn it was
@@ -261,6 +289,15 @@ public class S3AuditConsumer {
             flushKey(key);
         }
         pruneEmptyBatches();
+    }
+
+    // Unlike flush(), which writes at most batchSize per key per call and requeues the rest,
+    // keeps flushing until nothing is buffered - for shutdown/checkpoint, where anything left
+    // behind is lost. Not synchronized: concurrent callers just split the keys between them.
+    public void drain() {
+        while (auditReports.values().stream().anyMatch(batch -> !batch.isEmpty())) {
+            flush();
+        }
     }
 
     // Swaps out whatever's queued for this key and writes up to batchSize of it, requeuing any

@@ -48,6 +48,13 @@ public class OpensearchS3AuditConsumer implements AuditConsumer {
         }
     }
 
+    // Already-offloaded records are indexed synchronously in accept(); only the archive path
+    // buffers.
+    @Override
+    public void drain() {
+        s3AuditConsumer.drain();
+    }
+
     private void indexAlreadyOffloaded(List<byte[]> bytes) {
         bytes.stream().map(this::parseAuditReport)
                 .collect(Collectors.groupingBy(IndexMetadata::of))

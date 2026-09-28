@@ -16,6 +16,7 @@ import org.kockpit.audit.stream.api.AuditStreamJson;
 import org.kockpit.audit.stream.api.model.AuditReport;
 import org.kockpit.sdk.SdkApplicationProperties;
 import org.opensearch.client.opensearch.core.BulkResponse;
+import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.*;
@@ -28,7 +29,7 @@ import static java.util.Objects.isNull;
 
 @Slf4j
 @RequiredArgsConstructor
-public class AuditConsumerForOpensearch implements AuditConsumer {
+public class AuditConsumerForOpensearch implements AuditConsumer, SmartLifecycle {
 
     // local cache for batch indexing
     private final Queue<byte[]> auditReports = new ConcurrentLinkedQueue<>();
@@ -47,10 +48,50 @@ public class AuditConsumerForOpensearch implements AuditConsumer {
 
     private final Integer batchSize;
 
+    private volatile boolean running;
+
     @PostConstruct
-    public void start() {
+    public void init() {
         log.info("OpenSearch Audit consumer started!");
-        Runtime.getRuntime().addShutdownHook(new Thread(this::index));
+    }
+
+    @Override
+    public void start() {
+        running = true;
+    }
+
+    // Drains on context close, after the stream readers have stopped (see
+    // AuditConsumer.SHUTDOWN_DRAIN_PHASE) and before the OpenSearch client is closed - a JVM
+    // shutdown hook raced Spring's own and lost the final bulk request to a closed socket.
+    @Override
+    public void stop() {
+        log.info("🛑 Draining OpenSearch audit consumer before shutdown");
+        drain();
+        running = false;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return running;
+    }
+
+    @Override
+    public int getPhase() {
+        return SHUTDOWN_DRAIN_PHASE;
+    }
+
+    // index() only takes batchSize per call; keep going until the queue is empty. A failing
+    // batch (OpensearchIndexer.index() can throw) is already polled off the queue, so log it and
+    // move on rather than abandoning everything still queued behind it.
+    @Override
+    public void drain() {
+        while (!auditReports.isEmpty()) {
+            try {
+                index();
+            } catch (Exception e) {
+                log.error("❌ Failed to index a batch while draining OpenSearch audit consumer: {}", e.getMessage(), e);
+            }
+        }
     }
 
     @Override

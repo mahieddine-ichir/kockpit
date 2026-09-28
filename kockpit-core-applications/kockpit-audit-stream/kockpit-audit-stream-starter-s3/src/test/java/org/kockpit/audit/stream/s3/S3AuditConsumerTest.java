@@ -20,7 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * accept() is the backpressure gate an OOM (S3 or OpenSearch falling behind ingestion, see
@@ -113,5 +115,37 @@ class S3AuditConsumerTest {
 
         assertThat(finished.await(2, TimeUnit.SECONDS)).as("blocked accept() unblocked after drain").isTrue();
         blockedAccept.join(2000);
+    }
+
+    @Test
+    @DisplayName("stop() ecrit tout le buffer sur S3 avant l'arret")
+    void stop_writes_everything_still_buffered() {
+        consumer.start();
+        consumer.accept(List.of(record));
+
+        consumer.stop();
+
+        verify(s3Client).putObject(any(PutObjectRequest.class), any(RequestBody.class));
+        assertThat(consumer.isRunning()).isFalse();
+    }
+
+    @Test
+    @DisplayName("drain() se termine meme si l'ecriture S3 echoue")
+    void drain_terminates_when_the_s3_write_fails() {
+        when(s3Client.putObject(any(PutObjectRequest.class), any(RequestBody.class)))
+                .thenThrow(new IllegalStateException("Connection pool shut down"));
+        consumer.accept(List.of(record));
+
+        consumer.drain();
+
+        verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
+    }
+
+    @Test
+    @DisplayName("Le drain s'execute apres l'arret des lecteurs du stream")
+    void drains_in_a_phase_after_the_stream_readers_stop() {
+        // SmartLifecycle beans stop in descending phase order: the Kinesis EFO scheduler runs at
+        // DEFAULT_PHASE, Kafka listener containers at DEFAULT_PHASE - 100.
+        assertThat(consumer.getPhase()).isLessThan(Integer.MAX_VALUE - 100);
     }
 }

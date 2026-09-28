@@ -95,7 +95,18 @@ class AuditRecordProcessor implements ShardRecordProcessor {
 
     @Override
     public void shutdownRequested(ShutdownRequestedInput shutdownRequestedInput) {
-        log.info("🛑 Shutdown requested, checkpointing shard {}", shardId);
+        // Consumers buffer accepted records in memory and persist them on their own schedule, so
+        // checkpointing here first would let the next lease owner resume past records this
+        // worker never wrote. Drain first, checkpoint only once they're persisted.
+        log.info("🛑 Shutdown requested, draining consumers and checkpointing shard {}", shardId);
+        auditConsumers.forEach(auditConsumer -> {
+            try {
+                auditConsumer.drain();
+            } catch (Exception e) {
+                log.error("❌ Failed to drain {} before checkpointing shard {}: {}",
+                        auditConsumer.getClass().getSimpleName(), shardId, e.getMessage(), e);
+            }
+        });
         checkpoint(shutdownRequestedInput.checkpointer());
     }
 
