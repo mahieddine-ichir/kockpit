@@ -16,6 +16,9 @@ import org.opensearch.client.opensearch.indices.update_aliases.AddAction;
 import org.opensearch.client.opensearch.indices.update_aliases.RemoveAction;
 
 import java.io.InputStream;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 
@@ -84,22 +87,77 @@ public class OpensearchV3IndexManager {
         }
     }
 
+    // Bumped whenever audit_ism_policy.json changes in a way existing policies must pick up; it's
+    // part of the policy's description, so an outdated policy is recognised and updated in place.
+    // v2: no rollover - the audit stream rotates indices daily and moves the write alias itself,
+    // so an ISM rollover always failed ("Missing alias or not the write index"), ISM disabled the
+    // job, and the index stayed in "hot" forever - never reaching its delete transition.
+    static final String POLICY_VERSION_MARKER = "kockpit-audit-policy-v2";
+
+    private static final Pattern SEQ_NO = Pattern.compile("\"_seq_no\"\\s*:\\s*(\\d+)");
+
+    private static final Pattern PRIMARY_TERM = Pattern.compile("\"_primary_term\"\\s*:\\s*(\\d+)");
+
     @SneakyThrows
     void createISMPolicy(Integer ttl, String policyId, String indexPrefix) {
-        // Check if policy already exists
+        // The generic client returns 4xx/5xx as a Response, it does not throw: a missing policy is
+        // a plain 404 here. (Only creating it from a catch block meant it was never created in
+        // normal operation - only when the GET itself blew up, e.g. during shutdown.)
+        String existing;
         try (Response response = client.generic()
                     .execute(Requests.builder()
                             .method("GET")
                             .endpoint("_plugins/_ism/policies/" + policyId)
                             .build()
                     )) {
+            if (response.getStatus() == 404) {
+                doCreatePolicy(policyId, indexPrefix, ttl);
+                return;
+            }
+            if (!isOk(response.getStatus())) {
+                log.warn("⚠️ Unexpected status {} checking ISM policy {}, will retry next cycle", response.getStatus(), policyId);
+                return;
+            }
+            existing = response.getBody().map(Body::bodyAsString).orElse("");
+        } catch (Exception e) {
+            log.warn("⚠️ Could not check ISM policy {}, will retry next cycle: {}", policyId, e.getMessage());
+            return;
+        }
 
+        if (existing.contains(POLICY_VERSION_MARKER)) {
+            log.trace("✅ Policy {} already exists and is up to date", policyId);
+            return;
+        }
+        updatePolicy(policyId, indexPrefix, ttl, existing);
+    }
+
+    // Only affects indices created from now on (or attached to this policy later): indices already
+    // managed by an older version keep running it, as ISM does for any policy update.
+    private void updatePolicy(String policyId, String indexPrefix, Integer ttl, String existing) {
+        Matcher seqNo = SEQ_NO.matcher(existing);
+        Matcher primaryTerm = PRIMARY_TERM.matcher(existing);
+        if (!seqNo.find() || !primaryTerm.find()) {
+            log.warn("⚠️ ISM policy {} is outdated but its _seq_no/_primary_term could not be read, not updating it", policyId);
+            return;
+        }
+        log.info("➡️ Updating outdated ISM policy {} to {}", policyId, POLICY_VERSION_MARKER);
+        try (Response response = client.generic().execute(Requests.builder()
+                .method("PUT")
+                .endpoint("_plugins/_ism/policies/" + policyId)
+                .query(Map.of("if_seq_no", seqNo.group(1), "if_primary_term", primaryTerm.group(1)))
+                .json(loadPolicy(indexPrefix, ttl))
+                .build())) {
             if (isOk(response.getStatus())) {
-                log.trace("✅ Policy {} already exists, skipping policy creation, status {}", policyId, response.getStatus());
+                log.info("✅ Updated ISM policy {}", policyId);
+            } else if (response.getStatus() == 409) {
+                // Another thread/task updated it first (optimistic concurrency) - re-checked next cycle.
+                log.info("✅ ISM policy {} was updated concurrently", policyId);
+            } else {
+                log.error("❌ Failed to update ISM policy {}: response {}: {}", policyId, response.getStatus(),
+                        response.getBody().map(Body::bodyAsString).orElse(null));
             }
         } catch (Exception e) {
-            // Policy doesn't exist, create it
-            doCreatePolicy(policyId, indexPrefix, ttl);
+            log.warn("⚠️ Could not update ISM policy {}, will retry next cycle: {}", policyId, e.getMessage());
         }
     }
 
