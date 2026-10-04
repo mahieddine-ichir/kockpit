@@ -72,6 +72,13 @@ def write_indices(aliases):
     return targets
 
 
+def received_recently(os_, index, window="1h"):
+    """True if the index holds documents indexed within `window` (@timestamp = indexing time)."""
+    body = {"query": {"range": {"@timestamp": {"gte": f"now-{window}"}}}}
+    result = os_.request("POST", f"/{index}/_count", body, ok_404=True)
+    return bool(result and result.get("count"))
+
+
 def delete_ttl(policy):
     """min_index_age of the transition leading to the state that holds the delete action."""
     states = policy.get("states", [])
@@ -134,6 +141,15 @@ def main():
             continue
         if index in writers:
             skipped.append((index, "holds a write alias"))
+            continue
+        # A concrete index squatting a write-alias name (auto-created by a bulk write while the
+        # alias was missing) receives every write for its prefix: its creation date says nothing
+        # about its data's age, so a delete-only policy would wipe recent data with it.
+        if index.endswith("-write") or index.endswith("-read"):
+            skipped.append((index, "concrete index named like an alias - fix the alias first"))
+            continue
+        if received_recently(os_, index):
+            skipped.append((index, "received documents in the last hour - still being written to"))
             continue
         policy_id = e.get("policy_id")
         ttl = delete_ttl(policies.get(policy_id, {}))
