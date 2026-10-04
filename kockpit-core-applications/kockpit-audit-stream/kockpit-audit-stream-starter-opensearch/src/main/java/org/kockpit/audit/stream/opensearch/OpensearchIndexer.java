@@ -48,7 +48,13 @@ public class OpensearchIndexer {
         // ensure the index exists (template, policy and aliases)
         opensearchV3IndexManager.ensureIndexExists(indexName, aliasWrite, aliasRead, indexPrefix, indexMetadata.getTtl());
 
-        BulkRequest bulkRequest = BulkRequest.of(b -> b.operations(
+        // require_alias: if the write alias is ever missing (e.g. mid daily switch), the bulk must
+        // fail rather than let OpenSearch auto-create a concrete index under the alias name - that
+        // index then "squats" the name, every later alias attach fails, and it silently receives
+        // all writes for the prefix (wccat/wcplatform/wcauth/wco -write in pro). Items failing this
+        // way are logged and dropped like any bulk error (the reports stay archived in S3), and
+        // the next cycle's ensureIndexExists() re-attaches the alias.
+        BulkRequest bulkRequest = BulkRequest.of(b -> b.requireAlias(true).operations(
                 auditReports.stream()
                         .map(auditIndexRequest -> toBulkOperation(auditIndexRequest, aliasWrite))
                         .toList())
