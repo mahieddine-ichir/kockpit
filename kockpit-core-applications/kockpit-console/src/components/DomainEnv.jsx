@@ -41,16 +41,19 @@ function DomainEnv({onConfigLoaded, domainEnvChanged, selectedIndex = 0, onSelec
     }, []);
 
     function onChange(e) {
-        let split = e.target.value.split('/');
-        let domain = split[0].trim();
-        let env = split[1].trim();
-        let index = options.findIndex(option => option.domain === domain && option.env === env);
+        // Options are identified by their position: several manifests can share the same
+        // domain/env, so "domain/env" alone always resolved to the first of them.
+        const index = parseInt(e.target.value, 10);
+        const option = options[index];
+        if (!option) {
+            return;
+        }
         onSelectedIndex(index);
-        domainEnvChanged(domain, env, index);
+        domainEnvChanged(option.domain, option.env, index);
     }
 
     const selectedValue = selectedIndex >= 0 && options.length > selectedIndex
-        ? `${options[selectedIndex].domain}/${options[selectedIndex].env}`
+        ? String(selectedIndex)
         : '';
 
     if (configError) {
@@ -74,7 +77,7 @@ function DomainEnv({onConfigLoaded, domainEnvChanged, selectedIndex = 0, onSelec
                 >
                     {
                         options.map((option, index) => (
-                            <option key={option.domain+option.env+index} value={option.domain + '/' + option.env}>{option.domain} / {option.env} ({option.name})</option>
+                            <option key={option.domain+option.env+index} value={String(index)}>{option.domain} / {option.env} ({option.name})</option>
                         ))
                     }
                 </select>
