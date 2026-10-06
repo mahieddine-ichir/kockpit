@@ -16,15 +16,15 @@ public class PolicyDto {
     private List<String> groups;
 
     /**
-     * Permission entries in the form "serviceType:action" where action is "*" or "read".
-     * Example: "audit:*", "audit:read"
+     * Legacy grant form: "serviceType:action" (e.g. "audit:read"); with empty {@link #resources}
+     * it grants every service of that type. Current manifests leave it empty and use resources.
      */
     private List<String> permissions;
 
     /**
-     * Resource entries in the form "serviceType:serviceId".
-     * Empty list means the permission applies to all resources of the matched type.
-     * Example: "audit:wcpsamples"
+     * Granted services: "serviceType:serviceId" (e.g. "audit:offers-api"), "serviceType:*" for
+     * every service of a type (e.g. "audit:*", "cache:*"), or "*" for everything.
+     * See {@link org.kockpit.features.manifest.services.ManifestAccess}.
      */
     private List<String> resources;
 }

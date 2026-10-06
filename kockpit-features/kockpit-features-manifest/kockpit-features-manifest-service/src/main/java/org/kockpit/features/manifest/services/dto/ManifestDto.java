@@ -21,5 +21,10 @@ public class ManifestDto {
 
     private List<ServiceDto> services;
 
+    /**
+     * Members of any of these groups (user's "custom:adgroups") see every service of the manifest.
+     */
+    private List<String> groups;
+
     private List<PolicyDto> policies;
 }
