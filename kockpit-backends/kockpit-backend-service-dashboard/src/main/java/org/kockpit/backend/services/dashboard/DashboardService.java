@@ -44,6 +44,13 @@ public class DashboardService {
     @Value("${kockpit.backend.opensearch.index}")
     private String index;
 
+    // Must mirror kockpit.audit.stream.opensearch.wrap_indexed_key_values on the writer side, like
+    // the search (OpensearchRepository): wrapped indices map the key/values nested under
+    // indexedExtensions[], not at the root - aggregating on the wrong path matches nothing, which
+    // left the HTTP status chart blank and avgDuration null.
+    @Value("${kockpit.backend.opensearch.wrap_indexed_key_values:false}")
+    private boolean wrapIndexedKeyValues;
+
     @SneakyThrows
     Map<String, List<Object>> appDetails(String domain, String env) {
 
@@ -72,40 +79,63 @@ public class DashboardService {
 
     @SneakyThrows
     List<Map<String, Object>> avgDurationByApp(String domain, String env, String gte) {
-        Map byApp = (Map) runJson(domain, env, "/avgDurationByApp.json", Map.of("--gte--", gte)).get("by_app");
+        Map byApp = (Map) runJson(domain, env, "/appCountByApp.json", Map.of("--gte--", gte)).get("by_app");
         List<Map> buckets = (List<Map>) byApp.get("buckets");
+        Map<String, Double> avgDurations = avgDurationsByApp(domain, env, gte);
         return buckets.stream()
                 .map(map -> {
                     String name = readMap(map, "key").toString();
-                    Integer count = (Integer) readMap(map, "doc_count");
-                    // avg_value.value is null (not 0) when no document matched the nested filter
-                    // for this bucket - Map.of() rejects null values, a plain HashMap doesn't.
-                    Double avgValue = (Double) readMap(map, "avg_duration.filter_duration.avg_value.value");
+                    // Map.of() rejects null values (no average for this app), a plain HashMap doesn't.
                     Map<String, Object> ret = new HashMap<>();
                     ret.put("name", name);
-                    ret.put("count", count);
-                    ret.put("avgDuration", avgValue);
+                    ret.put("count", readMap(map, "doc_count"));
+                    ret.put("avgDuration", avgDurations.get(name));
                     return ret;
                 }).toList();
+    }
+
+    // Separate from the counts, and allowed to fail: averaging needs doc values on valueInteger,
+    // which some indices map doc_values:false - OpenSearch then rejects the whole request. In one
+    // request with the counts, that blanked "Request Distribution by Application" too.
+    private Map<String, Double> avgDurationsByApp(String domain, String env, String gte) {
+        try {
+            Map byApp = (Map) runJson(domain, env, "/avgDurationByApp.json",
+                    Map.of("--gte--", gte, "--kv--", indexedKeyValuesPath())).get("by_app");
+            Map<String, Double> avgDurations = new HashMap<>();
+            for (Map bucket : (List<Map>) byApp.get("buckets")) {
+                Object avg = readMap(bucket, "avg_duration.filter_duration.avg_value.value");
+                if (avg instanceof Number number) {
+                    avgDurations.put(readMap(bucket, "key").toString(), number.doubleValue());
+                }
+            }
+            return avgDurations;
+        } catch (Exception e) {
+            log.warn("Average duration unavailable for {}/{} (index can't aggregate duration values): {}",
+                    domain, env, e.getMessage());
+            return Map.of();
+        }
     }
 
     @SneakyThrows
     List<Map<String, Object>> statusDistributionByAppId(String domain, String env, String gte) {
         log.trace("statusDistributionByAppId({})", gte);
-        Map statusNested = (Map) runJson(domain, env, "/statusDistributionByAppId.json", Map.of("--gte--", gte)).get("by_app");
+        Map statusNested = (Map) runJson(domain, env, "/statusDistributionByAppId.json", Map.of("--gte--", gte, "--kv--", indexedKeyValuesPath())).get("by_app");
         List<Map> buckets = (List<Map>) readMap(statusNested, "buckets");
 
         return buckets.stream()
                 .map(map -> {
                     Map<String, Object> ret = new HashMap<>();
                     ret.put("name", map.get("key"));
-                    List<Map> subBuckets = (List<Map>) readMap(map, "http_status_nested.filter_status.status_groups.buckets");
-                    Stream.of("2xx", "3xx", "4xx", "5xx").forEach(status ->
-                            subBuckets.stream()
-                                    .peek(subBucket -> log.trace(subBucket.toString()))
-                                    .filter(subBucket -> subBucket.get("key").equals(status))
-                                    .findFirst()
-                                    .ifPresent(_2xx -> ret.put(status, readMap(_2xx, "doc_count"))));
+                    // A "filters" aggregation (one range query per class), not a "range" one:
+                    // valueInteger is mapped doc_values:false on some indices, which range/avg
+                    // aggregations need but range queries don't. Its buckets come keyed by name.
+                    Map<String, Map> subBuckets = (Map<String, Map>) readMap(map, "http_status_nested.filter_status.status_groups.buckets");
+                    Stream.of("2xx", "3xx", "4xx", "5xx").forEach(status -> {
+                        Map subBucket = subBuckets == null ? null : subBuckets.get(status);
+                        if (subBucket != null) {
+                            ret.put(status, subBucket.get("doc_count"));
+                        }
+                    });
                     return ret;
                 }).toList();
     }
@@ -146,6 +176,10 @@ public class DashboardService {
                 .get("aggregations");
     }
 
+
+    String indexedKeyValuesPath() {
+        return wrapIndexedKeyValues ? "indexedExtensions.indexedKeyValues" : "indexedKeyValues";
+    }
 
     public static String getAuditAliasName(String domain, String indexName, String env) {
         return domain + "-" + indexName + "-" + env + "-read".toLowerCase();

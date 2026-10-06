@@ -1,40 +1,24 @@
 {
   "size": 0,
-  "query": {
-    "range": {
-      "start": {
-        "gte": "--gte--"
-      }
-    }
-  },
+  "query": { "range": { "start": { "gte": "--gte--" } } },
   "aggs": {
     "by_app": {
-      "terms": {
-        "field": "appId",
-        "size": 10
-      },
+      "terms": { "field": "appId", "size": 10 },
       "aggs": {
         "http_status_nested": {
-          "nested": {
-            "path": "indexedKeyValues"
-          },
+          "nested": { "path": "--kv--" },
           "aggs": {
             "filter_status": {
-              "filter": {
-                "term": {
-                  "indexedKeyValues.key": "httpStatus"
-                }
-              },
+              "filter": { "term": { "--kv--.key": "httpStatus" } },
               "aggs": {
                 "status_groups": {
-                  "range": {
-                    "field": "indexedKeyValues.valueInteger",
-                    "ranges": [
-                      { "key": "2xx", "from": 200, "to": 300 },
-                      { "key": "3xx", "from": 300, "to": 400 },
-                      { "key": "4xx", "from": 400, "to": 500 },
-                      { "key": "5xx", "from": 500, "to": 600 }
-                    ]
+                  "filters": {
+                    "filters": {
+                      "2xx": { "range": { "--kv--.valueInteger": { "gte": 200, "lt": 300 } } },
+                      "3xx": { "range": { "--kv--.valueInteger": { "gte": 300, "lt": 400 } } },
+                      "4xx": { "range": { "--kv--.valueInteger": { "gte": 400, "lt": 500 } } },
+                      "5xx": { "range": { "--kv--.valueInteger": { "gte": 500, "lt": 600 } } }
+                    }
                   }
                 }
               }

@@ -16,19 +16,19 @@
       "aggs": {
         "avg_duration": {
           "nested": {
-            "path": "indexedKeyValues"
+            "path": "--kv--"
           },
           "aggs": {
             "filter_duration": {
               "filter": {
                 "term": {
-                  "indexedKeyValues.key": "duration"
+                  "--kv--.key": "duration"
                 }
               },
               "aggs": {
                 "avg_value": {
                   "avg": {
-                    "field": "indexedKeyValues.valueInteger"
+                    "field": "--kv--.valueInteger"
                   }
                 }
               }
