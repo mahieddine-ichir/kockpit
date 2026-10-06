@@ -67,3 +67,8 @@ kockpit:
   legacy:
     aws:
       region: eu-west-1
+
+  manifests:
+    aws:
+      s3:
+        bucket: manifests

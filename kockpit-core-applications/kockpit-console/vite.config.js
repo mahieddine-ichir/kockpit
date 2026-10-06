@@ -11,6 +11,12 @@ export default defineConfig({
         target: 'http://localhost:9080',
         changeOrigin: true,
         secure: false,
+        // Local dev has no Cognito login: when the backend requires one (Cognito issuer
+        // configured), pass a real ID token copied from the deployed console:
+        //   KOCKPIT_ID_TOKEN=eyJ... npm run dev
+        headers: process.env.KOCKPIT_ID_TOKEN
+          ? { Authorization: `Bearer ${process.env.KOCKPIT_ID_TOKEN}` }
+          : {},
       }
     }
   },
