@@ -140,8 +140,15 @@ resource "aws_cloudfront_origin_request_policy" "api_proxy_policy" {
   count = var.backend_alb_domain != null && var.backend_alb_domain != "" ? 1 : 0
   name  = "${var.service_name}-${var.kockpit_env}-api-proxy-policy"
 
+  # The console's Cognito login (lambda-auth.js) keeps the ID token in an HttpOnly id_token cookie, so
+  # the SPA can't send it as "Authorization: Bearer": the backend reads it from this cookie instead
+  # (SecurityConfig.bearerOrCookieTokenResolver). Authorization itself can't be whitelisted here:
+  # CloudFront only forwards it through a cache policy.
   cookies_config {
-    cookie_behavior = "none"
+    cookie_behavior = "whitelist"
+    cookies {
+      items = ["id_token"]
+    }
   }
 
   headers_config {
