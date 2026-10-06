@@ -73,3 +73,4 @@ kockpit-backends/kockpit-backend-application/src/main/resources/application-mic.
 /docker/opensearch/data/
 application-accor-dev-efo.yml
 files
+application-tunnel.yaml
