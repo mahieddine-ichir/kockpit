@@ -98,11 +98,14 @@ exports.handler = async (event) => {
         });
 
         // For SPA routes, rewrite to index.html if authenticated
-        // This handles direct access to React Router routes in new tabs
+        // This handles direct access to React Router routes in new tabs. Files at the bucket root
+        // (kockpit.svg, kockpit-short.svg, config.js, ...) have an extension and are served as-is:
+        // rewriting them returned index.html instead (broken sidebar logo/favicon, config.js not loaded).
+        const isFile = /\.[^/]+$/.test(request.uri);
         if (!request.uri.startsWith('/api/') &&
             !request.uri.startsWith('/assets/') &&
-            request.uri !== '/' &&
-            request.uri !== '/index.html') {
+            !isFile &&
+            request.uri !== '/') {
             console.log('Rewriting SPA route to index.html:', request.uri);
             request.uri = '/index.html';
         }
