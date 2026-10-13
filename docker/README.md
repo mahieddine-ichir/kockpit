@@ -1,10 +1,57 @@
 # Kockpit Docker Compose Configurations
 
 This directory contains Docker Compose configurations for running Kockpit with different storage backends.
+Each profile has its own folder with a `docker-compose.yml`, so run `docker compose` from inside that folder:
+
+| Folder        | Contents                                                                    |
+|---------------|-----------------------------------------------------------------------------|
+| `kafka/`      | Infrastructure only: Kafka, OpenSearch, OpenSearch Dashboards               |
+| `azure/`      | Kafka + OpenSearch + Kockpit applications using Azure Storage               |
+| `aws/`        | LocalStack (S3, SQS, SNS, Kinesis, DynamoDB) + OpenSearch                   |
+| `filesystem/` | Kafka + OpenSearch + Kockpit applications using local filesystem storage    |
+| `opensearch/` | OpenSearch + Dashboards only; also holds the OpenSearch data (`data/`, git-ignored) and init data shared by all profiles |
+
+`docker-compose.yml` at the root of this directory includes `kafka/docker-compose.yml`, so `docker compose up -d`
+from here starts the Kafka infrastructure.
+
+All profiles use the same container names (`opensearch`, `kafka`, ...), so run one profile at a time.
+
+## Kafka Infrastructure
+
+The `kafka/` folder starts only the infrastructure needed to run Kockpit locally against Kafka
+(the Kockpit applications themselves are run from the IDE):
+
+- **kafka**: Apache Kafka (KRaft, single node)
+- **opensearch**: OpenSearch, with security disabled
+- **dashboards**: OpenSearch Dashboards
+
+```bash
+cd kafka
+docker compose up -d
+```
+
+Endpoints:
+- Kafka, from the host: `localhost:29092`
+- Kafka, from other containers: `kafka:9092`
+- OpenSearch: http://localhost:9200
+- OpenSearch Dashboards: http://localhost:5601
+
+OpenSearch data is stored in `opensearch/data` (git-ignored), and `opensearch/init/data` is mounted at
+`/init-data`. To create the index and load the sample audits:
+
+```bash
+docker exec -w /init-data opensearch bash init-data.sh
+```
+
+Because the Compose project is named after the folder (`kafka`), stop it from the same folder:
+
+```bash
+docker compose down
+```
 
 ## Azure Configuration
 
-The `docker-compose-azure.yml` file sets up Kockpit with Azure Storage Account integration.
+The `azure/` folder sets up Kockpit with Azure Storage Account integration.
 
 ### Services
 
@@ -18,8 +65,9 @@ The `docker-compose-azure.yml` file sets up Kockpit with Azure Storage Account i
 
 ### Setup Instructions
 
-1. **Copy the environment template**:
+1. **Copy the environment template** (`.env` is git-ignored and loaded automatically by Compose):
    ```bash
+   cd azure
    cp .env.azure .env
    ```
 
@@ -31,7 +79,7 @@ The `docker-compose-azure.yml` file sets up Kockpit with Azure Storage Account i
 
 3. **Start the services**:
    ```bash
-   docker-compose -f docker-compose-azure.yml --env-file .env up -d
+   docker compose up -d
    ```
 
 4. **Access the services**:
@@ -40,7 +88,7 @@ The `docker-compose-azure.yml` file sets up Kockpit with Azure Storage Account i
    - Audit Console UI: http://localhost:3000
    - OpenSearch: http://localhost:9200
    - OpenSearch Dashboards: http://localhost:5601
-   - Kafka: localhost:9092
+   - Kafka: localhost:29092 (from the host), kafka:9092 (from other containers)
    - Audit Stream: http://localhost:9080
 
 ### Getting Azure Storage Credentials
@@ -56,23 +104,40 @@ The `docker-compose-azure.yml` file sets up Kockpit with Azure Storage Account i
 ### Stopping Services
 
 ```bash
-docker-compose -f docker-compose-azure.yml down
+docker compose down
 ```
 
 ### Viewing Logs
 
 ```bash
 # All services
-docker-compose -f docker-compose-azure.yml logs -f
+docker compose logs -f
 
 # Specific service
-docker-compose -f docker-compose-azure.yml logs -f kockpit-backend-application
+docker compose logs -f kockpit-backend-application
 ```
 
-## Other Configurations
+## AWS Configuration
 
-- `docker-compose-aws.yml`: AWS configuration with Kinesis
-- `docker-compose-filesystem.yml`: Local filesystem storage configuration
+The `aws/` folder starts LocalStack and OpenSearch. The LocalStack init scripts in `aws/init` create the S3
+buckets, SQS queues, SNS topics, Kinesis streams and DynamoDB tables when LocalStack is ready.
+
+```bash
+cd aws
+docker compose up -d
+```
+
+If your LocalStack version requires an auth token, export `LOCALSTACK_AUTH_TOKEN` before starting it.
+
+## Filesystem Configuration
+
+The `filesystem/` folder runs Kafka, OpenSearch and the Kockpit applications, storing audits and manifests in
+`~/IdeaProjects/kockpit/data`.
+
+```bash
+cd filesystem
+docker compose up -d
+```
 
 ## Miscellaneous
 

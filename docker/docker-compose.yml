@@ -1,1 +1,3 @@
-docker-compose-kafka-opensearch.yml
+# default stack: local infrastructure for Kafka (see kafka/docker-compose.yml)
+include:
+  - kafka/docker-compose.yml
