@@ -6,7 +6,7 @@ Each profile has its own folder with a `docker-compose.yml`, so run `docker comp
 | Folder        | Contents                                                                    |
 |---------------|-----------------------------------------------------------------------------|
 | `kafka/`      | Infrastructure only: Kafka, OpenSearch, OpenSearch Dashboards               |
-| `azure/`      | Kafka + OpenSearch + Kockpit applications using Azure Storage               |
+| `azure/`      | Kafka + OpenSearch + Kockpit applications using Azure Storage (Azurite)     |
 | `aws/`        | LocalStack (S3, SQS, SNS, Kinesis, DynamoDB) + OpenSearch                   |
 | `filesystem/` | Kafka + OpenSearch + Kockpit applications using local filesystem storage    |
 | `opensearch/` | OpenSearch + Dashboards only; also holds the OpenSearch data (`data/`, git-ignored) and init data shared by all profiles |
@@ -51,10 +51,13 @@ docker compose down
 
 ## Azure Configuration
 
-The `azure/` folder sets up Kockpit with Azure Storage Account integration.
+The `azure/` folder sets up Kockpit with Azure Storage. By default, storage is emulated locally by
+[Azurite](https://github.com/Azure/Azurite), so no Azure account is needed.
 
 ### Services
 
+- **azurite**: Azure Blob Storage emulator (port 10000)
+- **azurite-init**: one-shot container that creates the blob containers in Azurite, then exits
 - **kafka**: Apache Kafka for event streaming (compatible with Azure Event Hub)
 - **opensearch**: OpenSearch for search and analytics
 - **opensearch-dashboard**: OpenSearch Dashboards for visualization
@@ -63,7 +66,25 @@ The `azure/` folder sets up Kockpit with Azure Storage Account integration.
 - **kockpit-console**: Web UI for audit visualization
 - **kockpit-sample-all**: Sample application demonstrating Kockpit SDK usage
 
-### Setup Instructions
+### Running with Azurite (default)
+
+```bash
+cd azure
+docker compose up -d
+```
+
+Azurite uses its standard development account, `devstoreaccount1`, with its
+[well-known key](https://learn.microsoft.com/azure/storage/common/storage-use-azurite#http-connection-strings).
+`azurite-init` creates the `data` and `manifests` containers, and the backend and sample application wait for it
+to finish. Blob data is kept in the `azurite-data` volume.
+
+To browse the blobs from the host (e.g. with Azure Storage Explorer), use the connection string:
+
+```
+DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;
+```
+
+### Running with a real Storage Account
 
 1. **Copy the environment template** (`.env` is git-ignored and loaded automatically by Compose):
    ```bash
@@ -75,21 +96,26 @@ The `azure/` folder sets up Kockpit with Azure Storage Account integration.
    - `STORAGE_ENDPOINT`: Your Azure Storage endpoint URL
    - `STORAGE_ACCOUNT`: Your Azure Storage account name
    - `STORAGE_KEY`: Your Azure Storage account access key
-   - `STORAGE_CONTAINER`: Container name (defaults to "kockpit")
+   - `STORAGE_CONTAINER`: Container name (defaults to "data")
+   - `MANIFESTS_STORAGE_*`: Same settings for the manifests storage (container defaults to "manifests")
+
+   The containers must already exist in the storage account. Azurite still starts, but is not used.
 
 3. **Start the services**:
    ```bash
    docker compose up -d
    ```
 
-4. **Access the services**:
-   - Backend API: http://localhost:8080/backend/api
-   - Sample Application: http://localhost:8081/sample-app
-   - Audit Console UI: http://localhost:3000
-   - OpenSearch: http://localhost:9200
-   - OpenSearch Dashboards: http://localhost:5601
-   - Kafka: localhost:29092 (from the host), kafka:9092 (from other containers)
-   - Audit Stream: http://localhost:9080
+### Endpoints
+
+- Backend API: http://localhost:8080/backend/api
+- Sample Application: http://localhost:8082/sample-app
+- Audit Console UI: http://localhost:3000
+- OpenSearch: http://localhost:9200
+- OpenSearch Dashboards: http://localhost:5601
+- Kafka: localhost:29092 (from the host), kafka:9092 (from other containers)
+- Azurite Blob: http://localhost:10000/devstoreaccount1
+- Audit Stream: http://localhost:8081
 
 ### Getting Azure Storage Credentials
 

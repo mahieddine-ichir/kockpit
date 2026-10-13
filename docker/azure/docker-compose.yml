@@ -1,4 +1,4 @@
-# to load .env.azure config, use docker compose --env-file
+# storage defaults to Azurite; copy .env.azure to .env to use a real storage account
 services:
   kafka:
     image: apache/kafka:4.3.1
@@ -62,20 +62,59 @@ services:
       opensearch:
         condition: service_healthy
 
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.37.0
+    container_name: azurite
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000 --location /data --loose --skipApiVersionCheck
+    ports:
+      - "10000:10000"
+    volumes:
+      - azurite-data:/data
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "10000"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # creates the blob containers in Azurite (the applications don't create them)
+  azurite-init:
+    image: mcr.microsoft.com/azure-cli:2.91.0
+    container_name: azurite-init
+    environment:
+      - AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;
+      - CONTAINERS=${STORAGE_CONTAINER:-data} ${MANIFESTS_STORAGE_CONTAINER:-manifests}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        for c in $$CONTAINERS; do
+          az storage container create --name "$$c" --output none && echo "container $$c ready"
+        done
+    depends_on:
+      azurite:
+        condition: service_healthy
+
   kockpit-backend-application:
     image: ghcr.io/mahieddine-ichir/kockpit/kockpit-backend-application-azure:latest
     container_name: kockpit-backend-application
     ports:
       - "8080:8080"
     environment:
-      - STORAGE_ENDPOINT=${STORAGE_ENDPOINT}
-      - STORAGE_ACCOUNT=${STORAGE_ACCOUNT}
-      - STORAGE_KEY=${STORAGE_KEY}
-      - STORAGE_CONTAINER=${STORAGE_CONTAINER}
+      # storage defaults to Azurite; set these in .env to use a real storage account
+      - KOCKPIT_COMMUNICATION_AZURE_STORAGE_ENDPOINT=${STORAGE_ENDPOINT:-http://azurite:10000/devstoreaccount1}
+      - STORAGE_ACCOUNT=${STORAGE_ACCOUNT:-devstoreaccount1}
+      - STORAGE_KEY=${STORAGE_KEY:-Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==}
+      - STORAGE_CONTAINER=${STORAGE_CONTAINER:-data}
+      - KOCKPIT_BACKEND_MANIFESTS_AZURE_STORAGE_ENDPOINT=${MANIFESTS_STORAGE_ENDPOINT:-http://azurite:10000/devstoreaccount1}
+      - MANIFESTS_STORAGE_ACCOUNT=${MANIFESTS_STORAGE_ACCOUNT:-devstoreaccount1}
+      - MANIFESTS_STORAGE_KEY=${MANIFESTS_STORAGE_KEY:-Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==}
+      - MANIFESTS_STORAGE_CONTAINER=${MANIFESTS_STORAGE_CONTAINER:-manifests}
       - OPENSEARCH_ENDPOINTS=http://opensearch:9200
       - spring.profiles.include=azure
       - INDEX_NAME=audit-data
       - kockpit.sdk.service.audit.notification.topic=audits
+    depends_on:
+      azurite-init:
+        condition: service_completed_successfully
 
   kockpit-console:
     image: ghcr.io/mahieddine-ichir/kockpit/kockpit-console:latest
@@ -115,6 +154,11 @@ services:
       - KOCKPIT_SDK_ENV=local
       - KOCKPIT_SDK_APPID=sample-app
       - kockpit.sdk.service.audit.notification.topic=audits
+      # storage defaults to Azurite; set these in .env to use a real storage account
+      - KOCKPIT_COMMUNICATION_AZURE_STORAGE_ENDPOINT=${STORAGE_ENDPOINT:-http://azurite:10000/devstoreaccount1}
+      - STORAGE_ACCOUNT=${STORAGE_ACCOUNT:-devstoreaccount1}
+      - STORAGE_KEY=${STORAGE_KEY:-Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==}
+      - STORAGE_CONTAINER=${STORAGE_CONTAINER:-data}
     volumes:
       - ~/IdeaProjects/kockpit/data:/data
     links:
@@ -122,6 +166,9 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+      azurite-init:
+        condition: service_completed_successfully
 
 volumes:
   opensearch-data:
+  azurite-data:
