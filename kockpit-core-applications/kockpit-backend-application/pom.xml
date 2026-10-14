@@ -101,19 +101,6 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
          -->
-            <!-- Smoke test (migration Boot 4) : backends filesystem pour charger le contexte sans profil Maven -->
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-features-manifest-service-backend-filesystem</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kockpit</groupId>
-            <artifactId>kockpit-core-communication-filesystem</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
 </dependencies>
 
     <profiles>
@@ -178,6 +165,10 @@
         </profile>
         <profile>
             <id>filesystem</id>
+            <!-- default profile: a build without -P (and the smoke test) uses the filesystem backends -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <finalName>${project.artifactId}-${project.version}-filesystem</finalName>
             </build>
