@@ -79,7 +79,7 @@ public class OpensearchAuditConsumerConfiguration {
             AuditorService auditorService,
             AuditorKeyValueService auditorKeyValueService, AuditorEventService auditorEventService,
             SdkApplicationProperties sdkApplicationProperties,
-            @Value("${kockpit.audit.stream.opensearch.ttl_default_in_days}") Integer ttlDefaultInDays,
+            @Value("${kockpit.audit.stream.opensearch.ttl_default_in_days:5}") Integer ttlDefaultInDays,
             @Value("${kockpit.audit.stream.opensearch.batch_size:100}") int batchSize
     ) {
         return new AuditConsumerForOpensearch(

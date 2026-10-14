@@ -1,0 +1,17 @@
+BOOTSTRAP_SERVERS: localhost:29092
+
+kockpit:
+  env: local
+  audit:
+    stream:
+      opensearch:
+        index_suffix: auditdata
+      consumer: opensearch
+      kafka:
+        topics: audits
+
+    notification:
+      kafka:
+        topic: ${NOTIFICATION_TOPIC:audits}
+
+

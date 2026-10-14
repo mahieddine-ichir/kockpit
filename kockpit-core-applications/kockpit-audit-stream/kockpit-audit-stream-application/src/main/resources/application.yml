@@ -20,14 +20,15 @@ kockpit:
   domain: kockpit
   env: local
   appId: ${spring.application.name}
-  aws.region: eu-west-1
+  aws:
+    region: eu-west-1
 
   audit:
     stream:
       s3:
         bucket_name: audits-${kockpit.env}
         allowed_ttl_days: 1,7,14,30,60,90,120
-      consumer: opensearch-s3
+      consumer: opensearch
       opensearch:
         endpoints: ${OPENSEARCH_ENDPOINTS:localhost:9200}
         index_suffix: ${INDEX_SUFFIX:audit-data}
@@ -51,4 +52,5 @@ kockpit:
       kinesis:
         stream_name: ${KINESIS_STREAM_NAME:auditstream}
 
-aws.region: eu-west-1
+aws:
+  region: eu-west-1
