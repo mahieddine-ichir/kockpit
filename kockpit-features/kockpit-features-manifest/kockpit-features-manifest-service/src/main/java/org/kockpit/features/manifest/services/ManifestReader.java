@@ -116,9 +116,21 @@ public final class ManifestReader {
             searchColumns.add(searchColumn);
         }
 
+        // appIds: the applications whose audits this service shows - AuditListPage filters on them,
+        // since every service of a domain/env otherwise lists the audits of all its applications.
+        List<String> appIds = new ArrayList<>();
+        for (JsonNode appId : auditService.path("appIds")) {
+            if (appId.isString() && !appId.asString().isBlank()) {
+                appIds.add(appId.asString());
+            }
+        }
+
         Map<String, Object> config = new LinkedHashMap<>();
         config.put("columns", columns);
         config.put("search_columns", searchColumns);
+        if (!appIds.isEmpty()) {
+            config.put("app_ids", appIds);
+        }
         return config;
     }
 

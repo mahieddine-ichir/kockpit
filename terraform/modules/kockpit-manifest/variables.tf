@@ -61,6 +61,8 @@ variable "audit_services" {
     name    = string
     id      = string
     columns = list(string)
+    # appIds whose audits this service shows; empty = every application of the domain/env
+    app_ids = optional(list(string), [])
     search_columns = list(object({
       name    = string
       type    = string

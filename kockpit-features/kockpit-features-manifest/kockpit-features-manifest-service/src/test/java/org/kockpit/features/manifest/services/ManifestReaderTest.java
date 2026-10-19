@@ -109,6 +109,26 @@ class ManifestReaderTest {
                 Map.of("name", "httpMethod", "type", "text", "path", "indexedKeyValues.httpMethod"),
                 Map.of("name", "httpStatus", "type", "number", "path", "indexedKeyValues.httpStatus")
         );
+        assertThat(config.get("app_ids")).isEqualTo(List.of("wcbno-order"));
+    }
+
+    @Test
+    void should_not_set_app_ids_when_the_legacy_audit_service_declares_none() {
+        String json = """
+                {
+                  "domain": "wcbno", "env": "dev",
+                  "applications": [
+                    { "id": "wcbno-order",
+                      "services": { "audit": [ { "name": "wcbno-order-api-v1", "appIds": [] } ] } }
+                  ]
+                }
+                """;
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> config = (Map<String, Object>) ManifestReader.read(json.getBytes(StandardCharsets.UTF_8))
+                .getServices().getFirst().getConfig();
+
+        assertThat(config).doesNotContainKey("app_ids");
     }
 
     @Test

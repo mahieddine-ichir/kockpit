@@ -48,7 +48,8 @@ locals {
             )
           ]
         },
-        length(svc.saved_filters) > 0 ? { saved_filters = svc.saved_filters } : {}
+        length(svc.saved_filters) > 0 ? { saved_filters = svc.saved_filters } : {},
+        length(svc.app_ids) > 0 ? { app_ids = svc.app_ids } : {}
       )
     }
   ]

@@ -74,22 +74,22 @@ public class OpensearchRepository implements SearchService {
 
     @SneakyThrows
     @Override
-    public Page listAudits(String domain, String env, Integer start, Integer size) {
+    public Page listAudits(String domain, String env, List<String> appIds, Integer start, Integer size) {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         boolQueryBuilder.must(matchQuery("env", env));
         boolQueryBuilder.must(matchQuery("domain", domain));
 
-        return runQuery(boolQueryBuilder, domain, env, start, size);
+        return runQuery(restrictToAppIds(boolQueryBuilder, appIds), domain, env, start, size);
     }
 
     @Override
-    public Page searchByQuery(String domain, String env, String query, Integer start, Integer size) {
-        return this.searchAudits(domain, env, query, null, start, size);
+    public Page searchByQuery(String domain, String env, String query, List<String> appIds, Integer start, Integer size) {
+        return this.searchAudits(domain, env, query, null, appIds, start, size);
     }
 
     @SneakyThrows
     @Override
-    public Page searchAudits(String domain, String env, String query, List<SearchTerm> searchTerms, Integer start, Integer size) {
+    public Page searchAudits(String domain, String env, String query, List<SearchTerm> searchTerms, List<String> appIds, Integer start, Integer size) {
         BoolQueryBuilder rootBoolQueryBuilder = new BoolQueryBuilder();
         if (!CollectionUtils.isEmpty(searchTerms)) {
             log.debug("Search terms {}", searchTerms);
@@ -110,7 +110,27 @@ public class OpensearchRepository implements SearchService {
                     }
                 }));
 
-        return runQuery(rootBoolQueryBuilder, domain, env, start, size);
+        return runQuery(restrictToAppIds(rootBoolQueryBuilder, appIds), domain, env, start, size);
+    }
+
+    /**
+     * Wraps the query rather than adding a clause to it: a bool query whose only clauses are
+     * should (the free-text search) requires one of them to match, but once it also has a
+     * must/filter clause its should clauses become optional - adding the appId filter in place
+     * would make the free text match everything.
+     */
+    static BoolQueryBuilder restrictToAppIds(BoolQueryBuilder query, List<String> appIds) {
+        List<String> ids = appIds == null ? List.of() : appIds.stream()
+                .filter(id -> id != null && !id.isBlank())
+                .toList();
+        if (ids.isEmpty()) {
+            return query;
+        }
+        BoolQueryBuilder appIdQuery = new BoolQueryBuilder();
+        ids.forEach(id -> appIdQuery.should(termQuery("appId", id)));
+        return new BoolQueryBuilder()
+                .filter(appIdQuery)
+                .must(query);
     }
 
     private void buildQuery(List<SearchTerm> searchTerms, BoolQueryBuilder rootBoolQueryBuilder) {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useSearchParams} from 'react-router-dom';
 import {advancedSearchAudits, fetchAuditReportsWithPaging, searchAudits} from '../../services/api.js';
 import {BookmarkIcon, CheckCircleIcon, ClipboardDocumentListIcon, EyeIcon, FunnelIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {loadSettings} from '../../settings/useSettings.js';
@@ -350,7 +350,15 @@ const DateRangeControl = ({ searchTerms, addTerm, clearTerm }) => {
 };
 
 
-const AuditListPage = ({ domain, env, config, selectedIdx }) => {
+// The sidebar links each audit service as /audits?service=<id>: keyed on it, so switching
+// service starts from a clean page (search, filters, saved filters, paging).
+const AuditListPage = (props) => {
+  const [searchParams] = useSearchParams();
+  const serviceId = searchParams.get('service') || '';
+  return <AuditServicePage key={serviceId} serviceId={serviceId} {...props} />;
+};
+
+const AuditServicePage = ({ domain, env, config, selectedIdx, serviceId }) => {
   const navigate = useNavigate();
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -371,9 +379,14 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
   //let filters = [];
   let label = '';
   let thisConfig = '';
+  // only the audits of these applications, when the service declares them (an aggregated
+  // domain/env holds the services of several manifests, each for its own applications)
+  let appIds = [];
   if (config['services']) {
-      thisConfig = config['services'].find(service => service.type === 'audit');
+      const auditServices = config['services'].filter(service => service.type === 'audit');
+      thisConfig = auditServices.find(service => service.id === serviceId) || auditServices[0];
     if (thisConfig) {
+        appIds = thisConfig.config?.['app_ids'] || [];
         label = thisConfig.label ? thisConfig.label : thisConfig.name;
         columns = (thisConfig.config?.columns || [])
             .map(column => {
@@ -387,15 +400,16 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
   }
 
   useEffect(() => {
-      if (thisConfig && thisConfig.config['saved_filters']) {
+      if (thisConfig && thisConfig.config?.['saved_filters']) {
           //filters = thisConfig.config['saved_filters'];
           setFilters(thisConfig.config['saved_filters']);
       }
   }, []);
 
+  const appIdsKey = appIds.join(',');
   useEffect(() => {
     loadData();
-  }, [domain, env, currentPage, itemsPerPage]);
+  }, [domain, env, appIdsKey, currentPage, itemsPerPage]);
 
   const handleViewDetails = (audit) => {
       window.open(`/audits/${audit.id}?selectedConfig=${selectedIdx}`, '_blank');
@@ -420,7 +434,7 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
       if (searchTerms.length > 0) {
           setLoading(true);
           console.info(`load data, searchTerms ${JSON.stringify(searchTerms)}`);
-          advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
+          advancedSearchAudits(searchTerms, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage, appIds)
               .then(data => {
                   setAudits(data.items);
                   setTotalCount(data.total_count);
@@ -430,7 +444,7 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
       } else if (search || search.trim().length > 0) {
           setLoading(true);
           console.info(`load data, search ${JSON.stringify(search)}`);
-          searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
+          searchAudits(search, domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage, appIds)
               .then(data => {
                   setAudits(data.items);
                   setTotalCount(data.total_count);
@@ -439,7 +453,7 @@ const AuditListPage = ({ domain, env, config, selectedIdx }) => {
               .catch(onError);
       } else {
           console.log(`loading all data: ${domain}, ${env}, ${itemsPerPage}, ${(currentPage - 1) * itemsPerPage}`);
-          fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage)
+          fetchAuditReportsWithPaging(domain, env, itemsPerPage, (currentPage - 1) * itemsPerPage, appIds)
               .then((data) => {
                   if (data && data.items && data.items.length > 0) {
                       setAudits(data.items);

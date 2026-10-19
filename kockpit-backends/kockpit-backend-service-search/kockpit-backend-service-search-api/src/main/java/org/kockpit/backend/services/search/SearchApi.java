@@ -24,6 +24,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchApi {
 
+    private static final String APP_ID_DESCRIPTION =
+            "restrict to the audits of these applications (repeatable); all applications when absent";
+
     private final SearchService searchService;
 
     /**
@@ -89,12 +92,14 @@ public class SearchApi {
             @PathVariable("domain") String domain,
         @Parameter(name = "env", description = "", required = true, in = ParameterIn.PATH)
             @PathVariable("env") String env,
+        @Parameter(name = "appId", description = APP_ID_DESCRIPTION, in = ParameterIn.QUERY)
+            @RequestParam(value = "appId", required = false) List<String> appIds,
         @Parameter(name = "start", description = "number of elements to skip", in = ParameterIn.QUERY)
             @RequestParam(value = "start", required = false, defaultValue = "0") Integer start,
         @Parameter(name = "size", description = "number of items to return", in = ParameterIn.QUERY)
             @RequestParam(value = "size", required = false, defaultValue = "50") Integer size
     ) {
-        Page page = searchService.listAudits(domain, env, start, size);
+        Page page = searchService.listAudits(domain, env, appIds, start, size);
         return ResponseEntity.ok(page);
     }
 
@@ -135,13 +140,15 @@ public class SearchApi {
             @RequestParam(value = "query", required = false) String query,
             @Parameter(name = "status", description = "", in = ParameterIn.QUERY)
             @RequestParam(value = "status", required = false) String status,
+            @Parameter(name = "appId", description = APP_ID_DESCRIPTION, in = ParameterIn.QUERY)
+            @RequestParam(value = "appId", required = false) List<String> appIds,
             @Parameter(name = "start", description = "number of elements to skip", in = ParameterIn.QUERY)
             @RequestParam(value = "start", required = false, defaultValue = "0") Integer start,
             @Parameter(name = "size", description = "number of items to return", in = ParameterIn.QUERY)
             @RequestParam(value = "size", required = false, defaultValue = "50") Integer size,
             @RequestBody List<SearchTerm> searchTerms
             ) {
-        Page page = searchService.searchAudits(domain, env, query, searchTerms, start, size);
+        Page page = searchService.searchAudits(domain, env, query, searchTerms, appIds, start, size);
         return ResponseEntity.ok(page);
     }
 
@@ -155,12 +162,14 @@ public class SearchApi {
             @RequestParam(value = "query", required = false) String query,
             @Parameter(name = "status", description = "", in = ParameterIn.QUERY)
             @RequestParam(value = "status", required = false) String status,
+            @Parameter(name = "appId", description = APP_ID_DESCRIPTION, in = ParameterIn.QUERY)
+            @RequestParam(value = "appId", required = false) List<String> appIds,
             @Parameter(name = "start", description = "number of elements to skip", in = ParameterIn.QUERY)
             @RequestParam(value = "start", required = false, defaultValue = "0") Integer start,
             @Parameter(name = "size", description = "number of items to return", in = ParameterIn.QUERY)
             @RequestParam(value = "size", required = false, defaultValue = "50") Integer size
             ) {
-        Page page = searchService.searchByQuery(domain, env, query, start, size);
+        Page page = searchService.searchByQuery(domain, env, query, appIds, start, size);
         return ResponseEntity.ok(page);
     }
 

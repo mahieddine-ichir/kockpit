@@ -10,21 +10,25 @@ const instance = axios.create({
    baseURL: API_BASE
 })
 
+// appIds (optional): restrict the results to the audits of these applications
+const appIdParams = (appIds) =>
+    (appIds || []).map(appId => `&appId=${encodeURIComponent(appId)}`).join('');
+
 // deprecated use paging one
-export const searchAudits = async (query, domain, env, size, start) => {
-  const response = await instance.get(`/${domain}/${env}/audits/_search?query=${query}&size=${size}&start=${start}`);
+export const searchAudits = async (query, domain, env, size, start, appIds) => {
+  const response = await instance.get(`/${domain}/${env}/audits/_search?query=${query}&size=${size}&start=${start}${appIdParams(appIds)}`);
   return response.data;
 };
 
 // deprecated use paging one
-export const advancedSearchAudits = async (terms, domain, env, size, start) => {
-  const response = await instance.post(`/${domain}/${env}/audits/_search?size=${size}&start=${start}`, terms);
+export const advancedSearchAudits = async (terms, domain, env, size, start, appIds) => {
+  const response = await instance.post(`/${domain}/${env}/audits/_search?size=${size}&start=${start}${appIdParams(appIds)}`, terms);
   return response.data;
 };
 
 // fixme remove deprecated
-export const fetchAuditReportsWithPaging = async (domain, env, size, start) => {
-  const response = await instance.get(`/${domain}/${env}/audits?size=${size}&start=${start}`);
+export const fetchAuditReportsWithPaging = async (domain, env, size, start, appIds) => {
+  const response = await instance.get(`/${domain}/${env}/audits?size=${size}&start=${start}${appIdParams(appIds)}`);
   return response.data;
 };
 
