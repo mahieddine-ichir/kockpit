@@ -12,6 +12,7 @@
     <modules>
         <module>kockpit-features-audit-starters-kafka</module>
         <module>kockpit-features-audit-starters-kinesis</module>
+        <module>kockpit-features-audit-starters-eventhub</module>
     </modules>
 
 
