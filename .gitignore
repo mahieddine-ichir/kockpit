@@ -74,3 +74,8 @@ kockpit-backends/kockpit-backend-application/src/main/resources/application-mic.
 application-accor-dev-efo.yml
 files
 application-tunnel.yaml
+
+### Local data dumps and script run outputs ###
+/ism_explain_full.json
+/scripts/*.json
+/scripts/opensearch-snapshot/*.txt
