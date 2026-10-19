@@ -96,15 +96,15 @@ resource "aws_s3_object" "manifest" {
 }
 
 # ── Upload to Azure Blob Storage ──────────────────────────────────────────────
-# The storage account and container are expected to already exist.
+# The storage account and container are expected to already exist. storage_container_id is the
+# container's Azure resource ID (azurerm 5 dropped storage_account_name/storage_container_name).
 
 resource "azurerm_storage_blob" "manifest" {
-  name                   = "kockpit-dev-manifest.json"
-  storage_account_name   = "mystorageaccount"
-  storage_container_name = "manifests"
-  type                   = "Block"
-  source_content         = module.manifest.manifest_json
-  content_type           = "application/json"
+  name                 = "kockpit-dev-manifest.json"
+  storage_container_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.Storage/storageAccounts/mystorageaccount/blobServices/default/containers/manifests"
+  type                 = "Block"
+  source_content       = module.manifest.manifest_json
+  content_type         = "application/json"
 }
 
 # ── Outputs ───────────────────────────────────────────────────────────────────
