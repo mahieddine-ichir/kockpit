@@ -19,6 +19,9 @@ import java.util.Set;
  *       service of a type) or {@code "audit:offers-api"} (one service).</li>
  *   <li>Older policies grant through {@code permissions} instead ({@code "audit:read"}, with
  *       empty {@code resources} meaning every service of that type) - still honoured.</li>
+ *   <li>Group names match case-insensitively, and the group {@code "*"} matches every user
+ *       (e.g. {@code {"groups":["*"],"resources":["audit:*"]}}: audits open to all) - as the
+ *       legacy WCP console did.</li>
  * </ul>
  */
 public final class ManifestAccess {
@@ -107,7 +110,11 @@ public final class ManifestAccess {
     }
 
     private static boolean intersects(Collection<String> groups, Set<String> userGroups) {
-        return groups != null && userGroups != null && groups.stream().anyMatch(userGroups::contains);
+        if (groups == null || userGroups == null) {
+            return false;
+        }
+        return groups.stream().anyMatch(group -> WILDCARD.equals(group)
+                || userGroups.stream().anyMatch(group::equalsIgnoreCase));
     }
 
     private static boolean notEmpty(Collection<?> collection) {
