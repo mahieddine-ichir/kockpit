@@ -172,6 +172,54 @@ class ManifestAccessTest {
     }
 
     @Test
+    void a_wildcard_policy_group_grants_its_resources_to_every_user() {
+        // wcplatform-wcpsamples-manifest-dev.json: admins get everything, everyone gets the audits.
+        ManifestDto legacy = ManifestReader.read("""
+                {
+                  "domain": "wcplatform", "env": "dev",
+                  "groups": null,
+                  "policies": [
+                    {"groups":["AAD-B2-AWS-531583874639-Admin"],"permissions":[],"resources":["audit:*","cache:*","dynaconfig:*","featureflipping:*"]},
+                    {"groups":["*"],"permissions":[],"resources":["audit:*"]}
+                  ],
+                  "applications": [
+                    { "id": "wcpsamples", "services": {
+                        "audit": [ { "name": "wcpsamples" } ],
+                        "cache": [ { "name": "SamplesInfo" } ] } }
+                  ]
+                }
+                """.getBytes(StandardCharsets.UTF_8));
+        Set<String> anyone = Set.of("ACCOR-WCPConsole-WBNO-ReadOnly");
+
+        assertThat(ManifestAccess.canSee(legacy, anyone)).isTrue();
+        assertThat(ManifestAccess.visibleTo(legacy, anyone).getServices())
+                .extracting(ServiceDto::getId).containsExactly("wcpsamples");
+        assertThat(ManifestAccess.canAccess(legacy, anyone, "audit", "wcpsamples")).isTrue();
+        assertThat(ManifestAccess.canAccess(legacy, anyone, "cache", "SamplesInfo")).isFalse();
+        assertThat(ManifestAccess.canAccess(legacy, Set.of(), "audit", null)).isTrue();
+        assertThat(ManifestAccess.canAccess(legacy, Set.of("AAD-B2-AWS-531583874639-Admin"), "cache", "SamplesInfo")).isTrue();
+    }
+
+    @Test
+    void a_wildcard_manifest_group_makes_the_manifest_visible_to_every_user() {
+        ManifestDto manifest = ManifestReader.read("""
+                { "domain": "wcc", "env": "dev", "groups": ["*"], "services": [ { "type": "audit", "name": "a", "id": "a" } ] }
+                """.getBytes(StandardCharsets.UTF_8));
+
+        assertThat(ManifestAccess.canSee(manifest, Set.of("whoever"))).isTrue();
+        assertThat(ManifestAccess.canAccess(manifest, Set.of("whoever"), "cache", "anything")).isTrue();
+    }
+
+    @Test
+    void group_names_match_case_insensitively() {
+        Set<String> lowerCase = Set.of("accor-wcpconsole-wcoffteam");
+
+        assertThat(ManifestAccess.canSee(POLICIES_ONLY, lowerCase)).isTrue();
+        assertThat(ManifestAccess.canAccess(POLICIES_ONLY, lowerCase, "cache", "currenciesCache")).isTrue();
+        assertThat(ManifestAccess.canSee(GROUPS_ONLY, Set.of("accor-wcpconsole-wcxssteam"))).isTrue();
+    }
+
+    @Test
     void top_level_groups_apply_to_the_current_format_too() {
         ManifestDto current = ManifestReader.read("""
                 {
