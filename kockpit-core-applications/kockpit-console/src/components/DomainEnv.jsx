@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {getConfig} from "../services/api.js";
 import {useSearchParams} from "react-router-dom";
-import {getManifests} from "../services/manifestApi.js";
+import {getAggregatedManifests} from "../services/manifestApi.js";
 
 function DomainEnv({onConfigLoaded, domainEnvChanged, selectedIndex = 0, onSelectedIndex}) {
     const [searchParams] = useSearchParams();
@@ -13,7 +13,7 @@ function DomainEnv({onConfigLoaded, domainEnvChanged, selectedIndex = 0, onSelec
         selectedIndex = parseInt(searchParams.get('selectedConfig'));
     }
     useEffect(() => {
-        getManifests().then(config => {
+        getAggregatedManifests().then(config => {
             if (!Array.isArray(config)) {
                 setConfigError('Failed to load config: invalid response from server');
                 return;
@@ -77,7 +77,7 @@ function DomainEnv({onConfigLoaded, domainEnvChanged, selectedIndex = 0, onSelec
                 >
                     {
                         options.map((option, index) => (
-                            <option key={option.domain+option.env+index} value={String(index)}>{option.domain} / {option.env} ({option.name})</option>
+                            <option key={option.domain+option.env+index} value={String(index)} title={option.name}>{option.domain} / {option.env}</option>
                         ))
                     }
                 </select>

@@ -42,7 +42,12 @@ class ManifestAccessApiTest {
                       "services": [ { "type": "audit", "name": "offers-api", "id": "offers-api" } ] }"""),
             manifest("""
                     { "domain": "wcc", "env": "dev", "name": "wcc-dev",
-                      "services": [ { "type": "audit", "name": "c", "id": "c" } ] }"""));
+                      "services": [ { "type": "audit", "name": "c", "id": "c" } ] }"""),
+            // Second manifest for wcoff/review-mr-1551, restricted to its own team.
+            manifest("""
+                    { "domain": "wcoff", "env": "review-mr-1551", "name": "wcoff-review-business",
+                      "groups": ["ACCOR-WCPConsole-WCOFFBusinessTeam"],
+                      "services": [ { "type": "audit", "name": "offers-business-api", "id": "offers-business-api" } ] }"""));
 
     @AfterEach
     void clearUser() {
@@ -64,6 +69,27 @@ class ManifestAccessApiTest {
         mvc.perform(asUser(get("/manifests")))
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].domain").value("wcc"));
+    }
+
+    @Test
+    void aggregated_merges_per_domain_env_after_per_manifest_access_filtering() throws Exception {
+        MockMvc mvc = mvc(true);
+
+        // Member of both wcoff manifests' audiences: one wcoff entry with both services.
+        loginWith("ACCOR-WCPConsole-WCOFFTeam", "ACCOR-WCPConsole-WCOFFBusinessTeam");
+        mvc.perform(asUser(get("/manifests/aggregated")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].domain").value("wcoff"))
+                .andExpect(jsonPath("$[0].services.length()").value(2))
+                .andExpect(jsonPath("$[0].name").value("wcoff-review, wcoff-review-business"))
+                .andExpect(jsonPath("$[1].domain").value("wcc"));
+
+        // Only the first manifest's policy matches: its service only, not the restricted one's.
+        loginWith("ACCOR-WCPConsole-WCOFFTeam");
+        mvc.perform(asUser(get("/manifests/aggregated")))
+                .andExpect(jsonPath("$[0].services.length()").value(1))
+                .andExpect(jsonPath("$[0].services[0].id").value("offers-api"));
     }
 
     @Test
@@ -100,7 +126,7 @@ class ManifestAccessApiTest {
     void without_cognito_configured_nothing_is_filtered() throws Exception {
         MockMvc mvc = mvc(false);
 
-        mvc.perform(get("/manifests")).andExpect(jsonPath("$.length()").value(3));
+        mvc.perform(get("/manifests")).andExpect(jsonPath("$.length()").value(4));
         mvc.perform(get("/wcxss/dev/audits/_search")).andExpect(status().isOk());
     }
 

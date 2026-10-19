@@ -140,7 +140,7 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
                               <NavItem
                                   icon={icon}
                                   label={navItem.label}
-                                  key={navItem.id}
+                                  key={navItem.type}
                                   collapsed={collapsed}
                                   active={location.pathname === `/${navItem.type}`}
                                   subItems={navItem.subMenus}

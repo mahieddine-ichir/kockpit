@@ -13,6 +13,12 @@ export const getManifests = async () => {
     return response.data;
 };
 
+// One entry per domain/env, services of all its manifests merged (what the user may see).
+export const getAggregatedManifests = async () => {
+    const response = await instance.get('/manifests/aggregated');
+    return response.data;
+};
+
 export const getManifestByName = async (domain, env, name) => {
     const response = await instance.get(`/manifests/${name}`);
     return response.data;
