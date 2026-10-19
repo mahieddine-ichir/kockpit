@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -17,13 +18,10 @@ import java.io.IOException;
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
+@RequiredArgsConstructor
 public class SecurityAuditFilter extends OncePerRequestFilter {
 
   private final AuditFilter auditFilter;
-
-  public SecurityAuditFilter(AuditFilter auditFilter) {
-    this.auditFilter = auditFilter;
-  }
 
   @Override
   protected void doFilterInternal(
