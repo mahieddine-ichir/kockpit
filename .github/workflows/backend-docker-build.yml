@@ -128,6 +128,30 @@ jobs:
           tags: ${{ steps.meta-azure.outputs.tags }}
           labels: ${{ steps.meta-azure.outputs.labels }}
 
+      # build for Azure profile, audits through the native Event Hubs client
+      - name: Build Application with Maven (azure-eventhub)
+        run: mvn clean package -Pazure-eventhub -pl kockpit-core-applications/kockpit-backend-application -am -Dmaven.test.skip=true
+
+      - name: Extract Metadata for Docker
+        id: meta-azure-eventhub
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}-azure-eventhub
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: kockpit-core-applications/kockpit-backend-application
+          file: kockpit-core-applications/kockpit-backend-application/Dockerfile
+          push: true
+          tags: ${{ steps.meta-azure-eventhub.outputs.tags }}
+          labels: ${{ steps.meta-azure-eventhub.outputs.labels }}
+
       # build for AWS Profile
       - name: Build Application with Maven (aws)
         run: mvn clean package -Paws -pl kockpit-core-applications/kockpit-backend-application -am -Dmaven.test.skip=true

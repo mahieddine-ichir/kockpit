@@ -12,10 +12,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Smoke test migration Spring Boot 4.1 : verifie que le contexte Spring demarre
- * sans erreur d'auto-configuration (profil Maven par defaut, azure ou aws).
+ * sans erreur d'auto-configuration (profil Maven par defaut, azure, azure-eventhub ou aws).
  *
  * <p>Proprietes sans valeur par defaut, requises seulement sous les profils Maven
- * {@code azure} (compte de developpement Azurite) et {@code aws}. Le service de manifests
+ * {@code azure} / {@code azure-eventhub} (compte de developpement Azurite) et {@code aws}. Le service de manifests
  * est mocke : l'application liste les manifests au demarrage, ce qui sous ces profils
  * appellerait le stockage (Blob, S3).
  */
@@ -29,7 +29,10 @@ import static org.assertj.core.api.Assertions.assertThat;
         "kockpit.aws.s3.bucket=smoke-test-bucket",
         "kockpit.manifests.aws.region=eu-west-1",
         "kockpit.aws.region=eu-west-1",
-        "kockpit.audit.notification.kinesis.stream_name=smoke-test"
+        "kockpit.audit.notification.kinesis.stream_name=smoke-test",
+        // profil azure-eventhub : le client Event Hubs ne se connecte qu'au premier envoi
+        "kockpit.audit.notification.eventhub.event_hub_name=smoke-test",
+        "kockpit.audit.notification.eventhub.connection_string=Endpoint=sb://smoke-test.servicebus.windows.net/;SharedAccessKeyName=smoke;SharedAccessKey=c21va2U="
 })
 class ApplicationSmokeTest {
 

@@ -129,6 +129,31 @@
                 </dependency>
             </dependencies>
         </profile>
+        <!-- azure, with audits sent through the native Event Hubs client instead of its Kafka endpoint -->
+        <profile>
+            <id>azure-eventhub</id>
+            <build>
+                <finalName>${project.artifactId}-${project.version}-azure-eventhub</finalName>
+            </build>
+            <dependencies>
+                <!-- manifest -->
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-features-manifest-service-backend-storageaccount</artifactId>
+                    <version>1.2.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-core-communication-storageaccount</artifactId>
+                    <version>1.2.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.kockpit</groupId>
+                    <artifactId>kockpit-features-audit-starters-eventhub</artifactId>
+                    <version>1.2.0-SNAPSHOT</version>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <id>aws</id>
             <build>
