@@ -93,7 +93,7 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
   };
 
   return (
-      <div className={`bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700 text-white h-screen fixed flex flex-col transition-all duration-300 ease-in-out shadow-2xl rounded-r-2xl ${collapsed ? 'w-20' : 'w-64'}`} style={{ minWidth: collapsed ? '5rem' : '16rem' }}>
+      <div className={`bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700 text-white h-screen fixed z-40 flex flex-col transition-all duration-300 ease-in-out shadow-2xl rounded-r-2xl ${collapsed ? 'w-20' : 'w-64'}`} style={{ minWidth: collapsed ? '5rem' : '16rem' }}>
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
           {!collapsed && (
               <div className="flex items-center space-x-2">

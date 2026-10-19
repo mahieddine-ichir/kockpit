@@ -697,7 +697,7 @@ const AuditServicePage = ({ domain, env, config, selectedIdx, serviceId }) => {
                     {error}
                 </div>
             )}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-lg">
                 <table className="min-w-full divide-y divide-slate-200">
                     <thead className="bg-slate-50">
                     <HeaderLine columns={columns}/>

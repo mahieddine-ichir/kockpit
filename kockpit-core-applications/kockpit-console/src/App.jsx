@@ -92,7 +92,9 @@ function App() {
                                 <Route path='*' element={
                                     config && user ? (
                                         <div className="flex">
-                                            <div className={`${collapsed ? 'ml-16' : 'ml-64'} p-6 w-full transition-all duration-300`}>
+                                            {/* margin = the fixed sidebar's width (w-20 / w-64); flex-1 min-w-0 keeps the column
+                                                within the window, so wide content scrolls in place instead of under the sidebar */}
+                                            <div className={`${collapsed ? 'ml-20' : 'ml-64'} p-6 flex-1 min-w-0 transition-all duration-300`}>
                                                 <Routes>
                                                     <Route path='/home' element={<AppIdDashboard domain={domain} env={env} />} />
                                                     <Route path='/health' element={<HealthIndicatorsDashboard domain={domain} env={env} />} />
