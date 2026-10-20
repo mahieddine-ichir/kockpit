@@ -51,14 +51,9 @@ public class OpensearchRepository implements SearchService {
     @Override
     public Object getAudit(String domain, String env, String id) {
         log.trace("load audit for domain {}, env {}, id {}", domain, env, id);
-        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-        boolQueryBuilder.must(matchQuery("id", id));
-        boolQueryBuilder.must(matchQuery("env", env));
-        boolQueryBuilder.must(matchQuery("domain", domain));
-
         SearchSourceBuilder searchSourceBuilder =
                 new SearchSourceBuilder()
-                        .query(boolQueryBuilder)
+                        .query(byId(domain, env, id))
                         .sort(new FieldSortBuilder("start").order(SortOrder.DESC))
                         .size(1);
 
@@ -70,6 +65,20 @@ public class OpensearchRepository implements SearchService {
         Map<String, Object> source = normalize(searchResponse.getHits().getHits()[0].getSourceAsMap());
         hydrateArchivedAudits(source);
         return source;
+    }
+
+    /**
+     * Exact match on id/env/domain whatever their mapping. The templates map them as keyword, but
+     * an index created without the template maps them as analyzed text: a plain match then splits
+     * the id into tokens and ORs them - "078b72dd-1f13-4bbc-..." matched any audit with a "4bbc"
+     * in its id, and the newest such audit was returned instead. match_phrase needs every token,
+     * in order, on text, and is an exact term query on keyword.
+     */
+    static BoolQueryBuilder byId(String domain, String env, String id) {
+        return new BoolQueryBuilder()
+                .must(matchPhraseQuery("id", id))
+                .must(matchPhraseQuery("env", env))
+                .must(matchPhraseQuery("domain", domain));
     }
 
     @SneakyThrows
