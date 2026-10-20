@@ -14,11 +14,18 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Object;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +36,10 @@ public class S3Repository implements ManifestBackendRepository {
 
     private final ObjectMapper objectMapper = ManifestJson.mapper();
 
+    // One GetObject per manifest: read one after another, ~90 manifests took ~2.6s. Read
+    // concurrently instead - bounded below the S3 client's default pool of 50 connections.
+    private static final int READ_CONCURRENCY = 16;
+
     @SneakyThrows
     @Override
     public List<ManifestDto> findAll() {
@@ -36,25 +47,51 @@ public class S3Repository implements ManifestBackendRepository {
                 .bucket(bucketName)
                 .build();
 
-        return s3Client.listObjectsV2(listRequest)
+        List<String> keys = s3Client.listObjectsV2(listRequest)
                 .contents()
                 .stream()
                 //.filter(s3Object -> s3Object.key().contains("manifest"))
-                .map(s3Object -> {
-                    log.trace("Reading S3 object {}", s3Object.key());
-
-                    GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                            .bucket(bucketName)
-                            .key(s3Object.key())
-                            .build();
-
-                    ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObjectAsBytes(getObjectRequest);
-
-                    ManifestDto manifestDto = read(objectBytes.asByteArray());
-                    manifestDto.setName(s3Object.key());
-                    return manifestDto;
-                })
+                .map(S3Object::key)
                 .toList();
+
+        Semaphore permits = new Semaphore(READ_CONCURRENCY);
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            List<Future<ManifestDto>> manifests = keys.stream()
+                    .map(key -> executor.submit(() -> {
+                        permits.acquire();
+                        try {
+                            return readObject(key);
+                        } finally {
+                            permits.release();
+                        }
+                    }))
+                    .toList();
+            List<ManifestDto> result = new ArrayList<>(manifests.size());
+            for (Future<ManifestDto> manifest : manifests) {
+                try {
+                    result.add(manifest.get());
+                } catch (ExecutionException e) {
+                    // same failure as the sequential read: the S3 exception itself
+                    throw e.getCause();
+                }
+            }
+            return result;
+        }
+    }
+
+    private ManifestDto readObject(String key) {
+        log.trace("Reading S3 object {}", key);
+
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+
+        ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObjectAsBytes(getObjectRequest);
+
+        ManifestDto manifestDto = read(objectBytes.asByteArray());
+        manifestDto.setName(key);
+        return manifestDto;
     }
 
     @Override

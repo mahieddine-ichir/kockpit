@@ -76,7 +76,7 @@ public class ManifestAccessService {
             return true;
         }
         Set<String> groups = userGroups(authentication);
-        return manifestBackendService.cachedList().stream()
+        return manifestBackendService.list().stream()
                 .filter(m -> Objects.equals(domain, m.getDomain()) && Objects.equals(env, m.getEnv()))
                 .anyMatch(m -> type == null
                         ? ManifestAccess.canSee(m, groups)

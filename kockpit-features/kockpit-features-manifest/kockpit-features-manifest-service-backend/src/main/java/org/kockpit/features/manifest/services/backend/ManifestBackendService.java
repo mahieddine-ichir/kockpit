@@ -13,9 +13,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ManifestBackendService {
 
-    // Access checks run on every API request; the S3 repository re-reads every manifest object on
-    // each findAll(), so they use a short-lived copy instead. Short enough that a manifest change
-    // (new group/policy) applies within seconds; save() drops it immediately.
+    // Access checks run on every API request and the console loads the list on every page, while
+    // the S3 repository re-reads every manifest object on each findAll() (seconds for ~90
+    // manifests) - so both use a short-lived copy instead. Short enough that a manifest change
+    // (new group/policy) applies within seconds; save() drops it immediately. Callers share the
+    // copy: they must not modify the returned manifests.
     private static final Duration CACHE_TTL = Duration.ofSeconds(30);
 
     private final ManifestBackendRepository manifestBackendRepository;
@@ -23,10 +25,6 @@ public class ManifestBackendService {
     private volatile CachedList cached;
 
     public List<ManifestDto> list() {
-        return manifestBackendRepository.findAll();
-    }
-
-    List<ManifestDto> cachedList() {
         CachedList current = cached;
         long now = System.nanoTime();
         if (current == null || now - current.loadedAt() > CACHE_TTL.toNanos()) {
