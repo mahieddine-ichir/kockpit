@@ -1,51 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import {
-    AlertCircle, AlertTriangle, ArrowDownLeft, ArrowUpRight, CheckCircle, CornerUpRight, Fingerprint,
-    HelpCircle, Network, Timer, User, XCircle,
-} from 'lucide-react';
+import { AlertCircle, ArrowDownLeft, ArrowUpRight, Fingerprint, Network, Timer, User } from 'lucide-react';
 import CopyButton from '../../components/CopyButton.jsx';
 import BodyViewer from './exchange/BodyViewer.jsx';
 import HeadersList from './exchange/HeadersList.jsx';
+import { MethodChip, StatusChip } from './exchange/HttpChips.jsx';
 import { headerValue, parseExchanges, statusClass } from './exchange/exchangeModel.js';
-import { FAILED_BORDER } from './rules/failedStyle.js';
+import { STATUS_STYLES } from './exchange/httpStyles.js';
 
 // The HTTP exchange in the Rules tab's style: a dark banner summing it up (method, URI, status,
 // duration, who and which trace), then the request and the response side by side. The status
 // reads from its label and icon, not only its color.
-
-const METHOD_TONES = {
-    GET: 'bg-sky-400 text-slate-950',
-    POST: 'bg-emerald-400 text-slate-950',
-    PUT: 'bg-amber-400 text-slate-950',
-    PATCH: 'bg-violet-400 text-slate-950',
-    DELETE: 'bg-rose-400 text-slate-950',
-};
-
-const STATUS_STYLES = {
-    success: { chip: 'bg-emerald-400 text-slate-950', band: 'bg-emerald-100 text-emerald-950', border: 'border-emerald-200', icon: CheckCircle },
-    redirect: { chip: 'bg-sky-400 text-slate-950', band: 'bg-sky-100 text-sky-950', border: 'border-sky-200', icon: CornerUpRight },
-    client: { chip: 'bg-amber-400 text-slate-950', band: 'bg-amber-100 text-amber-950', border: 'border-amber-300', icon: AlertTriangle },
-    // a server error is a failure: same dashed border as failed rules
-    server: { chip: 'bg-red-500 text-white', band: 'bg-red-100 text-red-950', border: FAILED_BORDER, icon: XCircle },
-    unknown: { chip: 'bg-slate-500 text-white', band: 'bg-gray-100 text-gray-900', border: 'border-gray-200', icon: HelpCircle },
-};
-
-const MethodChip = ({ method }) => (
-    <span className={`shrink-0 rounded px-2 py-0.5 font-mono text-xs font-bold tracking-wide ${METHOD_TONES[method] || 'bg-slate-300 text-slate-950'}`}>
-        {method || 'HTTP'}
-    </span>
-);
-
-const StatusChip = ({ status }) => {
-    const { family, label } = statusClass(status);
-    const { chip, icon: Icon } = STATUS_STYLES[family];
-    return (
-        <span className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold ${chip}`}>
-            <Icon className="w-3.5 h-3.5" />
-            {status ?? '—'} <span className="font-semibold">{label}</span>
-        </span>
-    );
-};
 
 const Banner = ({ exchange }) => {
     const { request, response, duration, traceId, traceIdHeaderName, origin } = exchange;

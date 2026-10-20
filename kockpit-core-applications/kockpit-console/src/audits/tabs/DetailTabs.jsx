@@ -11,38 +11,38 @@ const COMPONENTS = [
   {
     title: 'Details',
     key: 'details',
-    icon: Info,
-    view: (request) => <OverviewTab request={request} />
+    icon: <Info className="w-4 h-4" />,
+    view: (request, openTab) => <OverviewTab request={request} onOpenTab={openTab} />
   },
   {
     title: 'Key & Value',
     key: 'keyvalue',
-    icon: Tag,
+    icon: <Tag className="w-4 h-4" />,
     view: (request) => <KeyValueTab request={request} />
   },
   {
     title: 'HTTP Exchange',
     key: 'httpexchange',
-    icon: Network,
+    icon: <Network className="w-4 h-4" />,
     view: (request) => <HttpExchangeTab request={request} />
   },
   {
     title: 'Request & Response',
     key: 'request',
-    icon: ArrowLeftRight,
+    icon: <ArrowLeftRight className="w-4 h-4" />,
     disabled: (request) => !request['audits']?.find(audit => audit.type === 'builtin.web'),
     view: (request) => <RequestResponseTab request={request} />
   },
   {
     title: 'Rules',
     key: 'rules',
-    icon: GitBranch,
+    icon: <GitBranch className="w-4 h-4" />,
     view: (request) => <RulesTab request={request} />
   },
   {
     title: 'Json',
     key: 'json',
-    icon: FileJson,
+    icon: <FileJson className="w-4 h-4" />,
     view: (request) => <JsonTab request={request} />
   }
 ];
@@ -51,14 +51,20 @@ const DetailTabs = ({ request }) => {
   const [activeTab, setActiveTab] = useState('details');
 
   const renderTabContent = () => {
-    return COMPONENTS.find(component => component.key === activeTab).view(request);
+    return COMPONENTS.find(component => component.key === activeTab).view(request, openTab);
+  };
+
+  // lets a tab (Details) send the user to another one - unless that one is disabled for this audit
+  const openTab = (key) => {
+    const target = COMPONENTS.find(component => component.key === key);
+    if (target && !(target.disabled?.(request) ?? false)) setActiveTab(key);
   };
 
   return (
       <div>
         <div className="border-b border-slate-100 px-6 pt-4">
           <nav className="flex gap-2">
-            {COMPONENTS.map(({ key, title, icon: Icon, disabled }) => {
+            {COMPONENTS.map(({ key, title, icon, disabled }) => {
               const isDisabled = disabled?.(request) ?? false;
               return (
                 <button
@@ -74,7 +80,7 @@ const DetailTabs = ({ request }) => {
               `}
                     style={{ minWidth: 110 }}
                 >
-                  <Icon className="w-4 h-4" />
+                  {icon}
                   <span>{title}</span>
                 </button>
               );
