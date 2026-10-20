@@ -97,7 +97,7 @@ const Sidebar = ({ collapsed, setCollapsed, config, user }) => {
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
           {!collapsed && (
               <div className="flex items-center space-x-2">
-                <img src="/kockpit.svg" alt="Kockpit" className="h-8" />
+                <img src="/kockpit-logo.png" alt="Kockpit" className="h-8" />
               </div>
           )}
           <button
