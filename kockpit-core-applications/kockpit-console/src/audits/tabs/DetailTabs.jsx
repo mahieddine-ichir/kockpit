@@ -7,6 +7,10 @@ import HttpExchangeTab from "./HttpExchangeTab.jsx";
 import RulesTab from "./RulesTab.jsx";
 import OverviewTab from "./OverviewTab.jsx";
 
+const hasAudit = (request, type) => !!request?.audits?.some(audit => audit.type === type);
+
+// A tab whose data the audit doesn't hold is disabled, saying why on hover (empty), rather than
+// opening on an empty state - the same rule for every tab; Details and Json always have something.
 const COMPONENTS = [
   {
     title: 'Details',
@@ -18,25 +22,28 @@ const COMPONENTS = [
     title: 'Key & Value',
     key: 'keyvalue',
     icon: <Tag className="w-4 h-4" />,
+    empty: (request) => !request?.indexedKeyValues?.length && 'No indexed key-values in this audit',
     view: (request) => <KeyValueTab request={request} />
   },
   {
     title: 'HTTP Exchange',
     key: 'httpexchange',
     icon: <Network className="w-4 h-4" />,
+    empty: (request) => !hasAudit(request, 'builtin.httpexchanges') && 'No outgoing HTTP calls recorded in this audit',
     view: (request) => <HttpExchangeTab request={request} />
   },
   {
     title: 'Request & Response',
     key: 'request',
     icon: <ArrowLeftRight className="w-4 h-4" />,
-    disabled: (request) => !request['audits']?.find(audit => audit.type === 'builtin.web'),
+    empty: (request) => !hasAudit(request, 'builtin.web') && 'No web exchange recorded in this audit',
     view: (request) => <RequestResponseTab request={request} />
   },
   {
     title: 'Rules',
     key: 'rules',
     icon: <GitBranch className="w-4 h-4" />,
+    empty: (request) => !hasAudit(request, 'kengine.flows') && 'No rules executed in this audit',
     view: (request) => <RulesTab request={request} />
   },
   {
@@ -57,20 +64,24 @@ const DetailTabs = ({ request }) => {
   // lets a tab (Details) send the user to another one - unless that one is disabled for this audit
   const openTab = (key) => {
     const target = COMPONENTS.find(component => component.key === key);
-    if (target && !(target.disabled?.(request) ?? false)) setActiveTab(key);
+    if (target && !target.empty?.(request)) setActiveTab(key);
   };
 
   return (
       <div>
         <div className="border-b border-slate-100 px-6 pt-4">
           <nav className="flex gap-2">
-            {COMPONENTS.map(({ key, title, icon, disabled }) => {
-              const isDisabled = disabled?.(request) ?? false;
+            {COMPONENTS.map(({ key, title, icon, empty }) => {
+              const emptyReason = empty?.(request) || null;
+              const isDisabled = !!emptyReason;
               return (
                 <button
                     key={key}
+                    type="button"
                     onClick={() => !isDisabled && setActiveTab(key)}
-                    disabled={isDisabled}
+                    // aria-disabled rather than disabled: the tab stays hoverable, so its reason shows
+                    aria-disabled={isDisabled}
+                    title={emptyReason || undefined}
                     className={`px-4 py-2 rounded-t-lg font-semibold text-sm transition-all duration-150 focus:outline-none flex items-center gap-2
                 ${isDisabled
                         ? 'text-slate-300 border-b-2 border-transparent cursor-not-allowed'
