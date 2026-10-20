@@ -19,6 +19,34 @@ export const parseExchanges = (request) => {
     });
 };
 
+// The outgoing calls (builtin.httpexchanges): one event per call the service made, in start order
+export const parseOutgoingCalls = (request) =>
+    (request.audits || [])
+        .filter(audit => audit.type === 'builtin.httpexchanges')
+        .flatMap(audit => Array.isArray(audit.events) ? audit.events : audit.events ? [audit.events] : [])
+        .map(event => (typeof event === 'string' ? JSON.parse(event) : event))
+        .map((data, index) => ({
+            key: `c${index}`,
+            request: data.httpAuditedRequest || {},
+            response: data.httpAuditedResponse || null,
+            startTime: data.startTime,
+            duration: data.startTime != null && data.endTime != null ? data.endTime - data.startTime : null,
+        }))
+        .sort((a, b) => (a.startTime ?? Infinity) - (b.startTime ?? Infinity) || 0);
+
+// "https://api.acme.com/v1/x?y=1" -> { host: "api.acme.com", path: "/v1/x?y=1" }; relative URIs have no host
+export const splitUri = (uri) => {
+    try {
+        const url = new URL(uri);
+        return { host: url.host, path: `${url.pathname}${url.search}` };
+    } catch {
+        return { host: null, path: uri || '/' };
+    }
+};
+
+// A call failed when it got no response, or a 4xx/5xx one
+export const callFailed = (call) => !call.response || !call.response.status || Number(call.response.status) >= 400;
+
 // Headers are { name: [values] } (or a JSON string of it): flattened to [name, value] pairs
 export const headerEntries = (headers) => {
     if (!headers) return [];
