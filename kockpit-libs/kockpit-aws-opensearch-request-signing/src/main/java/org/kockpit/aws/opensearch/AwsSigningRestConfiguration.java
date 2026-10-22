@@ -75,10 +75,12 @@ class AwsSigningRestConfiguration {
                 .build();
     }
 
-    @Bean
+    // Closed by Spring when the context destroys its beans, i.e. after every SmartLifecycle has
+    // stopped (Kinesis scheduler drain, then S3AuditConsumer's SHUTDOWN_DRAIN_PHASE). A JVM
+    // shutdown hook here ran in parallel with Spring's own and closed the pool first, failing the
+    // final OpenSearch writes of the drain with "Connection pool shut down".
+    @Bean(destroyMethod = "close")
     SdkHttpClient sdkHttpClient() {
-        SdkHttpClient build = ApacheHttpClient.builder().build();
-        Runtime.getRuntime().addShutdownHook(new Thread(build::close));
-        return build;
+        return ApacheHttpClient.builder().build();
     }
 }
