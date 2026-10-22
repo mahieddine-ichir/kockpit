@@ -211,9 +211,10 @@ public class S3AuditConsumer implements SmartLifecycle {
 
     private void write(List<S3Record> batch, S3Key prefix) {
         int ttl = resolveTtl(batch);
+        String s3Key;
         try {
             assignOffsets(batch);
-            String s3Key = prefix.toString() + "/" + Instant.now().toEpochMilli() + "-" + UUID.randomUUID() + ".batch";
+            s3Key = prefix.toString() + "/" + Instant.now().toEpochMilli() + "-" + UUID.randomUUID() + ".batch";
             s3Client.putObject(
                     PutObjectRequest.builder()
                             .bucket(bucketName)
@@ -222,11 +223,20 @@ public class S3AuditConsumer implements SmartLifecycle {
                             .build(),
                     RequestBody.fromBytes(concatenate(batch))
             );
+        } catch (Exception e) {
+            log.error("❌ Failed to write {} audit reports to s3://{}/{}: {}", batch.size(), bucketName, prefix, e.getMessage(), e);
+            return;
+        }
 
+        // The object is already in S3 at this point: a failure here comes from the S3WriteEvent
+        // listeners (e.g. opensearch-s3 indexing the offloaded reports), not from S3 - reporting it
+        // as an S3 write failure hid an OpenSearch client closed too early on shutdown.
+        try {
             eventPublisher.publishEvent(new S3WriteEvent(this, s3Key, batch, bucketName));
             log.trace("Wrote {} audit reports to s3://{}/{}", batch.size(), bucketName, s3Key);
         } catch (Exception e) {
-            log.error("❌ Failed to write {} audit reports to s3://{}/{}: {}", batch.size(), bucketName, prefix, e.getMessage(), e);
+            log.error("❌ Wrote {} audit reports to s3://{}/{} but post-write processing (e.g. OpenSearch indexing) failed: {}",
+                    batch.size(), bucketName, s3Key, e.getMessage(), e);
         }
     }
 

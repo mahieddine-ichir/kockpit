@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -139,6 +140,19 @@ class S3AuditConsumerTest {
         consumer.drain();
 
         verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
+    }
+
+    @Test
+    @DisplayName("Un echec apres l'ecriture S3 (indexation) n'empeche pas le drain et l'objet reste ecrit")
+    void drain_terminates_when_post_write_processing_fails() {
+        doThrow(new IllegalStateException("Connection pool shut down"))
+                .when(eventPublisher).publishEvent(any(S3WriteEvent.class));
+        consumer.accept(List.of(record));
+
+        consumer.drain();
+
+        verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
+        verify(eventPublisher, times(1)).publishEvent(any(S3WriteEvent.class));
     }
 
     @Test
