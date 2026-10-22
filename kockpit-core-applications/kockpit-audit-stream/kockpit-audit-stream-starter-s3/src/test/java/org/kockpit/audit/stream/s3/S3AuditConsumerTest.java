@@ -1,11 +1,16 @@
 package org.kockpit.audit.stream.s3;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kockpit.audit.stream.api.AuditStreamJson;
 import org.kockpit.audit.stream.api.model.AuditReport;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -149,10 +154,29 @@ class S3AuditConsumerTest {
                 .when(eventPublisher).publishEvent(any(S3WriteEvent.class));
         consumer.accept(List.of(record));
 
-        consumer.drain();
+        Logger logger = (Logger) LoggerFactory.getLogger(S3AuditConsumer.class);
+        ListAppender<ILoggingEvent> appender = new ListAppender<>();
+        appender.start();
+        logger.addAppender(appender);
+        try {
+            consumer.drain();
+        } finally {
+            logger.detachAppender(appender);
+        }
 
         verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
         verify(eventPublisher, times(1)).publishEvent(any(S3WriteEvent.class));
+        // The object is in S3: the failure must be reported as post-write, with the written key,
+        // never as an S3 write failure (which is what hid the early-closed OpenSearch client).
+        assertThat(appender.list)
+                .filteredOn(event -> event.getLevel() == Level.ERROR)
+                .extracting(ILoggingEvent::getFormattedMessage)
+                .singleElement()
+                .satisfies(message -> assertThat(message)
+                        .contains("post-write processing")
+                        .contains("s3://bucket/")
+                        .contains(".batch")
+                        .doesNotContain("Failed to write"));
     }
 
     @Test
