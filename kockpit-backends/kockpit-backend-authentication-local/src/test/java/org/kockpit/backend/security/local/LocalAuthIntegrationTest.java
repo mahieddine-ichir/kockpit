@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         properties = {
                 "kockpit.security.local.enabled=true",
                 "kockpit.security.local.jwt-secret=test-secret-test-secret-test-secret-0123",
+                "kockpit.security.local.signup.invite-required=false",
                 "kockpit.security.local.signup.per-ip-per-hour=1000",
                 "kockpit.security.local.login.max-failures-per-email=3",
                 "kockpit.security.local.admin.email=Admin@Example.com",

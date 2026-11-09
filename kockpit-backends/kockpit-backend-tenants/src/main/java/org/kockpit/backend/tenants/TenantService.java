@@ -89,6 +89,9 @@ public class TenantService {
 
         Tenant tenant = transaction.execute(status -> {
             tenants.lockUser(userId);
+            if (!canCreateTenants(userId, admin)) {
+                throw TenantException.forbidden("Your account joins tenants by invitation: it can't create one");
+            }
             if (!admin && tenants.countByOwner(userId) >= properties.getMaxPerUser()) {
                 throw TenantException.conflict("tenant_limit",
                         "You can create %d tenant(s) at most".formatted(properties.getMaxPerUser()));
@@ -112,6 +115,11 @@ public class TenantService {
         }
         log.info("Tenant {} created by user {}, envs {}", slug, userId, envs);
         return tenant;
+    }
+
+    /** False for an account created with a tenant's invitation. */
+    public boolean canCreateTenants(UUID userId, boolean admin) {
+        return admin || tenants.canCreateTenants(userId);
     }
 
     public List<Tenant> tenantsOf(UUID userId) {

@@ -1,6 +1,7 @@
 package org.kockpit.backend.tenants;
 
 import lombok.RequiredArgsConstructor;
+import org.kockpit.backend.security.local.PasswordResetService;
 import org.kockpit.backend.tenants.TenantRepository.ApiKey;
 import org.kockpit.backend.tenants.TenantRepository.Tenant;
 import org.kockpit.features.manifest.services.backend.ManifestAccessService;
@@ -40,8 +41,13 @@ import java.util.UUID;
  *       response that holds the code -, {@code GET} the open ones, {@code DELETE .../{id}} to cancel
  *       one; the invited account: {@code POST /invitations/preview} and {@code POST /invitations/accept}
  *       {@code {code}} (the code in the body, never in a URL that access logs would keep);</li>
- *   <li>administrators: {@code GET /admin/tenants} (every tenant, with its owner) and
- *       {@code PUT /admin/api-keys/{id}/quota} {@code {dailyQuota}}.</li>
+ *   <li>administrators: {@code GET /admin/tenants} (every tenant, with its owner),
+ *       {@code PUT /admin/api-keys/{id}/quota} {@code {dailyQuota}} and the invitations to create an
+ *       account: {@code POST /admin/invitations} {@code {email?}} - the only response that holds the
+ *       code -, {@code GET} the open ones, {@code DELETE .../{id}} to cancel one; the administrators:
+ *       {@code GET /admin/administrators}, {@code POST} {@code {email}}, {@code DELETE .../{userId}};
+ *       a password reset link: {@code POST /admin/password-resets} {@code {email}} - the only response
+ *       that holds the code.</li>
  * </ul>
  */
 @RestController
@@ -52,6 +58,10 @@ public class TenantApi {
     private final TenantService service;
 
     private final MembershipService memberships;
+
+    private final AdministratorService administrators;
+
+    private final PasswordResetService passwordResets;
 
     private final TenantProperties properties;
 
@@ -72,11 +82,18 @@ public class TenantApi {
     public record Code(String code) {
     }
 
+    public record NewAdministrator(String email) {
+    }
+
+    public record NewPasswordReset(String email) {
+    }
+
     @GetMapping("/tenants")
     Map<String, Object> mine(Authentication authentication) {
         UUID userId = userId(authentication);
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("admin", access.isAdmin(authentication));
+        body.put("canCreateTenant", service.canCreateTenants(userId, access.isAdmin(authentication)));
         body.put("today", service.today().toString());
         body.put("limits", Map.of(
                 "tenants", properties.getMaxPerUser(),
@@ -194,6 +211,65 @@ public class TenantApi {
         return view(service.setQuota(uuid(id), request.dailyQuota()));
     }
 
+    @PostMapping("/admin/invitations")
+    ResponseEntity<Map<String, Object>> inviteAccount(@RequestBody(required = false) NewInvitation request, Authentication authentication) {
+        requireAdmin(authentication);
+        MembershipService.CreatedInvitation created =
+                memberships.inviteAccount(userId(authentication), request == null ? null : request.email());
+        Map<String, Object> body = view(created.invitation());
+        body.put("code", created.code());
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
+    }
+
+    @GetMapping("/admin/invitations")
+    List<Map<String, Object>> accountInvitations(Authentication authentication) {
+        requireAdmin(authentication);
+        return memberships.openAccountInvitations().stream().map(TenantApi::view).toList();
+    }
+
+    @DeleteMapping("/admin/invitations/{id}")
+    ResponseEntity<Void> cancelAccountInvitation(@PathVariable String id, Authentication authentication) {
+        requireAdmin(authentication);
+        memberships.revokeAccountInvitation(uuid(id, "invitation"));
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/admin/administrators")
+    List<Map<String, Object>> administrators(Authentication authentication) {
+        requireAdmin(authentication);
+        UUID userId = userId(authentication);
+        return administrators.list().stream().map(a -> view(a, userId)).toList();
+    }
+
+    @PostMapping("/admin/administrators")
+    ResponseEntity<Map<String, Object>> addAdministrator(@RequestBody NewAdministrator request, Authentication authentication) {
+        requireAdmin(authentication);
+        UUID userId = userId(authentication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(view(administrators.add(userId, request.email()), userId));
+    }
+
+    @DeleteMapping("/admin/administrators/{id}")
+    ResponseEntity<Void> removeAdministrator(@PathVariable String id, Authentication authentication) {
+        requireAdmin(authentication);
+        administrators.remove(userId(authentication), uuid(id, "administrator"));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/admin/password-resets")
+    ResponseEntity<Map<String, Object>> createPasswordReset(@RequestBody NewPasswordReset request, Authentication authentication) {
+        requireAdmin(authentication);
+        if (request.email() == null || request.email().isBlank()) {
+            throw TenantException.badRequest("email is required");
+        }
+        PasswordResetService.Created created = passwordResets.create(request.email(), userId(authentication))
+                .orElseThrow(() -> TenantException.notFound("No account for this email"));
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("email", created.email());
+        body.put("expiresAt", text(created.expiresAt()));
+        body.put("code", created.code());
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
+    }
+
     @ExceptionHandler(TenantException.class)
     ResponseEntity<Map<String, String>> refused(TenantException e) {
         return ResponseEntity.status(e.getStatus()).body(Map.of("error", e.getError(), "message", e.getMessage()));
@@ -216,6 +292,15 @@ public class TenantApi {
             view.put("owner", service.ownerEmail(tenant));
         }
         view.put("apiKeys", service.keys(tenant).stream().map(TenantApi::view).toList());
+        return view;
+    }
+
+    private static Map<String, Object> view(AdministratorService.Administrator administrator, UUID userId) {
+        Map<String, Object> view = new LinkedHashMap<>();
+        view.put("userId", administrator.userId().toString());
+        view.put("email", administrator.email());
+        view.put("configured", administrator.configured());
+        view.put("you", administrator.userId().equals(userId));
         return view;
     }
 

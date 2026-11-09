@@ -1,6 +1,6 @@
 # Kockpit SaaS (authenticated) profile on kind
 
-The chart (`../kockpit`) with `values-public.yaml`: sign-up / sign-in on the console, self-service tenants and API
+The chart (`../kockpit`) with `values-public.yaml`: sign-up by invitation / sign-in on the console, self-service tenants and API
 keys, the HTTP ingestion gateway and PostgreSQL. This directory adds what a local
 [kind](https://kind.sigs.k8s.io) cluster needs. For a real internet-facing instance (TLS, DNS), see
 [`deployments/ec2`](../../ec2/README.md).

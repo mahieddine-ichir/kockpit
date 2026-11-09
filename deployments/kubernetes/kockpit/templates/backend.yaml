@@ -83,6 +83,7 @@ spec:
                 secretKeyRef: { name: {{ include "kockpit.secretName" . }}, key: jwt-secret }
             - { name: KOCKPIT_COOKIE_SECURE, value: {{ eq (include "kockpit.scheme" .) "https" | quote }} }
             - { name: KOCKPIT_SIGNUP_ENABLED, value: {{ .Values.auth.local.signupEnabled | quote }} }
+            - { name: KOCKPIT_SIGNUP_INVITE_REQUIRED, value: {{ .Values.auth.local.signupInviteRequired | quote }} }
             {{- with .Values.auth.local.adminEmail }}
             - { name: KOCKPIT_ADMIN_EMAIL, value: {{ . | quote }} }
             - name: KOCKPIT_ADMIN_PASSWORD

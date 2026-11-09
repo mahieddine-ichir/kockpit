@@ -23,6 +23,9 @@ public class LocalAuthProperties {
 
     private int passwordMinLength = 10;
 
+    /** How long a password reset link can be used. */
+    private Duration passwordResetTtl = Duration.ofHours(24);
+
     private Datasource datasource = new Datasource();
 
     private Admin admin = new Admin();
@@ -51,9 +54,11 @@ public class LocalAuthProperties {
     @Data
     public static class Signup {
         private boolean enabled = true;
-        /** Accounts one client IP may create per hour. */
+        /** A new account needs an invitation; off, anyone can create one, within the limits below. */
+        private boolean inviteRequired = true;
+        /** Without invitations: accounts one client IP may create per hour. With: refused attempts per IP and hour. */
         private int perIpPerHour = 5;
-        /** Accounts created per hour overall, whatever the IP. */
+        /** Without invitations: accounts created per hour overall, whatever the IP. */
         private int perHour = 50;
     }
 

@@ -1,23 +1,36 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {AlertTriangle, LogIn, UserPlus} from "lucide-react";
-import {reasonOf, signin, signup} from "../services/tenantApi.js";
+import {getSignupMode, reasonOf, signin, signup} from "../services/tenantApi.js";
 
 // Sign in, or create an account, with the backend's local accounts.
-// notice: why the user is asked to sign in (an invitation to join a tenant)
-const LoginPage = ({onSignedIn, notice}) => {
-    const [mode, setMode] = useState('login');
+// notice: why the user is asked to sign in (an invitation)
+// invitation: the code of the invitation link opened, which sign-up may require
+const LoginPage = ({onSignedIn, notice, invitation}) => {
+    const [mode, setMode] = useState(invitation ? 'signup' : 'login');
+    const [signupMode, setSignupMode] = useState(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [busy, setBusy] = useState(false);
-    const creating = mode === 'signup';
+    const byInvitation = signupMode === 'invite';
+    const canSignUp = signupMode === 'open' || (byInvitation && !!invitation);
+    const creating = canSignUp && mode === 'signup';
+
+    useEffect(() => {
+        getSignupMode().then(setSignupMode).catch(() => setSignupMode('closed'));
+    }, []);
 
     const submit = async (e) => {
         e.preventDefault();
         setBusy(true);
         setError(null);
         try {
-            const me = creating ? await signup(email, password) : await signin(email, password);
+            const me = creating ? await signup(email, password, byInvitation ? invitation : undefined) : await signin(email, password);
+            if (creating && byInvitation) {
+                // the sign-up used the invitation up: nothing left to join on /join
+                window.location.assign('/');
+                return;
+            }
             onSignedIn(me);
         } catch (err) {
             const retryAfter = err?.response?.headers?.['retry-after'];
@@ -49,10 +62,15 @@ const LoginPage = ({onSignedIn, notice}) => {
                 {notice && (
                     <p className="px-6 pt-4 text-sm text-slate-700">{notice}</p>
                 )}
-                <div className="flex border-b border-slate-200" role="tablist">
-                    {tab('login', 'Sign in', <LogIn className="h-4 w-4" aria-hidden="true"/>)}
-                    {tab('signup', 'Create an account', <UserPlus className="h-4 w-4" aria-hidden="true"/>)}
-                </div>
+                {canSignUp && (
+                    <div className="flex border-b border-slate-200" role="tablist">
+                        {tab('login', 'Sign in', <LogIn className="h-4 w-4" aria-hidden="true"/>)}
+                        {tab('signup', 'Create an account', <UserPlus className="h-4 w-4" aria-hidden="true"/>)}
+                    </div>
+                )}
+                {byInvitation && !invitation && (
+                    <p className="px-6 pt-4 text-sm text-slate-600">No account yet? Accounts are created by invitation: ask for a link at <a href="mailto:contact@kockpit.org" className="font-medium text-slate-800 underline">contact@kockpit.org</a>.</p>
+                )}
                 <form onSubmit={submit} className="p-6 space-y-4">
                     <label className="block">
                         <span className="text-sm font-medium text-slate-700">Email</span>

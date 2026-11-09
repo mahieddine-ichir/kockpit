@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.Customizer;
@@ -26,9 +27,11 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.time.Clock;
 import java.util.UUID;
 
 /**
@@ -83,6 +86,14 @@ public class LocalAuthConfiguration {
     }
 
     @Bean
+    PasswordResetService passwordResetService(HikariDataSource kockpitAccountsDataSource, UserRepository users,
+                                              PasswordEncoder passwordEncoder, LocalAuthProperties properties) {
+        return new PasswordResetService(new PasswordResetRepository(JdbcClient.create(kockpitAccountsDataSource)), users,
+                passwordEncoder, new TransactionTemplate(new DataSourceTransactionManager(kockpitAccountsDataSource)),
+                properties.getPasswordResetTtl(), Clock.systemUTC());
+    }
+
+    @Bean
     LocalTokenService localTokenService(LocalAuthProperties properties) {
         return new LocalTokenService(properties.getJwtSecret(), properties.getTokenTtl());
     }
@@ -111,7 +122,7 @@ public class LocalAuthConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .requestMatchers("/auth/signup", "/auth/login", "/auth/logout").permitAll()
+                        .requestMatchers("/auth/signup", "/auth/login", "/auth/logout", "/auth/password-reset", "/auth/password-reset/preview").permitAll()
                         .requestMatchers("/actuator/health/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -141,6 +152,9 @@ public class LocalAuthConfiguration {
         LocalUser user = users.findById(id).orElseThrow(() -> new BadCredentialsException("Unknown user"));
         if (!user.enabled()) {
             throw new DisabledException("Account disabled");
+        }
+        if (!users.isSessionCurrent(id, jwt.getIssuedAt())) {
+            throw new BadCredentialsException("Session ended by a password change");
         }
         var authorities = users.groups(id).stream().map(SimpleGrantedAuthority::new).toList();
         return new JwtAuthenticationToken(jwt, authorities, user.email());

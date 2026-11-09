@@ -47,6 +47,7 @@ kockpit:
         password: ${KOCKPIT_ADMIN_PASSWORD:}
       signup:
         enabled: ${KOCKPIT_SIGNUP_ENABLED:true}
+        invite-required: ${KOCKPIT_SIGNUP_INVITE_REQUIRED:true}
     access-control:
       # empty: on with Cognito or local accounts, off otherwise
       enabled: ${KOCKPIT_ACCESS_CONTROL_ENABLED:}

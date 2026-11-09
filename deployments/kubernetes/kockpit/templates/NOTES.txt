@@ -15,12 +15,12 @@ Open the console:
 
 {{- if .Values.auth.local.enabled }}
 
-Accounts: sign up on the console{{ if not .Values.auth.local.signupEnabled }} (sign-up is closed: accounts exist already){{ end }}.
+Accounts: {{ if not .Values.auth.local.signupEnabled }}sign-up is closed, accounts exist already{{ else if .Values.auth.local.signupInviteRequired }}by invitation, the administrator creates the links on the console's "Tenant & API keys" page{{ else }}anyone can sign up on the console{{ end }}.
 {{- if .Values.auth.local.adminEmail }}
 Administrator {{ .Values.auth.local.adminEmail }}, password:
   kubectl -n {{ .Release.Namespace }} get secret {{ include "kockpit.secretName" . }} -o jsonpath='{.data.admin-password}' | base64 -d; echo
 {{- else }}
-No administrator (auth.local.adminEmail): nobody can see every tenant or change a key's quota.
+No administrator (auth.local.adminEmail): nobody can see every tenant, change a key's quota or invite the first accounts.
 {{- end }}
 {{- end }}
 

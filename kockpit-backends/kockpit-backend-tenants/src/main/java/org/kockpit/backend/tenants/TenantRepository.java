@@ -151,6 +151,15 @@ public class TenantRepository {
                 .param("id", keyId).param("quota", dailyQuota).update() == 1;
     }
 
+    public boolean canCreateTenants(UUID userId) {
+        return jdbc.sql("select can_create_tenants from users where id = :id")
+                .param("id", userId).query(Boolean.class).optional().orElse(false);
+    }
+
+    public void forbidTenantCreation(UUID userId) {
+        jdbc.sql("update users set can_create_tenants = false where id = :id").param("id", userId).update();
+    }
+
     private Tenant tenant(java.sql.ResultSet rs, int row) throws java.sql.SQLException {
         return new Tenant(rs.getObject("id", UUID.class), rs.getString("slug"),
                 rs.getObject("owner_id", UUID.class), instant(rs, "created_at"));

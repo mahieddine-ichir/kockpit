@@ -22,6 +22,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         properties = {
                 "kockpit.security.local.enabled=true",
                 "kockpit.security.local.jwt-secret=test-secret-test-secret-test-secret-0123",
+                "kockpit.security.local.signup.invite-required=false",
                 "kockpit.security.local.signup.per-ip-per-hour=1000",
                 "kockpit.security.local.signup.per-hour=1000",
                 "kockpit.security.local.admin.email=admin@example.com",
@@ -221,6 +223,190 @@ class TenantIntegrationTest {
         assertThat(json(send("GET", "/tenants", null, cookie)).get("tenants")).isEmpty();
         // and the user may try again with another name
         assertThat(createTenant(cookie, uniqueSlug()).statusCode()).isEqualTo(201);
+    }
+
+    @Test
+    void an_administrator_makes_and_removes_administrators() throws Exception {
+        String admin = adminCookie();
+        String email = "user-" + UUID.randomUUID() + "@example.com";
+        String user = signupAs(email);
+        assertThat(send("GET", "/admin/tenants", null, user).statusCode()).isEqualTo(403);
+
+        HttpResponse<String> made = send("POST", "/admin/administrators", "{\"email\":\"%s\"}".formatted(email.toUpperCase()), admin);
+
+        assertThat(made.statusCode()).isEqualTo(201);
+        String id = json(made).get("userId").asString();
+        // at once, without a new login: it can now remove itself or be removed
+        assertThat(send("GET", "/admin/tenants", null, user).statusCode()).isEqualTo(200);
+        assertThat(send("GET", "/admin/administrators", null, user).body()).contains(email, "admin@example.com");
+        assertThat(send("DELETE", "/admin/administrators/" + id, null, admin).statusCode()).isEqualTo(204);
+        assertThat(send("GET", "/admin/tenants", null, user).statusCode()).isEqualTo(403);
+        assertThat(send("DELETE", "/admin/administrators/" + id, null, admin).statusCode()).isEqualTo(404);
+    }
+
+    @Test
+    void only_administrators_manage_administrators_and_accounts_must_exist() throws Exception {
+        String user = signup();
+        assertThat(send("GET", "/admin/administrators", null, user).statusCode()).isEqualTo(403);
+        assertThat(send("POST", "/admin/administrators", "{\"email\":\"admin@example.com\"}", user).statusCode()).isEqualTo(403);
+        assertThat(send("DELETE", "/admin/administrators/" + UUID.randomUUID(), null, user).statusCode()).isEqualTo(403);
+        assertThat(send("GET", "/admin/administrators", null, null).statusCode()).isEqualTo(401);
+
+        String admin = adminCookie();
+        assertThat(send("POST", "/admin/administrators", "{\"email\":\"nobody-here@example.com\"}", admin).statusCode()).isEqualTo(404);
+        assertThat(send("POST", "/admin/administrators", "{}", admin).statusCode()).isEqualTo(400);
+    }
+
+    @Test
+    void the_configured_administrator_stays() throws Exception {
+        String admin = adminCookie();
+        JsonNode configured = json(send("GET", "/admin/administrators", null, admin)).get(0);
+        assertThat(configured.get("configured").asBoolean()).isTrue();
+        assertThat(configured.get("you").asBoolean()).isTrue();
+
+        HttpResponse<String> refused = send("DELETE", "/admin/administrators/" + configured.get("userId").asString(), null, admin);
+
+        assertThat(refused.statusCode()).isEqualTo(409);
+        assertThat(refused.body()).contains("configured_admin");
+    }
+
+    @Test
+    void there_is_always_an_administrator_left() throws Exception {
+        UUID configured = users.findByEmail("admin@example.com").orElseThrow().id();
+        String firstEmail = "user-" + UUID.randomUUID() + "@example.com";
+        String secondEmail = "user-" + UUID.randomUUID() + "@example.com";
+        String first = signupAs(firstEmail);
+        String second = signupAs(secondEmail);
+        UUID firstId = users.findByEmail(firstEmail).orElseThrow().id();
+        UUID secondId = users.findByEmail(secondEmail).orElseThrow().id();
+        users.addGroup(firstId, "kockpit-admins");
+        users.removeGroup(configured, "kockpit-admins");
+        try {
+            HttpResponse<String> alone = send("DELETE", "/admin/administrators/" + firstId, null, first);
+            assertThat(alone.statusCode()).isEqualTo(409);
+            assertThat(alone.body()).contains("last_admin");
+
+            users.addGroup(secondId, "kockpit-admins");
+            List<Integer> statuses = List.of(CompletableFuture.supplyAsync(() -> remove(secondId, first)),
+                            CompletableFuture.supplyAsync(() -> remove(firstId, second)))
+                    .stream().map(CompletableFuture::join).toList();
+
+            assertThat(statuses).containsOnlyOnce(204);
+            assertThat(users.inGroup("kockpit-admins")).hasSize(1);
+        } finally {
+            users.removeGroup(firstId, "kockpit-admins");
+            users.removeGroup(secondId, "kockpit-admins");
+            users.addGroup(configured, "kockpit-admins");
+        }
+    }
+
+    private int remove(UUID id, String cookie) {
+        try {
+            return send("DELETE", "/admin/administrators/" + id, null, cookie).statusCode();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private String adminCookie() throws Exception {
+        return cookieOf(send("POST", "/auth/login", "{\"email\":\"admin@example.com\",\"password\":\"admin-password-123\"}", null));
+    }
+
+    @Test
+    void a_reset_link_changes_the_password_once_and_ends_the_sessions() throws Exception {
+        String email = "user-" + UUID.randomUUID() + "@example.com";
+        String session = signupAs(email);
+        String code = resetCode(email);
+        // token times are in whole seconds
+        Thread.sleep(1100);
+
+        JsonNode preview = json(send("POST", "/auth/password-reset/preview", "{\"code\":\"%s\"}".formatted(code), null));
+        assertThat(preview.get("email").asString()).isEqualTo(email);
+        assertThat(reset(code, "a-new-good-password").statusCode()).isEqualTo(204);
+
+        assertThat(send("GET", "/tenants", null, session).statusCode()).isEqualTo(401);
+        assertThat(login(email, "a-good-password").statusCode()).isEqualTo(401);
+        HttpResponse<String> login = login(email, "a-new-good-password");
+        assertThat(login.statusCode()).isEqualTo(200);
+        assertThat(send("GET", "/tenants", null, cookieOf(login)).statusCode()).isEqualTo(200);
+        assertThat(reset(code, "another-good-password").statusCode()).isEqualTo(404);
+        assertThat(login(email, "a-new-good-password").statusCode()).isEqualTo(200);
+    }
+
+    @Test
+    void a_reset_link_needs_an_administrator_and_an_account() throws Exception {
+        String user = signup();
+        String body = "{\"email\":\"admin@example.com\"}";
+        assertThat(send("POST", "/admin/password-resets", body, user).statusCode()).isEqualTo(403);
+        assertThat(send("POST", "/admin/password-resets", body, null).statusCode()).isEqualTo(401);
+        assertThat(send("POST", "/admin/password-resets", "{\"email\":\"nobody-here@example.com\"}", adminCookie()).statusCode()).isEqualTo(404);
+        assertThat(send("POST", "/admin/password-resets", "{}", adminCookie()).statusCode()).isEqualTo(400);
+    }
+
+    @Test
+    void a_new_reset_link_replaces_the_previous_one() throws Exception {
+        String email = "user-" + UUID.randomUUID() + "@example.com";
+        signupAs(email);
+        String first = resetCode(email);
+        String second = resetCode(email);
+
+        assertThat(reset(first, "a-new-good-password").statusCode()).isEqualTo(404);
+        assertThat(reset(second, "a-new-good-password").statusCode()).isEqualTo(204);
+    }
+
+    @Test
+    void expired_and_unknown_reset_links_are_refused_and_change_nothing() throws Exception {
+        String email = "user-" + UUID.randomUUID() + "@example.com";
+        signupAs(email);
+        String code = resetCode(email);
+        JdbcClient.create(dataSource).sql("""
+                update password_resets set expires_at = now() - interval '1 minute'
+                where user_id = (select id from users where email = :email)""").param("email", email).update();
+
+        assertThat(reset(code, "a-new-good-password").statusCode()).isEqualTo(404);
+        assertThat(send("POST", "/auth/password-reset/preview", "{\"code\":\"%s\"}".formatted(code), null).statusCode()).isEqualTo(404);
+        assertThat(reset("kpr_unknown", "a-new-good-password").statusCode()).isEqualTo(404);
+        assertThat(reset("kpi_not-a-reset-code", "a-new-good-password").statusCode()).isEqualTo(404);
+        assertThat(login(email, "a-good-password").statusCode()).isEqualTo(200);
+    }
+
+    @Test
+    void a_too_short_password_leaves_the_reset_link_usable() throws Exception {
+        String email = "user-" + UUID.randomUUID() + "@example.com";
+        signupAs(email);
+        String code = resetCode(email);
+
+        assertThat(reset(code, "short").statusCode()).isEqualTo(400);
+
+        assertThat(reset(code, "a-new-good-password").statusCode()).isEqualTo(204);
+    }
+
+    @Test
+    void a_reset_link_unlocks_an_account_locked_by_failed_logins() throws Exception {
+        String email = "user-" + UUID.randomUUID() + "@example.com";
+        signupAs(email);
+        for (int i = 0; i < 10; i++) {
+            login(email, "a-wrong-password");
+        }
+        assertThat(login(email, "a-good-password").statusCode()).isEqualTo(429);
+
+        assertThat(reset(resetCode(email), "a-new-good-password").statusCode()).isEqualTo(204);
+
+        assertThat(login(email, "a-new-good-password").statusCode()).isEqualTo(200);
+    }
+
+    private String resetCode(String email) throws Exception {
+        HttpResponse<String> created = send("POST", "/admin/password-resets", "{\"email\":\"%s\"}".formatted(email), adminCookie());
+        assertThat(created.statusCode()).isEqualTo(201);
+        return json(created).get("code").asString();
+    }
+
+    private HttpResponse<String> reset(String code, String password) throws Exception {
+        return send("POST", "/auth/password-reset", "{\"code\":\"%s\",\"password\":\"%s\"}".formatted(code, password), null);
+    }
+
+    private HttpResponse<String> login(String email, String password) throws Exception {
+        return send("POST", "/auth/login", "{\"email\":\"%s\",\"password\":\"%s\"}".formatted(email, password), null);
     }
 
     @Test

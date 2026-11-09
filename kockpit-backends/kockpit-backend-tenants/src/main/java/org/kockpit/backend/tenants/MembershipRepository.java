@@ -11,7 +11,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Tenant members and invitations (db/kockpit-accounts V1 user_groups, V3 tenant_invitations).
+ * Tenant members and invitations (db/kockpit-accounts V1 user_groups, V3 tenant_invitations; no
+ * tenant: an invitation to create an account).
  * A member is an account in the tenant's group {@code tenant:<slug>}, the owner included.
  */
 public class MembershipRepository {
@@ -96,6 +97,15 @@ public class MembershipRepository {
                         where tenant_id = :tenant and accepted_at is null and revoked_at is null and expires_at > now()
                         order by created_at""".formatted(INVITATION_COLUMNS))
                 .param("tenant", tenantId).query(this::invitation).list();
+    }
+
+    /** The invitations to create an account not yet accepted, revoked or expired. */
+    public List<Invitation> openAccountInvitations() {
+        return jdbc.sql("""
+                        select %s from tenant_invitations
+                        where tenant_id is null and accepted_at is null and revoked_at is null and expires_at > now()
+                        order by created_at""".formatted(INVITATION_COLUMNS))
+                .query(this::invitation).list();
     }
 
     public int countOpenInvitations(UUID tenantId) {
