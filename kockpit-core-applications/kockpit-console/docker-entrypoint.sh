@@ -9,6 +9,14 @@ else
   sed -i "s|__KOCKPIT_BACKEND__|http://localhost:8080|g" /etc/nginx/conf.d/default.conf
 fi
 
+# The gateway is optional, and nginx does not start on an upstream it cannot resolve: no gateway, no /ingest route
+if [ ! -z "$KOCKPIT_GATEWAY" ]; then
+  echo "Proxying /ingest to $KOCKPIT_GATEWAY"
+  sed -i "s|__KOCKPIT_GATEWAY__|$KOCKPIT_GATEWAY|g" /etc/nginx/conf.d/default.conf
+else
+  sed -i "/__INGEST_ROUTE_BEGIN__/,/__INGEST_ROUTE_END__/d" /etc/nginx/conf.d/default.conf
+fi
+
 # Replace VITE_API_BASE placeholder in config.js if it exists
 if [ ! -z "$VITE_API_BASE" ] && [ -f "/usr/share/nginx/html/config.js" ]; then
   echo "Replacing VITE_API_BASE placeholder in config.js"

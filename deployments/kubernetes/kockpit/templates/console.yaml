@@ -43,6 +43,11 @@ spec:
             # nginx proxies /api to ${KOCKPIT_BACKEND}/api
             - name: KOCKPIT_BACKEND
               value: "http://{{ include "kockpit.component" (dict "root" . "name" "backend") }}:8080"
+            {{- if .Values.gateway.enabled }}
+            # nginx proxies /ingest to ${KOCKPIT_GATEWAY}/ingest: one public address is enough
+            - name: KOCKPIT_GATEWAY
+              value: "http://{{ include "kockpit.component" (dict "root" . "name" "gateway") }}:8080"
+            {{- end }}
             # feature-flipping page refresh (ms): matches the 5 s polling of backend.pollInterval
             - name: FEATURE_FLIPPING_REFRESH_MS
               value: {{ .Values.console.flagsRefreshMs | quote }}

@@ -84,7 +84,8 @@ kubectl -n kockpit port-forward svc/kockpit-sample-app 8082:8082 # sample app AP
   per-IP and per-hour limits.
 - Administrators: `auth.local.adminEmail` is the first one and stays; it adds others (accounts that exist) and removes
   them on the console's "Tenant & API keys" page, where they also create password reset links (one use, 24 hours).
-- `gateway.enabled`: `https://<ingress.gatewayHost>/ingest/v1/...`, see the gateway's README. It shares the data
+- `gateway.enabled`: `https://<ingress.gatewayHost>/ingest/v1/...`, see the gateway's README. The console's nginx
+  also proxies `/ingest`, so exposing the console alone is enough (no ingress needed). It shares the data
   volume with the backend (messages) and waits for the backend to create the database tables.
 - Secrets: `<release>-secrets` holds `db-password`, `jwt-secret` and `admin-password`, random at install and kept
   across upgrades and `helm uninstall` (with the PostgreSQL volume). Set `auth.existingSecret` to bring your own.
