@@ -78,6 +78,12 @@ kubectl -n kockpit port-forward svc/kockpit-sample-app 8082:8082 # sample app AP
 - `auth.local.enabled`: sign-up and sign-in on the console, every user sees only their tenants' manifests,
   the administrator (`auth.local.adminEmail`) sees everything. Requires `postgres.enabled` and an ingress host
   (CORS is limited to the console's origin, cookies are `Secure` with TLS).
+- `auth.local.signupInviteRequired` (default `true`): an account needs an invitation link, from the administrator
+  (the account may create a tenant) or a tenant's owner (the account joins that tenant and can't create one). The
+  administrator creates links on the console's "Tenant & API keys" page. `false` opens sign-up to anyone, within
+  per-IP and per-hour limits.
+- Administrators: `auth.local.adminEmail` is the first one and stays; it adds others (accounts that exist) and removes
+  them on the console's "Tenant & API keys" page, where they also create password reset links (one use, 24 hours).
 - `gateway.enabled`: `https://<ingress.gatewayHost>/ingest/v1/...`, see the gateway's README. It shares the data
   volume with the backend (messages) and waits for the backend to create the database tables.
 - Secrets: `<release>-secrets` holds `db-password`, `jwt-secret` and `admin-password`, random at install and kept

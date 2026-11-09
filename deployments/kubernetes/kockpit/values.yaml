@@ -146,7 +146,10 @@ auth:
     enabled: false
     # accounts may be created from the console's sign-in page
     signupEnabled: true
-    # administrator created at startup (sees every tenant, changes quotas); its password is in the secret
+    # ... with an invitation link only: from the administrator (may create a tenant) or a tenant's owner (joins it).
+    # false: anyone can create an account, within per-IP and per-hour limits
+    signupInviteRequired: true
+    # administrator created at startup (sees every tenant, changes quotas, invites people); its password is in the secret
     adminEmail: ""
   # Values of the generated secret <fullname>-secrets (db-password, jwt-secret, admin-password).
   # Empty = random at install, then kept across upgrades. Or name your own secret holding those keys.

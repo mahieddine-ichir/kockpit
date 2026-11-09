@@ -1,5 +1,5 @@
 # Shared Kockpit instance on the internet (e.g. one EC2 instance with k3s, see deployments/ec2/README.md):
-# testers sign up on the console, create their tenant and API keys, and their applications send audits to the
+# testers, invited by the administrator, sign up on the console, create their tenant and API keys, and their applications send audits to the
 # ingestion gateway. Only the console (with /api) and the gateway's /ingest are exposed, over HTTPS.
 #
 #   helm upgrade --install kockpit deployments/kubernetes/kockpit -n kockpit --create-namespace \
@@ -18,6 +18,7 @@ auth:
   local:
     enabled: true
     signupEnabled: true
+    signupInviteRequired: true
     adminEmail: ""              # required: the administrator's email; password in the kockpit-secrets secret
   tenants:
     perUser: 1

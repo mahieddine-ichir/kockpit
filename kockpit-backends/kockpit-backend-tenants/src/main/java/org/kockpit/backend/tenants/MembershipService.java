@@ -3,6 +3,7 @@ package org.kockpit.backend.tenants;
 import lombok.extern.slf4j.Slf4j;
 import org.kockpit.backend.security.local.AttemptLimiter;
 import org.kockpit.backend.security.local.LocalUser;
+import org.kockpit.backend.security.local.SignupInvitations;
 import org.kockpit.backend.security.local.UserRepository;
 import org.kockpit.backend.tenants.MembershipRepository.Invitation;
 import org.kockpit.backend.tenants.MembershipRepository.Member;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
@@ -30,9 +32,13 @@ import java.util.regex.Pattern;
  * <p>An invitation is a one-time code, stored hashed, valid {@code invitation-ttl}, optionally
  * for one email only; the owner sends its link himself (Kockpit sends no mail). Joining a tenant
  * doesn't count against the tenants a user may create.
+ *
+ * <p>Invitations are also how accounts get created ({@link SignupInvitations}): an administrator's
+ * (no tenant) gives an account that may create a tenant; a tenant's gives an account that joins
+ * that tenant and can't create one, so that a tenant owner can't hand out quota.
  */
 @Slf4j
-public class MembershipService {
+public class MembershipService implements SignupInvitations {
 
     static final String CODE_PREFIX = "kpi_";
 
@@ -96,10 +102,7 @@ public class MembershipService {
     }
 
     public CreatedInvitation invite(Tenant tenant, UUID createdBy, String email) {
-        String restrictedTo = normalizeEmail(email);
-        if (restrictedTo != null && !EMAIL.matcher(restrictedTo).matches()) {
-            throw TenantException.badRequest("Invalid email");
-        }
+        String restrictedTo = validEmail(email);
         String code = ApiKeys.generate(CODE_PREFIX);
         UUID id = transaction.execute(status -> {
             tenants.lockTenant(tenant.id());
@@ -116,6 +119,64 @@ public class MembershipService {
         });
         log.info("Invitation {} to tenant {} created{}", id, tenant.slug(), restrictedTo == null ? "" : " for " + restrictedTo);
         return new CreatedInvitation(memberships.findInvitation(id).orElseThrow(), code);
+    }
+
+    /** An administrator's invitation to create an account, optionally for one email. */
+    public CreatedInvitation inviteAccount(UUID createdBy, String email) {
+        String restrictedTo = validEmail(email);
+        String code = ApiKeys.generate(CODE_PREFIX);
+        UUID id = memberships.createInvitation(null, ApiKeys.hash(code), restrictedTo, createdBy,
+                clock.instant().plus(properties.getInvitationTtl()));
+        log.info("Account invitation {} created{}", id, restrictedTo == null ? "" : " for " + restrictedTo);
+        return new CreatedInvitation(memberships.findInvitation(id).orElseThrow(), code);
+    }
+
+    public List<Invitation> openAccountInvitations() {
+        return memberships.openAccountInvitations();
+    }
+
+    public void revokeAccountInvitation(UUID invitationId) {
+        Invitation invitation = memberships.findInvitation(invitationId)
+                .filter(i -> i.tenantId() == null)
+                .orElseThrow(() -> TenantException.notFound("No invitation " + invitationId));
+        if (memberships.revokeInvitation(invitation.id())) {
+            log.info("Account invitation {} cancelled", invitation.id());
+        }
+    }
+
+    @Override
+    public Optional<LocalUser> redeem(String code, String email, Supplier<Optional<LocalUser>> createAccount) {
+        try {
+            return transaction.execute(status -> redeemLocked(code, normalizeEmail(email), createAccount));
+        } catch (TenantException e) {
+            throw new Refused(e.getStatus(), e.getError(), e.getMessage());
+        }
+    }
+
+    private Optional<LocalUser> redeemLocked(String code, String email, Supplier<Optional<LocalUser>> createAccount) {
+        Invitation invitation = memberships.findByCodeForUpdate(hashOf(code))
+                .filter(i -> i.isOpen(clock.instant()))
+                .orElseThrow(TenantException::invalidInvitation);
+        if (invitation.email() != null && !invitation.email().equals(email)) {
+            throw TenantException.forbidden("This invitation is for another email: sign up with the invited one");
+        }
+        if (invitation.tenantId() == null) {
+            Optional<LocalUser> created = createAccount.get();
+            created.ifPresent(user -> memberships.markAccepted(invitation.id(), user.id()));
+            return created;
+        }
+        Tenant tenant = tenants.findById(invitation.tenantId()).orElseThrow(TenantException::invalidInvitation);
+        String group = TenantNames.group(tenant.slug());
+        tenants.lockTenant(tenant.id());
+        requireRoomIn(tenant, group);
+        Optional<LocalUser> created = createAccount.get();
+        created.ifPresent(user -> {
+            users.addGroup(user.id(), group);
+            tenants.forbidTenantCreation(user.id());
+            memberships.markAccepted(invitation.id(), user.id());
+            log.info("User {} signed up and joined tenant {} (invitation {})", user.email(), tenant.slug(), invitation.id());
+        });
+        return created;
     }
 
     public List<Invitation> openInvitations(Tenant tenant) {
@@ -151,10 +212,7 @@ public class MembershipService {
                 return tenant;
             }
             tenants.lockTenant(tenant.id());
-            if (memberships.countMembers(group) >= properties.getMaxMembers()) {
-                throw TenantException.conflict("member_limit",
-                        "Tenant %s has %d members already".formatted(tenant.slug(), properties.getMaxMembers()));
-            }
+            requireRoomIn(tenant, group);
             users.addGroup(userId, group);
             memberships.markAccepted(invitation.id(), userId);
             log.info("User {} joined tenant {} (invitation {})", user.email(), tenant.slug(), invitation.id());
@@ -195,6 +253,9 @@ public class MembershipService {
             limiter.tryAcquire(key, Integer.MAX_VALUE, HOUR);
             throw TenantException.invalidInvitation();
         }
+        if (invitation.get().tenantId() == null) {
+            throw TenantException.forbidden("This link creates a new account: use another account to sign up with it");
+        }
         String restrictedTo = invitation.get().email();
         if (restrictedTo != null && !restrictedTo.equals(normalizeEmail(user.email()))) {
             limiter.tryAcquire(key, Integer.MAX_VALUE, HOUR);
@@ -202,6 +263,21 @@ public class MembershipService {
             throw TenantException.forbidden("This invitation is for another account: sign in with the invited email");
         }
         return invitation.get();
+    }
+
+    private void requireRoomIn(Tenant tenant, String group) {
+        if (memberships.countMembers(group) >= properties.getMaxMembers()) {
+            throw TenantException.conflict("member_limit",
+                    "Tenant %s has %d members already".formatted(tenant.slug(), properties.getMaxMembers()));
+        }
+    }
+
+    private static String validEmail(String email) {
+        String normalized = normalizeEmail(email);
+        if (normalized != null && !EMAIL.matcher(normalized).matches()) {
+            throw TenantException.badRequest("Invalid email");
+        }
+        return normalized;
     }
 
     private LocalUser user(UUID userId) {

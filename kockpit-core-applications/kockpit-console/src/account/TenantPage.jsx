@@ -3,16 +3,24 @@ import {AlertTriangle, Ban, Building2, CheckCircle2, Clock, Crown, KeyRound, Lin
 import CopyButton from "../components/CopyButton.jsx";
 import {getIngestUrl} from "../services/config.js";
 import {
+    addAdministrator,
+    cancelAccountInvitation,
     cancelInvitation,
+    createAccountInvitation,
     createApiKey,
     createInvitation,
+    createPasswordReset,
     createTenant,
+    getAccountInvitations,
+    getAdministrators,
     getAllTenants,
     getInvitations,
     getMembers,
     getTenants,
     invitationLink,
+    passwordResetLink,
     reasonOf,
+    removeAdministrator,
     removeMember,
     revokeApiKey,
     setApiKeyQuota
@@ -316,8 +324,7 @@ const RoleBadge = ({owner}) => (
 );
 
 // The invitation link, shown once, right after its creation.
-const NewInvitation = ({created, onDone}) => {
-    const link = invitationLink(created.code);
+const NewInvitation = ({created, onDone, link = invitationLink(created.code)}) => {
     return (
         <div className="border-2 border-slate-800 rounded-lg p-4 mb-4 bg-slate-50" role="status">
             <p className="font-semibold text-slate-800 flex items-center gap-2">
@@ -555,6 +562,229 @@ const UsageSnippet = ({tenant, ingestUrl}) => {
     );
 };
 
+// Administrators invite people to create an account (and then their own tenant).
+const AccountInvitations = ({limits}) => {
+    const [invitations, setInvitations] = useState([]);
+    const [email, setEmail] = useState('');
+    const [created, setCreated] = useState(null);
+    const [error, setError] = useState(null);
+    const load = () => getAccountInvitations().then(setInvitations).catch(err => setError(reasonOf(err)));
+    useEffect(() => { load(); }, []);
+
+    const invite = async (e) => {
+        e.preventDefault();
+        setError(null);
+        try {
+            setCreated(await createAccountInvitation(email.trim()));
+            setEmail('');
+            load();
+        } catch (err) {
+            setError(reasonOf(err));
+        }
+    };
+
+    const cancel = async (invitation) => {
+        setError(null);
+        try {
+            await cancelAccountInvitation(invitation.id);
+            load();
+        } catch (err) {
+            setError(reasonOf(err));
+        }
+    };
+
+    return (
+        <Card title="Invite someone to Kockpit (administrator)" icon={<UserPlus className="h-5 w-5" aria-hidden="true"/>}>
+            <p className="text-sm text-slate-600 mb-3">
+                The link creates an account that can then create its own tenant. Kockpit sends no email: you send the
+                link. It works once, for {limits?.invitationTtlDays ?? 7} days.
+            </p>
+            {created && <NewInvitation created={created} onDone={() => setCreated(null)}/>}
+            <form onSubmit={invite} className="flex flex-wrap items-end gap-2">
+                <label className="flex flex-col">
+                    <span className="text-sm font-medium text-slate-700">Their email (optional)</span>
+                    <input type="email" value={email} onChange={e => setEmail(e.target.value)} maxLength={254} placeholder="only this email may sign up"
+                           className="mt-1 w-72 rounded-lg border border-slate-400 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"/>
+                </label>
+                <button type="submit"
+                        className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-slate-800 text-white font-semibold hover:bg-slate-900">
+                    <Link2 className="h-4 w-4" aria-hidden="true"/> Create an invitation link
+                </button>
+            </form>
+            {invitations.length > 0 && (
+                <div className="overflow-x-auto mt-3">
+                    <table className="w-full text-left">
+                        <thead>
+                        <tr className="text-xs uppercase text-slate-500">
+                            <th className="pb-2 pr-4">Open invitation for</th>
+                            <th className="pb-2 pr-4">Expires</th>
+                            <th className="pb-2"><span className="sr-only">Actions</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {invitations.map(i => (
+                            <tr key={i.id} className="border-t border-slate-100">
+                                <td className="py-2 pr-4 text-sm text-slate-800">{i.email ? <span className="font-mono">{i.email}</span> : 'anyone with the link'}</td>
+                                <td className="py-2 pr-4 text-sm text-slate-600">{formatDate(i.expiresAt)}</td>
+                                <td className="py-2 text-right">
+                                    <button onClick={() => cancel(i)}
+                                            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-400 text-sm hover:bg-slate-100">
+                                        <Ban className="h-4 w-4" aria-hidden="true"/> Cancel
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            <ErrorBox message={error}/>
+        </Card>
+    );
+};
+
+// Administrators create the link someone who lost their password uses to choose a new one.
+const PasswordReset = () => {
+    const [email, setEmail] = useState('');
+    const [created, setCreated] = useState(null);
+    const [error, setError] = useState(null);
+
+    const create = async (e) => {
+        e.preventDefault();
+        setError(null);
+        try {
+            setCreated(await createPasswordReset(email.trim()));
+            setEmail('');
+        } catch (err) {
+            setError(reasonOf(err));
+        }
+    };
+
+    return (
+        <Card title="Reset a password (administrator)" icon={<KeyRound className="h-5 w-5" aria-hidden="true"/>}>
+            <p className="text-sm text-slate-600 mb-3">
+                The link lets its owner choose a new password; you never see it. It works once, for 24 hours, replaces
+                any previous link for that account, and signs out the account's open sessions when used. Kockpit sends
+                no email: you send the link.
+            </p>
+            {created && <NewInvitation created={created} link={passwordResetLink(created.code)} onDone={() => setCreated(null)}/>}
+            <form onSubmit={create} className="flex flex-wrap items-end gap-2">
+                <label className="flex flex-col">
+                    <span className="text-sm font-medium text-slate-700">Email of the account</span>
+                    <input type="email" required value={email} onChange={e => setEmail(e.target.value)} maxLength={254}
+                           className="mt-1 w-72 rounded-lg border border-slate-400 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"/>
+                </label>
+                <button type="submit"
+                        className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-slate-800 text-white font-semibold hover:bg-slate-900">
+                    <Link2 className="h-4 w-4" aria-hidden="true"/> Create a reset link
+                </button>
+            </form>
+            <ErrorBox message={error}/>
+        </Card>
+    );
+};
+
+const AdministratorRow = ({administrator, canRemove, onRemove}) => {
+    const [confirming, setConfirming] = useState(false);
+    return (
+        <tr className="border-t border-slate-100">
+            <td className="py-2 pr-4 text-sm font-mono text-slate-800">
+                {administrator.email}{administrator.you && <span className="ml-2 font-sans text-xs text-slate-500">(you)</span>}
+            </td>
+            <td className="py-2 pr-4 text-sm text-slate-600">{administrator.configured ? 'Set by the configuration' : 'Added here'}</td>
+            <td className="py-2 text-right whitespace-nowrap">
+                {canRemove && (confirming ? (
+                    <span className="inline-flex items-center gap-2 text-sm">
+                        {administrator.you ? 'Remove your own admin rights?' : 'Remove the admin rights?'}
+                        <button onClick={() => onRemove(administrator)} className="px-2 py-1 rounded bg-slate-800 text-white font-semibold">Yes, remove</button>
+                        <button onClick={() => setConfirming(false)} className="px-2 py-1 rounded border border-slate-400">Cancel</button>
+                    </span>
+                ) : (
+                    <button onClick={() => setConfirming(true)}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-400 text-sm hover:bg-slate-100">
+                        <UserMinus className="h-4 w-4" aria-hidden="true"/> Remove admin
+                    </button>
+                ))}
+            </td>
+        </tr>
+    );
+};
+
+const Administrators = () => {
+    const [administrators, setAdministrators] = useState(null);
+    const [email, setEmail] = useState('');
+    const [error, setError] = useState(null);
+    const load = () => getAdministrators().then(setAdministrators).catch(err => setError(reasonOf(err)));
+    useEffect(() => { load(); }, []);
+
+    const add = async (e) => {
+        e.preventDefault();
+        setError(null);
+        try {
+            await addAdministrator(email.trim());
+            setEmail('');
+            load();
+        } catch (err) {
+            setError(reasonOf(err));
+        }
+    };
+
+    const remove = async (administrator) => {
+        setError(null);
+        try {
+            await removeAdministrator(administrator.userId);
+            if (administrator.you) {
+                // no longer an administrator: the console no longer offers this
+                window.location.assign('/');
+                return;
+            }
+            load();
+        } catch (err) {
+            setError(reasonOf(err));
+        }
+    };
+
+    const several = administrators && administrators.length > 1;
+
+    return (
+        <Card title="Administrators" icon={<ShieldCheck className="h-5 w-5" aria-hidden="true"/>}>
+            <p className="text-sm text-slate-600 mb-3">
+                Administrators see every tenant, change quotas, invite people and manage this list.
+            </p>
+            {administrators && (
+                <div className="overflow-x-auto mb-4">
+                    <table className="w-full text-left">
+                        <thead>
+                        <tr className="text-xs uppercase text-slate-500">
+                            <th className="pb-2 pr-4">Account</th>
+                            <th className="pb-2 pr-4">Origin</th>
+                            <th className="pb-2"><span className="sr-only">Actions</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {administrators.map(a => (
+                            <AdministratorRow key={a.userId} administrator={a} canRemove={several && !a.configured} onRemove={remove}/>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            <form onSubmit={add} className="flex flex-wrap items-end gap-2">
+                <label className="flex flex-col">
+                    <span className="text-sm font-medium text-slate-700">Email of an existing account</span>
+                    <input type="email" required value={email} onChange={e => setEmail(e.target.value)} maxLength={254}
+                           className="mt-1 w-72 rounded-lg border border-slate-400 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"/>
+                </label>
+                <button type="submit"
+                        className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-slate-800 text-white font-semibold hover:bg-slate-900">
+                    <ShieldCheck className="h-4 w-4" aria-hidden="true"/> Make admin
+                </button>
+            </form>
+            <ErrorBox message={error}/>
+        </Card>
+    );
+};
+
 const AdminTenants = ({onChanged}) => {
     const [tenants, setTenants] = useState(null);
     const [error, setError] = useState(null);
@@ -604,8 +834,12 @@ const TenantPage = ({onboarding = false, onLogout}) => {
                         </button>
                     )}
                 </div>
-                {onboarding && (
-                    <p className="text-slate-600 mb-6">Welcome! Create your tenant to start sending audits and browse them here.</p>
+                {onboarding && data && (
+                    <p className="text-slate-600 mb-6">
+                        {data.canCreateTenant
+                            ? 'Welcome! Create your tenant to start sending audits and browse them here.'
+                            : 'Welcome! Your account joins tenants by invitation: open the link a tenant\'s owner sent you.'}
+                    </p>
                 )}
                 {!data && !error && (
                     <p className="text-slate-600 flex items-center gap-2"><Clock className="h-4 w-4 animate-spin"/> Loading…</p>
@@ -616,9 +850,12 @@ const TenantPage = ({onboarding = false, onLogout}) => {
                         {data.tenants.map(t => (
                             <TenantCard key={t.slug} tenant={t} limits={data.limits} admin={data.admin} onChanged={load}/>
                         ))}
-                        {(data.tenants.length < (data.limits?.tenants ?? 1) || data.admin) && (
+                        {data.canCreateTenant && (data.tenants.length < (data.limits?.tenants ?? 1) || data.admin) && (
                             <CreateTenant limits={data.limits} onCreated={onTenantCreated}/>
                         )}
+                        {data.admin && <Administrators/>}
+                        {data.admin && <PasswordReset/>}
+                        {data.admin && <AccountInvitations limits={data.limits}/>}
                         {data.admin && <AdminTenants onChanged={load}/>}
                     </>
                 )}

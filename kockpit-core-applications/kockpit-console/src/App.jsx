@@ -9,6 +9,7 @@ import {login, logout, toPrincipal} from "./services/api.js";
 import {isLocalAuth} from "./services/config.js";
 import LoginPage from "./account/LoginPage.jsx";
 import JoinPage from "./account/JoinPage.jsx";
+import ResetPasswordPage from "./account/ResetPasswordPage.jsx";
 import TenantPage from "./account/TenantPage.jsx";
 import FeatureFlippingPage from "./feature-flipping/feature.jsx";
 import AppIdDashboard from "./home/Home.jsx";
@@ -86,13 +87,18 @@ function App() {
 
     if (loading) return <div>Loading ...</div>;
 
+    // a password reset link (/reset-password#<code>): whoever is signed in, or nobody
+    if (localAuth && window.location.pathname === '/reset-password') {
+        return <ResetPasswordPage code={decodeURIComponent(window.location.hash.replace(/^#/, ''))}/>;
+    }
+
     // an invitation link (/join#<code>): sign in or sign up first, then join the tenant
     const joining = localAuth && window.location.pathname === '/join';
     const joinCode = joining ? decodeURIComponent(window.location.hash.replace(/^#/, '')) : null;
 
     if (localAuth && !user) {
-        return <LoginPage onSignedIn={me => setUser(toPrincipal(me))}
-                          notice={joining ? 'Sign in, or create an account, to join the tenant you are invited to.' : null}/>;
+        return <LoginPage onSignedIn={me => setUser(toPrincipal(me))} invitation={joinCode}
+                          notice={joining ? 'You are invited: create your account, or sign in if you already have one.' : null}/>;
     }
 
     if (joining) {

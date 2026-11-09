@@ -103,15 +103,18 @@ It shows up in the console (domain = the tenant) within a few seconds.
 
 ## What testers get
 
-- an account (sign-up on, at most 5 per IP and 50 overall per hour), **one tenant** with up to 3 envs
+- an account **by invitation**: the administrator creates a link on the console's "Tenant & API keys" page and sends
+  it (valid 7 days, once, optionally for one email). Then **one tenant** with up to 3 envs
   (`dev`, `staging`, `prod`), **3 active keys**, **10,000 audits per key per day**: `auth.tenants.*` in
   `values-public.yaml`. The administrator changes a key's quota on the console's "Tenant & API keys" page.
 - **teams**: a tenant's owner invites colleagues from the "Tenant & API keys" page (an invitation link to send,
   valid 7 days, once, optionally for one email); members see the tenant's audits and keys, only the owner creates
   and revokes keys and removes members. Joining a tenant doesn't count against the one tenant an account may create.
+  An account created with a tenant owner's invitation joins that tenant and can't create one of its own.
 - **7 days** of audit retention (`gateway.auditTtlDays`): the gateway sets every audit's `ttl`, from which the audit
   stream creates the indices and their OpenSearch retention policy.
-- To close sign-ups: `--set auth.local.signupEnabled=false` (existing accounts keep working).
+- To close sign-ups, invitations included: `--set auth.local.signupEnabled=false` (existing accounts keep working).
+  To open them to anyone (at most 5 per IP and 50 overall per hour): `--set auth.local.signupInviteRequired=false`.
 
 ## Operations
 
