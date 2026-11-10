@@ -15,6 +15,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisAsyncClient;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Optional;
 
 @AutoConfiguration
@@ -30,10 +31,13 @@ public class KinesisAuditServiceAutoConfiguration {
   AuditReportNotificationService kinesisAuditReportNotificationService(
           RecordTransformer recordTransformer,
           @Qualifier("kinesisProducerClient") KinesisAsyncClient kinesisClient,
-          @Value("${kockpit.audit.notification.kinesis.stream_name}") String streamName
+          @Value("${kockpit.audit.notification.kinesis.stream_name}") String streamName,
+          @Value("${kockpit.audit.notification.kinesis.max_retries:3}") int maxRetries,
+          @Value("${kockpit.audit.notification.kinesis.retry_backoff_ms:100}") long retryBackoffMs
   ) {
       log.info("➡️ Kinesis stream name: {}", streamName);
-      return new KinesisAuditReportNotificationService(kinesisClient, streamName, recordTransformer);
+      return new KinesisAuditReportNotificationService(
+              kinesisClient, streamName, recordTransformer, maxRetries, Duration.ofMillis(retryBackoffMs));
   }
 
   @ConditionalOnMissingBean(RecordPartitioner.class)
