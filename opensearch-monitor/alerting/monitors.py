@@ -12,7 +12,8 @@ The cluster is private: run this through a tunnel (default http://localhost:9200
 
 Monitor definitions live in monitors/*.json. Each trigger has an `id`; its `script` must store a
 one-line description of what it found in ctx.results[0].<id>, which the Teams card displays.
-A trigger may set "throttle_minutes" (default 60). Placeholders: __ENV__, __EXPECTED_NODES__.
+A trigger may set "throttle_minutes" (default 60). Placeholders: __ENV__, __EXPECTED_NODES__,
+__MAX_SHARDS_PER_NODE__ (read from the cluster: apply again after changing that setting).
 
 Ingestion monitors are generated from templates/ingestion.json, one per --ingestion DOMAIN:MINUTES
 (e.g. --ingestion rcu:30 alerts when the newest audit in rcu-audit-data-<env>-read is 30 minutes old).
@@ -81,11 +82,25 @@ def parse_ingestion(value):
     return domain, int(minutes)
 
 
+def max_shards_per_node(base):
+    status, res = call(base, "GET", "/_cluster/settings?include_defaults=true&filter_path=*.cluster.max_shards_per_node")
+    if status != 200:
+        raise SystemExit("cannot read cluster settings (%s): %s" % (status, json.dumps(res)[:500]))
+    for scope in ("transient", "persistent", "defaults"):
+        value = res.get(scope, {}).get("cluster", {}).get("max_shards_per_node")
+        if value is not None:
+            return int(value)
+    raise SystemExit("cluster.max_shards_per_node not found in the cluster settings")
+
+
 def load_monitors(args):
+    max_shards = max_shards_per_node(args.url)
+
     def render(path, extra=()):
         with open(path) as f:
             raw = f.read()
         for key, value in (("__ENV__", args.env), ("__EXPECTED_NODES__", str(args.expected_nodes)),
+                           ("__MAX_SHARDS_PER_NODE__", str(max_shards)),
                            ("__INDEX__", args.index)) + tuple(extra):
             raw = raw.replace(key, value)
         return json.loads(raw)

@@ -264,6 +264,51 @@
   color: var(--text-muted);
 }
 
+.capacity {
+  --capacity-color: var(--status-ok);
+  margin-top: 16px;
+}
+
+.capacity-warning {
+  --capacity-color: var(--status-warning);
+}
+
+.capacity-critical,
+.capacity-full {
+  --capacity-color: var(--status-critical);
+}
+
+.capacity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.capacity-status {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--capacity-color);
+}
+
+.capacity-track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--gridline);
+  overflow: hidden;
+}
+
+.capacity-fill {
+  height: 100%;
+  background: var(--capacity-color);
+}
+
+.capacity-detail {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

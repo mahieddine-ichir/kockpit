@@ -25,7 +25,7 @@ received", the same one as the `teams_webhook_url` of the Terraform module. Neve
 
 | Monitor | Every | Triggers |
 |---|---|---|
-| `kockpit-cluster-health` | 2 min | cluster red (sev1), node missing (sev1), unassigned shards (sev2) |
+| `kockpit-cluster-health` | 2 min | cluster red (sev1), node missing (sev1), unassigned shards (sev2), shard capacity > 80% (sev2, daily), > 90% (sev1) |
 | `kockpit-node-resources` | 5 min | data disk > 88% (sev1), old gen > 75% after GC (sev2), rejections / breaker trips since node start (sev2, daily), write queue > 200 (sev3) |
 | `kockpit-indices` | 15 min | concrete index named `*-write`/`*-read` (sev1), red index (sev1), index > 50 GB primary (sev2) |
 | `kockpit-<domain>-ingestion`, one per `--ingestion` | 10 min | newest audit of `<domain>-<index>-<env>-read` older than MINUTES (sev1) |
@@ -36,7 +36,9 @@ for nothing.
 ## Writing monitors
 
 - `monitors/*.json` are applied as they are; `templates/ingestion.json` once per `--ingestion`.
-  Placeholders: `__ENV__`, `__EXPECTED_NODES__`, `__INDEX__`, and `__DOMAIN__`/`__MAX_LAG__` in the template.
+  Placeholders: `__ENV__`, `__EXPECTED_NODES__`, `__INDEX__`, `__MAX_SHARDS_PER_NODE__` (read from the cluster at
+  `check`/`apply` time: apply again after changing `cluster.max_shards_per_node`), and `__DOMAIN__`/`__MAX_LAG__`
+  in the template.
 - Each trigger has an `id`; its painless `script` stores a one-line description of what it found in
   `ctx.results[0].<id>`, which the Teams card shows. A trigger may set `throttle_minutes` (default 60).
 - An active alert re-notifies every `throttle_minutes`. OpenSearch Alerting sends no "resolved" message:

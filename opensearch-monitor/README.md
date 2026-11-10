@@ -5,7 +5,7 @@ A minimal OpenSearch monitoring app: an Express backend proxies read-only OpenSe
 into a single Docker image.
 
 Views:
-- **Cluster health** — status (green/yellow/red), node/shard/pending-task counts (`GET _cluster/health`)
+- **Cluster health** — status (green/yellow/red), node/shard/pending-task counts (`GET _cluster/health`), and shards used against the cluster limit, color-coded at 80%/90% thresholds (`GET _cluster/settings`). A cluster stays green at its limit, but new indices are rejected
 - **Unassigned shards** — index, shard, primary/replica, reason (`GET _cat/shards`)
 - **Disk usage by node** — pie chart of relative disk % across nodes, top 7 + "Other" (`GET _cat/allocation?s=disk.percent:desc`)
 - **Disk usage per node** — a used/free gauge per node, color-coded at 80%/90% thresholds

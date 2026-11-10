@@ -11,6 +11,31 @@ const TOP_INDICES_COUNT = 10;
 // Roughly matches OpenSearch's default disk watermarks (85% low, 90% high).
 const DISK_WARNING_PCT = 80;
 const DISK_CRITICAL_PCT = 90;
+// Same thresholds as the shard capacity triggers in alerting/monitors/cluster-health.json.
+const SHARD_WARNING_PCT = 80;
+const SHARD_CRITICAL_PCT = 90;
+
+// A cluster stays green at its shard limit: only the creation of new indices fails.
+const SHARD_LEVELS = {
+  ok: { label: 'OK', message: '' },
+  warning: { label: 'Warning', message: 'New indices will be rejected once the limit is reached, even if the cluster stays green.' },
+  critical: { label: 'Critical', message: 'New indices will be rejected once the limit is reached, even if the cluster stays green.' },
+  full: { label: 'Limit reached', message: 'New indices are being rejected, even if the cluster is green.' },
+};
+
+function shardLevel(percent) {
+  if (percent >= 100) return 'full';
+  if (percent >= SHARD_CRITICAL_PCT) return 'critical';
+  if (percent >= SHARD_WARNING_PCT) return 'warning';
+  return 'ok';
+}
+
+function readMaxShardsPerNode(settings) {
+  const value = ['transient', 'persistent', 'defaults']
+    .map((scope) => settings?.[scope]?.cluster?.max_shards_per_node)
+    .find((v) => v != null);
+  return value == null ? null : Number(value);
+}
 
 function readCssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -53,6 +78,7 @@ async function fetchJson(path) {
 export default function App() {
   const [rows, setRows] = useState([]);
   const [clusterHealth, setClusterHealth] = useState(null);
+  const [maxShardsPerNode, setMaxShardsPerNode] = useState(null);
   const [shards, setShards] = useState([]);
   const [indices, setIndices] = useState([]);
   const [error, setError] = useState(null);
@@ -62,11 +88,12 @@ export default function App() {
   useThemeTick();
 
   const load = useCallback(async () => {
-    const [allocation, health, shardList, indexList] = await Promise.allSettled([
+    const [allocation, health, shardList, indexList, shardLimit] = await Promise.allSettled([
       fetchJson('api/allocation'),
       fetchJson('api/cluster-health'),
       fetchJson('api/shards'),
       fetchJson('api/indices'),
+      fetchJson('api/shard-limit'),
     ]);
 
     const errors = [];
@@ -89,6 +116,11 @@ export default function App() {
       setIndices(Array.isArray(indexList.value) ? indexList.value : []);
     } else {
       errors.push(indexList.reason.message);
+    }
+    if (shardLimit.status === 'fulfilled') {
+      setMaxShardsPerNode(readMaxShardsPerNode(shardLimit.value));
+    } else {
+      errors.push(shardLimit.reason.message);
     }
 
     setError(errors.length > 0 ? errors.join('; ') : null);
@@ -123,6 +155,17 @@ export default function App() {
       { label: 'Pending tasks', value: clusterHealth.number_of_pending_tasks },
     ];
   }, [clusterHealth]);
+
+  const shardCapacity = useMemo(() => {
+    if (!clusterHealth || !maxShardsPerNode) return null;
+    const dataNodes = clusterHealth.number_of_data_nodes;
+    const limit = maxShardsPerNode * dataNodes;
+    if (!limit) return null;
+    // Unassigned shards count against the limit too. active_shards already includes relocating ones.
+    const used = clusterHealth.active_shards + clusterHealth.initializing_shards + clusterHealth.unassigned_shards;
+    const percent = (100 * used) / limit;
+    return { used, limit, dataNodes, percent, level: shardLevel(percent) };
+  }, [clusterHealth, maxShardsPerNode]);
 
   const nodeGauges = useMemo(() => {
     const usedColor = readCssVar('--status-ok');
@@ -276,6 +319,29 @@ export default function App() {
                   </div>
                 ))}
               </div>
+              {shardCapacity && (
+                <div className={`capacity capacity-${shardCapacity.level}`}>
+                  <div className="capacity-header">
+                    <span className="metric-label">Shard capacity</span>
+                    <span className="capacity-status">{SHARD_LEVELS[shardCapacity.level].label}</span>
+                  </div>
+                  <div
+                    className="capacity-track"
+                    role="progressbar"
+                    aria-label="Shard capacity"
+                    aria-valuemin={0}
+                    aria-valuemax={shardCapacity.limit}
+                    aria-valuenow={shardCapacity.used}
+                  >
+                    <div className="capacity-fill" style={{ width: `${Math.min(100, shardCapacity.percent)}%` }} />
+                  </div>
+                  <p className="capacity-detail">
+                    {shardCapacity.used.toLocaleString()} of {shardCapacity.limit.toLocaleString()} shards (
+                    {formatPct(shardCapacity.percent)}) · {maxShardsPerNode.toLocaleString()} per node ×{' '}
+                    {shardCapacity.dataNodes} data nodes. {SHARD_LEVELS[shardCapacity.level].message}
+                  </p>
+                </div>
+              )}
             </>
           )
         )}

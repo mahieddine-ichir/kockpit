@@ -23,6 +23,20 @@
       "name": "Unassigned shards",
       "severity": "2",
       "script": "def h = ctx.results[0]; h.unassigned = h.unassigned_shards + ' unassigned shard(s), ' + h.delayed_unassigned_shards + ' delayed · status=' + h.status; return h.unassigned_shards > 0;"
+    },
+    {
+      "id": "shards_warning",
+      "name": "Shard capacity over 80%",
+      "severity": "2",
+      "comment": "The cluster stays green at its limit: only the creation of new indices fails (2026-11-10 incident). Same thresholds as the dashboard.",
+      "throttle_minutes": 1440,
+      "script": "def h = ctx.results[0]; long used = h.active_shards + h.initializing_shards + h.unassigned_shards; long limit = h.number_of_data_nodes * __MAX_SHARDS_PER_NODE__; double pct = limit > 0 ? 100.0 * used / limit : 100.0; h.shards_warning = used + ' of ' + limit + ' shards (' + Math.round(pct) + '%) · new indices are rejected at the limit, even on a green cluster · status=' + h.status; return pct >= 80 && pct < 90;"
+    },
+    {
+      "id": "shards_critical",
+      "name": "Shard capacity over 90%",
+      "severity": "1",
+      "script": "def h = ctx.results[0]; long used = h.active_shards + h.initializing_shards + h.unassigned_shards; long limit = h.number_of_data_nodes * __MAX_SHARDS_PER_NODE__; double pct = limit > 0 ? 100.0 * used / limit : 100.0; h.shards_critical = used + ' of ' + limit + ' shards (' + Math.round(pct) + '%) · new indices are rejected at the limit, even on a green cluster · status=' + h.status; return pct >= 90;"
     }
   ]
 }

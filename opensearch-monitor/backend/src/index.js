@@ -60,6 +60,13 @@ router.get('/api/allocation', (req, res) =>
 
 router.get('/api/cluster-health', (req, res) => proxyOpenSearch(res, '/_cluster/health'));
 
+router.get('/api/shard-limit', (req, res) =>
+  proxyOpenSearch(res, '/_cluster/settings', {
+    include_defaults: 'true',
+    filter_path: '*.cluster.max_shards_per_node',
+  }),
+);
+
 router.get('/api/shards', (req, res) =>
   proxyOpenSearch(res, '/_cat/shards', { h: 'index,shard,prirep,state,node,unassigned.reason' }),
 );
