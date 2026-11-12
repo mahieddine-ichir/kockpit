@@ -24,7 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * The whole backend with local accounts on (default Maven profile, filesystem storage): one
  * filter chain (the local one), access control on by default, signup then an API call, then a
- * tenant whose manifest is stored and whose domain gets polled right away.
+ * tenant whose manifest is stored and whose domain gets polled right away. Signup is open here:
+ * invitations are covered by SignupInvitationIntegrationTest.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
         "FS_STORAGE_PATH=target/smoke-local-data",
@@ -41,6 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "kockpit.audit.notification.eventhub.connection_string=Endpoint=sb://smoke-test.servicebus.windows.net/;SharedAccessKeyName=smoke;SharedAccessKey=c21va2U=",
         "KOCKPIT_LOCAL_AUTH_ENABLED=true",
         "KOCKPIT_JWT_SECRET=smoke-secret-smoke-secret-smoke-secret-01",
+        "kockpit.security.local.signup.invite-required=false",
 })
 @Testcontainers
 class LocalAccountsSmokeTest {
